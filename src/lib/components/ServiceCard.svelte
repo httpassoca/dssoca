@@ -42,3 +42,24 @@
     <div class="latency">▸ open</div>
   </div>
 </div>
+
+<style lang="scss">
+  .ss-svc {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: var(--ss-gap); padding: var(--ss-card-py) var(--ss-card-px);
+    border: 1px solid var(--ss-line);
+    background: var(--ss-bg-elev);
+    cursor: pointer;
+    transition: all var(--ss-dur-fast) var(--ss-ease);
+
+    &:hover { border-color: var(--ss-line-strong); background: #232323; }
+    .head {
+      display: flex; align-items: center; gap: 10px;
+      .name { font-family: var(--ss-font-display); font-size: var(--ss-ui-lg); letter-spacing: -0.005em; }
+      .host { font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm); color: var(--ss-fg-muted); }
+    }
+    .status { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .footer { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
+    .latency { font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm); color: var(--ss-fg-muted); }
+  }
+</style>

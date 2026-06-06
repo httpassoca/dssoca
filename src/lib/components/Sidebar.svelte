@@ -47,3 +47,33 @@
     {/each}
   {/each}
 </aside>
+
+<style lang="scss">
+  .ss-side {
+    border-right: 1px solid var(--ss-line);
+    padding: var(--ss-gap) var(--ss-s-1);
+    display: flex; flex-direction: column; gap: 1px;
+    background: var(--ss-bg);
+
+    .section {
+      font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs);
+      color: var(--ss-fg-faint); text-transform: uppercase; letter-spacing: 0.12em;
+      padding: var(--ss-row-px) var(--ss-row-px) var(--ss-s-1);
+    }
+    .item {
+      display: flex; align-items: center; gap: 8px;
+      padding: var(--ss-row-py) var(--ss-row-px); cursor: pointer; color: var(--ss-fg-muted);
+      font: 500 var(--ss-ui-md) var(--ss-font-mono);
+      border-left: 2px solid transparent;
+      transition: all var(--ss-dur-fast) var(--ss-ease);
+
+      &:hover { color: var(--ss-fg); background: rgba(255,255,255,.03); }
+      &.active { color: var(--ss-fg); background: rgba(102,239,115,.06); border-left-color: var(--ss-primary); }
+      .dot {
+        width: 5px; height: 5px; margin-left: auto; background: var(--ss-primary);
+        &.warn { background: var(--ss-yellow); }
+        &.err  { background: var(--ss-red); }
+      }
+    }
+  }
+</style>

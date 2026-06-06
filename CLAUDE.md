@@ -13,9 +13,12 @@ orthogonal axes**:
 | **Color**   | `data-theme`   | `dark` · `light`    | `dark`  |
 | **Density** | `data-density` | `comfy` · `compact` | `comfy` |
 
-Components are thin wrappers over global `.ss-*` classes in `theme.css`; flip an axis on any
-ancestor (usually `<html>`) and everything below recolors/rescales. Full rationale: `DESIGN.md`.
-Token table: `docs/tokens.md`. Theme API: `docs/themes.md`.
+Each component styles itself in a scoped `<style lang="scss">` block and consumes the global
+`--ss-*` tokens; flip an axis on any ancestor (usually `<html>`) and everything below
+recolors/rescales (custom properties cascade through Svelte's scoped boundary). `theme.css`
+carries only tokens, base styles, and app-shell/layout — not per-component rules (since `0.3.0`;
+see agile `DS-0009`). Full rationale: `DESIGN.md`. Token table: `docs/tokens.md`. Theme API:
+`docs/themes.md`.
 
 ## Stack
 
@@ -50,8 +53,12 @@ ships (`files` field); `src/`, `test/`, `docs/` do not.
 ## House rules — non-negotiable
 
 - **Zero border-radius.** Every radius token is `0`. Never override.
-- **Prefix is `ss-`**: CSS custom properties are `--ss-*`, global classes are `.ss-*`. Stay
-  consistent — no new `--hs-`/`hub-` (those were renamed; see agile `DS-0005`).
+- **Prefix is `ss-`, reserved for identity**: CSS custom properties are `--ss-*`; the `.ss-*`
+  class prefix is for **component-identity** roots (`.ss-btn`, `.ss-panel`, …) and global
+  app-layout classes only. Generic internal elements use plain, unprefixed scoped names
+  (`.head`, `.title`, `.dot`). No new `--hs-`/`hub-` (those were renamed; see agile `DS-0005`).
+- **Styling is scoped**: component CSS lives in that component's `<style lang="scss">`. Only
+  tokens, base/element styles, and app-shell/layout belong in `src/styles/` (global `theme.css`).
 - **New chrome reads density tokens** (`--ss-*`), not hardcoded px, or it won't rescale.
 - **Tests are a RULE**: run `pnpm test` and add/extend tests for any change before calling it done.
 - **Agile is a RULE**: update `agile/` items on any change (move status, add stories/tasks, bump
@@ -81,7 +88,9 @@ runs `pnpm test` + `pnpm pack`.
 
 ## Adding / changing a component
 
-1. Add `src/lib/components/Foo.svelte` — style via `--ss-*` tokens / `.ss-*` classes only.
+1. Add `src/lib/components/Foo.svelte` — style it in a scoped `<style lang="scss">` using `--ss-*`
+   tokens; `.ss-foo` for the root identity, plain unprefixed names for internals. Don't add
+   component rules to global `theme.css`.
 2. Export it from `src/lib/index.ts`.
 3. Add a Vitest test under `test/unit/` (mirror an existing one; harness in `test/harness/` if needed).
 4. `pnpm test` green; `pnpm pack` clean (publint).

@@ -81,15 +81,25 @@ Every density-sensitive value is a CSS variable that flips with
 ## Usage
 
 ```ts
-import 'dssoca/theme.css'   // global tokens + base styles
+import 'dssoca/theme.css'   // global tokens, base styles + app-shell layout
 import { Button, Card, applyDesignConfig } from 'dssoca'
 
 applyDesignConfig({ density: 'comfy' }) // optional — comfy is already default
 ```
 
-Components are unstyled wrappers over global `.ss-*` classes defined in
-`theme.css`; they automatically pick up whatever density is active on an
-ancestor.
+Each component styles itself in a **scoped `<style lang="scss">`** block and
+consumes the global `--ss-*` tokens (custom properties cascade through Svelte's
+scoped boundary), so it automatically picks up whatever theme/density is active
+on an ancestor. `theme.css` carries only the tokens, base/element styles, and
+app-shell/layout classes — **not** per-component rules.
+
+The `ss-` prefix is reserved for **component-identity / design-system** classes
+(`.ss-btn`, `.ss-panel`, `.ss-badge`, …); generic internal elements use plain,
+unprefixed scoped names (`.head`, `.title`, `.dot`, …).
+
+> **Breaking in 0.3.0:** the global `.ss-*` *component* rules were removed from
+> `theme.css` (they now live in the components). Use the exported components;
+> hand-rolling raw `<button class="ss-btn">` against `theme.css` no longer works.
 
 ## Preview both modes
 

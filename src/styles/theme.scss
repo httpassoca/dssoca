@@ -10,12 +10,12 @@
 //  any ancestor element (usually <html>).
 //
 //  Authored as @use partials; the Dart Sass CLI in `prepack` emits the
-//  published dist/theme.css. `_components` is staging for DS-0009 (scoped
-//  component styles). Order matters: _fonts first so the CSS @import is a
-//  valid leading rule; _tokens before the rules that consume them.
+//  published dist/theme.css. Component styling now lives in each component's
+//  scoped <style lang="scss"> (DS-0009); theme.css carries only tokens, base
+//  styles, and app-shell/layout. Order matters: _fonts first so the CSS
+//  @import is a valid leading rule; _tokens before the rules that consume them.
 // ============================================================
 @use 'fonts';
 @use 'tokens';
 @use 'base';
 @use 'layout';
-@use 'components';

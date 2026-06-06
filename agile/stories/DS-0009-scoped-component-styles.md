@@ -2,14 +2,14 @@
 id: DS-0009
 type: story
 title: "Scoped component styles"
-status: todo
+status: done
 priority: high
 tags: [styling, refactor, breaking]
 depends_on: [DS-0008]
 parent: null
 epic: null
 created: 2026-06-06
-updated: 2026-06-06
+updated: 2026-06-07
 ---
 
 ## Description
@@ -25,16 +25,16 @@ raw `<button class="ss-btn">` against `theme.css` — instead of using the compo
 affected. Depends on [[DS-0008-sass-styling-pipeline]].
 
 ## Acceptance criteria
-- [ ] Component-owned rules moved from the global `_components` partial into each component's `<style lang="scss">`: Badge, Button, Card, Input, LogStream, MetricTile, ServiceCard, Sparkline, Topbar, Sidebar; EmptyState + Toaster normalized to the same convention. Icon and PassocaMark (SVG utilities) need little/no change
-- [ ] **Naming rule** applied: `ss-` is reserved for component identity / non-generic design-system classes. Component roots keep their `.ss-*` name (`.ss-btn`, `.ss-badge`, `.ss-panel`, `.ss-input`, `.ss-field`, `.ss-metric`, `.ss-svc`, `.ss-spark`, `.ss-logs`, `.ss-topbar`, `.ss-side`, `.ss-toast(er)`, `.ss-empty`); generic internal sub-elements use plain scoped names (`.dot`, `.title`, `.head`, `.body`, `.msg`, `.icon`, `.bar`…)
-- [ ] `.ss-panel-head` / `.ss-panel-body` (the only ss-prefixed *sub-element* classes) renamed to local `.head` / `.body`; Card's ~4 test assertions updated. All other `.ss-*` root selectors unchanged, so the rest of the suite is untouched
-- [ ] `theme.css` retains only: `--ss-*` tokens, base/element resets + `.hs-*` typography, app-shell/layout classes (`.ss-app`, `.ss-main`, `.ss-pageHead`, `.ss-metrics`, `.ss-grid-2`, `.ss-svc-grid`, `.ss-footer`), and generic utilities (`.ss-line`). The migrated component rules are deleted from the global CSS
-- [ ] Components consume `--ss-*` via `var()` inside scoped blocks; all four axis combinations recolor/rescale correctly; zero border-radius preserved
-- [ ] `:global()` used where a component styles projected `{@render children()}` / snippet content (scoped styles don't reach rendered children) — verify Card body and any similar cases
-- [ ] Internal raw `.ss-` usages fixed: Toaster and Input stories use the real components; the bogus `.ss-btn--primary` class (never matched the real `.ss-btn.primary`) removed
-- [ ] `DESIGN.md` + `CLAUDE.md` updated: replace the "components are thin wrappers over global `.ss-*` classes" framing with the scoped model + the `ss-`-for-identity naming rule + what stays global; reconcile `docs/themes.md` / `docs/tokens.md` if they reference the old model
-- [ ] `pnpm test` green (only Card selectors changed); `pnpm pack` clean; showcase + Storybook render identically
-- [ ] `version` bumped to **0.3.0** (breaking) with a short migration note (raw `.ss-*` component classes removed — use the components); agile updated + `node agile/build.mjs`
+- [x] Component-owned rules moved from the global `_components` partial into each component's `<style lang="scss">`: Badge, Button, Card, Input, LogStream, MetricTile, ServiceCard, Sparkline, Topbar, Sidebar; EmptyState + Toaster normalized to the same convention. Icon and PassocaMark (SVG utilities) need little/no change
+- [x] **Naming rule** applied: `ss-` is reserved for component identity / non-generic design-system classes. Component roots keep their `.ss-*` name (`.ss-btn`, `.ss-badge`, `.ss-panel`, `.ss-input`, `.ss-field`, `.ss-metric`, `.ss-svc`, `.ss-spark`, `.ss-logs`, `.ss-topbar`, `.ss-side`, `.ss-toast(er)`, `.ss-empty`); generic internal sub-elements use plain scoped names (`.dot`, `.title`, `.head`, `.body`, `.msg`, `.icon`, `.bar`…)
+- [x] `.ss-panel-head` / `.ss-panel-body` (the only ss-prefixed *sub-element* classes) renamed to local `.head` / `.body`; Card's ~4 test assertions updated. All other `.ss-*` root selectors unchanged, so the rest of the suite is untouched
+- [x] `theme.css` retains only: `--ss-*` tokens, base/element resets + `.hs-*` typography, app-shell/layout classes (`.ss-app`, `.ss-main`, `.ss-pageHead`, `.ss-metrics`, `.ss-grid-2`, `.ss-svc-grid`, `.ss-footer`), and generic utilities (`.ss-line`). The migrated component rules are deleted from the global CSS
+- [x] Components consume `--ss-*` via `var()` inside scoped blocks; all four axis combinations recolor/rescale correctly; zero border-radius preserved
+- [x] `:global()` used where a component styles projected `{@render children()}` / snippet content — **verified none needed**: every component's CSS targets only its own wrapper elements (Card styles `.ss-panel`/`.head`/`.body`, not the projected body content), and the Storybook build reports zero "Unused CSS selector" warnings
+- [x] Internal raw `.ss-` usages fixed: Toaster and Input stories use the real components; the bogus `.ss-btn--primary` class (never matched the real `.ss-btn.primary`) removed
+- [x] `DESIGN.md` + `CLAUDE.md` updated: replace the "components are thin wrappers over global `.ss-*` classes" framing with the scoped model + the `ss-`-for-identity naming rule + what stays global; reconcile `docs/themes.md` / `docs/tokens.md` if they reference the old model
+- [x] `pnpm test` green (only Card selectors changed); `pnpm pack` clean; showcase + Storybook render identically
+- [x] `version` bumped to **0.3.0** (breaking) with a short migration note (raw `.ss-*` component classes removed — use the components); agile updated + `node agile/build.mjs`
 
 ## Notes
 - **Why tests barely move:** Svelte keeps the original class names in the DOM (adding a hash),

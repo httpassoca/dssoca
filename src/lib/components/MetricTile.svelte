@@ -18,3 +18,23 @@
     <div class="delta {dir}">{dir === 'up' ? '↑' : '↓'} {delta}</div>
   {/if}
 </div>
+
+<style lang="scss">
+  .ss-metric {
+    padding: var(--ss-card-py) var(--ss-card-px);
+    border: 1px solid var(--ss-line);
+    background: var(--ss-bg-elev);
+    display: flex; flex-direction: column; gap: 4px;
+
+    .label { font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs); color: var(--ss-fg-faint); text-transform: lowercase; letter-spacing: 0.04em; }
+    .val {
+      font-family: var(--ss-font-display); font-weight: 400; font-size: var(--ss-metric-val); line-height: 1; letter-spacing: -0.015em; font-variant-numeric: tabular-nums;
+      .small { font-size: .5em; opacity: .5; }
+    }
+    .delta {
+      font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs);
+      &.up { color: var(--ss-primary); }
+      &.down { color: var(--ss-red); }
+    }
+  }
+</style>

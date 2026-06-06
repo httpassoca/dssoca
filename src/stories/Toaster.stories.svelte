@@ -1,6 +1,7 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import Toaster from '$lib/components/Toaster.svelte';
+  import Button from '$lib/components/Button.svelte';
   import { toast } from '$lib/toast.svelte.js';
 
   const { Story } = defineMeta({
@@ -29,27 +30,15 @@
 {#snippet template(args: Record<string, unknown>)}
   <Toaster />
   <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-    <button
-      class="ss-btn ss-btn--primary"
-      type="button"
-      onclick={() => toast.success(args.message as string ?? 'Success!')}
-    >
+    <Button variant="primary" onclick={() => toast.success(args.message as string ?? 'Success!')}>
       Fire success
-    </button>
-    <button
-      class="ss-btn ss-btn--secondary"
-      type="button"
-      onclick={() => toast.error(args.message as string ?? 'Error!')}
-    >
+    </Button>
+    <Button variant="secondary" onclick={() => toast.error(args.message as string ?? 'Error!')}>
       Fire error
-    </button>
-    <button
-      class="ss-btn ss-btn--ghost"
-      type="button"
-      onclick={() => toast.info(args.message as string ?? 'Info!')}
-    >
+    </Button>
+    <Button variant="ghost" onclick={() => toast.info(args.message as string ?? 'Info!')}>
       Fire info
-    </button>
+    </Button>
   </div>
 {/snippet}
 
@@ -58,38 +47,26 @@
 <Story name="Success" args={{ kind: 'success', message: 'Operation completed.' }}>
   {#snippet template(args: Record<string, unknown>)}
     <Toaster />
-    <button
-      class="ss-btn ss-btn--primary"
-      type="button"
-      onclick={() => toast.success(args.message as string)}
-    >
+    <Button variant="primary" onclick={() => toast.success(args.message as string)}>
       Fire success toast
-    </button>
+    </Button>
   {/snippet}
 </Story>
 
 <Story name="Error" args={{ kind: 'error', message: 'Something went wrong.' }}>
   {#snippet template(args: Record<string, unknown>)}
     <Toaster />
-    <button
-      class="ss-btn ss-btn--secondary"
-      type="button"
-      onclick={() => toast.error(args.message as string)}
-    >
+    <Button variant="secondary" onclick={() => toast.error(args.message as string)}>
       Fire error toast
-    </button>
+    </Button>
   {/snippet}
 </Story>
 
 <Story name="Info" args={{ kind: 'info', message: 'Here is some information.' }}>
   {#snippet template(args: Record<string, unknown>)}
     <Toaster />
-    <button
-      class="ss-btn ss-btn--ghost"
-      type="button"
-      onclick={() => toast.info(args.message as string)}
-    >
+    <Button variant="ghost" onclick={() => toast.info(args.message as string)}>
       Fire info toast
-    </button>
+    </Button>
   {/snippet}
 </Story>
