@@ -27,7 +27,7 @@ migration note.
 - [x] All global `hub-*` classes renamed to `ss-*` in `theme.css` and component markup (166 refs)
 - [x] Tests updated to the new names; `pnpm test` green (121/121)
 - [x] DESIGN.md / docs / README references updated to `--ss-` / `ss-`
-- [ ] Release notes flag the breaking rename when the next version is published
+- [x] Release notes flag the breaking rename when the next version is published (dssoca@0.2.0)
 
 ## Notes
 - Prefix chosen: `ss-` (soca system), not `ds-` as originally scoped
