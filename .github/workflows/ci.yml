@@ -12,21 +12,25 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      # Node first: pnpm@11 requires Node >=22.13, so it must be on PATH
-      # before pnpm/action-setup runs its self-installer.
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      # Activate pnpm from package.json#packageManager under Node 24.
+      # (pnpm/action-setup self-installs under the Actions runtime Node 20,
+      # which pnpm@11 rejects — corepack runs pnpm under Node 24 instead.)
+      - name: Enable pnpm via corepack
+        run: corepack enable
 
       - name: Resolve pnpm store
         id: pnpm
