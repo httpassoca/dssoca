@@ -40,9 +40,9 @@ fonts, or the squared-corner rule.
 `comfy` is the package default so a fresh project gets the comfortable layout
 with no configuration. The hub explicitly opts into `compact`.
 
-> Content typography (`h1`–`h3`, `--hs-size-*`, the `--hs-s-*` spacing scale) is
+> Content typography (`h1`–`h3`, `--ss-size-*`, the `--ss-s-*` spacing scale) is
 > intentionally **density-independent** — headings keep their rhythm in both
-> modes. Only the dashboard chrome rescales. The one exception is `--hs-leading`
+> modes. Only the dashboard chrome rescales. The one exception is `--ss-leading`
 > (body line-height: `1.5` comfy / `1.3` compact).
 
 ## Config object
@@ -87,7 +87,7 @@ import { Button, Card, applyDesignConfig } from 'dssoca'
 applyDesignConfig({ density: 'comfy' }) // optional — comfy is already default
 ```
 
-Components are unstyled wrappers over global `.hub-*` classes defined in
+Components are unstyled wrappers over global `.ss-*` classes defined in
 `theme.css`; they automatically pick up whatever density is active on an
 ancestor.
 

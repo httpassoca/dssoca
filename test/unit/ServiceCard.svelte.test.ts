@@ -11,14 +11,14 @@ describe('ServiceCard', () => {
 
 	it('renders a status badge (default up)', () => {
 		const { container } = render(ServiceCard, { name: 'x', host: 'x.home' });
-		const badge = container.querySelector('.hub-badge');
+		const badge = container.querySelector('.ss-badge');
 		expect(badge).toHaveClass('up');
 		expect(badge).toHaveTextContent('up');
 	});
 
 	it('reflects a down status into the badge', () => {
 		const { container } = render(ServiceCard, { name: 'x', host: 'x.home', status: 'down' });
-		const badge = container.querySelector('.hub-badge');
+		const badge = container.querySelector('.ss-badge');
 		expect(badge).toHaveClass('down');
 		expect(badge).toHaveTextContent('down');
 	});
@@ -34,13 +34,13 @@ describe('ServiceCard', () => {
 			host: 'x.home',
 			spark: [1, 2, 3]
 		});
-		expect(container.querySelectorAll('.hub-spark i')).toHaveLength(3);
+		expect(container.querySelectorAll('.ss-spark i')).toHaveLength(3);
 	});
 
 	it('exposes the card as a role=button and is keyboard focusable', () => {
 		render(ServiceCard, { name: 'x', host: 'x.home' });
 		const card = screen.getByRole('button');
-		expect(card).toHaveClass('hub-svc');
+		expect(card).toHaveClass('ss-svc');
 		expect(card).toHaveAttribute('tabindex', '0');
 	});
 

@@ -5,18 +5,18 @@ import CardHarness from '../harness/CardHarness.svelte';
 describe('Card', () => {
 	it('renders children inside the panel body', () => {
 		const { container } = render(CardHarness, { body: 'panel content' });
-		expect(container.querySelector('.hub-panel-body')).toHaveTextContent('panel content');
+		expect(container.querySelector('.ss-panel-body')).toHaveTextContent('panel content');
 	});
 
 	it('omits the head when no title is given', () => {
 		const { container } = render(CardHarness, { body: 'x' });
-		expect(container.querySelector('.hub-panel-head')).toBeNull();
+		expect(container.querySelector('.ss-panel-head')).toBeNull();
 	});
 
 	it('renders a head with the title when provided', () => {
 		const { container } = render(CardHarness, { title: 'Stats', body: 'x' });
-		expect(container.querySelector('.hub-panel-head')).not.toBeNull();
-		expect(container.querySelector('.hub-panel-head .title')).toHaveTextContent('Stats');
+		expect(container.querySelector('.ss-panel-head')).not.toBeNull();
+		expect(container.querySelector('.ss-panel-head .title')).toHaveTextContent('Stats');
 	});
 
 	it('renders the meta text when provided alongside a title', () => {

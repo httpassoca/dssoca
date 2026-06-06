@@ -73,7 +73,7 @@ the `ColorTheme` / `Density` / `DesignConfig` types.
 ## House rules
 
 - **Zero border-radius.** Every radius token is `0` — never override.
-- New chrome reads density tokens (`--hs-*`), not hardcoded px, so it rescales with `data-density`.
+- New chrome reads density tokens (`--ss-*`), not hardcoded px, so it rescales with `data-density`.
 
 ## Develop
 

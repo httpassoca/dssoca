@@ -3,7 +3,7 @@
     size?: number
     color?: string
   }
-  let { size = 22, color = 'var(--hs-primary)' }: Props = $props()
+  let { size = 22, color = 'var(--ss-primary)' }: Props = $props()
 </script>
 
 <svg viewBox="0 0 103 89" width={size} height={size} fill={color}>

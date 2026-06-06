@@ -5,9 +5,9 @@
   const glyph: Record<ToastKind, string> = { success: '✓', error: '✕', info: 'i' }
 </script>
 
-<div class="hub-toaster" role="region" aria-live="polite" aria-label="Notifications">
+<div class="ss-toaster" role="region" aria-live="polite" aria-label="Notifications">
   {#each toasts.items as t (t.id)}
-    <output class="hub-toast {t.kind}" transition:fly={{ x: 16, duration: 180 }}>
+    <output class="ss-toast {t.kind}" transition:fly={{ x: 16, duration: 180 }}>
       <span class="ic">{glyph[t.kind]}</span>
       <span class="msg">{t.message}</span>
       <button class="x" type="button" aria-label="Dismiss" onclick={() => toasts.dismiss(t.id)}>×</button>
@@ -16,57 +16,57 @@
 </div>
 
 <style>
-  .hub-toaster {
+  .ss-toaster {
     position: fixed;
-    top: var(--hs-s-4);
-    right: var(--hs-s-4);
+    top: var(--ss-s-4);
+    right: var(--ss-s-4);
     z-index: 1000;
     display: flex;
     flex-direction: column;
-    gap: var(--hs-s-2);
-    max-width: min(360px, calc(100vw - var(--hs-s-8)));
+    gap: var(--ss-s-2);
+    max-width: min(360px, calc(100vw - var(--ss-s-8)));
     pointer-events: none;
   }
-  .hub-toast {
+  .ss-toast {
     pointer-events: auto;
     display: flex;
     align-items: center;
-    gap: var(--hs-s-3);
-    padding: var(--hs-s-3) var(--hs-s-4);
-    background: var(--hs-bg-elev);
-    border: 1px solid var(--hs-line);
-    border-left: 3px solid var(--hs-fg-faint);
-    box-shadow: var(--hs-shadow-pop);
-    font-family: var(--hs-font-mono);
-    font-size: var(--hs-ui-md);
-    color: var(--hs-fg);
+    gap: var(--ss-s-3);
+    padding: var(--ss-s-3) var(--ss-s-4);
+    background: var(--ss-bg-elev);
+    border: 1px solid var(--ss-line);
+    border-left: 3px solid var(--ss-fg-faint);
+    box-shadow: var(--ss-shadow-pop);
+    font-family: var(--ss-font-mono);
+    font-size: var(--ss-ui-md);
+    color: var(--ss-fg);
   }
-  .hub-toast.success { border-left-color: var(--hs-primary); }
-  .hub-toast.error   { border-left-color: var(--hs-red); }
-  .hub-toast.info    { border-left-color: var(--hs-cyan); }
+  .ss-toast.success { border-left-color: var(--ss-primary); }
+  .ss-toast.error   { border-left-color: var(--ss-red); }
+  .ss-toast.info    { border-left-color: var(--ss-cyan); }
   .ic {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 18px;
     height: 18px;
-    font-size: var(--hs-ui-sm);
-    color: var(--hs-fg-on-primary);
+    font-size: var(--ss-ui-sm);
+    color: var(--ss-fg-on-primary);
     flex: none;
   }
-  .success .ic { background: var(--hs-primary); }
-  .error .ic   { background: var(--hs-red); }
-  .info .ic    { background: var(--hs-cyan); }
+  .success .ic { background: var(--ss-primary); }
+  .error .ic   { background: var(--ss-red); }
+  .info .ic    { background: var(--ss-cyan); }
   .msg { flex: 1; line-height: 1.3; }
   .x {
     flex: none;
     background: none;
     border: none;
-    color: var(--hs-fg-faint);
+    color: var(--ss-fg-faint);
     cursor: pointer;
-    font-size: var(--hs-size-h3);
+    font-size: var(--ss-size-h3);
     line-height: 1;
     padding: 0;
   }
-  .x:hover { color: var(--hs-fg); }
+  .x:hover { color: var(--ss-fg); }
 </style>

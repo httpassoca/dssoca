@@ -23,12 +23,12 @@
   <title>@homelab/ui — design system preview</title>
 </svelte:head>
 
-<div class="hub-app" data-theme={theme} data-density={density}>
+<div class="ss-app" data-theme={theme} data-density={density}>
   <Topbar active={activeTab} onTab={(t) => (activeTab = t)} />
   <Sidebar active={activeSide} onSelect={(id) => (activeSide = id)} />
 
-  <main class="hub-main">
-    <div class="hub-pageHead">
+  <main class="ss-main">
+    <div class="ss-pageHead">
       <div>
         <h1>Good morning, <span class="accent">Rafael.</span></h1>
         <div class="sub">hub.home · bun · hono · drizzle · sqlite</div>
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <div class="hub-metrics">
+    <div class="ss-metrics">
       <MetricTile
         label="services"
         value="6"
@@ -72,9 +72,9 @@
       <MetricTile label="uptime" value="14" suffix="d" />
     </div>
 
-    <div class="hub-grid-2">
+    <div class="ss-grid-2">
       <Card title="Services" meta="6 of 7 healthy">
-        <div class="hub-svc-grid">
+        <div class="ss-svc-grid">
           <ServiceCard
             name="movies-api"
             host="movies.home"
@@ -109,7 +109,7 @@
           <div style="display:flex;flex-direction:column;gap:4px">
             {#each ["Dune: Part Two", "Oppenheimer", "Past Lives", "Poor Things"] as film}
               <div
-                style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--hs-line);font-size:12px"
+                style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--ss-line);font-size:12px"
               >
                 <span>{film}</span>
                 <Badge tone="info">to_watch</Badge>
@@ -145,7 +145,7 @@
       <LogStream live={true} />
     </Card>
 
-    <div class="hub-footer">
+    <div class="ss-footer">
       <span>hub.home · v0.4.1</span>
       <span>bun · hono · drizzle · sqlite</span>
     </div>

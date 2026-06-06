@@ -11,7 +11,7 @@ describe('Button', () => {
 	it('defaults to the secondary variant and type=button', () => {
 		const { container } = render(ButtonHarness, { text: 'x' });
 		const btn = container.querySelector('button')!;
-		expect(btn).toHaveClass('hub-btn', 'secondary');
+		expect(btn).toHaveClass('ss-btn', 'secondary');
 		expect(btn).toHaveAttribute('type', 'button');
 	});
 

@@ -24,10 +24,10 @@
 </script>
 
 {#if label}
-  <label class="hub-field" for={id}>
+  <label class="ss-field" for={id}>
     <span class="lbl">{label}</span>
     <input
-      class="hub-input"
+      class="ss-input"
       {id}
       {name}
       {type}
@@ -40,7 +40,7 @@
   </label>
 {:else}
   <input
-    class="hub-input"
+    class="ss-input"
     {id}
     {name}
     {type}

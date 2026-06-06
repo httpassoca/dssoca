@@ -10,7 +10,7 @@
   const hasDot = $derived(['up', 'deg', 'down', 'info'].includes(tone))
 </script>
 
-<span class="hub-badge {tone}">
+<span class="ss-badge {tone}">
   {#if hasDot}<span class="dot"></span>{/if}
   {@render children()}
 </span>

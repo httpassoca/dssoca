@@ -51,40 +51,40 @@ describe('MetricTile', () => {
 describe('Sparkline', () => {
 	it('renders one bar per data point', () => {
 		const { container } = render(Sparkline, { data: [1, 2, 3, 4] });
-		expect(container.querySelectorAll('.hub-spark i')).toHaveLength(4);
+		expect(container.querySelectorAll('.ss-spark i')).toHaveLength(4);
 	});
 
 	// jsdom normalises inline style ("height: 100%; background: ...;"), so read
 	// the resolved style properties rather than matching the raw attribute.
 	it('scales the tallest bar to 100% height', () => {
 		const { container } = render(Sparkline, { data: [5, 10] });
-		const bars = container.querySelectorAll<HTMLElement>('.hub-spark i');
+		const bars = container.querySelectorAll<HTMLElement>('.ss-spark i');
 		expect(bars[1].style.height).toBe('100%');
 	});
 
 	it('floors bar height at 8% for tiny values', () => {
 		const { container } = render(Sparkline, { data: [0, 100] });
-		const bars = container.querySelectorAll<HTMLElement>('.hub-spark i');
+		const bars = container.querySelectorAll<HTMLElement>('.ss-spark i');
 		// 0/100*100 = 0 -> max(8, 0) = 8
 		expect(bars[0].style.height).toBe('8%');
 	});
 
 	it('uses the default primary color var', () => {
 		const { container } = render(Sparkline, { data: [1, 2] });
-		const bar = container.querySelector<HTMLElement>('.hub-spark i')!;
-		expect(bar.style.background).toBe('var(--hs-primary)');
+		const bar = container.querySelector<HTMLElement>('.ss-spark i')!;
+		expect(bar.style.background).toBe('var(--ss-primary)');
 	});
 
 	it('applies a custom color', () => {
 		const { container } = render(Sparkline, { data: [1, 2], color: 'red' });
-		const bar = container.querySelector<HTMLElement>('.hub-spark i')!;
+		const bar = container.querySelector<HTMLElement>('.ss-spark i')!;
 		expect(bar.style.background).toBe('red');
 	});
 
 	it('renders an empty spark container for empty data', () => {
 		const { container } = render(Sparkline, { data: [] });
-		expect(container.querySelector('.hub-spark')).not.toBeNull();
-		expect(container.querySelectorAll('.hub-spark i')).toHaveLength(0);
+		expect(container.querySelector('.ss-spark')).not.toBeNull();
+		expect(container.querySelectorAll('.ss-spark i')).toHaveLength(0);
 	});
 });
 

@@ -10,9 +10,9 @@
   let { title, meta, action, children }: Props = $props()
 </script>
 
-<div class="hub-panel">
+<div class="ss-panel">
   {#if title}
-    <div class="hub-panel-head">
+    <div class="ss-panel-head">
       <div class="title">{title}</div>
       <div style="display:flex;gap:12px;align-items:center">
         {#if meta}<div class="meta">{meta}</div>{/if}
@@ -20,7 +20,7 @@
       </div>
     </div>
   {/if}
-  <div class="hub-panel-body">
+  <div class="ss-panel-body">
     {@render children()}
   </div>
 </div>

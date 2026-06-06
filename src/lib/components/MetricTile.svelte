@@ -9,7 +9,7 @@
   let { label, value, suffix, delta, dir = 'up' }: Props = $props()
 </script>
 
-<div class="hub-metric">
+<div class="ss-metric">
   <div class="label">{label}</div>
   <div class="val">
     {value}{#if suffix}<span class="small">{suffix}</span>{/if}

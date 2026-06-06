@@ -29,7 +29,7 @@
   const [h, m, s] = $derived(clock.split(':'))
 </script>
 
-<div class="hub-topbar">
+<div class="ss-topbar">
   <div class="seg logo">
     <PassocaMark size={14} />
     <span class="nm">hubssoca</span>

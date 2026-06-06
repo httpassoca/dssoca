@@ -11,6 +11,6 @@
   let { variant = 'secondary', type = 'button', disabled = false, onclick, children }: Props = $props()
 </script>
 
-<button class="hub-btn {variant}" {type} {disabled} {onclick}>
+<button class="ss-btn {variant}" {type} {disabled} {onclick}>
   {@render children()}
 </button>

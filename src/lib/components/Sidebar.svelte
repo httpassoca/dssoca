@@ -27,7 +27,7 @@
   let { active = 'hub', onSelect, groups = DEFAULT_GROUPS }: Props = $props()
 </script>
 
-<aside class="hub-side">
+<aside class="ss-side">
   {#each groups as g}
     <div class="section">{g.section}</div>
     {#each g.items as item}

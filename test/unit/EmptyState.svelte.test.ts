@@ -10,14 +10,14 @@ describe('EmptyState', () => {
 
 	it('defaults to the empty variant', () => {
 		const { container } = render(EmptyStateHarness, { title: 'x' });
-		const root = container.querySelector('.hub-empty');
+		const root = container.querySelector('.ss-empty');
 		expect(root).toHaveClass('empty');
 		expect(root).not.toHaveClass('error');
 	});
 
 	it('applies the error variant class', () => {
 		const { container } = render(EmptyStateHarness, { variant: 'error', title: 'Failed' });
-		expect(container.querySelector('.hub-empty')).toHaveClass('error');
+		expect(container.querySelector('.ss-empty')).toHaveClass('error');
 	});
 
 	it('renders the message when provided', () => {

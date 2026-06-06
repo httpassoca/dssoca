@@ -5,13 +5,13 @@ import InputHarness from '../harness/InputHarness.svelte';
 describe('Input', () => {
 	it('renders a bare input (no label wrapper) when no label given', () => {
 		const { container } = render(InputHarness, {});
-		expect(container.querySelector('label.hub-field')).toBeNull();
-		expect(container.querySelector('input.hub-input')).not.toBeNull();
+		expect(container.querySelector('label.ss-field')).toBeNull();
+		expect(container.querySelector('input.ss-input')).not.toBeNull();
 	});
 
 	it('renders a labelled field wrapper when a label is given', () => {
 		const { container } = render(InputHarness, { label: 'Email', id: 'email' });
-		const field = container.querySelector('label.hub-field');
+		const field = container.querySelector('label.ss-field');
 		expect(field).not.toBeNull();
 		expect(field).toHaveAttribute('for', 'email');
 		expect(container.querySelector('.lbl')).toHaveTextContent('Email');

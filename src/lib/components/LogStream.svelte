@@ -49,7 +49,7 @@
   })
 </script>
 
-<div class="hub-logs" bind:this={el}>
+<div class="ss-logs" bind:this={el}>
   {#each lines as line (line.id)}
     <div class="ln">
       <span class="t">{line.t}</span>

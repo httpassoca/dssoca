@@ -20,13 +20,13 @@
   }: Props = $props()
 
   const sparkColor = $derived(
-    status === 'deg' ? 'var(--hs-yellow)'
-    : status === 'down' ? 'var(--hs-red)'
-    : 'var(--hs-primary)'
+    status === 'deg' ? 'var(--ss-yellow)'
+    : status === 'down' ? 'var(--ss-red)'
+    : 'var(--ss-primary)'
   )
 </script>
 
-<div class="hub-svc" role="button" tabindex="0" {onclick} onkeydown={(e) => e.key === 'Enter' && onclick?.()}>
+<div class="ss-svc" role="button" tabindex="0" {onclick} onkeydown={(e) => e.key === 'Enter' && onclick?.()}>
   <div class="head">
     <div>
       <div class="name">{name}</div>
