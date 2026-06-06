@@ -15,7 +15,7 @@
   {/each}
 </div>
 
-<style>
+<style lang="scss">
   .ss-toaster {
     position: fixed;
     top: var(--ss-s-4);
@@ -40,33 +40,36 @@
     font-family: var(--ss-font-mono);
     font-size: var(--ss-ui-md);
     color: var(--ss-fg);
+
+    &.success { border-left-color: var(--ss-primary); }
+    &.error   { border-left-color: var(--ss-red); }
+    &.info    { border-left-color: var(--ss-cyan); }
+
+    .ic {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      font-size: var(--ss-ui-sm);
+      color: var(--ss-fg-on-primary);
+      flex: none;
+    }
+    &.success .ic { background: var(--ss-primary); }
+    &.error .ic   { background: var(--ss-red); }
+    &.info .ic    { background: var(--ss-cyan); }
+    .msg { flex: 1; line-height: 1.3; }
+    .x {
+      flex: none;
+      background: none;
+      border: none;
+      color: var(--ss-fg-faint);
+      cursor: pointer;
+      font-size: var(--ss-size-h3);
+      line-height: 1;
+      padding: 0;
+
+      &:hover { color: var(--ss-fg); }
+    }
   }
-  .ss-toast.success { border-left-color: var(--ss-primary); }
-  .ss-toast.error   { border-left-color: var(--ss-red); }
-  .ss-toast.info    { border-left-color: var(--ss-cyan); }
-  .ic {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    font-size: var(--ss-ui-sm);
-    color: var(--ss-fg-on-primary);
-    flex: none;
-  }
-  .success .ic { background: var(--ss-primary); }
-  .error .ic   { background: var(--ss-red); }
-  .info .ic    { background: var(--ss-cyan); }
-  .msg { flex: 1; line-height: 1.3; }
-  .x {
-    flex: none;
-    background: none;
-    border: none;
-    color: var(--ss-fg-faint);
-    cursor: pointer;
-    font-size: var(--ss-size-h3);
-    line-height: 1;
-    padding: 0;
-  }
-  .x:hover { color: var(--ss-fg); }
 </style>

@@ -13,3 +13,10 @@
     <i style="height:{Math.max(8, (v / max) * 100)}%;background:{color}"></i>
   {/each}
 </div>
+
+<style lang="scss">
+  .ss-spark {
+    display: flex; align-items: flex-end; gap: 1px; height: 18px;
+    i { width: 3px; background: var(--ss-primary); opacity: .85; }
+  }
+</style>

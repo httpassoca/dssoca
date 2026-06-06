@@ -59,3 +59,23 @@
     </div>
   {/each}
 </div>
+
+<style lang="scss">
+  .ss-logs {
+    font-family: var(--ss-font-mono); font-size: var(--ss-ui-md);
+    background: #0a0a0a; color: var(--ss-code-fg);
+    padding: var(--ss-gap) var(--ss-panel-body-px);
+    min-height: 160px; max-height: 240px; overflow: auto;
+
+    .ln { display: flex; gap: 10px; line-height: 1.45; }
+    .t  { color: var(--ss-fg-faint); min-width: 58px; }
+    .lvl {
+      min-width: 38px;
+      &.info { color: var(--ss-cyan); }
+      &.warn { color: var(--ss-yellow); }
+      &.err  { color: var(--ss-red); }
+      &.ok   { color: var(--ss-primary); }
+    }
+    .svc { color: var(--ss-purple); }
+  }
+</style>
