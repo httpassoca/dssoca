@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>agile · local</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Electrolize&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#100f10; --elev:#1e1e1e; --line:rgba(255,255,255,.12); --line2:rgba(255,255,255,.22);
+  --fg:#e0e0e0; --shine:#fff; --muted:#aaa; --faint:#6f6f6f; --on:#100f10;
+  --primary:#66ef73; --red:#ff5c5c; --yellow:#e0c36a; --cyan:#66d9ef; --blue:#9aa4ff; --purple:#b98cff;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --disp:"Electrolize","Space Grotesk",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+::selection{background:var(--primary);color:var(--on)}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line2)}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 28px 80px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:18px;flex-wrap:wrap}
+.head h1{font-family:var(--disp);font-weight:400;font-size:30px;letter-spacing:-.01em;margin:0;line-height:1}
+.head h1 .accent{position:relative}
+.head h1 .accent::before{content:"";position:absolute;left:-2%;right:-6%;top:68%;height:22%;background:var(--primary);opacity:.9;z-index:-1}
+.head .meta{font-size:11px;color:var(--faint);text-align:right;text-transform:lowercase;letter-spacing:.04em}
+.metrics{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.metric{border:1px solid var(--line);background:var(--elev);padding:10px 14px;min-width:96px;cursor:pointer;transition:border-color .15s}
+.metric:hover{border-color:var(--line2)}
+.metric.on{border-color:var(--primary);box-shadow:inset 0 -2px 0 var(--primary)}
+.metric .v{font-family:var(--disp);font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+.metric .l{font-size:10px;color:var(--faint);text-transform:lowercase;letter-spacing:.05em;margin-top:4px}
+.metric[data-s="done"] .v{color:var(--primary)} .metric[data-s="in-progress"] .v{color:var(--cyan)}
+.metric[data-s="blocked"] .v{color:var(--red)} .metric[data-s="todo"] .v{color:var(--yellow)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.bar input,.bar select{font-family:var(--mono);font-size:12px;background:transparent;color:var(--fg);border:1px solid var(--line);padding:7px 10px}
+.bar input{min-width:200px;flex:1}
+.bar input:focus,.bar select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(102,239,115,.18)}
+.bar input::placeholder{font-style:italic;color:var(--faint)}
+.toggle{display:flex;border:1px solid var(--line)}
+.toggle button{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:transparent;color:var(--muted);border:0;padding:7px 12px;cursor:pointer}
+.toggle button.on{background:rgba(102,239,115,.1);color:var(--primary);box-shadow:inset 0 -2px 0 var(--primary)}
+.count{font-size:11px;color:var(--faint);margin-left:auto}
+.group{margin-top:18px}
+.group .gh{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:2px}
+.group .gh .n{color:var(--shine)} .group .gh .c{margin-left:auto}
+.row{display:grid;grid-template-columns:130px 1fr auto auto;gap:12px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line);cursor:pointer}
+.row:hover{background:rgba(255,255,255,.03)}
+.row .id{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.row .ti{color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .ti .typ{color:var(--faint);font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-right:8px}
+.row .ac{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+.badge{font-size:10px;letter-spacing:.05em;text-transform:lowercase;padding:3px 8px;border:1px solid var(--line);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.badge .dot{width:5px;height:5px;background:currentColor;display:inline-block}
+.badge.done{color:var(--primary);border-color:rgba(102,239,115,.4);background:rgba(102,239,115,.1)}
+.badge.in-progress{color:var(--cyan);border-color:rgba(102,217,239,.4);background:rgba(102,217,239,.1)}
+.badge.blocked{color:var(--red);border-color:rgba(255,92,92,.4);background:rgba(255,92,92,.1)}
+.badge.todo{color:var(--yellow);border-color:rgba(224,195,106,.4);background:rgba(224,195,106,.1)}
+.badge.backlog{color:var(--muted);border-color:var(--line)}
+.pri{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+.pri.high{color:var(--shine)}
+.detail{grid-column:1/-1;padding:6px 10px 14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.015)}
+.detail .md-h{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin:12px 0 4px}
+.detail p{margin:4px 0;color:var(--muted)}
+.detail ul{margin:4px 0;padding-left:18px} .detail li{color:var(--muted)}
+.detail .md-checks{list-style:none;padding-left:0}
+.detail .md-checks li{display:flex;gap:8px;align-items:baseline}
+.detail .md-checks li .box{width:14px;height:14px;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:var(--primary);flex:none}
+.detail .md-checks li.done{color:var(--fg)} .detail .md-checks li.done .box{border-color:var(--primary)}
+.detail code{font-family:var(--mono);background:rgba(255,255,255,.06);padding:.1em .35em;font-size:.92em;color:#d6deeb}
+.detail .kv{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11px;color:var(--faint);margin-top:10px}
+.detail .kv b{color:var(--muted);font-weight:400}
+.tableview{width:100%;border-collapse:collapse;margin-top:8px}
+.tableview th,.tableview td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);font-size:12px}
+.tableview th{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);font-weight:400;cursor:pointer;user-select:none}
+.tableview tbody tr{cursor:pointer} .tableview tbody tr:hover td{background:rgba(255,255,255,.03)}
+.empty{padding:40px;text-align:center;color:var(--faint);border:1px solid var(--line);margin-top:16px}
+.tagchip{font-size:10px;color:var(--blue);margin-right:6px}
+.foot{margin-top:28px;border-top:1px solid var(--line);padding-top:10px;font-size:10px;color:var(--faint);text-transform:lowercase;letter-spacing:.04em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <h1>agile <span class="accent">board</span></h1>
+    <div class="meta">scope: local<br/>generated 2026-06-06 18:16</div>
+  </div>
+  <div class="metrics" id="metrics"></div>
+  <div class="bar">
+    <input id="q" placeholder="search id, title, tag…" />
+    <select id="f-project" hidden></select>
+    <select id="f-type"></select>
+    <select id="f-status"></select>
+    <select id="f-priority"></select>
+    <select id="f-tag"></select>
+    <div class="toggle"><button data-view="grouped" class="on">grouped</button><button data-view="table">table</button></div>
+    <span class="count" id="count"></span>
+  </div>
+  <div id="board"></div>
+  <div class="foot">agile board · local · see /AGILE.md for the method · zero deps, open from file://</div>
+</div>
+<script type="application/json" id="agile-data">{"scope":"local","generatedAt":"2026-06-06 18:16","items":[{"id":"DS-0005","type":"task","title":"Rename --hs- tokens + hub-* classes to ds-","status":"backlog","priority":"low","tags":["ui","theme","breaking"],"depends_on":[],"parent":"DS-0001","epic":null,"created":"2026-06-06","updated":"2026-06-06","project":"DS","bodyHtml":"\u003ch4 class=\"md-h\">Description\u003c/h4>\n\u003cp>The design system was extracted from the \u003ccode>hubssoca\u003c/code> monorepo as a lift-and-shift, keeping the\u003c/p>\n\u003cp>original \u003ccode>--hs-\u003c/code> CSS custom-property prefix and the global \u003ccode>hub-*\u003c/code> shell classes (e.g. \u003ccode>.hub-topbar\u003c/code>,\u003c/p>\n\u003cp>\u003ccode>.hub-panel\u003c/code>). For the standalone \u003ccode>dssoca\u003c/code> identity these should be renamed to a neutral \u003ccode>ds-\u003c/code>\u003c/p>\n\u003cp>prefix. Deferred deliberately so the first extraction stayed zero-risk and the hub kept working.\u003c/p>\n\u003cp>This is a \u003cstrong>breaking change\u003c/strong> for any consumer that references the tokens/classes directly — ship it\u003c/p>\n\u003cp>as its own minor/major release with a migration note, not folded into an unrelated change.\u003c/p>\n\u003ch4 class=\"md-h\">Acceptance criteria\u003c/h4>\n\u003cul class=\"md-checks\">\n\u003cli class=\"\">\u003cspan class=\"box\">\u003c/span>All \u003ccode>--hs-*\u003c/code> custom properties renamed to \u003ccode>--ds-*\u003c/code> in \u003ccode>src/lib/theme.css\u003c/code> and every component\u003c/li>\n\u003cli class=\"\">\u003cspan class=\"box\">\u003c/span>All global \u003ccode>hub-*\u003c/code> classes renamed to \u003ccode>ds-*\u003c/code> in \u003ccode>theme.css\u003c/code> and component markup\u003c/li>\n\u003cli class=\"\">\u003cspan class=\"box\">\u003c/span>Tests updated to the new names; \u003ccode>pnpm test\u003c/code> green\u003c/li>\n\u003cli class=\"\">\u003cspan class=\"box\">\u003c/span>DESIGN.md / docs / README references updated to \u003ccode>--ds-\u003c/code> / \u003ccode>ds-\u003c/code>\u003c/li>\n\u003cli class=\"\">\u003cspan class=\"box\">\u003c/span>CHANGELOG / release notes flag the breaking rename + migration mapping\u003c/li>\n\u003c/ul>\n\u003ch4 class=\"md-h\">Notes\u003c/h4>\n\u003cul>\n\u003cli>Touches \u003ccode>src/lib/theme.css\u003c/code> (token + class source of truth) + all 14 components + the Vitest suite\u003c/li>\n\u003cli>Mechanical rename — a scripted \u003ccode>--hs-\u003c/code> → \u003ccode>--ds-\u003c/code> / \u003ccode>hub-\u003c/code> → \u003ccode>ds-\u003c/code> sweep, then verify tests\u003c/li>\n\u003cli>Do AFTER the design system is set up/published (it is, as \u003ccode>dssoca\u003c/code> v0.1.0)\u003c/li>\n\u003c/ul>","acTotal":5,"acDone":0},{"id":"DS-0001","type":"story","title":"Themeable design system: color + density axes","status":"done","priority":"high","tags":["ui","theme"],"depends_on":[],"parent":null,"epic":null,"created":"2026-06-05","updated":"2026-06-06","project":"DS","bodyHtml":"\u003ch4 class=\"md-h\">Description\u003c/h4>\n\u003cp>As an app author, I import one \u003ccode>theme.css\u003c/code> and get a coherent look (signal green on\u003c/p>\n\u003cp>near-black, monospace-forward) configured along two orthogonal axes — color\u003c/p>\n\u003cp>(\u003ccode>dark\u003c/code>/\u003ccode>light\u003c/code>) and density (\u003ccode>comfy\u003c/code>/\u003ccode>compact\u003c/code>) — so a content app and the dense\u003c/p>\n\u003cp>hub dashboard share tokens without forking styles.\u003c/p>\n\u003ch4 class=\"md-h\">Acceptance criteria\u003c/h4>\n\u003cul class=\"md-checks\">\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Color axis via \u003ccode>data-theme\u003c/code> (\u003ccode>dark\u003c/code> default · \u003ccode>light\u003c/code>) swaps surface/foreground tokens only\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Density axis via \u003ccode>data-density\u003c/code> (\u003ccode>comfy\u003c/code> default · \u003ccode>compact\u003c/code>) rescales chrome paddings/gaps/heights, not colors or content typography\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>All four combinations (dark/comfy, dark/compact, light/comfy, light/compact) are valid and cascade from any ancestor (usually \u003ccode>&lt;html&gt;\u003c/code>)\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>\u003ccode>applyDesignConfig({ theme, density })\u003c/code> merges over current config and writes to \u003ccode>&lt;html&gt;\u003c/code> at runtime\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>\u003ccode>designAttributes({ ... })\u003c/code> returns SSR-safe attributes to spread in markup (no hydration flash)\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Zero border-radius on every token (house rule, never overridden)\u003c/li>\n\u003c/ul>\n\u003ch4 class=\"md-h\">Notes\u003c/h4>\n\u003cul>\n\u003cli>\u003ccode>src/lib/theme.css\u003c/code> (exported as \u003ccode>dssoca/theme.css\u003c/code>) — token source of truth\u003c/li>\n\u003cli>\u003ccode>src/lib/config.ts\u003c/code> — \u003ccode>applyDesignConfig\u003c/code> / \u003ccode>designAttributes\u003c/code>, re-exported from package root\u003c/li>\n\u003cli>Content typography (\u003ccode>h1\u003c/code>–\u003ccode>h3\u003c/code>, \u003ccode>--hs-size-*\u003c/code>, \u003ccode>--hs-s-*\u003c/code>) is density-independent; only \u003ccode>--hs-leading\u003c/code> differs (1.5 comfy / 1.3 compact)\u003c/li>\n\u003cli>See \u003ccode>DESIGN.md\u003c/code> + \u003ccode>docs/themes.md\u003c/code> / \u003ccode>docs/tokens.md\u003c/code>\u003c/li>\n\u003c/ul>","acTotal":6,"acDone":6},{"id":"DS-0002","type":"story","title":"Reusable Svelte 5 component set (~14 components)","status":"done","priority":"high","tags":["ui"],"depends_on":["DS-0001"],"parent":null,"epic":null,"created":"2026-06-05","updated":"2026-06-06","project":"DS","bodyHtml":"\u003ch4 class=\"md-h\">Description\u003c/h4>\n\u003cp>As an app author, I import ready-made Svelte 5 components from \u003ccode>dssoca\u003c/code> instead\u003c/p>\n\u003cp>of rebuilding primitives per project, so every app looks consistent and picks\u003c/p>\n\u003cp>up the active theme/density automatically.\u003c/p>\n\u003ch4 class=\"md-h\">Acceptance criteria\u003c/h4>\n\u003cul class=\"md-checks\">\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>~14 components shipped: Badge, Button, Card, EmptyState, Icon, Input, LogStream, MetricTile, PassocaMark, ServiceCard, Sidebar, Sparkline, Toaster, Topbar\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>All exported from the package root (\u003ccode>import { Button, Card } from 'dssoca'\u003c/code>)\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Components are unstyled wrappers over global \u003ccode>.hub-*\u003c/code> classes in \u003ccode>theme.css\u003c/code> — they inherit whatever theme/density is active on an ancestor\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Icon set includes a \u003ccode>book\u003c/code> glyph\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Built to \u003ccode>dist\u003c/code> via \u003ccode>svelte-package\u003c/code> for consumers\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Vitest + @testing-library/svelte suite covers the components\u003c/li>\n\u003c/ul>\n\u003ch4 class=\"md-h\">Notes\u003c/h4>\n\u003cul>\n\u003cli>\u003ccode>src/lib/components/\u003c/code> — one \u003ccode>.svelte\u003c/code> file per component\u003c/li>\n\u003cli>\u003ccode>src/lib/index.ts\u003c/code> — package barrel export\u003c/li>\n\u003cli>Runner: \u003ccode>pnpm test\u003c/code> (Vitest, jsdom) — per the testing rule, extend on any change\u003c/li>\n\u003c/ul>","acTotal":6,"acDone":6},{"id":"DS-0003","type":"story","title":"Toast notifications (Toaster + toast API)","status":"done","priority":"low","tags":["ui"],"depends_on":["DS-0002"],"parent":null,"epic":null,"created":"2026-06-05","updated":"2026-06-06","project":"DS","bodyHtml":"\u003ch4 class=\"md-h\">Description\u003c/h4>\n\u003cp>As an app author, I mount a single \u003ccode>&lt;Toaster /&gt;\u003c/code> and call an imperative \u003ccode>toast(...)\u003c/code>\u003c/p>\n\u003cp>from anywhere to surface transient feedback (success/error), so apps get consistent\u003c/p>\n\u003cp>notifications without wiring their own state.\u003c/p>\n\u003ch4 class=\"md-h\">Acceptance criteria\u003c/h4>\n\u003cul class=\"md-checks\">\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>\u003ccode>&lt;Toaster /&gt;\u003c/code> component renders the stack and is exported from the package root\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Imperative \u003ccode>toast\u003c/code> API enqueues notifications from any module (no prop drilling)\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Toasts honor the active theme/density and the zero border-radius rule\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Used by apps as the standard channel for error/success feedback\u003c/li>\n\u003c/ul>\n\u003ch4 class=\"md-h\">Notes\u003c/h4>\n\u003cul>\n\u003cli>\u003ccode>src/lib/components/Toaster.svelte\u003c/code> (component) + \u003ccode>src/lib/toast.svelte.ts\u003c/code> (reactive store + \u003ccode>toast\u003c/code> API)\u003c/li>\n\u003cli>Backs the project-wide error-handling rule (uniform toast feedback across apps)\u003c/li>\n\u003c/ul>","acTotal":4,"acDone":4},{"id":"DS-0004","type":"story","title":"EmptyState + consistent error/empty affordances","status":"done","priority":"low","tags":["ui"],"depends_on":["DS-0002"],"parent":null,"epic":null,"created":"2026-06-05","updated":"2026-06-06","project":"DS","bodyHtml":"\u003ch4 class=\"md-h\">Description\u003c/h4>\n\u003cp>As an app author, I drop in an \u003ccode>EmptyState\u003c/code> for \"no data\" and \"something went wrong\"\u003c/p>\n\u003cp>cases, so empty lists and failed fetches render a consistent, on-theme affordance\u003c/p>\n\u003cp>instead of a blank screen in every app.\u003c/p>\n\u003ch4 class=\"md-h\">Acceptance criteria\u003c/h4>\n\u003cul class=\"md-checks\">\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>\u003ccode>EmptyState\u003c/code> component exported from the package root with title/message slots\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Renders on-theme (signal-green/near-black) and follows the zero border-radius rule\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Picks up active density (comfy/compact) like the rest of the set\u003c/li>\n\u003cli class=\"done\">\u003cspan class=\"box\">✓\u003c/span>Used by apps for empty lists and degraded/error states (e.g. when a service is down)\u003c/li>\n\u003c/ul>\n\u003ch4 class=\"md-h\">Notes\u003c/h4>\n\u003cul>\n\u003cli>\u003ccode>src/lib/components/EmptyState.svelte\u003c/code>\u003c/li>\n\u003cli>Pairs with the Toaster (DS-0003) to satisfy the repo-wide error-handling rule\u003c/li>\n\u003c/ul>","acTotal":4,"acDone":4}]}</script>
+<script>
+const RAW = JSON.parse(document.getElementById('agile-data').textContent);
+const ITEMS = RAW.items, SCOPE = RAW.scope;
+const STATUSES = ["backlog","todo","in-progress","blocked","done"];
+const state = { view: 'grouped', status: '', sortKey: 'id', sortDir: 1 };
+
+function uniq(arr){ return [...new Set(arr)].sort(); }
+function opt(sel, vals, label){ const e=document.getElementById(sel); e.innerHTML='<option value="">'+label+'</option>'+vals.map(v=>'<option>'+v+'</option>').join(''); }
+opt('f-type', uniq(ITEMS.map(i=>i.type)), 'type: all');
+opt('f-status', STATUSES.filter(s=>ITEMS.some(i=>i.status===s)), 'status: all');
+opt('f-priority', uniq(ITEMS.map(i=>i.priority)), 'priority: all');
+opt('f-tag', uniq(ITEMS.flatMap(i=>i.tags)), 'tag: all');
+if (SCOPE === 'global'){ const e=document.getElementById('f-project'); e.hidden=false; opt('f-project', uniq(ITEMS.map(i=>i.project)), 'project: all'); }
+
+function filtered(){
+  const q = document.getElementById('q').value.toLowerCase().trim();
+  const fp = document.getElementById('f-project').value;
+  const ft = document.getElementById('f-type').value;
+  const fs = state.status || document.getElementById('f-status').value;
+  const fpr = document.getElementById('f-priority').value;
+  const ftag = document.getElementById('f-tag').value;
+  return ITEMS.filter(i=>{
+    if (fp && i.project!==fp) return false;
+    if (ft && i.type!==ft) return false;
+    if (fs && i.status!==fs) return false;
+    if (fpr && i.priority!==fpr) return false;
+    if (ftag && !i.tags.includes(ftag)) return false;
+    if (q && !(i.id.toLowerCase().includes(q)||i.title.toLowerCase().includes(q)||i.tags.join(' ').toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+function badge(s){ return '<span class="badge '+s+'"><span class="dot"></span>'+s+'</span>'; }
+function acStr(i){ return i.acTotal ? i.acDone+'/'+i.acTotal : ''; }
+function detail(i){
+  const deps = (i.depends_on&&i.depends_on.length)?'<b>depends on</b> '+i.depends_on.join(', '):'';
+  const par = i.parent?'<b>parent</b> '+i.parent:'';
+  const ep = i.epic?'<b>epic</b> '+i.epic:'';
+  const tags = i.tags.length?'<b>tags</b> '+i.tags.join(', '):'';
+  const kv = [par,ep,deps,tags,'<b>created</b> '+i.created,'<b>updated</b> '+i.updated].filter(Boolean).join('<span style="opacity:.4">·</span> ');
+  return '<div class="detail">'+(i.bodyHtml||'<p style="color:var(--faint)">no description</p>')+'<div class="kv">'+kv+'</div></div>';
+}
+function renderMetrics(){
+  const m = document.getElementById('metrics'); const all = ITEMS;
+  const cards = STATUSES.map(s=>{ const n=all.filter(i=>i.status===s).length; return '<div class="metric'+(state.status===s?' on':'')+'" data-s="'+s+'" data-pick="'+s+'"><div class="v">'+n+'</div><div class="l">'+s+'</div></div>'; });
+  cards.unshift('<div class="metric'+(state.status===''?' on':'')+'" data-pick=""><div class="v">'+all.length+'</div><div class="l">all</div></div>');
+  m.innerHTML = cards.join('');
+  m.querySelectorAll('[data-pick]').forEach(el=>el.onclick=()=>{ state.status = el.dataset.pick; document.getElementById('f-status').value=''; render(); });
+}
+function renderGrouped(list){
+  if(!list.length) return '<div class="empty">no items match</div>';
+  const groups = {};
+  list.forEach(i=>{ (groups[i.project]=groups[i.project]||[]).push(i); });
+  return Object.keys(groups).sort().map(p=>{
+    const rows = groups[p].map(i=>(
+      '<div class="row" data-id="'+i.id+'">'
+      +'<span class="id">'+i.id+'</span>'
+      +'<span class="ti"><span class="typ">'+i.type+'</span>'+i.title+'</span>'
+      +'<span class="ac">'+acStr(i)+'</span>'
+      +badge(i.status)
+      +'<span class="pri '+i.priority+'">'+i.priority+'</span>'
+      +'</div>'
+    )).join('');
+    return '<div class="group"><div class="gh"><span class="n">'+p+'</span><span class="c">'+groups[p].length+'</span></div>'+rows+'</div>';
+  }).join('');
+}
+function renderTable(list){
+  if(!list.length) return '<div class="empty">no items match</div>';
+  const cols = [['id','id'],['title','title'],['project','project'],['type','type'],['status','status'],['priority','pri']];
+  const sorted = [...list].sort((a,b)=>{ const k=state.sortKey; return String(a[k]).localeCompare(String(b[k]))*state.sortDir || a.id.localeCompare(b.id); });
+  const head = '<tr>'+cols.map(c=>'<th data-sort="'+c[0]+'">'+c[0]+(state.sortKey===c[0]?(state.sortDir>0?' ▲':' ▼'):'')+'</th>').join('')+'</tr>';
+  const body = sorted.map(i=>(
+    '<tr data-id="'+i.id+'"><td class="id">'+i.id+'</td><td>'+i.title+'</td><td>'+i.project+'</td><td>'+i.type+'</td><td>'+badge(i.status)+'</td><td><span class="pri '+i.priority+'">'+i.priority+'</span></td></tr>'
+  )).join('');
+  return '<table class="tableview"><thead>'+head+'</thead><tbody>'+body+'</tbody></table>';
+}
+let openId = null;
+function render(){
+  renderMetrics();
+  const list = filtered();
+  document.getElementById('count').textContent = list.length+' / '+ITEMS.length+' items';
+  const board = document.getElementById('board');
+  board.innerHTML = state.view==='grouped' ? renderGrouped(list) : renderTable(list);
+  // expand handlers
+  board.querySelectorAll('[data-id]').forEach(el=>{
+    el.onclick=(e)=>{
+      if(e.target.closest('[data-sort]')) return;
+      const id=el.dataset.id; const i=ITEMS.find(x=>x.id===id);
+      const ex=el.nextElementSibling;
+      if(ex&&ex.classList&&ex.classList.contains('detail')){ ex.remove(); openId=null; return; }
+      board.querySelectorAll('.detail').forEach(d=>d.remove());
+      el.insertAdjacentHTML('afterend', detail(i)); openId=id;
+    };
+  });
+  if(state.view==='table'){
+    board.querySelectorAll('[data-sort]').forEach(th=>th.onclick=()=>{ const k=th.dataset.sort; if(state.sortKey===k)state.sortDir*=-1; else {state.sortKey=k;state.sortDir=1;} render(); });
+  }
+}
+document.querySelectorAll('.toggle button').forEach(b=>b.onclick=()=>{ document.querySelectorAll('.toggle button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); state.view=b.dataset.view; render(); });
+['q','f-project','f-type','f-status','f-priority','f-tag'].forEach(id=>{ const el=document.getElementById(id); el.addEventListener('input',()=>{ if(id==='f-status')state.status=''; render(); }); });
+render();
+</script>
+</body>
+</html>
