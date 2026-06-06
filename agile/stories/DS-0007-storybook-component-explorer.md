@@ -16,7 +16,7 @@ updated: 2026-06-06
 As the design-system maintainer, I can browse and exercise components in isolation in a
 Storybook, toggling the two design axes (color `dark`/`light`, density `comfy`/`compact`)
 from the toolbar, so I can develop, document, and visually review components without wiring
-them into the showcase app. First component: `Button`.
+them into the showcase app. Covers all 14 components.
 
 ## Acceptance criteria
 - [x] Storybook (v10, `@storybook/sveltekit`) runs against the existing Vite/SvelteKit + Svelte 5 setup
@@ -24,8 +24,9 @@ them into the showcase app. First component: `Button`.
 - [x] Stories authored in Svelte CSF (`@storybook/addon-svelte-csf`) + autodocs (`@storybook/addon-docs`)
 - [x] Toolbar globals for both axes apply `data-theme`/`data-density` to `<html>` so stories recolor/rescale via the real cascade
 - [x] `Button` page with Primary / Secondary / Ghost / Disabled stories and live Controls (variant, type, disabled, label)
+- [x] A page for **every** component (14 total): Badge, Button, Card, EmptyState, Icon, Input, LogStream, MetricTile, PassocaMark, ServiceCard, Sidebar, Sparkline, Toaster, Topbar — each with multiple stories covering real variants/states
 - [x] Stories live in `src/stories/` (not `src/lib/`) so `svelte-package` never publishes them — verified `pnpm pack` tarball contains no story/Storybook files
-- [x] `pnpm test` green (121) and `pnpm pack` clean after the change
+- [x] `pnpm test` green (121) and `pnpm pack` clean; full `pnpm build-storybook` succeeds
 
 ## Notes
 - Config: `.storybook/main.ts` (stories glob `src/**`, framework `@storybook/sveltekit`),
@@ -36,4 +37,9 @@ them into the showcase app. First component: `Button`.
   (Storybook/Vite need the native binary).
 - `/storybook-static` gitignored. CI still runs `pnpm test` + `pnpm pack` only; Storybook build
   is not wired into CI yet (follow-up if desired).
-- More component pages (Badge, Card, Input, …) are deliberately out of scope for now.
+- Interactive notes: `Input` value is `$bindable` (typed one-way per story; the binding falls
+  back to the child). `Sidebar`/`Topbar` are controlled (parent owns `active`) — each story sets
+  its own active item and forwards the callback to the actions panel. `Toaster` reads the
+  module-singleton store, so its Playground story fires the `toast` API from trigger buttons.
+- Avoid `$state()` inside `{@const}` in story markup — the Svelte CSF static indexer can't parse
+  it (SB_SVELTE_CSF_PARSER_EXTRACT_SVELTE_0009); use plain controlled props instead.
