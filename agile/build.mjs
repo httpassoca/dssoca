@@ -53,6 +53,17 @@ const ROOT_MODE = isRepoRoot(HERE)
 const SCOPE = ROOT_MODE ? 'global' : 'local'
 const agileDirs = ROOT_MODE ? projectAgileDirs(dirname(HERE)) : [HERE]
 
+// Project label = the agile folder's parent dir name, title-cased ("books" → "Books",
+// "books-api" → "Books Api"). Used in the board <h1> / <title>.
+function titleCase(s) {
+  return String(s)
+    .split(/[-_ ]+/)
+    .filter(Boolean)
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join(' ')
+}
+const PROJECT_TITLE = titleCase(basename(dirname(HERE)))
+
 // ---------------------------------------------------------------------------
 // 2. Frontmatter parser (flat keys + simple [a, b] arrays — no yaml dep)
 // ---------------------------------------------------------------------------
@@ -190,7 +201,7 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>agile · ${SCOPE}</title>
+<title>${PROJECT_TITLE} · agile · ${SCOPE}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 <style>
@@ -211,6 +222,7 @@ a{color:inherit}
 .head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:18px;flex-wrap:wrap}
 .head h1{font-family:var(--disp);font-weight:400;font-size:30px;letter-spacing:-.01em;margin:0;line-height:1}
 .head h1 .accent{position:relative}
+.head h1 .sep{color:var(--faint);margin:0 .2em}
 .head h1 .accent::before{content:"";position:absolute;left:-2%;right:-6%;top:68%;height:22%;background:var(--primary);opacity:.9;z-index:-1}
 .head .meta{font-size:11px;color:var(--faint);text-align:right;text-transform:lowercase;letter-spacing:.04em}
 .metrics{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
@@ -265,13 +277,28 @@ a{color:inherit}
 .tableview tbody tr{cursor:pointer} .tableview tbody tr:hover td{background:rgba(255,255,255,.03)}
 .empty{padding:40px;text-align:center;color:var(--faint);border:1px solid var(--line);margin-top:16px}
 .tagchip{font-size:10px;color:var(--blue);margin-right:6px}
+.row.sel{background:rgba(102,239,115,.08);box-shadow:inset 2px 0 0 var(--primary)}
+.tableview tbody tr.sel td{background:rgba(102,239,115,.08)}
+.drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .18s;z-index:55}
+.drawer-backdrop.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(460px,94vw);background:var(--bg);border-left:1px solid var(--line2);box-shadow:-14px 0 44px rgba(0,0,0,.55);z-index:60;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .18s ease}
+.drawer.open{transform:none}
+.drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg)}
+.drawer-idrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.drawer-id{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.drawer-title{font-family:var(--disp);font-weight:400;font-size:18px;line-height:1.3;margin:0;color:var(--shine)}
+.drawer-title .typ{color:var(--faint);font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-right:8px}
+.drawer-x{background:transparent;border:1px solid var(--line);color:var(--muted);font-family:var(--mono);font-size:13px;line-height:1;padding:6px 10px;cursor:pointer;flex:none}
+.drawer-x:hover{border-color:var(--line2);color:var(--fg)}
+.drawer-body{padding:8px 18px 32px;overflow-y:auto}
+.drawer-body .detail{grid-column:auto;padding:0;border:0;background:none}
 .foot{margin-top:28px;border-top:1px solid var(--line);padding-top:10px;font-size:10px;color:var(--faint);text-transform:lowercase;letter-spacing:.04em}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="head">
-    <h1>agile <span class="accent">${SCOPE === 'global' ? 'board' : 'board'}</span></h1>
+    <h1>${PROJECT_TITLE} <span class="sep">—</span> agile <span class="accent">board</span></h1>
     <div class="meta">scope: ${SCOPE}<br/>generated ${generatedAt}</div>
   </div>
   <div class="metrics" id="metrics"></div>
@@ -282,18 +309,34 @@ a{color:inherit}
     <select id="f-status"></select>
     <select id="f-priority"></select>
     <select id="f-tag"></select>
+    <select id="f-groupby"></select>
     <div class="toggle"><button data-view="grouped" class="on">grouped</button><button data-view="table">table</button></div>
     <span class="count" id="count"></span>
   </div>
   <div id="board"></div>
   <div class="foot">agile board · ${SCOPE} · see /AGILE.md for the method · zero deps, open from file://</div>
 </div>
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="drawer-meta">
+      <div class="drawer-idrow"><span class="drawer-id" id="d-id"></span><span id="d-badge"></span><span id="d-pri"></span></div>
+      <h2 class="drawer-title" id="d-title"></h2>
+    </div>
+    <button class="drawer-x" id="drawer-close" aria-label="close">✕</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</aside>
 <script type="application/json" id="agile-data">${dataJson}</script>
 <script>
 const RAW = JSON.parse(document.getElementById('agile-data').textContent);
 const ITEMS = RAW.items, SCOPE = RAW.scope;
 const STATUSES = ${JSON.stringify(STATUSES)};
-const state = { view: 'grouped', status: '', sortKey: 'id', sortDir: 1 };
+const PRIORITIES = ${JSON.stringify(PRIORITIES)};
+const GROUP_KEYS = ['project','status','type','priority'];
+// Single-project boards default to grouping by status (one project group is redundant);
+// the global hub board defaults to grouping by project.
+const state = { view: 'grouped', groupBy: SCOPE === 'global' ? 'project' : 'status', status: '', sortKey: 'id', sortDir: 1 };
 
 function uniq(arr){ return [...new Set(arr)].sort(); }
 function opt(sel, vals, label){ const e=document.getElementById(sel); e.innerHTML='<option value="">'+label+'</option>'+vals.map(v=>'<option>'+v+'</option>').join(''); }
@@ -302,6 +345,8 @@ opt('f-status', STATUSES.filter(s=>ITEMS.some(i=>i.status===s)), 'status: all');
 opt('f-priority', uniq(ITEMS.map(i=>i.priority)), 'priority: all');
 opt('f-tag', uniq(ITEMS.flatMap(i=>i.tags)), 'tag: all');
 if (SCOPE === 'global'){ const e=document.getElementById('f-project'); e.hidden=false; opt('f-project', uniq(ITEMS.map(i=>i.project)), 'project: all'); }
+const gbSel=document.getElementById('f-groupby');
+gbSel.innerHTML=GROUP_KEYS.map(v=>'<option value="'+v+'"'+(v===state.groupBy?' selected':'')+'>group: '+v+'</option>').join('');
 
 function filtered(){
   const q = document.getElementById('q').value.toLowerCase().trim();
@@ -337,11 +382,17 @@ function renderMetrics(){
   m.innerHTML = cards.join('');
   m.querySelectorAll('[data-pick]').forEach(el=>el.onclick=()=>{ state.status = el.dataset.pick; document.getElementById('f-status').value=''; render(); });
 }
+function groupOrder(gb, keys){
+  if(gb==='status') return keys.slice().sort((a,b)=>(STATUSES.indexOf(a)+1||99)-(STATUSES.indexOf(b)+1||99));
+  if(gb==='priority') return keys.slice().sort((a,b)=>(PRIORITIES.indexOf(a)+1||99)-(PRIORITIES.indexOf(b)+1||99));
+  return keys.slice().sort();
+}
 function renderGrouped(list){
   if(!list.length) return '<div class="empty">no items match</div>';
+  const gb = state.groupBy;
   const groups = {};
-  list.forEach(i=>{ (groups[i.project]=groups[i.project]||[]).push(i); });
-  return Object.keys(groups).sort().map(p=>{
+  list.forEach(i=>{ const k=i[gb]||'—'; (groups[k]=groups[k]||[]).push(i); });
+  return groupOrder(gb, Object.keys(groups)).map(p=>{
     const rows = groups[p].map(i=>(
       '<div class="row" data-id="'+i.id+'">'
       +'<span class="id">'+i.id+'</span>'
@@ -365,29 +416,46 @@ function renderTable(list){
   return '<table class="tableview"><thead>'+head+'</thead><tbody>'+body+'</tbody></table>';
 }
 let openId = null;
+const drawer = document.getElementById('drawer');
+const backdrop = document.getElementById('drawer-backdrop');
+function markSel(){
+  document.querySelectorAll('.row.sel,.tableview tbody tr.sel').forEach(el=>el.classList.remove('sel'));
+  if(openId){ const el=document.querySelector('[data-id="'+openId+'"]'); if(el) el.classList.add('sel'); }
+}
+function closeDrawer(){ openId=null; drawer.classList.remove('open'); backdrop.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); markSel(); }
+function openItem(id){
+  if(id===openId){ closeDrawer(); return; }
+  const i=ITEMS.find(x=>x.id===id); if(!i) return;
+  openId=id;
+  document.getElementById('d-id').textContent=i.id;
+  document.getElementById('d-badge').innerHTML=badge(i.status);
+  document.getElementById('d-pri').innerHTML='<span class="pri '+i.priority+'">'+i.priority+'</span>';
+  document.getElementById('d-title').innerHTML='<span class="typ">'+i.type+'</span>'+i.title;
+  document.getElementById('drawer-body').innerHTML=detail(i);
+  drawer.classList.add('open'); backdrop.classList.add('open'); drawer.setAttribute('aria-hidden','false');
+  markSel();
+}
+document.getElementById('drawer-close').onclick=closeDrawer;
+backdrop.onclick=closeDrawer;
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
 function render(){
   renderMetrics();
+  gbSel.style.display = state.view==='grouped' ? '' : 'none';
   const list = filtered();
   document.getElementById('count').textContent = list.length+' / '+ITEMS.length+' items';
   const board = document.getElementById('board');
   board.innerHTML = state.view==='grouped' ? renderGrouped(list) : renderTable(list);
-  // expand handlers
   board.querySelectorAll('[data-id]').forEach(el=>{
-    el.onclick=(e)=>{
-      if(e.target.closest('[data-sort]')) return;
-      const id=el.dataset.id; const i=ITEMS.find(x=>x.id===id);
-      const ex=el.nextElementSibling;
-      if(ex&&ex.classList&&ex.classList.contains('detail')){ ex.remove(); openId=null; return; }
-      board.querySelectorAll('.detail').forEach(d=>d.remove());
-      el.insertAdjacentHTML('afterend', detail(i)); openId=id;
-    };
+    el.onclick=(e)=>{ if(e.target.closest('[data-sort]')) return; openItem(el.dataset.id); };
   });
   if(state.view==='table'){
     board.querySelectorAll('[data-sort]').forEach(th=>th.onclick=()=>{ const k=th.dataset.sort; if(state.sortKey===k)state.sortDir*=-1; else {state.sortKey=k;state.sortDir=1;} render(); });
   }
+  markSel();
 }
 document.querySelectorAll('.toggle button').forEach(b=>b.onclick=()=>{ document.querySelectorAll('.toggle button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); state.view=b.dataset.view; render(); });
 ['q','f-project','f-type','f-status','f-priority','f-tag'].forEach(id=>{ const el=document.getElementById(id); el.addEventListener('input',()=>{ if(id==='f-status')state.status=''; render(); }); });
+gbSel.addEventListener('change',()=>{ state.groupBy=gbSel.value; render(); });
 render();
 </script>
 </body>
