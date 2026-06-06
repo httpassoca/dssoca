@@ -22,7 +22,9 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build"
 	},
 	"files": [
 		"dist",
@@ -46,6 +48,9 @@
 		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
+		"@storybook/addon-docs": "^10.4.2",
+		"@storybook/addon-svelte-csf": "^5.1.2",
+		"@storybook/sveltekit": "^10.4.2",
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/kit": "^2.57.0",
 		"@sveltejs/package": "^2.5.7",
@@ -54,6 +59,7 @@
 		"@testing-library/svelte": "^5.3.1",
 		"jsdom": "^29.1.1",
 		"publint": "^0.3.18",
+		"storybook": "^10.4.2",
 		"svelte": "^5.55.2",
 		"svelte-check": "^4.4.6",
 		"typescript": "^6.0.2",
