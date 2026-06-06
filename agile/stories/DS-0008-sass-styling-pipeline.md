@@ -2,14 +2,14 @@
 id: DS-0008
 type: story
 title: "Sass-based styling pipeline"
-status: todo
+status: done
 priority: high
 tags: [styling, sass, build, refactor]
 depends_on: []
 parent: null
 epic: null
 created: 2026-06-06
-updated: 2026-06-06
+updated: 2026-06-07
 ---
 
 ## Description
@@ -24,15 +24,15 @@ changes for consumers. Sequenced first so DS-0009 writes scoped SCSS directly ra
 rewriting every component twice (CSS then SCSS).
 
 ## Acceptance criteria
-- [ ] `sass` added as a devDependency; `vitePreprocess()` enabled via the `preprocess` field in `svelte.config.js` (uses the already-installed `@sveltejs/vite-plugin-svelte`)
-- [ ] `src/lib/theme.css` reauthored as Sass partials under `src/styles/` (outside `src/lib`, so `svelte-package` never publishes them): `_tokens.scss`, `_base.scss`, `_layout.scss`, `_components.scss`, and a `theme.scss` entry that `@use`-s them
-- [ ] `--ss-*` tokens remain **explicit CSS custom properties** (not Sass `$variables`, not generated from maps); Sass is used only for structure (partials/nesting/mixins). All four axis combinations (dark/light × comfy/compact) still recolor/rescale identically
-- [ ] Zero border-radius and the `--ss-*` / `.ss-*` prefixes preserved (house rules)
-- [ ] `prepack` compiles `src/styles/theme.scss` → `dist/theme.css` via a **Dart Sass CLI** step run *after* `svelte-package`; the `./theme.css` → `./dist/theme.css` export is unchanged
-- [ ] Component `<style lang="scss">` compiles through `svelte-package` once the preprocessor is set — no extra config (svelte-package preprocesses `.svelte`; only standalone `.scss` needs the separate CLI step)
-- [ ] Dev/showcase/Storybook imports updated to the `.scss` entry (Vite compiles on the fly): `src/routes/+page.svelte`, `.storybook/preview.ts`
-- [ ] `pnpm pack` tarball contains `dist/theme.css` and **no** `.scss`; `pnpm test` green (121); `pnpm dev` + `pnpm build-storybook` render identically to before
-- [ ] `version` bumped to **0.2.1** (patch — non-breaking); agile updated + `node agile/build.mjs`
+- [x] `sass` added as a devDependency; `vitePreprocess()` enabled via the `preprocess` field in `svelte.config.js` (uses the already-installed `@sveltejs/vite-plugin-svelte`)
+- [x] `src/lib/theme.css` reauthored as Sass partials under `src/styles/` (outside `src/lib`, so `svelte-package` never publishes them): `_tokens.scss`, `_base.scss`, `_layout.scss`, `_components.scss`, and a `theme.scss` entry that `@use`-s them
+- [x] `--ss-*` tokens remain **explicit CSS custom properties** (not Sass `$variables`, not generated from maps); Sass is used only for structure (partials/nesting/mixins). All four axis combinations (dark/light × comfy/compact) still recolor/rescale identically
+- [x] Zero border-radius and the `--ss-*` / `.ss-*` prefixes preserved (house rules)
+- [x] `prepack` compiles `src/styles/theme.scss` → `dist/theme.css` via a **Dart Sass CLI** step run *after* `svelte-package`; the `./theme.css` → `./dist/theme.css` export is unchanged
+- [x] Component `<style lang="scss">` compiles through `svelte-package` once the preprocessor is set — no extra config (svelte-package preprocesses `.svelte`; only standalone `.scss` needs the separate CLI step)
+- [x] Dev/showcase/Storybook imports updated to the `.scss` entry (Vite compiles on the fly): `src/routes/+page.svelte`, `.storybook/preview.ts`
+- [x] `pnpm pack` tarball contains `dist/theme.css` and **no** `.scss`; `pnpm test` green (121); `pnpm dev` + `pnpm build-storybook` render identically to before
+- [x] `version` bumped to **0.2.1** (patch — non-breaking); agile updated + `node agile/build.mjs`
 
 ## Notes
 - **Why a separate CLI step:** `svelte-package@2.5.8` only preprocesses `.svelte`/`.ts`/`.js`

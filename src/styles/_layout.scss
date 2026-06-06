@@ -1,0 +1,97 @@
+// ============================================================
+//  App-shell + page layout. Not owned by any single component, so
+//  these stay global (the .ss-* names that move into components live
+//  in _components.scss).
+// ============================================================
+
+// ---------- hub shell ----------
+.ss-app {
+  display: grid;
+  grid-template-columns: var(--ss-shell-side-w) 1fr;
+  grid-template-rows: var(--ss-shell-top-h) 1fr;
+  min-height: 100vh;
+}
+
+// ---------- main content area ----------
+.ss-main { padding: var(--ss-main-py) var(--ss-main-px) 60px; overflow: auto; }
+
+.ss-pageHead {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: var(--ss-block-gap); gap: 24px;
+
+  h1 {
+    font-family: var(--ss-font-display);
+    font-weight: 400;
+    font-size: 32px; line-height: 1; margin: 0;
+    letter-spacing: -0.015em;
+    text-shadow: 3px 3px var(--ss-bg);
+
+    .accent {
+      position: relative;
+      &::before {
+        content: ""; position: absolute; left: -2%; right: -6%; top: 70%; height: 22%;
+        background: var(--ss-primary); opacity: 0.9; z-index: -1;
+      }
+    }
+  }
+
+  .sub { color: var(--ss-fg-muted); font-size: var(--ss-ui-md); margin-top: 6px; font-family: var(--ss-font-mono); }
+}
+
+// ---------- grids ----------
+.ss-metrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--ss-gap); margin-bottom: var(--ss-block-gap); }
+.ss-grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--ss-gap); margin-bottom: var(--ss-gap); }
+.ss-svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--ss-gap-sm); }
+
+// ---------- login screen ----------
+.ss-login {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: var(--ss-bg);
+  position: relative; overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+    pointer-events: none;
+  }
+}
+.ss-login-card {
+  width: 380px; padding: var(--ss-s-8);
+  border: 1px solid var(--ss-line); background: var(--ss-bg-elev);
+  display: flex; flex-direction: column; gap: 18px;
+  position: relative; z-index: 1;
+
+  .mark { display: flex; align-items: center; gap: 10px; }
+  .mark .wm { font-family: var(--ss-font-display); font-weight: 400; font-size: 28px; line-height: 1; letter-spacing: 0.01em; }
+  .h { font-family: var(--ss-font-subhead); font-size: 20px; }
+  .sub { color: var(--ss-fg-muted); font-size: 13px; margin-top: -10px; }
+  .footer { font-family: var(--ss-font-mono); font-size: 10px; color: var(--ss-fg-faint); text-align: center; margin-top: 6px; }
+}
+
+// ---------- table ----------
+.ss-table {
+  width: 100%; border-collapse: collapse;
+
+  th, td {
+    text-align: left; padding: var(--ss-row-py) var(--ss-row-px);
+    font-size: var(--ss-ui-md);
+    border-bottom: 1px solid var(--ss-line);
+    font-family: var(--ss-font-mono);
+  }
+  th {
+    font-size: var(--ss-ui-xs); color: var(--ss-fg-faint);
+    text-transform: uppercase; letter-spacing: 0.1em; font-weight: 400;
+    padding: var(--ss-row-py) var(--ss-row-px);
+  }
+  tr:hover td { background: rgba(255,255,255,.03); }
+  .mono { color: var(--ss-fg-muted); }
+}
+
+// ---------- footer ----------
+.ss-footer {
+  margin-top: var(--ss-s-3); padding-top: var(--ss-s-2);
+  border-top: 1px solid var(--ss-line);
+  display: flex; justify-content: space-between;
+  font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm); color: var(--ss-fg-faint);
+}

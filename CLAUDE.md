@@ -20,6 +20,9 @@ Token table: `docs/tokens.md`. Theme API: `docs/themes.md`.
 ## Stack
 
 - **SvelteKit + `@sveltejs/package`** (`svelte-package`) builds `src/lib/` → `dist/`. `publint` validates.
+- **Sass** (`vitePreprocess`): component `<style lang="scss">` compiles via svelte-package; the global
+  stylesheet is authored as `@use` partials in `src/styles/` and compiled to `dist/theme.css` by a
+  Dart Sass CLI step in `prepack` (see agile `DS-0008`).
 - **Vitest + `@testing-library/svelte`** (jsdom) for tests.
 - **pnpm only** — never npm/npx. Node 24. ESM (`"type": "module"`).
 - Peer dependency: `svelte@^5` (runes).
@@ -31,8 +34,10 @@ src/lib/
   components/      one .svelte per component
   index.ts         barrel export (components + config + toast)
   config.ts        applyDesignConfig / designAttributes / getDesignConfig
-  theme.css        token + base-style source of truth (the --ss-* / .ss-* prefix lives here)
   toast.svelte.ts  reactive toast store + imperative `toast` API
+src/styles/        Sass source (@use partials) → compiled to dist/theme.css; not published
+  theme.scss       entry; _tokens / _base / _layout / _components partials
+                   (the --ss-* / .ss-* prefix lives here — token + base-style source of truth)
 src/routes/        showcase/preview app (dev only, not published)
 test/              Vitest suite (unit/ + harness/) + setup.ts
 docs/              themes.md, tokens.md
@@ -59,7 +64,8 @@ pnpm install            # deps (postinstall runs svelte-kit sync)
 pnpm dev                # showcase app: live theme + density toggles
 pnpm test               # Vitest suite (run once)
 pnpm test:watch         # Vitest watch
-pnpm pack               # build dist/ via prepack (sync → svelte-package → publint), make tarball
+pnpm pack               # build dist/ via prepack (sync → svelte-package → build:css → publint), make tarball
+pnpm build:css          # compile src/styles/theme.scss → dist/theme.css (Dart Sass)
 pnpm storybook          # Storybook dev server (port 6006): component pages + axis toolbar
 pnpm build-storybook    # static Storybook build → storybook-static/ (gitignored)
 ```
