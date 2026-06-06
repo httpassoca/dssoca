@@ -4,6 +4,7 @@
 	"description": "Svelte 5 design system — signal green on near-black, monospace-forward, zero border-radius; configured along two axes (color: dark/light, density: comfy/compact).",
 	"license": "MIT",
 	"author": "Rafael Passoca",
+	"packageManager": "pnpm@11.1.3",
 	"homepage": "https://github.com/httpassoca/dssoca#readme",
 	"repository": {
 		"type": "git",
