@@ -9,7 +9,7 @@
   import Sidebar from "../lib/components/Sidebar.svelte";
   import Topbar from "../lib/components/Topbar.svelte";
   import type { ColorTheme, Density } from "../lib/config.js";
-  import "../lib/theme.css";
+  import "../styles/theme.scss";
 
   let activeTab = $state("overview");
   let activeSide = $state("hub");

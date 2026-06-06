@@ -1,0 +1,201 @@
+// ============================================================
+//  Design tokens — the --ss-* custom properties for both axes.
+//  These MUST stay CSS custom properties (not Sass $variables): the
+//  data-theme / data-density cascade resolves them at runtime. See docs/tokens.md.
+// ============================================================
+
+// ------------------------------------------------------------
+//  AXIS 1 — COLOR THEME
+// ------------------------------------------------------------
+:root,
+[data-theme="dark"] {
+  /* surfaces */
+  --ss-bg:          #100f10;
+  --ss-bg-elev:     #1e1e1e;
+  --ss-bg-inset:    rgba(7, 6, 7, 0);
+  --ss-line:        rgba(255, 255, 255, 0.12);
+  --ss-line-strong: rgba(255, 255, 255, 0.22);
+
+  /* foreground */
+  --ss-fg:          #e0e0e0;
+  --ss-fg-shine:    #ffffff;
+  --ss-fg-muted:    #aaaaaa;
+  --ss-fg-faint:    #6f6f6f;
+  --ss-fg-on-primary: #100f10;
+
+  /* brand */
+  --ss-primary:     #66ef73;
+  --ss-primary-soft: rgba(102, 239, 115, 0.18);
+  --ss-primary-rgb: 102, 239, 115;
+
+  /* status */
+  --ss-red:    #ff5c5c;
+  --ss-yellow: #e0c36a;
+  --ss-blue:   #9aa4ff;
+  --ss-cyan:   #66d9ef;
+  --ss-purple: #b98cff;
+
+  /* code */
+  --ss-code-bg:      #011627;
+  --ss-code-fg:      #d6deeb;
+  --ss-code-string:  #addb67;
+  --ss-code-number:  #f78c6c;
+  --ss-code-keyword: #c792ea;
+  --ss-code-func:    #82aaff;
+  --ss-code-comment: #637777;
+
+  --ss-selection-bg: var(--ss-primary);
+  --ss-selection-fg: var(--ss-fg-on-primary);
+}
+
+[data-theme="light"] {
+  --ss-bg:          #fefefe;
+  --ss-bg-elev:     #ffffff;
+  --ss-line:        rgba(0, 0, 0, 0.12);
+  --ss-line-strong: rgba(0, 0, 0, 0.22);
+  --ss-fg:          #000000;
+  --ss-fg-shine:    #000000;
+  --ss-fg-muted:    #626262;
+  --ss-fg-faint:    #888888;
+  --ss-fg-on-primary: #100f10;
+}
+
+// ------------------------------------------------------------
+//  type + radii + motion (density-independent)
+// ------------------------------------------------------------
+:root {
+  --ss-font-display: "Electrolize", "Space Grotesk", "Inter", system-ui, sans-serif;
+  --ss-font-subhead: "Electrolize", "Space Grotesk", "Inter", system-ui, sans-serif;
+  --ss-font-body:    "JetBrains Mono", "Caskaydia Cove", ui-monospace, "SF Mono", Menlo, monospace;
+  --ss-font-alt:     "Electrolize", "Inter", system-ui, sans-serif;
+  --ss-font-mono:    "JetBrains Mono", "Caskaydia Cove Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --ss-size-display: clamp(36px, 8vw, 54px);
+  --ss-size-h1:  32px;
+  --ss-size-h2:  24px;
+  --ss-size-h3:  20px;
+  --ss-size-body: 16px;
+  --ss-size-sm:  14px;
+  --ss-size-xs:  12px;
+
+  --ss-s-1:   4px;
+  --ss-s-2:   8px;
+  --ss-s-3:  12px;
+  --ss-s-4:  16px;
+  --ss-s-5:  20px;
+  --ss-s-6:  24px;
+  --ss-s-8:  32px;
+  --ss-s-10: 40px;
+  --ss-s-12: 48px;
+  --ss-s-16: 64px;
+
+  /* radii — ALL SQUARE */
+  --ss-radius-0:    0;
+  --ss-radius-1:    0;
+  --ss-radius-2:    0;
+  --ss-radius-pill: 0;
+
+  /* elevation */
+  --ss-shadow-0:   none;
+  --ss-shadow-1:   0 0 0 1px var(--ss-line);
+  --ss-shadow-2:   0 1px 0 0 rgba(0, 0, 0, 0.4), 0 0 0 1px var(--ss-line);
+  --ss-shadow-pop: 0 12px 40px rgba(0, 0, 0, 0.35);
+  --ss-shadow-glow: 0 0 24px rgba(var(--ss-primary-rgb), 0.35);
+
+  /* motion */
+  --ss-ease:      cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ss-dur-fast:  150ms;
+  --ss-dur:       250ms;
+  --ss-dur-slow:  350ms;
+  --ss-dur-xslow: 650ms;
+}
+
+// ------------------------------------------------------------
+//  AXIS 2 — DENSITY
+//  comfy  = roomy, general-purpose default (other projects)
+//  compact = dense control-room layout (the hub opts in)
+//  Every density-sensitive value below is a token so a single
+//  data-density flip rescales the whole chrome.
+// ------------------------------------------------------------
+:root,
+[data-density="comfy"] {
+  --ss-leading:        1.5;
+
+  --ss-ui-xs:          11px;   /* micro uppercase labels */
+  --ss-ui-sm:          12px;   /* secondary chrome text  */
+  --ss-ui-md:          13px;   /* primary chrome text    */
+  --ss-ui-lg:          15px;   /* names / logo           */
+
+  --ss-control-font:   14px;
+  --ss-control-py:     9px;
+  --ss-control-px:     16px;
+
+  --ss-input-font:     15px;
+  --ss-input-py:       13px;
+  --ss-input-px:       16px;
+
+  --ss-panel-head-py:  12px;
+  --ss-panel-head-px:  18px;
+  --ss-panel-body-py:  18px;
+  --ss-panel-body-px:  18px;
+
+  --ss-card-py:        16px;
+  --ss-card-px:        18px;
+  --ss-metric-val:     32px;
+
+  --ss-row-py:         9px;
+  --ss-row-px:         14px;
+
+  --ss-badge-py:       5px;
+  --ss-badge-px:       12px;
+
+  --ss-gap:            14px;
+  --ss-gap-sm:         10px;
+  --ss-block-gap:      28px;
+
+  --ss-shell-side-w:   220px;
+  --ss-shell-top-h:    48px;
+  --ss-main-py:        28px;
+  --ss-main-px:        36px;
+}
+
+[data-density="compact"] {
+  --ss-leading:        1.3;
+
+  --ss-ui-xs:          9.5px;
+  --ss-ui-sm:          10.5px;
+  --ss-ui-md:          11.5px;
+  --ss-ui-lg:          13px;
+
+  --ss-control-font:   12px;
+  --ss-control-py:     5px;
+  --ss-control-px:     9px;
+
+  --ss-input-font:     14px;
+  --ss-input-py:       10px;
+  --ss-input-px:       12px;
+
+  --ss-panel-head-py:  7px;
+  --ss-panel-head-px:  12px;
+  --ss-panel-body-py:  10px;
+  --ss-panel-body-px:  12px;
+
+  --ss-card-py:        10px;
+  --ss-card-px:        12px;
+  --ss-metric-val:     26px;
+
+  --ss-row-py:         5px;
+  --ss-row-px:         10px;
+
+  --ss-badge-py:       3px;
+  --ss-badge-px:       8px;
+
+  --ss-gap:            8px;
+  --ss-gap-sm:         6px;
+  --ss-block-gap:      16px;
+
+  --ss-shell-side-w:   180px;
+  --ss-shell-top-h:    36px;
+  --ss-main-py:        16px;
+  --ss-main-px:        20px;
+}

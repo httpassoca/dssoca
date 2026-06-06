@@ -1,5 +1,5 @@
 import type { Decorator, Preview } from '@storybook/sveltekit';
-import '../src/lib/theme.css';
+import '../src/styles/theme.scss';
 
 /**
  * The design system is driven by two orthogonal axes written as data-attributes
