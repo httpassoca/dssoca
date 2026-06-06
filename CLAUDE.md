@@ -60,7 +60,14 @@ pnpm dev                # showcase app: live theme + density toggles
 pnpm test               # Vitest suite (run once)
 pnpm test:watch         # Vitest watch
 pnpm pack               # build dist/ via prepack (sync → svelte-package → publint), make tarball
+pnpm storybook          # Storybook dev server (port 6006): component pages + axis toolbar
+pnpm build-storybook    # static Storybook build → storybook-static/ (gitignored)
 ```
+
+Storybook config lives in `.storybook/` (`main.ts`, `preview.ts`); stories live in `src/stories/`
+(**never** `src/lib/` — `svelte-package` would publish them). Stories use Svelte CSF
+(`*.stories.svelte`); the preview exposes both design axes as toolbar globals applied to `<html>`.
+Not wired into CI.
 
 Note: `pnpm check` (svelte-check) currently reports a known `$lib` alias error under its tsconfig
 context — pre-existing from the library template, not a real type bug. CI does **not** run it; it
