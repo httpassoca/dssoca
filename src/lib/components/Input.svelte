@@ -13,6 +13,10 @@
     oninput?: (e: Event & { currentTarget: HTMLInputElement }) => void
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
+    /** Marks the field invalid for assistive tech (aria-invalid). */
+    invalid?: boolean
+    /** id(s) of element(s) describing the field (aria-describedby) — e.g. hint/error text. */
+    describedby?: string
   }
   let {
     label,
@@ -25,21 +29,29 @@
     disabled = false,
     oninput,
     size,
+    invalid,
+    describedby,
   }: Props = $props()
+
+  // Guarantee a label↔input association even when no `id` is passed.
+  const uid = $props.id()
+  const inputId = $derived(id ?? uid)
 </script>
 
 {#if label}
-  <label class="ss-field" for={id} data-size-variant={resolveComponentSize('Input', size)}>
+  <label class="ss-field" for={inputId} data-size-variant={resolveComponentSize('Input', size)}>
     <span class="lbl">{label}</span>
     <input
       class="ss-input"
-      {id}
+      id={inputId}
       {name}
       {type}
       bind:value
       {placeholder}
       {required}
       {disabled}
+      aria-invalid={invalid || undefined}
+      aria-describedby={describedby}
       {oninput}
     />
   </label>
@@ -47,13 +59,15 @@
   <input
     class="ss-input"
     data-size-variant={resolveComponentSize('Input', size)}
-    {id}
+    id={inputId}
     {name}
     {type}
     bind:value
     {placeholder}
     {required}
     {disabled}
+    aria-invalid={invalid || undefined}
+    aria-describedby={describedby}
     {oninput}
   />
 {/if}

@@ -14,7 +14,7 @@
 </script>
 
 <span class="ss-badge {tone}" data-size-variant={resolveComponentSize('Badge', size)}>
-  {#if hasDot}<span class="dot"></span>{/if}
+  {#if hasDot}<span class="dot" aria-hidden="true"></span>{/if}
   {@render children()}
 </span>
 

@@ -19,7 +19,7 @@
     {value}{#if suffix}<span class="small">{suffix}</span>{/if}
   </div>
   {#if delta}
-    <div class="delta {dir}">{dir === 'up' ? '↑' : '↓'} {delta}</div>
+    <div class="delta {dir}" aria-label="{dir === 'up' ? 'up' : 'down'} {delta}">{dir === 'up' ? '↑' : '↓'} {delta}</div>
   {/if}
 </div>
 

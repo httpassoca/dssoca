@@ -10,13 +10,19 @@
     action?: Snippet
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
+    /** Heading level for the title (aria-level), for correct document outline. */
+    headingLevel?: number
   }
-  let { variant = 'empty', title, message, icon, action, size }: Props = $props()
+  let { variant = 'empty', title, message, icon, action, size, headingLevel = 2 }: Props = $props()
 </script>
 
-<div class="ss-empty {variant}" data-size-variant={resolveComponentSize('EmptyState', size)}>
-  {#if icon}<div class="ic">{icon}</div>{/if}
-  <p class="title">{title}</p>
+<div
+  class="ss-empty {variant}"
+  data-size-variant={resolveComponentSize('EmptyState', size)}
+  role={variant === 'error' ? 'alert' : undefined}
+>
+  {#if icon}<div class="ic" aria-hidden="true">{icon}</div>{/if}
+  <p class="title" role="heading" aria-level={headingLevel}>{title}</p>
   {#if message}<p class="msg">{message}</p>{/if}
   {#if action}<div class="act">{@render action()}</div>{/if}
 </div>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fly } from 'svelte/transition'
+  import { prefersReducedMotion } from 'svelte/motion'
   import { toasts, type ToastKind } from '../toast.svelte.js'
   import { resolveComponentSize, type Size } from '../config.js'
 
@@ -11,15 +12,22 @@
   let { size }: Props = $props()
 
   const glyph: Record<ToastKind, string> = { success: '✓', error: '✕', info: 'i' }
+  // Honor prefers-reduced-motion: collapse the fly transition to an instant swap.
+  const flyDuration = $derived(prefersReducedMotion.current ? 0 : 180)
 </script>
 
-<div class="ss-toaster" role="region" aria-live="polite" aria-label="Notifications" data-size-variant={resolveComponentSize('Toaster', size)}>
+<div class="ss-toaster" aria-label="Notifications" data-size-variant={resolveComponentSize('Toaster', size)}>
   {#each toasts.items as t (t.id)}
-    <output class="ss-toast {t.kind}" transition:fly={{ x: 16, duration: 180 }}>
-      <span class="ic">{glyph[t.kind]}</span>
+    <div
+      class="ss-toast {t.kind}"
+      role={t.kind === 'error' ? 'alert' : 'status'}
+      aria-live={t.kind === 'error' ? 'assertive' : 'polite'}
+      transition:fly={{ x: 16, duration: flyDuration }}
+    >
+      <span class="ic" aria-hidden="true">{glyph[t.kind]}</span>
       <span class="msg">{t.message}</span>
       <button class="x" type="button" aria-label="Dismiss" onclick={() => toasts.dismiss(t.id)}>×</button>
-    </output>
+    </div>
   {/each}
 </div>
 

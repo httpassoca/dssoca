@@ -9,14 +9,16 @@
     children: Snippet
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
+    /** Heading level for the title (aria-level), for correct document outline. */
+    titleLevel?: number
   }
-  let { title, meta, action, children, size }: Props = $props()
+  let { title, meta, action, children, size, titleLevel = 3 }: Props = $props()
 </script>
 
 <div class="ss-panel" data-size-variant={resolveComponentSize('Card', size)}>
   {#if title}
     <div class="head">
-      <div class="title">{title}</div>
+      <div class="title" role="heading" aria-level={titleLevel}>{title}</div>
       <div style="display:flex;gap:12px;align-items:center">
         {#if meta}<div class="meta">{meta}</div>{/if}
         {#if action}{@render action()}{/if}

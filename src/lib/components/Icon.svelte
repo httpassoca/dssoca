@@ -30,9 +30,11 @@
     size?: Size
     /** Explicit pixel size — overrides the token sizing. */
     px?: number
+    /** Accessible name; when set the icon is exposed to AT (role="img"). Omit for decorative icons (default: aria-hidden). */
+    title?: string
     class?: string
   }
-  let { name, size, px, class: cls = '' }: Props = $props()
+  let { name, size, px, title, class: cls = '' }: Props = $props()
 
   const dim = $derived(px != null ? `${px}px` : 'var(--ss-icon)')
 </script>
@@ -48,6 +50,10 @@
   class={cls}
   data-size-variant={resolveComponentSize('Icon', size)}
   style="width:{dim};height:{dim}"
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
 >
   {@html PATHS[name] ?? ''}
 </svg>

@@ -75,6 +75,15 @@ SSR / no-flash — spread the attributes directly in markup instead of mutating 
 `getDesignConfig`, `resolveComponentSize`, `defaultDesignConfig`, and the `ColorTheme` / `Size` /
 `DesignConfig` / `ComponentsSize` types.
 
+## Accessibility
+
+Targets **WCAG 2.2 AA**: native/keyboard-operable controls (Enter + Space), labelled
+inputs (auto-associated ids, `aria-invalid` / `aria-describedby`), live-region toasts
+(`role="status"`, `role="alert"` for errors), `aria-current` on active nav/tabs, decorative
+icons/graphics `aria-hidden`, AA-contrast text tokens, and `prefers-reduced-motion` support
+(motion-duration tokens collapse; the toast transition is guarded). Components are checked with
+`vitest-axe` in unit tests and `@storybook/addon-a11y` in Storybook.
+
 ## House rules
 
 - **Zero border-radius.** Every radius token is `0` — never override.
