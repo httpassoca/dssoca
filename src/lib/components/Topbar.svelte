@@ -84,7 +84,7 @@
 
       &.right { border-right: none; border-left: 1px solid var(--ss-line); }
       &.click { cursor: pointer; }
-      &.click:hover { background: rgba(255,255,255,.03); color: var(--ss-fg); }
+      &.click:hover { background: var(--ss-hover); color: var(--ss-fg); }
     }
     .logo {
       color: var(--ss-fg);
@@ -102,7 +102,7 @@
         background: transparent; border-top: 0; border-bottom: 0; border-left: 0;
         transition: all var(--ss-dur-fast) var(--ss-ease);
 
-        &:hover { color: var(--ss-fg); background: rgba(255,255,255,.03); }
+        &:hover { color: var(--ss-fg); background: var(--ss-hover); }
         .n { color: var(--ss-fg-faint); margin-right: 6px; }
         &.active { color: var(--ss-fg); background: rgba(102,239,115,.06); box-shadow: inset 0 -2px 0 var(--ss-primary); }
         &.active .n { color: var(--ss-primary); }

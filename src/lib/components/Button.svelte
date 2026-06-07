@@ -27,14 +27,14 @@
     cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
     transition: all var(--ss-dur-fast) var(--ss-ease);
 
-    &:hover { background: rgba(255,255,255,.04); border-color: var(--ss-line-strong); }
+    &:hover { background: var(--ss-hover); border-color: var(--ss-line-strong); }
     &.primary {
       background: var(--ss-primary); color: var(--ss-fg-on-primary); border-color: var(--ss-primary); font-weight: 600;
-      &:hover { background: #7df089; box-shadow: var(--ss-shadow-glow); }
+      &:hover { background: var(--ss-primary-hover); border-color: var(--ss-primary-hover); box-shadow: var(--ss-shadow-glow); }
     }
     &.ghost {
       border-color: transparent; color: var(--ss-fg-muted); padding: var(--ss-control-py) var(--ss-gap-sm);
-      &:hover { color: var(--ss-fg); background: rgba(255,255,255,.04); border-color: transparent; }
+      &:hover { color: var(--ss-fg); background: var(--ss-hover); border-color: transparent; }
     }
   }
 </style>

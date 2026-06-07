@@ -27,6 +27,13 @@
   --ss-primary:     #66ef73;
   --ss-primary-soft: rgba(102, 239, 115, 0.18);
   --ss-primary-rgb: 102, 239, 115;
+  --ss-primary-hover: #7df089;
+
+  /* lime — softer green accent for monospace/code text (not the loud primary) */
+  --ss-lime:        #a6e22e;
+
+  /* neutral hover wash — theme-aware so it stays visible in light mode */
+  --ss-hover:       rgba(255, 255, 255, 0.05);
 
   /* status */
   --ss-red:    #ff5c5c;
@@ -49,15 +56,50 @@
 }
 
 [data-theme="light"] {
-  --ss-bg:          #fefefe;
+  /* surfaces — a soft off-white page (#f0f0f0), white panels to read as elevated.
+     Not blinding-bright; lines are stronger so square borders stay legible. */
+  --ss-bg:          #f0f0f0;
   --ss-bg-elev:     #ffffff;
-  --ss-line:        rgba(0, 0, 0, 0.12);
-  --ss-line-strong: rgba(0, 0, 0, 0.22);
-  --ss-fg:          #000000;
+  --ss-bg-inset:    rgba(0, 0, 0, 0);
+  --ss-line:        rgba(0, 0, 0, 0.16);
+  --ss-line-strong: rgba(0, 0, 0, 0.30);
+
+  /* foreground — all AA (≥4.5:1) on both #f0f0f0 and #ffffff */
+  --ss-fg:          #1a1a1a;
   --ss-fg-shine:    #000000;
-  --ss-fg-muted:    #626262;
-  --ss-fg-faint:    #6b6b6b;   /* WCAG AA ≥4.5:1 on the light surfaces (DS-0013) */
-  --ss-fg-on-primary: #100f10;
+  --ss-fg-muted:    #525252;
+  --ss-fg-faint:    #5d5d5d;   /* WCAG AA ≥4.5:1 on the light surfaces (DS-0013) */
+  --ss-fg-on-primary: #ffffff; /* the light-mode primary is dark → white label */
+
+  /* brand — the dark-mode greens are far too bright on a light page, so light
+     mode uses deeper, saturated values that hold AA contrast both as accent
+     TEXT on the surfaces and as the Button background (with white label). */
+  --ss-primary:     #157f3b;
+  --ss-primary-soft: rgba(21, 127, 59, 0.12);
+  --ss-primary-rgb: 21, 127, 59;
+  --ss-primary-hover: #0f6e31;
+
+  /* lime — darkened so monospace/code accents stay readable on light */
+  --ss-lime:        #2f7a14;
+
+  /* neutral hover wash — a dark tint reads on the light surfaces */
+  --ss-hover:       rgba(0, 0, 0, 0.05);
+
+  /* status — darkened from the neon dark-mode set for AA on light */
+  --ss-red:    #c62828;
+  --ss-yellow: #8a6d1a;
+  --ss-blue:   #2f3bd6;
+  --ss-cyan:   #0b6e7d;
+  --ss-purple: #6a35c9;
+
+  /* code — a light syntax palette (the dark Night-Owl set is unreadable here) */
+  --ss-code-bg:      #f5f5f5;
+  --ss-code-fg:      #24292e;
+  --ss-code-string:  #1f7a33;
+  --ss-code-number:  #b35309;
+  --ss-code-keyword: #c5221f;
+  --ss-code-func:    #6639ba;
+  --ss-code-comment: #6a737d;
 }
 
 // ------------------------------------------------------------
