@@ -4,9 +4,24 @@ Both axes are plain `data-*` attributes (`data-theme`, `data-density`) that
 cascade tokens to descendants. You can set them by hand, or drive them from the
 config module in `$lib/config.ts` (re-exported from the package root).
 
+## Config manifest (`dssoca.config.ts`)
+
+The available axes, their allowed values, and the defaults are declared once in
+`dssoca.config.ts` — the single source of truth. `config.ts` derives its types
+and `defaultDesignConfig` from it, so changing a default (or adding a value /
+axis) is a one-place edit. It's exported from the package root:
+
+```ts
+import { dssocaConfig } from 'dssoca'
+
+dssocaConfig.theme    // { values: ['dark', 'light'],   default: 'dark' }
+dssocaConfig.density  // { values: ['comfy', 'compact'], default: 'comfy' }
+```
+
 ## Types
 
 ```ts
+// Derived from the manifest in dssoca.config.ts:
 export type ColorTheme = 'dark' | 'light'
 export type Density    = 'comfy' | 'compact'
 
@@ -15,10 +30,9 @@ export interface DesignConfig {
   density: Density
 }
 
-export const defaultDesignConfig: DesignConfig = {
-  theme: 'dark',
-  density: 'comfy',   // general-purpose default; hub overrides to 'compact'
-}
+// defaultDesignConfig = { theme: 'dark', density: 'comfy' }
+// (general-purpose default; hub overrides to 'compact'), read from the manifest.
+export const defaultDesignConfig: DesignConfig
 ```
 
 ## API
@@ -32,7 +46,7 @@ resolved config. SSR-safe: a no-op when there's no `document` and no explicit
 `target`.
 
 ```ts
-import { applyDesignConfig } from '@homelab/ui'
+import { applyDesignConfig } from 'dssoca'
 
 applyDesignConfig({ density: 'compact' })   // hub bootstrap
 applyDesignConfig({ theme: 'light' })        // density stays 'compact'
@@ -46,7 +60,7 @@ Use it for SSR / markup so the correct theme + density paint on the first frame
 
 ```svelte
 <script>
-  import { designAttributes } from '@homelab/ui'
+  import { designAttributes } from 'dssoca'
 </script>
 
 <html {...designAttributes({ density: 'compact' })}>
@@ -72,7 +86,7 @@ Set it once at the app root. Cleanest with no flash is the SSR form:
 …or imperatively on mount:
 
 ```ts
-import { applyDesignConfig } from '@homelab/ui'
+import { applyDesignConfig } from 'dssoca'
 applyDesignConfig({ density: 'compact' })
 ```
 
@@ -83,7 +97,7 @@ Do nothing. `comfy` + `dark` are the defaults. Import the CSS and go.
 ### User-toggleable theme
 
 ```ts
-import { applyDesignConfig, getDesignConfig } from '@homelab/ui'
+import { applyDesignConfig, getDesignConfig } from 'dssoca'
 
 function toggleTheme() {
   const next = getDesignConfig().theme === 'dark' ? 'light' : 'dark'
@@ -107,4 +121,4 @@ comfy page by putting `data-density="compact"` on just that subtree:
 - The two axes are independent — setting one never disturbs the other.
 - Attributes can live on any ancestor; nearest one wins, so scoped overrides
   work as shown above.
-- The showcase (`pnpm --filter @homelab/ui dev`) has live toggles for both axes.
+- The showcase (`pnpm dev`) has live toggles for both axes.

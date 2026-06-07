@@ -47,8 +47,11 @@ with no configuration. The hub explicitly opts into `compact`.
 
 ## Config object
 
-Density and theme can be driven from code via the config module
-(`$lib/config.ts`, re-exported from the package root).
+The available axes, their values, and the defaults are declared once in
+`dssoca.config.ts` (the manifest, exported as `dssocaConfig`); `config.ts`
+derives its types + `defaultDesignConfig` from it. Density and theme can be
+driven from code via the config module (`$lib/config.ts`, re-exported from the
+package root).
 
 ```ts
 import { applyDesignConfig } from 'dssoca'
