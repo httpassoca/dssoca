@@ -1,0 +1,76 @@
+/*
+ * Prism token theme, mapped to the dssoca code tokens. Because the colours are
+ * `--ss-code-*` custom properties, the syntax highlighting recolours with the
+ * theme axis for free (dark = Night Owl, light = a readable light palette).
+ * Loaded globally (the highlighted markup is injected via {@html}, so it can't
+ * be component-scoped).
+ */
+pre[class*='language-'],
+code[class*='language-'] {
+  color: var(--ss-code-fg);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-size-xs);
+  line-height: 1.6;
+  tab-size: 2;
+  -moz-tab-size: 2;
+  white-space: pre;
+  word-spacing: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--ss-code-comment);
+  font-style: italic;
+}
+.token.punctuation {
+  color: var(--ss-code-fg);
+  opacity: 0.7;
+}
+.token.operator,
+.token.entity,
+.token.url {
+  color: var(--ss-code-fg);
+  opacity: 0.85;
+}
+.token.keyword,
+.token.atrule,
+.token.tag,
+.token.selector,
+.token.rule,
+.token.important {
+  color: var(--ss-code-keyword);
+}
+.token.string,
+.token.char,
+.token.attr-value,
+.token.regex,
+.token.inserted {
+  color: var(--ss-code-string);
+}
+.token.function,
+.token.class-name {
+  color: var(--ss-code-func);
+}
+.token.attr-name,
+.token.property,
+.token.variable {
+  color: var(--ss-code-func);
+}
+.token.number,
+.token.boolean,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: var(--ss-code-number);
+}
+.token.namespace {
+  opacity: 0.7;
+}
+.token.bold {
+  font-weight: 600;
+}
+.token.italic {
+  font-style: italic;
+}

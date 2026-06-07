@@ -1,0 +1,61 @@
+# Installation
+
+dssoca is published to npm as [`dssoca`](https://www.npmjs.com/package/dssoca). It targets
+**Svelte 5** (runes) as a peer dependency.
+
+## 1. Install
+
+```sh
+pnpm add dssoca svelte
+```
+
+## 2. Import the stylesheet
+
+The global stylesheet carries the design tokens, base element styles, and app-shell layout. Import
+it once, at the root of your app (e.g. your root `+layout.svelte` or `main.ts`):
+
+```js
+import 'dssoca/theme.css';
+```
+
+## 3. Set the axes
+
+The defaults (`dark` theme, `md` size) apply with no attributes at all. To pick explicit values,
+set the two `data-*` attributes on an ancestor — usually `<html>` — so the correct theme and size
+paint on the first frame:
+
+```html
+<html data-theme="dark" data-size-variant="md">
+  …
+</html>
+```
+
+In SvelteKit, the cleanest way is `app.html`. You can also drive the attributes at runtime with the
+config helpers — see [Theming & config](/theming).
+
+## 4. Use a component
+
+Import components from the package barrel:
+
+```svelte
+<script>
+  import { Button, Card } from 'dssoca';
+</script>
+
+<Card title="Welcome">
+  <Button variant="primary" onclick={() => alert('hi')}>deploy</Button>
+</Card>
+```
+
+## Fonts
+
+The system is monospace-forward and expects its display/body fonts. `theme.css` pulls the web fonts
+from Google Fonts and declares `@font-face` fallbacks that point at `/fonts/*` — copy the font files
+into your app's `static/fonts/` if you want the local fallbacks to resolve. Without them the system
+falls back to the next family in each stack (system mono / sans), so nothing breaks.
+
+## Next steps
+
+- [Theming & config](/theming) — the axes, the `dssoca.config.ts` manifest, and the runtime helpers.
+- [Tokens](/tokens) — the live token reference.
+- Browse the components in the sidebar.
