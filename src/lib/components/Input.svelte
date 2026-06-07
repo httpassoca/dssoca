@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { resolveComponentSize, type Size } from '../config.js'
+
   interface Props {
     label?: string
     id?: string
@@ -9,6 +11,8 @@
     required?: boolean
     disabled?: boolean
     oninput?: (e: Event & { currentTarget: HTMLInputElement }) => void
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
   }
   let {
     label,
@@ -20,11 +24,12 @@
     required = false,
     disabled = false,
     oninput,
+    size,
   }: Props = $props()
 </script>
 
 {#if label}
-  <label class="ss-field" for={id}>
+  <label class="ss-field" for={id} data-size-variant={resolveComponentSize('Input', size)}>
     <span class="lbl">{label}</span>
     <input
       class="ss-input"
@@ -41,6 +46,7 @@
 {:else}
   <input
     class="ss-input"
+    data-size-variant={resolveComponentSize('Input', size)}
     {id}
     {name}
     {type}

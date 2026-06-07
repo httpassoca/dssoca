@@ -1,16 +1,19 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
+  import { resolveComponentSize, type Size } from '../config.js'
 
   interface Props {
     title?: string
     meta?: string
     action?: Snippet
     children: Snippet
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
   }
-  let { title, meta, action, children }: Props = $props()
+  let { title, meta, action, children, size }: Props = $props()
 </script>
 
-<div class="ss-panel">
+<div class="ss-panel" data-size-variant={resolveComponentSize('Card', size)}>
   {#if title}
     <div class="head">
       <div class="title">{title}</div>

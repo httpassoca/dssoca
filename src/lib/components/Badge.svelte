@@ -1,16 +1,19 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
+  import { resolveComponentSize, type Size } from '../config.js'
 
   interface Props {
     tone?: 'up' | 'deg' | 'down' | 'info'
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
     children: Snippet
   }
-  let { tone = 'info', children }: Props = $props()
+  let { tone = 'info', size, children }: Props = $props()
 
   const hasDot = $derived(['up', 'deg', 'down', 'info'].includes(tone))
 </script>
 
-<span class="ss-badge {tone}">
+<span class="ss-badge {tone}" data-size-variant={resolveComponentSize('Badge', size)}>
   {#if hasDot}<span class="dot"></span>{/if}
   {@render children()}
 </span>

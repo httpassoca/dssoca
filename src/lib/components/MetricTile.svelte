@@ -1,15 +1,19 @@
 <script lang="ts">
+  import { resolveComponentSize, type Size } from '../config.js'
+
   interface Props {
     label: string
     value: string | number
     suffix?: string
     delta?: string
     dir?: 'up' | 'down'
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
   }
-  let { label, value, suffix, delta, dir = 'up' }: Props = $props()
+  let { label, value, suffix, delta, dir = 'up', size }: Props = $props()
 </script>
 
-<div class="ss-metric">
+<div class="ss-metric" data-size-variant={resolveComponentSize('MetricTile', size)}>
   <div class="label">{label}</div>
   <div class="val">
     {value}{#if suffix}<span class="small">{suffix}</span>{/if}

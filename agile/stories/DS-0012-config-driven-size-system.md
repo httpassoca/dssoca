@@ -2,7 +2,7 @@
 id: DS-0012
 type: story
 title: "Config-driven size system (rename density → sizeVariant)"
-status: todo
+status: done
 priority: high
 tags: [styling, api, breaking]
 depends_on: [DS-0011]
@@ -23,22 +23,22 @@ defaults that any component can override.
 the `Density` type) is renamed to the size axis. Builds on [[DS-0011-design-system-config-file]].
 
 ## Acceptance criteria
-- [ ] Density axis renamed to a **size** axis: scale `sm | md | lg` (default `md`); remap the
+- [x] Density axis renamed to a **size** axis: scale `sm | md | lg` (default `md`); remap the
       existing token blocks **`comfy` → `md`, `compact` → `sm`** in `src/styles/_tokens.scss` and
       add a new **`lg`** token set (larger control padding/font/etc.)
-- [ ] Attribute `data-density` → `data-size` (or `data-size-variant`); `applyDesignConfig` /
+- [x] Attribute `data-density` → `data-size` (or `data-size-variant`); `applyDesignConfig` /
       `designAttributes` / `getDesignConfig` and the `Density` type updated to the size axis
-- [ ] `dssoca.config.ts` extended with **`sizeVariant`** (global default size for all components)
+- [x] `dssoca.config.ts` extended with **`sizeVariant`** (global default size for all components)
       and a **`ComponentsSize`** map (per-component default size overrides)
-- [ ] **Every component** gets a `size?: 'sm' | 'md' | 'lg'` prop, resolving
+- [x] **Every component** gets a `size?: 'sm' | 'md' | 'lg'` prop, resolving
       `prop ?? ComponentsSize[component] ?? sizeVariant ?? 'md'`; non-global sizes applied via
       **local `--ss-*` overrides** on the instance so the scoped component CSS is unchanged
-- [ ] Icon & PassocaMark: numeric `size` prop **renamed to `px`** (frees `size` for the scale);
+- [x] Icon & PassocaMark: numeric `size` prop **renamed to `px`** (frees `size` for the scale);
       update internal usages (`Sidebar` `<Icon px=…>`, `Topbar` `<PassocaMark px=…>`)
-- [ ] Storybook: density toolbar global → size; component stories expose the `size` control;
+- [x] Storybook: density toolbar global → size; component stories expose the `size` control;
       stories + Vitest tests updated (including the renamed Icon/PassocaMark prop)
-- [ ] Zero border-radius + `ss-`-identity rules preserved; all theme × size combinations render correctly
-- [ ] `pnpm test` green; `pnpm pack` clean; `version` → **0.4.0** with a migration note
+- [x] Zero border-radius + `ss-`-identity rules preserved; all theme × size combinations render correctly
+- [x] `pnpm test` green; `pnpm pack` clean; `version` → **0.4.0** with a migration note
       (density API → size); `DESIGN.md` / `CLAUDE.md` / `docs/` updated; agile + board rebuilt
 
 ## Notes

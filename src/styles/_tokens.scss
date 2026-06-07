@@ -1,7 +1,7 @@
 // ============================================================
 //  Design tokens — the --ss-* custom properties for both axes.
 //  These MUST stay CSS custom properties (not Sass $variables): the
-//  data-theme / data-density cascade resolves them at runtime. See docs/tokens.md.
+//  data-theme / data-size-variant cascade resolves them at runtime. See docs/tokens.md.
 // ============================================================
 
 // ------------------------------------------------------------
@@ -111,20 +111,24 @@
 }
 
 // ------------------------------------------------------------
-//  AXIS 2 — DENSITY
-//  comfy  = roomy, general-purpose default (other projects)
-//  compact = dense control-room layout (the hub opts in)
-//  Every density-sensitive value below is a token so a single
-//  data-density flip rescales the whole chrome.
+//  AXIS 2 — SIZE  (renamed from DENSITY in 0.4.0 — see agile DS-0012)
+//  sm = dense/compact · md = roomy default · lg = oversized.
+//  The global default is set via [data-size-variant] on an ancestor
+//  (usually <html>, written by applyDesignConfig's `sizeVariant`); a
+//  component overrides locally by carrying `data-size-variant` itself
+//  (its `size` prop). Every size-sensitive value is a token so one flip
+//  rescales the whole chrome.  (md ← former comfy, sm ← former compact.)
 // ------------------------------------------------------------
 :root,
-[data-density="comfy"] {
+[data-size-variant="md"] {
   --ss-leading:        1.5;
 
   --ss-ui-xs:          11px;   /* micro uppercase labels */
   --ss-ui-sm:          12px;   /* secondary chrome text  */
   --ss-ui-md:          13px;   /* primary chrome text    */
   --ss-ui-lg:          15px;   /* names / logo           */
+
+  --ss-icon:           16px;
 
   --ss-control-font:   14px;
   --ss-control-py:     9px;
@@ -159,13 +163,15 @@
   --ss-main-px:        36px;
 }
 
-[data-density="compact"] {
+[data-size-variant="sm"] {
   --ss-leading:        1.3;
 
   --ss-ui-xs:          9.5px;
   --ss-ui-sm:          10.5px;
   --ss-ui-md:          11.5px;
   --ss-ui-lg:          13px;
+
+  --ss-icon:           14px;
 
   --ss-control-font:   12px;
   --ss-control-py:     5px;
@@ -198,4 +204,47 @@
   --ss-shell-top-h:    36px;
   --ss-main-py:        16px;
   --ss-main-px:        20px;
+}
+
+[data-size-variant="lg"] {
+  --ss-leading:        1.6;
+
+  --ss-ui-xs:          12.5px;
+  --ss-ui-sm:          13.5px;
+  --ss-ui-md:          15px;
+  --ss-ui-lg:          17px;
+
+  --ss-icon:           20px;
+
+  --ss-control-font:   16px;
+  --ss-control-py:     12px;
+  --ss-control-px:     22px;
+
+  --ss-input-font:     17px;
+  --ss-input-py:       17px;
+  --ss-input-px:       20px;
+
+  --ss-panel-head-py:  16px;
+  --ss-panel-head-px:  24px;
+  --ss-panel-body-py:  24px;
+  --ss-panel-body-px:  24px;
+
+  --ss-card-py:        22px;
+  --ss-card-px:        24px;
+  --ss-metric-val:     40px;
+
+  --ss-row-py:         12px;
+  --ss-row-px:         18px;
+
+  --ss-badge-py:       7px;
+  --ss-badge-px:       16px;
+
+  --ss-gap:            18px;
+  --ss-gap-sm:         13px;
+  --ss-block-gap:      36px;
+
+  --ss-shell-side-w:   260px;
+  --ss-shell-top-h:    56px;
+  --ss-main-py:        36px;
+  --ss-main-px:        48px;
 }

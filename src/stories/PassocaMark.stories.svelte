@@ -7,7 +7,7 @@
     component: PassocaMark,
     tags: ['autodocs'],
     argTypes: {
-      size: {
+      px: {
         control: { type: 'number' },
         description: 'Width and height of the SVG in pixels.',
       },
@@ -17,7 +17,7 @@
       },
     },
     args: {
-      size: 22,
+      px: 22,
       color: 'var(--ss-primary)',
     },
   });
@@ -25,10 +25,10 @@
 
 <Story name="Default" />
 
-<Story name="Small" args={{ size: 16 }} />
+<Story name="Small" args={{ px: 16 }} />
 
-<Story name="Medium" args={{ size: 32 }} />
+<Story name="Medium" args={{ px: 32 }} />
 
-<Story name="Large" args={{ size: 64 }} />
+<Story name="Large" args={{ px: 64 }} />
 
-<Story name="CustomColor" args={{ size: 48, color: 'var(--ss-accent)' }} />
+<Story name="CustomColor" args={{ px: 48, color: 'var(--ss-accent)' }} />

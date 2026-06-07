@@ -96,17 +96,17 @@ describe('PassocaMark', () => {
 		expect(svg).toHaveAttribute('viewBox', '0 0 103 89');
 	});
 
-	it('defaults to size 22', () => {
+	it('defaults to the --ss-icon token for width/height (inherits the active size)', () => {
 		const { container } = render(PassocaMark, {});
 		const svg = container.querySelector('svg')!;
-		expect(svg).toHaveAttribute('width', '22');
-		expect(svg).toHaveAttribute('height', '22');
+		expect(svg.getAttribute('style')).toContain('width: var(--ss-icon)');
+		expect(svg.getAttribute('style')).toContain('height: var(--ss-icon)');
 	});
 
-	it('applies an explicit size and color', () => {
-		const { container } = render(PassocaMark, { size: 40, color: '#abc' });
+	it('applies an explicit px size and color', () => {
+		const { container } = render(PassocaMark, { px: 40, color: '#abc' });
 		const svg = container.querySelector('svg')!;
-		expect(svg).toHaveAttribute('width', '40');
+		expect(svg.getAttribute('style')).toContain('width: 40px');
 		expect(svg).toHaveAttribute('fill', '#abc');
 	});
 });

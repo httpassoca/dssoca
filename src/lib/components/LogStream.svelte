@@ -1,11 +1,14 @@
 <script lang="ts">
   import { tick, untrack } from 'svelte'
+  import { resolveComponentSize, type Size } from '../config.js'
 
   interface LogLine { id: number; t: string; lvl: string; svc: string; msg: string }
 
   interface Props {
     live?: boolean
     initialLines?: Omit<LogLine, 'id'>[]
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
   }
 
   const TEMPLATES = [
@@ -29,7 +32,7 @@
     return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
   }
 
-  let { live = true, initialLines }: Props = $props()
+  let { live = true, initialLines, size }: Props = $props()
 
   const seed = untrack(() => initialLines ?? TEMPLATES)
   let counter = $state(seed.length)
@@ -49,7 +52,7 @@
   })
 </script>
 
-<div class="ss-logs" bind:this={el}>
+<div class="ss-logs" bind:this={el} data-size-variant={resolveComponentSize('LogStream', size)}>
   {#each lines as line (line.id)}
     <div class="ln">
       <span class="t">{line.t}</span>

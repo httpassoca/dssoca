@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon, { type IconName } from './Icon.svelte'
+  import { resolveComponentSize, type Size } from '../config.js'
 
   type Status = 'up' | 'deg' | 'down'
   interface SideItem { id: string; label: string; icon: IconName; status?: Status }
@@ -9,6 +10,8 @@
     active?: string
     onSelect?: (id: string) => void
     groups?: SideGroup[]
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
   }
 
   const DEFAULT_GROUPS: SideGroup[] = [
@@ -24,10 +27,10 @@
     ]},
   ]
 
-  let { active = 'hub', onSelect, groups = DEFAULT_GROUPS }: Props = $props()
+  let { active = 'hub', onSelect, groups = DEFAULT_GROUPS, size }: Props = $props()
 </script>
 
-<aside class="ss-side">
+<aside class="ss-side" data-size-variant={resolveComponentSize('Sidebar', size)}>
   {#each groups as g}
     <div class="section">{g.section}</div>
     {#each g.items as item}
@@ -38,7 +41,7 @@
         onclick={() => onSelect?.(item.id)}
         onkeydown={(e) => e.key === 'Enter' && onSelect?.(item.id)}
       >
-        <Icon name={item.icon} size={13} />
+        <Icon name={item.icon} px={13} />
         <span>{item.label}</span>
         {#if item.status}
           <span class="dot {item.status === 'deg' ? 'warn' : item.status === 'down' ? 'err' : ''}"></span>

@@ -1,11 +1,19 @@
 <script lang="ts">
   import { fly } from 'svelte/transition'
   import { toasts, type ToastKind } from '../toast.svelte.js'
+  import { resolveComponentSize, type Size } from '../config.js'
+
+  interface Props {
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
+  }
+
+  let { size }: Props = $props()
 
   const glyph: Record<ToastKind, string> = { success: '✓', error: '✕', info: 'i' }
 </script>
 
-<div class="ss-toaster" role="region" aria-live="polite" aria-label="Notifications">
+<div class="ss-toaster" role="region" aria-live="polite" aria-label="Notifications" data-size-variant={resolveComponentSize('Toaster', size)}>
   {#each toasts.items as t (t.id)}
     <output class="ss-toast {t.kind}" transition:fly={{ x: 16, duration: 180 }}>
       <span class="ic">{glyph[t.kind]}</span>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
+  import { resolveComponentSize, type Size } from '../config.js'
 
   interface Props {
     variant?: 'empty' | 'error'
@@ -7,11 +8,13 @@
     message?: string
     icon?: string
     action?: Snippet
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
   }
-  let { variant = 'empty', title, message, icon, action }: Props = $props()
+  let { variant = 'empty', title, message, icon, action, size }: Props = $props()
 </script>
 
-<div class="ss-empty {variant}">
+<div class="ss-empty {variant}" data-size-variant={resolveComponentSize('EmptyState', size)}>
   {#if icon}<div class="ic">{icon}</div>{/if}
   <p class="title">{title}</p>
   {#if message}<p class="msg">{message}</p>{/if}
