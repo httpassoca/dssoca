@@ -1,24 +1,31 @@
 /**
  * Design system runtime config.
  *
- * Two independent axes drive the whole system (see DESIGN.md):
- *   • color   — `dark` | `light`   → written as [data-theme]
- *   • density — `comfy` | `compact` → written as [data-density]
+ * The available axes, their values, and the defaults are declared once in
+ * `dssoca.config.ts`; this module derives its types + defaults from that
+ * manifest and provides the runtime helpers (see DESIGN.md):
+ *   • color   — written as [data-theme]
+ *   • density — written as [data-density]
  *
  * `comfy` is the general-purpose default; the hub opts into `compact`.
  */
 
-export type ColorTheme = 'dark' | 'light'
-export type Density = 'comfy' | 'compact'
+import { dssocaConfig, type ColorTheme, type Density } from './dssoca.config.js'
+
+// Re-exported so the long-standing `dssoca` / `./config` import paths keep working.
+export { dssocaConfig }
+export type { ColorTheme, Density }
+export type { DssocaConfig, DesignAxis } from './dssoca.config.js'
 
 export interface DesignConfig {
   theme: ColorTheme
   density: Density
 }
 
+/** Defaults derived from the manifest — change them in `dssoca.config.ts`. */
 export const defaultDesignConfig: DesignConfig = {
-  theme: 'dark',
-  density: 'comfy',
+  theme: dssocaConfig.theme.default,
+  density: dssocaConfig.density.default,
 }
 
 let current: DesignConfig = { ...defaultDesignConfig }

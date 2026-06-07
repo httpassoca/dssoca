@@ -36,7 +36,8 @@ see agile `DS-0009`). Full rationale: `DESIGN.md`. Token table: `docs/tokens.md`
 src/lib/
   components/      one .svelte per component
   index.ts         barrel export (components + config + toast)
-  config.ts        applyDesignConfig / designAttributes / getDesignConfig
+  dssoca.config.ts manifest (exported as `dssocaConfig`): axes/values/defaults — config source of truth
+  config.ts        applyDesignConfig / designAttributes / getDesignConfig (derives types+defaults from the manifest)
   toast.svelte.ts  reactive toast store + imperative `toast` API
 src/styles/        Sass source (@use partials) → compiled to dist/theme.css; not published
   theme.scss       entry; _tokens / _base / _layout / _components partials

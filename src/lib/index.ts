@@ -8,6 +8,12 @@ export {
   applyDesignConfig,
 } from './config.js'
 
+export {
+  dssocaConfig,
+  type DssocaConfig,
+  type DesignAxis,
+} from './dssoca.config.js'
+
 export { default as PassocaMark } from './components/PassocaMark.svelte'
 export { default as Icon }        from './components/Icon.svelte'
 export { default as Badge }       from './components/Badge.svelte'
