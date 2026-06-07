@@ -62,6 +62,7 @@ ships (`files` field); `src/`, `test/`, `docs/` do not.
   tokens, base/element styles, and app-shell/layout belong in `src/styles/` (global `theme.css`).
 - **New chrome reads size tokens** (`--ss-*`), not hardcoded px, or it won't rescale.
 - **Tests are a RULE**: run `pnpm test` and add/extend tests for any change before calling it done.
+  A11y is covered by `vitest-axe` (unit) + `@storybook/addon-a11y` (Storybook); target WCAG 2.2 AA.
 - **Agile is a RULE**: update `agile/` items on any change (move status, add stories/tasks, bump
   `updated`), then `node build.mjs` in `agile/` to rebuild the board.
 

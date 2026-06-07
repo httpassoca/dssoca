@@ -20,7 +20,7 @@
   --ss-fg:          #e0e0e0;
   --ss-fg-shine:    #ffffff;
   --ss-fg-muted:    #aaaaaa;
-  --ss-fg-faint:    #6f6f6f;
+  --ss-fg-faint:    #8a8a8a;   /* WCAG AA ≥4.5:1 on bg + bg-elev (DS-0013) */
   --ss-fg-on-primary: #100f10;
 
   /* brand */
@@ -56,7 +56,7 @@
   --ss-fg:          #000000;
   --ss-fg-shine:    #000000;
   --ss-fg-muted:    #626262;
-  --ss-fg-faint:    #888888;
+  --ss-fg-faint:    #6b6b6b;   /* WCAG AA ≥4.5:1 on the light surfaces (DS-0013) */
   --ss-fg-on-primary: #100f10;
 }
 
@@ -247,4 +247,18 @@
   --ss-shell-top-h:    56px;
   --ss-main-py:        36px;
   --ss-main-px:        48px;
+}
+
+// ------------------------------------------------------------
+//  Reduced motion — collapse all motion-duration tokens so the
+//  CSS transitions that read them become instant (DS-0013).
+//  (Svelte JS transitions, e.g. Toaster's fly, are guarded in-component.)
+// ------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ss-dur-fast:  0ms;
+    --ss-dur:       0ms;
+    --ss-dur-slow:  0ms;
+    --ss-dur-xslow: 0ms;
+  }
 }

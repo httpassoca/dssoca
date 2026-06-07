@@ -42,21 +42,22 @@
     {#each tabs as tab, i}
       <button
         class="tab {tab === active ? 'active' : ''}"
+        aria-current={tab === active ? 'page' : undefined}
         onclick={() => onTab?.(tab)}
       >
-        <span class="n">{i + 1}</span>{tab}
+        <span class="n" aria-hidden="true">{i + 1}</span>{tab}
       </button>
     {/each}
   </div>
   <div class="grow"></div>
   <div class="seg right" title="services">
-    <span class="dot"></span>
+    <span class="dot" aria-hidden="true"></span>
     <span class="stat"><span class="v">6</span><span class="k">/7 up</span></span>
   </div>
   <div class="seg right stat" title="cpu"><span class="k">cpu</span><span class="v">62%</span></div>
   <div class="seg right stat" title="memory"><span class="k">mem</span><span class="v">3.8G</span></div>
   <div class="seg right stat" title="network"><span class="k">net</span><span class="v">↓1.2 ↑0.3</span></div>
-  <div class="seg right click"><span class="kbd">⌘K</span></div>
+  <div class="seg right click"><span class="kbd" aria-hidden="true">⌘K</span></div>
   <div class="seg right click">{user}</div>
   <div class="seg right clock">
     <span>{h}</span><span class="sep">:</span><span>{m}</span><span class="sep">:</span><span>{s}</span>

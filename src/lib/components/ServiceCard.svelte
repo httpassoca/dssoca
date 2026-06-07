@@ -28,9 +28,22 @@
     : status === 'down' ? 'var(--ss-red)'
     : 'var(--ss-primary)'
   )
+
+  // Spell the status out for assistive tech ("deg" is an opaque abbreviation).
+  const statusLabel = $derived(status === 'deg' ? 'degraded' : status)
 </script>
 
-<div class="ss-svc" role="button" tabindex="0" data-size-variant={resolveComponentSize('ServiceCard', size)} {onclick} onkeydown={(e) => e.key === 'Enter' && onclick?.()}>
+<div
+  class="ss-svc"
+  role="button"
+  tabindex="0"
+  aria-label={name}
+  data-size-variant={resolveComponentSize('ServiceCard', size)}
+  {onclick}
+  onkeydown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onclick?.() }
+  }}
+>
   <div class="head">
     <div>
       <div class="name">{name}</div>
@@ -38,12 +51,12 @@
     </div>
   </div>
   <div class="status">
-    <Badge tone={status}>{status}</Badge>
+    <Badge tone={status}>{statusLabel}</Badge>
     <div class="latency">{latency}</div>
   </div>
   <div class="footer">
     <Sparkline data={spark} color={sparkColor} />
-    <div class="latency">▸ open</div>
+    <div class="latency"><span aria-hidden="true">▸</span> open</div>
   </div>
 </div>
 

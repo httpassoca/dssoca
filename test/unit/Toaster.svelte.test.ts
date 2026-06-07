@@ -8,12 +8,24 @@ describe('Toaster', () => {
 		toasts.clear();
 	});
 
-	it('renders a polite live region', () => {
+	it('labels the notifications container (toasts carry their own live semantics)', () => {
 		const { container } = render(Toaster, {});
 		const region = container.querySelector('.ss-toaster');
-		expect(region).toHaveAttribute('role', 'region');
-		expect(region).toHaveAttribute('aria-live', 'polite');
 		expect(region).toHaveAttribute('aria-label', 'Notifications');
+		// the container is no longer the live region — avoids double announcements
+		expect(region).not.toHaveAttribute('aria-live');
+	});
+
+	it('announces info/success politely and errors assertively', async () => {
+		const { container } = render(Toaster, {});
+		toasts.push('success', 'ok', 0);
+		toasts.push('error', 'bad', 0);
+		await Promise.resolve();
+		const els = container.querySelectorAll('.ss-toast');
+		expect(els[0]).toHaveAttribute('role', 'status');
+		expect(els[0]).toHaveAttribute('aria-live', 'polite');
+		expect(els[1]).toHaveAttribute('role', 'alert');
+		expect(els[1]).toHaveAttribute('aria-live', 'assertive');
 	});
 
 	it('renders nothing when the store is empty', () => {

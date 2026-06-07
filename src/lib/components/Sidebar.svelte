@@ -30,7 +30,7 @@
   let { active = 'hub', onSelect, groups = DEFAULT_GROUPS, size }: Props = $props()
 </script>
 
-<aside class="ss-side" data-size-variant={resolveComponentSize('Sidebar', size)}>
+<aside class="ss-side" aria-label="Sidebar" data-size-variant={resolveComponentSize('Sidebar', size)}>
   {#each groups as g}
     <div class="section">{g.section}</div>
     {#each g.items as item}
@@ -38,13 +38,16 @@
         class="item {item.id === active ? 'active' : ''}"
         role="button"
         tabindex="0"
+        aria-current={item.id === active ? 'page' : undefined}
         onclick={() => onSelect?.(item.id)}
-        onkeydown={(e) => e.key === 'Enter' && onSelect?.(item.id)}
+        onkeydown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect?.(item.id) }
+        }}
       >
         <Icon name={item.icon} px={13} />
         <span>{item.label}</span>
         {#if item.status}
-          <span class="dot {item.status === 'deg' ? 'warn' : item.status === 'down' ? 'err' : ''}"></span>
+          <span class="dot {item.status === 'deg' ? 'warn' : item.status === 'down' ? 'err' : ''}" aria-hidden="true"></span>
         {/if}
       </div>
     {/each}

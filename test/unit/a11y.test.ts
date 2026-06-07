@@ -1,0 +1,66 @@
+import { describe, it, expect } from 'vitest';
+import { render } from '@testing-library/svelte';
+import { axe } from 'vitest-axe';
+import ButtonHarness from '../harness/ButtonHarness.svelte';
+import BadgeHarness from '../harness/BadgeHarness.svelte';
+import CardHarness from '../harness/CardHarness.svelte';
+import InputHarness from '../harness/InputHarness.svelte';
+import ServiceCard from '$lib/components/ServiceCard.svelte';
+import Sidebar from '$lib/components/Sidebar.svelte';
+import MetricTile from '$lib/components/MetricTile.svelte';
+import Icon from '$lib/components/Icon.svelte';
+
+// jsdom can't compute layout, so `color-contrast` is unreliable here (covered by
+// @storybook/addon-a11y in a real browser); and fragment-level renders lack the
+// page landmarks/h1 that some rules expect. Disable those page-scope rules so we
+// assert component-level a11y (roles, names, labels, aria).
+const axeOpts = {
+	rules: {
+		region: { enabled: false },
+		'landmark-one-main': { enabled: false },
+		'page-has-heading-one': { enabled: false },
+		'color-contrast': { enabled: false }
+	}
+};
+
+describe('a11y (axe) — no violations', () => {
+	it('Button', async () => {
+		const { container } = render(ButtonHarness, { text: 'Save' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('Badge', async () => {
+		const { container } = render(BadgeHarness, { tone: 'deg', text: 'degraded' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('Card', async () => {
+		const { container } = render(CardHarness, { title: 'Stats', body: 'content' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('Input (labelled)', async () => {
+		const { container } = render(InputHarness, { label: 'Email', type: 'email' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('ServiceCard', async () => {
+		const { container } = render(ServiceCard, { name: 'movies', host: 'movies.home', status: 'deg' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('Sidebar', async () => {
+		const { container } = render(Sidebar, {});
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('MetricTile', async () => {
+		const { container } = render(MetricTile, { label: 'cpu', value: 62, suffix: '%', delta: '5%' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('Icon (decorative, aria-hidden)', async () => {
+		const { container } = render(Icon, { name: 'grid' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+});
