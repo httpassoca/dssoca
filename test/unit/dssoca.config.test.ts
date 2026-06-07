@@ -3,11 +3,11 @@ import { dssocaConfig } from '$lib/dssoca.config';
 import { defaultDesignConfig } from '$lib/config';
 
 describe('dssocaConfig manifest', () => {
-	it('declares the theme and density axes with values + defaults', () => {
+	it('declares the theme and size axes with values + defaults', () => {
 		expect(dssocaConfig.theme.values).toEqual(['dark', 'light']);
 		expect(dssocaConfig.theme.default).toBe('dark');
-		expect(dssocaConfig.density.values).toEqual(['comfy', 'compact']);
-		expect(dssocaConfig.density.default).toBe('comfy');
+		expect(dssocaConfig.size.values).toEqual(['sm', 'md', 'lg']);
+		expect(dssocaConfig.size.default).toBe('md');
 	});
 
 	it("every axis's default is one of its allowed values", () => {
@@ -19,7 +19,8 @@ describe('dssocaConfig manifest', () => {
 	it('is the single source of truth: defaultDesignConfig derives from the manifest', () => {
 		expect(defaultDesignConfig).toEqual({
 			theme: dssocaConfig.theme.default,
-			density: dssocaConfig.density.default
+			sizeVariant: dssocaConfig.size.default,
+			componentsSize: {}
 		});
 	});
 });

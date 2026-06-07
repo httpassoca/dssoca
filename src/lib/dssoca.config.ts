@@ -4,12 +4,14 @@
  * and the system defaults. `config.ts` derives its types and defaults from
  * here, so adding a value (or a whole new axis) is a one-place change.
  *
- * Today there are two axes (see DESIGN.md):
- *   • theme   — color,        written as [data-theme]
- *   • density — chrome scale, written as [data-density]
+ * Two axes today (see DESIGN.md):
+ *   • theme — color, written as [data-theme]
+ *   • size  — chrome scale (sm | md | lg), written as [data-size-variant]
  *
- * Extend `dssocaConfig` (and the `DssocaConfig` shape) as the design system
- * gains more configuration.
+ * The `size` axis replaced the former `density` axis in 0.4.0 (DS-0012):
+ * compact → `sm`, comfy → `md`, plus a new `lg`. The global default is set by
+ * `sizeVariant`; per-component defaults by `componentsSize`; per instance by a
+ * component's `size` prop.
  */
 
 /** One configurable axis: its allowed values + the default applied when unset. */
@@ -23,7 +25,7 @@ export interface DesignAxis<Values extends readonly string[] = readonly string[]
 /** Shape of the manifest — one entry per axis the design system understands. */
 export interface DssocaConfig {
   readonly theme: DesignAxis
-  readonly density: DesignAxis
+  readonly size: DesignAxis
 }
 
 /**
@@ -31,12 +33,35 @@ export interface DssocaConfig {
  * below can be derived from it; `satisfies` validates the shape without widening.
  */
 export const dssocaConfig = {
-  theme:   { values: ['dark', 'light'],    default: 'dark' },
-  density: { values: ['comfy', 'compact'], default: 'comfy' },
+  theme: { values: ['dark', 'light'], default: 'dark' },
+  size:  { values: ['sm', 'md', 'lg'], default: 'md' },
 } as const satisfies DssocaConfig
 
 /** Color axis values — derived from the manifest (`'dark' | 'light'`). */
 export type ColorTheme = (typeof dssocaConfig)['theme']['values'][number]
 
-/** Density axis values — derived from the manifest (`'comfy' | 'compact'`). */
-export type Density = (typeof dssocaConfig)['density']['values'][number]
+/** Size axis values — derived from the manifest (`'sm' | 'md' | 'lg'`). */
+export type Size = (typeof dssocaConfig)['size']['values'][number]
+
+/** Names of the components that accept a `size` prop / `componentsSize` entry. */
+export const COMPONENT_NAMES = [
+  'Badge',
+  'Button',
+  'Card',
+  'EmptyState',
+  'Icon',
+  'Input',
+  'LogStream',
+  'MetricTile',
+  'PassocaMark',
+  'ServiceCard',
+  'Sidebar',
+  'Sparkline',
+  'Toaster',
+  'Topbar',
+] as const
+
+export type ComponentName = (typeof COMPONENT_NAMES)[number]
+
+/** Per-component default sizes; any omitted component inherits `sizeVariant`. */
+export type ComponentsSize = Partial<Record<ComponentName, Size>>

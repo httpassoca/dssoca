@@ -4,8 +4,8 @@
 //  House rule: NO ROUNDED CORNERS. Everything is squared.
 //
 //  Two independent axes (see DESIGN.md):
-//    • color   →  [data-theme="dark" | "light"]      (dark = default)
-//    • density →  [data-density="comfy" | "compact"] (comfy = default)
+//    • color →  [data-theme="dark" | "light"]          (dark = default)
+//    • size  →  [data-size-variant="sm" | "md" | "lg"] (md = default)
 //  Set them via the config helpers in $lib/config.ts, or by hand on
 //  any ancestor element (usually <html>).
 //

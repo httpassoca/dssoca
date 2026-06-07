@@ -3,14 +3,15 @@
 A Svelte 5 design system — **signal green on near-black, monospace-forward, zero border-radius**
 everywhere. Configured along two orthogonal axes:
 
-| Axis        | Attribute      | Values              | Default |
-|-------------|----------------|---------------------|---------|
-| **Color**   | `data-theme`   | `dark` · `light`    | `dark`  |
-| **Density** | `data-density` | `comfy` · `compact` | `comfy` |
+| Axis       | Attribute            | Values             | Default |
+|------------|----------------------|--------------------|---------|
+| **Color**  | `data-theme`         | `dark` · `light`   | `dark`  |
+| **Size**   | `data-size-variant`  | `sm` · `md` · `lg` | `md`    |
 
-Components are thin wrappers over a token-driven `theme.css`; flip an axis on any ancestor
-(usually `<html>`) and everything below rescales/recolors. See [`DESIGN.md`](./DESIGN.md) for the
-full rationale and [`docs/tokens.md`](./docs/tokens.md) for the token reference.
+Each component styles itself in a scoped block and consumes token-driven CSS custom properties;
+flip an axis on any ancestor (usually `<html>`) and everything below rescales/recolors. Components
+also take a per-instance `size` prop. See [`DESIGN.md`](./DESIGN.md) for the full rationale and
+[`docs/tokens.md`](./docs/tokens.md) for the token reference.
 
 ## Install
 
@@ -44,10 +45,13 @@ Import the stylesheet once (global tokens + base styles), then use components:
 ```ts
 import { applyDesignConfig, designAttributes } from 'dssoca'
 
-// flip one or both axes; merges over current config; writes to <html>
-applyDesignConfig({ density: 'compact' })          // dense dashboard
-applyDesignConfig({ theme: 'light' })              // keeps density
+// flip axes; merges over current config; writes to <html>
+applyDesignConfig({ sizeVariant: 'sm' })                 // global: everything small
+applyDesignConfig({ theme: 'light' })                    // keeps size
+applyDesignConfig({ componentsSize: { Button: 'lg' } })  // per-component default
 ```
+
+Per instance, just set the `size` prop: `<Button size="lg">`.
 
 SSR / no-flash — spread the attributes directly in markup instead of mutating the DOM:
 
@@ -56,7 +60,7 @@ SSR / no-flash — spread the attributes directly in markup instead of mutating 
   import { designAttributes } from 'dssoca'
 </script>
 
-<html {...designAttributes({ density: 'compact' })}>
+<html {...designAttributes({ sizeVariant: 'sm' })}>
 ```
 
 ## What's in the box
@@ -67,19 +71,20 @@ SSR / no-flash — spread the attributes directly in markup instead of mutating 
 **Toasts:** `toast` (`.success` / `.error` / `.info`) + the `toasts` store — render once with
 `<Toaster />`.
 
-**Config:** `applyDesignConfig`, `designAttributes`, `getDesignConfig`, `defaultDesignConfig`, and
-the `ColorTheme` / `Density` / `DesignConfig` types.
+**Config:** `dssocaConfig` (the manifest), `applyDesignConfig`, `designAttributes`,
+`getDesignConfig`, `resolveComponentSize`, `defaultDesignConfig`, and the `ColorTheme` / `Size` /
+`DesignConfig` / `ComponentsSize` types.
 
 ## House rules
 
 - **Zero border-radius.** Every radius token is `0` — never override.
-- New chrome reads density tokens (`--ss-*`), not hardcoded px, so it rescales with `data-density`.
+- New chrome reads size tokens (`--ss-*`), not hardcoded px, so it rescales with `data-size-variant`.
 
 ## Develop
 
 ```sh
 pnpm install
-pnpm dev      # showcase app with live theme + density toggles
+pnpm dev      # showcase app with live theme + size toggles
 pnpm test     # Vitest component/unit suite
 pnpm pack     # build dist/ (svelte-package) + validate (publint)
 ```

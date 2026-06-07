@@ -10,8 +10,8 @@ orthogonal axes**:
 
 | Axis        | Attribute      | Values              | Default |
 |-------------|----------------|---------------------|---------|
-| **Color**   | `data-theme`   | `dark` · `light`    | `dark`  |
-| **Density** | `data-density` | `comfy` · `compact` | `comfy` |
+| **Color**   | `data-theme`        | `dark` · `light`    | `dark`  |
+| **Size**    | `data-size-variant` | `sm` · `md` · `lg`  | `md`    |
 
 Each component styles itself in a scoped `<style lang="scss">` block and consumes the global
 `--ss-*` tokens; flip an axis on any ancestor (usually `<html>`) and everything below
@@ -60,7 +60,7 @@ ships (`files` field); `src/`, `test/`, `docs/` do not.
   (`.head`, `.title`, `.dot`). No new `--hs-`/`hub-` (those were renamed; see agile `DS-0005`).
 - **Styling is scoped**: component CSS lives in that component's `<style lang="scss">`. Only
   tokens, base/element styles, and app-shell/layout belong in `src/styles/` (global `theme.css`).
-- **New chrome reads density tokens** (`--ss-*`), not hardcoded px, or it won't rescale.
+- **New chrome reads size tokens** (`--ss-*`), not hardcoded px, or it won't rescale.
 - **Tests are a RULE**: run `pnpm test` and add/extend tests for any change before calling it done.
 - **Agile is a RULE**: update `agile/` items on any change (move status, add stories/tasks, bump
   `updated`), then `node build.mjs` in `agile/` to rebuild the board.
@@ -69,7 +69,7 @@ ships (`files` field); `src/`, `test/`, `docs/` do not.
 
 ```sh
 pnpm install            # deps (postinstall runs svelte-kit sync)
-pnpm dev                # showcase app: live theme + density toggles
+pnpm dev                # showcase app: live theme + size toggles
 pnpm test               # Vitest suite (run once)
 pnpm test:watch         # Vitest watch
 pnpm pack               # build dist/ via prepack (sync → svelte-package → build:css → publint), make tarball

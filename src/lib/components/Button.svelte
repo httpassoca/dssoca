@@ -1,17 +1,20 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
+  import { resolveComponentSize, type Size } from '../config.js'
 
   interface Props {
     variant?: 'primary' | 'secondary' | 'ghost'
     type?: 'button' | 'submit' | 'reset'
     disabled?: boolean
     onclick?: (e: MouseEvent) => void
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
     children: Snippet
   }
-  let { variant = 'secondary', type = 'button', disabled = false, onclick, children }: Props = $props()
+  let { variant = 'secondary', type = 'button', disabled = false, onclick, size, children }: Props = $props()
 </script>
 
-<button class="ss-btn {variant}" {type} {disabled} {onclick}>
+<button class="ss-btn {variant}" {type} {disabled} {onclick} data-size-variant={resolveComponentSize('Button', size)}>
   {@render children()}
 </button>
 

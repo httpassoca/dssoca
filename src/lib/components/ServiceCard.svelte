@@ -1,6 +1,7 @@
 <script lang="ts">
   import Badge from './Badge.svelte'
   import Sparkline from './Sparkline.svelte'
+  import { resolveComponentSize, type Size } from '../config.js'
 
   interface Props {
     name: string
@@ -9,6 +10,8 @@
     latency?: string
     spark?: number[]
     onclick?: () => void
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
   }
   let {
     name,
@@ -17,6 +20,7 @@
     latency = '',
     spark = [4, 8, 6, 10, 7, 12, 9, 14, 11, 16, 13, 10, 12],
     onclick,
+    size,
   }: Props = $props()
 
   const sparkColor = $derived(
@@ -26,7 +30,7 @@
   )
 </script>
 
-<div class="ss-svc" role="button" tabindex="0" {onclick} onkeydown={(e) => e.key === 'Enter' && onclick?.()}>
+<div class="ss-svc" role="button" tabindex="0" data-size-variant={resolveComponentSize('ServiceCard', size)} {onclick} onkeydown={(e) => e.key === 'Enter' && onclick?.()}>
   <div class="head">
     <div>
       <div class="name">{name}</div>

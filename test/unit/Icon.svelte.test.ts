@@ -12,18 +12,25 @@ describe('Icon', () => {
 		expect(svg).toHaveAttribute('fill', 'none');
 	});
 
-	it('defaults to size 16 for width/height', () => {
+	it('defaults to the --ss-icon token for width/height (inherits the active size)', () => {
 		const { container } = render(Icon, { name: 'grid' });
 		const svg = container.querySelector('svg')!;
-		expect(svg).toHaveAttribute('width', '16');
-		expect(svg).toHaveAttribute('height', '16');
+		expect(svg.getAttribute('style')).toContain('width: var(--ss-icon)');
+		expect(svg.getAttribute('style')).toContain('height: var(--ss-icon)');
+		// no explicit size → inherits the global size, so no own data-size-variant
+		expect(svg).not.toHaveAttribute('data-size-variant');
 	});
 
-	it('applies an explicit size to width/height', () => {
-		const { container } = render(Icon, { name: 'grid', size: 32 });
+	it('applies an explicit px size to width/height', () => {
+		const { container } = render(Icon, { name: 'grid', px: 32 });
 		const svg = container.querySelector('svg')!;
-		expect(svg).toHaveAttribute('width', '32');
-		expect(svg).toHaveAttribute('height', '32');
+		expect(svg.getAttribute('style')).toContain('width: 32px');
+		expect(svg.getAttribute('style')).toContain('height: 32px');
+	});
+
+	it('stamps data-size-variant when a token size is given', () => {
+		const { container } = render(Icon, { name: 'grid', size: 'lg' });
+		expect(container.querySelector('svg')).toHaveAttribute('data-size-variant', 'lg');
 	});
 
 	it('passes through a class to the svg', () => {

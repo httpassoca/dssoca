@@ -1,12 +1,24 @@
 <script lang="ts">
+  import { resolveComponentSize, type Size } from '../config.js'
+
   interface Props {
-    size?: number
+    /** Token-driven size (sm|md|lg); inherits the active size when unset. */
+    size?: Size
+    /** Explicit pixel size — overrides the token sizing. */
+    px?: number
     color?: string
   }
-  let { size = 22, color = 'var(--ss-primary)' }: Props = $props()
+  let { size, px, color = 'var(--ss-primary)' }: Props = $props()
+
+  const dim = $derived(px != null ? `${px}px` : 'var(--ss-icon)')
 </script>
 
-<svg viewBox="0 0 103 89" width={size} height={size} fill={color}>
+<svg
+  viewBox="0 0 103 89"
+  fill={color}
+  data-size-variant={resolveComponentSize('PassocaMark', size)}
+  style="width:{dim};height:{dim}"
+>
   <path
     fill-rule="evenodd"
     clip-rule="evenodd"

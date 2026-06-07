@@ -1,17 +1,20 @@
 export {
   type ColorTheme,
-  type Density,
+  type Size,
   type DesignConfig,
   defaultDesignConfig,
   getDesignConfig,
   designAttributes,
   applyDesignConfig,
+  resolveComponentSize,
 } from './config.js'
 
 export {
   dssocaConfig,
   type DssocaConfig,
   type DesignAxis,
+  type ComponentName,
+  type ComponentsSize,
 } from './dssoca.config.js'
 
 export { default as PassocaMark } from './components/PassocaMark.svelte'

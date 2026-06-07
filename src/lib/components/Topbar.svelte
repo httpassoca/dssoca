@@ -1,17 +1,21 @@
 <script lang="ts">
   import PassocaMark from './PassocaMark.svelte'
+  import { resolveComponentSize, type Size } from '../config.js'
 
   interface Props {
     active?: string
     user?: string
     tabs?: string[]
     onTab?: (tab: string) => void
+    /** Token size (sm|md|lg); inherits the global size when unset. */
+    size?: Size
   }
   let {
     active = 'overview',
     user = 'rafael@hub.home',
     tabs = ['overview', 'services', 'logs', 'shell'],
     onTab,
+    size,
   }: Props = $props()
 
   function pad(n: number) { return String(n).padStart(2, '0') }
@@ -29,9 +33,9 @@
   const [h, m, s] = $derived(clock.split(':'))
 </script>
 
-<div class="ss-topbar">
+<div class="ss-topbar" data-size-variant={resolveComponentSize('Topbar', size)}>
   <div class="seg logo">
-    <PassocaMark size={14} />
+    <PassocaMark px={14} />
     <span class="nm">hubssoca</span>
   </div>
   <div class="ws">

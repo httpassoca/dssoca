@@ -8,22 +8,22 @@
   import ServiceCard from "../lib/components/ServiceCard.svelte";
   import Sidebar from "../lib/components/Sidebar.svelte";
   import Topbar from "../lib/components/Topbar.svelte";
-  import type { ColorTheme, Density } from "../lib/config.js";
+  import type { ColorTheme, Size } from "../lib/config.js";
   import "../styles/theme.scss";
 
   let activeTab = $state("overview");
   let activeSide = $state("hub");
 
-  // Demo models the hub → starts compact/dark. Toggle to preview comfy/light.
+  // Demo models the hub → starts small/dark. Toggle to preview md/light.
   let theme = $state<ColorTheme>("dark");
-  let density = $state<Density>("compact");
+  let sizeVariant = $state<Size>("sm");
 </script>
 
 <svelte:head>
-  <title>@homelab/ui — design system preview</title>
+  <title>dssoca — design system preview</title>
 </svelte:head>
 
-<div class="ss-app" data-theme={theme} data-density={density}>
+<div class="ss-app" data-theme={theme} data-size-variant={sizeVariant}>
   <Topbar active={activeTab} onTab={(t) => (activeTab = t)} />
   <Sidebar active={activeSide} onSelect={(id) => (activeSide = id)} />
 
@@ -37,9 +37,9 @@
         <Button
           variant="ghost"
           onclick={() =>
-            (density = density === "compact" ? "comfy" : "compact")}
+            (sizeVariant = sizeVariant === "sm" ? "md" : sizeVariant === "md" ? "lg" : "sm")}
         >
-          density: {density}
+          size: {sizeVariant}
         </Button>
         <Button
           variant="ghost"
