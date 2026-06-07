@@ -1,5 +1,9 @@
 # dssoca
 
+[![npm](https://img.shields.io/npm/v/dssoca.svg)](https://www.npmjs.com/package/dssoca)
+[![CI](https://github.com/httpassoca/dssoca/actions/workflows/ci.yml/badge.svg)](https://github.com/httpassoca/dssoca/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/dssoca.svg)](./LICENSE)
+
 A Svelte 5 design system — **signal green on near-black, monospace-forward, zero border-radius**
 everywhere. Configured along two orthogonal axes:
 
@@ -89,14 +93,32 @@ icons/graphics `aria-hidden`, AA-contrast text tokens, and `prefers-reduced-moti
 - **Zero border-radius.** Every radius token is `0` — never override.
 - New chrome reads size tokens (`--ss-*`), not hardcoded px, so it rescales with `data-size-variant`.
 
+## Documentation
+
+A custom documentation site lives in [`documentation/`](./documentation) (SvelteKit + mdsvex). It
+dogfoods dssoca for its own chrome and covers the Introduction, Installation, Theming & config, a
+live Tokens gallery, and a page per component that embeds the component's live Storybook story.
+
+```sh
+pnpm docs:dev      # docs site (run `pnpm storybook` alongside for the live demos)
+pnpm docs:build    # static build of the docs site
+```
+
+The docs app is local-only and is **not** part of the published npm package.
+
 ## Develop
 
 ```sh
 pnpm install
-pnpm dev      # showcase app with live theme + size toggles
-pnpm test     # Vitest component/unit suite
-pnpm pack     # build dist/ (svelte-package) + validate (publint)
+pnpm dev        # library SvelteKit app (stub landing)
+pnpm storybook  # interactive component explorer (:6006)
+pnpm docs:dev   # documentation site
+pnpm test       # Vitest component/unit suite
+pnpm pack       # build dist/ (svelte-package) + validate (publint)
 ```
+
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the full workflow and [`CHANGELOG.md`](./CHANGELOG.md)
+for release history.
 
 ## License
 

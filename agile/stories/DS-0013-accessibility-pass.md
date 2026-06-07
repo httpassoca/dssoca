@@ -44,3 +44,15 @@ blocking CI gate are deferred to a possible Tier 3). Non-breaking.
   pass covers the final component shapes; documented by [[DS-0010-custom-docs-site]].
 - Research: WCAG 2.2, WAI-ARIA APG keyboard/button, Sara Soueidan on ARIA live regions,
   `prefers-reduced-motion` (MDN/web.dev), `vitest-axe`, `@storybook/addon-a11y`.
+
+## Follow-up — light-theme contrast (2026-06-07)
+The **light** theme previously only overrode surfaces + foreground, so the neon dark-mode brand /
+status / code colours bled through onto a near-white page and failed contrast. Fixed in
+`_tokens.scss`:
+- `--ss-bg` softened to `#f0f0f0` (was `#fefefe`); `--ss-line(-strong)` strengthened.
+- Foregrounds retuned for AA on `#f0f0f0` + `#ffffff` (`--ss-fg-muted`/`--ss-fg-faint`).
+- Light-mode overrides added for the **brand** (`--ss-primary` → deep green `#157f3b`,
+  white `--ss-fg-on-primary`), **status**, **lime**, and **code** (`--ss-code-*`) palettes.
+- New theme-aware `--ss-hover` + `--ss-primary-hover` tokens replace hardcoded `rgba(255,255,255,…)`
+  / `#7df089` hovers (Button, Sidebar, Topbar, `_layout` table) that were invisible/over-bright on
+  light surfaces.

@@ -25,7 +25,11 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"build-storybook": "storybook build",
+		"docs:dev": "pnpm --filter dssoca-docs dev",
+		"docs:build": "pnpm --filter dssoca-docs build",
+		"docs:preview": "pnpm --filter dssoca-docs preview",
+		"docs:test": "pnpm --filter dssoca-docs test"
 	},
 	"files": [
 		"dist",

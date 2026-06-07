@@ -73,7 +73,7 @@
       border-left: 2px solid transparent;
       transition: all var(--ss-dur-fast) var(--ss-ease);
 
-      &:hover { color: var(--ss-fg); background: rgba(255,255,255,.03); }
+      &:hover { color: var(--ss-fg); background: var(--ss-hover); }
       &.active { color: var(--ss-fg); background: rgba(102,239,115,.06); border-left-color: var(--ss-primary); }
       .dot {
         width: 5px; height: 5px; margin-left: auto; background: var(--ss-primary);

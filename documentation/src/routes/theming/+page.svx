@@ -1,0 +1,94 @@
+# Theming & config
+
+dssoca is configured along two orthogonal axes (see [Introduction](/introduction)). This page covers
+how to set them — statically and at runtime — and the `dssoca.config.ts` manifest that defines them.
+
+## The color axis — `data-theme`
+
+`data-theme` selects the color palette: `dark` (default) or `light`. Set it on any ancestor; the
+nearest one wins, so you can theme a subtree differently from the page.
+
+```html
+<html data-theme="light"> … </html>
+```
+
+## The size axis — `data-size-variant`
+
+`data-size-variant` scales the chrome: `sm` (compact) · `md` (default) · `lg` (oversized). Every
+size-sensitive value is a token, so one flip rescales spacing, control padding, font sizes, and the
+app-shell dimensions together.
+
+Sizing resolves in three layers, highest priority first:
+
+1. a component's `size` prop — per instance
+2. `componentsSize[Name]` — a per-component default
+3. `data-size-variant` on an ancestor — the global default (`md` out of the box)
+
+```svelte
+<script>
+  import { Button } from 'dssoca';
+</script>
+
+<!-- inherits the ambient size -->
+<Button>default</Button>
+
+<!-- opts this one instance out -->
+<Button size="lg">larger</Button>
+```
+
+## The manifest — `dssoca.config.ts`
+
+The axes, their allowed values, and the defaults are declared **once** in `dssoca.config.ts`, the
+config source of truth. Everything else (types, runtime defaults) is derived from it.
+
+```ts
+import { dssocaConfig } from 'dssoca';
+
+dssocaConfig.theme.values; // ['dark', 'light']
+dssocaConfig.theme.default; // 'dark'
+dssocaConfig.size.values; // ['sm', 'md', 'lg']
+dssocaConfig.size.default; // 'md'
+```
+
+## Runtime helpers
+
+When you need to flip an axis from code (a theme toggle, a density switch), use the helpers — they
+read and write the same `data-*` attributes.
+
+`applyDesignConfig(partial, target?)` — merge a partial config over the current one and write it to
+an element (defaults to `<html>`). Flip one axis at a time:
+
+```ts
+import { applyDesignConfig } from 'dssoca';
+
+applyDesignConfig({ theme: 'light' });
+applyDesignConfig({ sizeVariant: 'sm' });
+```
+
+`designAttributes(config?)` — build the `data-*` attribute map for SSR/markup, so the right theme +
+size paint on the first frame with no flash:
+
+```svelte
+<html {...designAttributes({ sizeVariant: 'sm' })}> … </html>
+```
+
+`getDesignConfig()` returns the current resolved config; `resolveComponentSize(name, size?)` is the
+helper components use internally to apply the three-layer resolution above.
+
+> The **theme** and **size** buttons in this site's top bar call `applyDesignConfig` directly — the
+> docs drive the system the same way your app would.
+
+## Per-component defaults
+
+To bias specific components without changing the global size, pass `componentsSize`:
+
+```ts
+import { applyDesignConfig } from 'dssoca';
+
+applyDesignConfig({
+  sizeVariant: 'md',
+  componentsSize: { Badge: 'sm', LogStream: 'sm' },
+});
+```
+
+Components not listed inherit the global `sizeVariant`.

@@ -84,7 +84,7 @@
     text-transform: uppercase; letter-spacing: 0.1em; font-weight: 400;
     padding: var(--ss-row-py) var(--ss-row-px);
   }
-  tr:hover td { background: rgba(255,255,255,.03); }
+  tr:hover td { background: var(--ss-hover); }
   .mono { color: var(--ss-fg-muted); }
 }
 
