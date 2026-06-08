@@ -28,22 +28,23 @@ pnpm docs:test     # Vitest unit tests (docs config + highlighter)
 
 ## Deployment (Vercel)
 
-The site deploys to **Vercel** as a static build. Config lives in **`vercel.json` at the repo
-root** (not in `documentation/`), because the build must run from the repo root — the docs import
-the library **source** via `../src` (see Aliases), so Vercel's *Root Directory* must stay the repo
-root. `vercel.json`:
+The site deploys to **Vercel** as a static build. The Vercel **Root Directory is this
+`documentation/` folder**, so the config lives in **`documentation/vercel.json`** and uses this
+package's own scripts (the root `pnpm docs:build` isn't visible from here):
 
 - `framework: null` — we drive the build ourselves (don't let Vercel's SvelteKit detection assume
   `adapter-vercel`); we ship the `adapter-static` output instead.
-- `buildCommand: pnpm docs:build` → writes `documentation/build/`.
-- `outputDirectory: documentation/build` — what Vercel serves.
+- `buildCommand: pnpm build` → this package's `vite build`, which writes `build/`.
+- `outputDirectory: build` (relative to the Root Directory → `documentation/build`).
 - `trailingSlash: true` — matches the docs' `trailingSlash: 'always'` so prerendered
   `route/index.html` files resolve.
 
-**One-time setup:** in the Vercel dashboard, import the repo with *Root Directory = repo root* and
-leave Framework Preset to "Other" (the committed `vercel.json` supplies the commands). pnpm is picked
-up from the root `packageManager` field. The `prepare`/sync step runs automatically (the SvelteKit
-vite plugin syncs on `build`).
+**One-time setup (Vercel dashboard):**
+- *Root Directory* = `documentation`, Framework Preset = "Other" (the committed `vercel.json`
+  supplies the commands).
+- **Enable "Include files outside the Root Directory in the Build Step"** — required: the docs
+  dogfood the library by importing its **source** via `../src` (see Aliases), which lives above this
+  folder. pnpm + the workspace install resolve from the repo root above.
 
 **Caveat — Storybook embeds:** the per-component pages embed live Storybook stories from
 `STORYBOOK_URL` (default `http://localhost:6006`). On the deployed site those iframes are blank
