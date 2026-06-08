@@ -203,6 +203,10 @@
   --ss-shell-top-h:    48px;
   --ss-main-py:        28px;
   --ss-main-px:        36px;
+
+  /* toast (DS-0041) — icon box + swipe-dismiss threshold */
+  --ss-toast-ic:       18px;
+  --ss-toast-swipe:    72px;
 }
 
 [data-size-variant="sm"] {
@@ -246,6 +250,10 @@
   --ss-shell-top-h:    36px;
   --ss-main-py:        16px;
   --ss-main-px:        20px;
+
+  /* toast (DS-0041) */
+  --ss-toast-ic:       15px;
+  --ss-toast-swipe:    60px;
 }
 
 [data-size-variant="lg"] {
@@ -289,6 +297,10 @@
   --ss-shell-top-h:    56px;
   --ss-main-py:        36px;
   --ss-main-px:        48px;
+
+  /* toast (DS-0041) */
+  --ss-toast-ic:       22px;
+  --ss-toast-swipe:    88px;
 }
 
 // ------------------------------------------------------------

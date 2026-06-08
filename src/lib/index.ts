@@ -31,4 +31,13 @@ export { default as LogStream }   from './components/LogStream.svelte'
 export { default as Toaster }     from './components/Toaster.svelte'
 export { default as EmptyState }  from './components/EmptyState.svelte'
 
-export { toast, toasts, type Toast, type ToastKind } from './toast.svelte.js'
+export {
+  toast,
+  toasts,
+  type Toast,
+  type ToastKind,
+  type ToastAction,
+  type ToastOptions,
+  type ToastPatch,
+  type PromiseMessages,
+} from './toast.svelte.js'

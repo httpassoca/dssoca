@@ -9,6 +9,8 @@ import ServiceCard from '$lib/components/ServiceCard.svelte';
 import Sidebar from '$lib/components/Sidebar.svelte';
 import MetricTile from '$lib/components/MetricTile.svelte';
 import Icon from '$lib/components/Icon.svelte';
+import Toaster from '$lib/components/Toaster.svelte';
+import { toasts } from '$lib/toast.svelte';
 
 // jsdom can't compute layout, so `color-contrast` is unreliable here (covered by
 // @storybook/addon-a11y in a real browser); and fragment-level renders lack the
@@ -62,5 +64,15 @@ describe('a11y (axe) — no violations', () => {
 	it('Icon (decorative, aria-hidden)', async () => {
 		const { container } = render(Icon, { name: 'grid' });
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('Toaster (with action + loading toasts)', async () => {
+		toasts.clear();
+		const { container } = render(Toaster, {});
+		toasts.push('info', 'undo me', { action: { label: 'Undo', onClick: () => {} } });
+		toasts.push('loading', 'working…', 0);
+		await Promise.resolve();
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+		toasts.clear();
 	});
 });
