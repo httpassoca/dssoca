@@ -292,6 +292,9 @@
   --ss-main-py:        28px;
   --ss-main-px:        36px;
 
+  /* toast (DS-0041) — icon box + swipe-dismiss threshold */
+  --ss-toast-ic:       18px;
+  --ss-toast-swipe:    72px;
   /* empty-state visual + width (rescales with the size axis) */
   --ss-empty-glyph:         40px;
   --ss-empty-glyph-compact: 28px;
@@ -347,6 +350,9 @@
   --ss-main-py:        16px;
   --ss-main-px:        20px;
 
+  /* toast (DS-0041) */
+  --ss-toast-ic:       15px;
+  --ss-toast-swipe:    60px;
   /* empty-state visual + width */
   --ss-empty-glyph:         32px;
   --ss-empty-glyph-compact: 22px;
@@ -402,6 +408,9 @@
   --ss-main-py:        36px;
   --ss-main-px:        48px;
 
+  /* toast (DS-0041) */
+  --ss-toast-ic:       22px;
+  --ss-toast-swipe:    88px;
   /* empty-state visual + width */
   --ss-empty-glyph:         52px;
   --ss-empty-glyph-compact: 36px;
