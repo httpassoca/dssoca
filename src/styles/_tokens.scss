@@ -292,6 +292,11 @@
   --ss-main-py:        28px;
   --ss-main-px:        36px;
 
+  /* Sidebar component — expanded/rail widths + per-item badge padding (DS-0039) */
+  --ss-side-w:         220px;
+  --ss-side-w-rail:    56px;
+  --ss-side-badge-py:  2px;
+  --ss-side-badge-px:  6px;
   /* toast (DS-0041) — icon box + swipe-dismiss threshold */
   --ss-toast-ic:       18px;
   --ss-toast-swipe:    72px;
@@ -350,6 +355,11 @@
   --ss-main-py:        16px;
   --ss-main-px:        20px;
 
+  /* Sidebar component (DS-0039) */
+  --ss-side-w:         180px;
+  --ss-side-w-rail:    44px;
+  --ss-side-badge-py:  1px;
+  --ss-side-badge-px:  5px;
   /* toast (DS-0041) */
   --ss-toast-ic:       15px;
   --ss-toast-swipe:    60px;
@@ -408,6 +418,11 @@
   --ss-main-py:        36px;
   --ss-main-px:        48px;
 
+  /* Sidebar component (DS-0039) */
+  --ss-side-w:         260px;
+  --ss-side-w-rail:    64px;
+  --ss-side-badge-py:  3px;
+  --ss-side-badge-px:  8px;
   /* toast (DS-0041) */
   --ss-toast-ic:       22px;
   --ss-toast-swipe:    88px;
