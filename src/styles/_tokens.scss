@@ -60,6 +60,22 @@
 
   --ss-selection-bg: var(--ss-primary);
   --ss-selection-fg: var(--ss-fg-on-primary);
+
+  /* badge tones — theme-tracked fills/borders so light mode is correct
+     (DS-0031). fg uses the matching status token; bg/border are translucent
+     washes tuned for the dark surfaces. */
+  --ss-badge-up-bg:       rgba(102, 239, 115, 0.12);
+  --ss-badge-up-border:   rgba(102, 239, 115, 0.40);
+  --ss-badge-deg-bg:      rgba(224, 195, 106, 0.12);
+  --ss-badge-deg-border:  rgba(224, 195, 106, 0.40);
+  --ss-badge-down-bg:     rgba(255, 92, 92, 0.12);
+  --ss-badge-down-border: rgba(255, 92, 92, 0.40);
+  --ss-badge-maint-bg:     rgba(154, 164, 255, 0.12);
+  --ss-badge-maint-border: rgba(154, 164, 255, 0.40);
+  --ss-badge-info-bg:     rgba(102, 217, 239, 0.12);
+  --ss-badge-info-border: rgba(102, 217, 239, 0.40);
+  --ss-badge-neutral-bg:     rgba(255, 255, 255, 0.06);
+  --ss-badge-neutral-border: var(--ss-line);
 }
 
 [data-theme="light"] {
@@ -108,6 +124,22 @@
   --ss-code-keyword: #c5221f;
   --ss-code-func:    #6639ba;
   --ss-code-comment: #6a737d;
+
+  /* badge tones — deeper washes/borders so the fills read on the light page
+     (the dark-mode neon washes wash out on #f0f0f0). fg tracks the darkened
+     light-mode status tokens already defined above. */
+  --ss-badge-up-bg:       rgba(21, 127, 59, 0.10);
+  --ss-badge-up-border:   rgba(21, 127, 59, 0.35);
+  --ss-badge-deg-bg:      rgba(138, 109, 26, 0.10);
+  --ss-badge-deg-border:  rgba(138, 109, 26, 0.35);
+  --ss-badge-down-bg:     rgba(198, 40, 40, 0.10);
+  --ss-badge-down-border: rgba(198, 40, 40, 0.35);
+  --ss-badge-maint-bg:     rgba(47, 59, 214, 0.10);
+  --ss-badge-maint-border: rgba(47, 59, 214, 0.35);
+  --ss-badge-info-bg:     rgba(11, 110, 125, 0.10);
+  --ss-badge-info-border: rgba(11, 110, 125, 0.35);
+  --ss-badge-neutral-bg:     rgba(0, 0, 0, 0.05);
+  --ss-badge-neutral-border: var(--ss-line);
 
   /* log-level accents — darkened code/status values for AA on the light code surface */
   --ss-log-info: var(--ss-code-func);
@@ -208,6 +240,8 @@
 
   --ss-badge-py:       5px;
   --ss-badge-px:       12px;
+  --ss-badge-dot:      5px;
+  --ss-badge-gap:      6px;
 
   --ss-gap:            14px;
   --ss-gap-sm:         10px;
@@ -251,6 +285,8 @@
 
   --ss-badge-py:       3px;
   --ss-badge-px:       8px;
+  --ss-badge-dot:      4px;
+  --ss-badge-gap:      5px;
 
   --ss-gap:            8px;
   --ss-gap-sm:         6px;
@@ -294,6 +330,8 @@
 
   --ss-badge-py:       7px;
   --ss-badge-px:       16px;
+  --ss-badge-dot:      6px;
+  --ss-badge-gap:      7px;
 
   --ss-gap:            18px;
   --ss-gap-sm:         13px;
