@@ -9,8 +9,9 @@ A standalone **SvelteKit + mdsvex** app (package `dssoca-docs`, `private`) that 
 the spirit of [ui.shadcn.com](https://ui.shadcn.com/): a landing page, narrative guides, a live
 token gallery, and a page per component that **embeds the component's live Storybook story**.
 
-- **Local-only.** No deploy/CI (intentionally out of scope). Run it locally; `pnpm docs:build`
-  produces a static site via `adapter-static`.
+- **Static site.** `pnpm docs:build` produces a fully prerendered static site via `adapter-static`
+  → `documentation/build/`. Run it locally with `pnpm docs:dev` / `pnpm docs:preview`.
+- **Deployed to Vercel** (see `vercel.json` at the repo root + the Deployment section below).
 - **Not published.** It's a separate workspace package — nothing here ships in the npm tarball
   (`pnpm pack` stays clean).
 - **Dogfoods dssoca.** The chrome (nav, theme/size toggles, cards) is built from dssoca components +
@@ -24,6 +25,30 @@ pnpm docs:build    # static build → documentation/build/
 pnpm docs:preview  # preview the static build
 pnpm docs:test     # Vitest unit tests (docs config + highlighter)
 ```
+
+## Deployment (Vercel)
+
+The site deploys to **Vercel** as a static build. Config lives in **`vercel.json` at the repo
+root** (not in `documentation/`), because the build must run from the repo root — the docs import
+the library **source** via `../src` (see Aliases), so Vercel's *Root Directory* must stay the repo
+root. `vercel.json`:
+
+- `framework: null` — we drive the build ourselves (don't let Vercel's SvelteKit detection assume
+  `adapter-vercel`); we ship the `adapter-static` output instead.
+- `buildCommand: pnpm docs:build` → writes `documentation/build/`.
+- `outputDirectory: documentation/build` — what Vercel serves.
+- `trailingSlash: true` — matches the docs' `trailingSlash: 'always'` so prerendered
+  `route/index.html` files resolve.
+
+**One-time setup:** in the Vercel dashboard, import the repo with *Root Directory = repo root* and
+leave Framework Preset to "Other" (the committed `vercel.json` supplies the commands). pnpm is picked
+up from the root `packageManager` field. The `prepare`/sync step runs automatically (the SvelteKit
+vite plugin syncs on `build`).
+
+**Caveat — Storybook embeds:** the per-component pages embed live Storybook stories from
+`STORYBOOK_URL` (default `http://localhost:6006`). On the deployed site those iframes are blank
+unless you set **`VITE_STORYBOOK_URL`** (a Vercel env var) to a deployed Storybook. Deploying
+Storybook itself is out of scope.
 
 ## Layout
 

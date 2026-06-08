@@ -26,8 +26,10 @@ const config = {
   },
 
   kit: {
-    // Local-only static build: `pnpm --filter dssoca-docs build && … preview`.
-    // Deploy (GitHub Pages base path etc.) is intentionally out of scope here.
+    // Static build → `documentation/build/` (`pnpm docs:build`; `… preview` to
+    // serve it locally). Deployed to Vercel as a static site (see `vercel.json`
+    // at the repo root): served from the domain root, so no base path is needed.
+    // The `404.html` fallback doubles as Vercel's not-found page.
     adapter: adapter({ fallback: '404.html' }),
 
     // Dogfood the design system by importing its SOURCE from the repo above.
