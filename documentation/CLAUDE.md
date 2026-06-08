@@ -40,7 +40,13 @@ drive the config:
 
 - `framework: null` — we drive the build ourselves (don't let Vercel's SvelteKit detection assume
   `adapter-vercel`); we ship the `adapter-static` output instead.
-- `buildCommand: pnpm build` → run from `documentation/`, this is `svelte-kit sync && vite build`.
+- `buildCommand: pnpm -w run prepare && pnpm build`. Two syncs are needed:
+  - `pnpm -w run prepare` runs the **root/library** `svelte-kit sync` (at the workspace root) →
+    creates the repo-root `.svelte-kit/tsconfig.json`. The docs build transforms the dogfooded
+    `../src` library files, which fall under the **repo-root `tsconfig.json`** (it
+    `extends "./.svelte-kit/tsconfig.json"`); without this the build dies with
+    `Tsconfig not found .../.svelte-kit/tsconfig.json`.
+  - `pnpm build` is this package's own `svelte-kit sync && vite build` (run from `documentation/`).
 - `outputDirectory: build` (relative to the Root Directory → `documentation/build`).
 - `trailingSlash: true` — matches the docs' `trailingSlash: 'always'` so prerendered
   `route/index.html` files resolve.
