@@ -42,6 +42,7 @@
   --ss-blue:   #9aa4ff;
   --ss-cyan:   #66d9ef;
   --ss-purple: #b98cff;
+  --ss-red-rgb: 255, 92, 92;   /* soft invalid focus ring (DS-0033) */
 
   /* destructive — danger aliases --ss-red; hover deepens it, label is dark
      for AA contrast on the bright neon red (DS-0032) */
@@ -125,6 +126,7 @@
   --ss-blue:   #2f3bd6;
   --ss-cyan:   #0b6e7d;
   --ss-purple: #6a35c9;
+  --ss-red-rgb: 198, 40, 40;   /* soft invalid focus ring (DS-0033) */
 
   /* destructive — the deep light-mode red carries a white label at AA (DS-0032) */
   --ss-danger:        var(--ss-red);
