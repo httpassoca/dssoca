@@ -203,6 +203,12 @@
   --ss-shell-top-h:    48px;
   --ss-main-py:        28px;
   --ss-main-px:        36px;
+
+  /* Sidebar component — expanded/rail widths + per-item badge padding (DS-0039) */
+  --ss-side-w:         220px;
+  --ss-side-w-rail:    56px;
+  --ss-side-badge-py:  2px;
+  --ss-side-badge-px:  6px;
 }
 
 [data-size-variant="sm"] {
@@ -246,6 +252,12 @@
   --ss-shell-top-h:    36px;
   --ss-main-py:        16px;
   --ss-main-px:        20px;
+
+  /* Sidebar component (DS-0039) */
+  --ss-side-w:         180px;
+  --ss-side-w-rail:    44px;
+  --ss-side-badge-py:  1px;
+  --ss-side-badge-px:  5px;
 }
 
 [data-size-variant="lg"] {
@@ -289,6 +301,12 @@
   --ss-shell-top-h:    56px;
   --ss-main-py:        36px;
   --ss-main-px:        48px;
+
+  /* Sidebar component (DS-0039) */
+  --ss-side-w:         260px;
+  --ss-side-w-rail:    64px;
+  --ss-side-badge-py:  3px;
+  --ss-side-badge-px:  8px;
 }
 
 // ------------------------------------------------------------

@@ -54,6 +54,30 @@ describe('a11y (axe) — no violations', () => {
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
 	});
 
+	it('Sidebar (collapsed rail + links, badges, nested disclosure)', async () => {
+		const { container } = render(Sidebar, {
+			collapsed: true,
+			onToggleCollapsed: () => {},
+			active: 'movies',
+			groups: [
+				{
+					section: 'platform',
+					items: [
+						{ id: 'hub', label: 'Hub', icon: 'grid', href: '/hub', status: 'up', badge: 2 },
+						{
+							id: 'media',
+							label: 'Media',
+							icon: 'film',
+							status: 'deg',
+							children: [{ id: 'movies', label: 'Movies', icon: 'film', href: '/movies' }]
+						}
+					]
+				}
+			]
+		});
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
 	it('MetricTile', async () => {
 		const { container } = render(MetricTile, { label: 'cpu', value: 62, suffix: '%', delta: '5%' });
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
