@@ -1,10 +1,9 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import LogStream from '$lib/components/LogStream.svelte';
+  import type { LogLine } from '$lib/components/LogStream.svelte';
 
-  type LogLineInit = { t: string; lvl: string; svc: string; msg: string };
-
-  const multiLevelLines: LogLineInit[] = [
+  const multiLevelLines: LogLine[] = [
     { t: '12:00:01', lvl: 'info', svc: '[hub]',        msg: 'session refresh — user=rafael' },
     { t: '12:00:03', lvl: 'ok',   svc: '[movies-api]', msg: 'GET /movies?status=to_watch — 3 rows · 4ms' },
     { t: '12:00:06', lvl: 'warn', svc: '[caddy]',      msg: 'tls internal renewing hub.home' },
@@ -15,7 +14,7 @@
     { t: '12:00:21', lvl: 'info', svc: '[movies-api]', msg: 'drizzle migrated 0002 · runtime 12ms' },
   ];
 
-  const infoOnlyLines: LogLineInit[] = [
+  const infoOnlyLines: LogLine[] = [
     { t: '09:14:01', lvl: 'info', svc: '[hub]',        msg: 'starting server on :3000' },
     { t: '09:14:02', lvl: 'info', svc: '[hub]',        msg: 'connected to database · dsn=postgres://…' },
     { t: '09:14:03', lvl: 'info', svc: '[movies-api]', msg: 'drizzle migrated 0001 · runtime 8ms' },
@@ -27,54 +26,41 @@
     component: LogStream,
     tags: ['autodocs'],
     argTypes: {
-      live: {
-        control: 'boolean',
-        description: 'When true, new log lines are appended automatically every 1.8 s.',
-      },
-      initialLines: {
+      lines: {
         control: 'object',
-        description: 'Seed lines rendered on mount. Each entry needs t, lvl, svc, msg.',
+        description: 'Controlled lines. When provided, the demo ticker is off.',
+      },
+      demo: {
+        control: 'boolean',
+        description: 'Generate a random demo stream (only when `lines` is undefined).',
+      },
+      controls: { control: 'boolean', description: 'Show the controls toolbar.' },
+      wrap: { control: 'boolean', description: 'Wrap long messages vs. horizontal scroll.' },
+      loading: { control: 'boolean', description: 'Show a connecting indicator.' },
+      maxLines: { control: 'number', description: 'Buffer cap (oldest dropped).' },
+      announce: {
+        control: 'select',
+        options: ['off', 'polite', 'assertive'],
+        description: 'aria-live politeness.',
       },
     },
     args: {
-      live: false,
-      initialLines: multiLevelLines,
+      lines: multiLevelLines,
     },
   });
 </script>
 
-<!-- Mixed log levels: info, ok, warn, err — live ticker disabled -->
-<Story
-  name="MultiLevel"
-  args={{
-    live: false,
-    initialLines: multiLevelLines as { t: string; lvl: string; svc: string; msg: string }[],
-  }}
-/>
+<!-- Mixed log levels: info, ok, warn, err — controlled -->
+<Story name="MultiLevel" args={{ lines: multiLevelLines }} />
 
 <!-- Info-only lines — clean startup sequence -->
-<Story
-  name="InfoOnly"
-  args={{
-    live: false,
-    initialLines: infoOnlyLines as { t: string; lvl: string; svc: string; msg: string }[],
-  }}
-/>
+<Story name="InfoOnly" args={{ lines: infoOnlyLines }} />
 
-<!-- Empty stream — no seed lines -->
-<Story
-  name="Empty"
-  args={{
-    live: false,
-    initialLines: [] as { t: string; lvl: string; svc: string; msg: string }[],
-  }}
-/>
+<!-- Empty stream — renders the empty state -->
+<Story name="Empty" args={{ lines: [] }} />
 
-<!-- Live stream — new lines appended every 1.8 s from internal TEMPLATES -->
-<Story
-  name="Live"
-  args={{
-    live: true,
-    initialLines: multiLevelLines as { t: string; lvl: string; svc: string; msg: string }[],
-  }}
-/>
+<!-- Loading / connecting -->
+<Story name="Loading" args={{ lines: [], loading: true }} />
+
+<!-- Live demo — random lines appended every 1.8 s from internal TEMPLATES -->
+<Story name="Live" args={{ lines: undefined, demo: true }} />
