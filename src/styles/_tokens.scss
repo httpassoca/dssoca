@@ -42,6 +42,17 @@
   --ss-cyan:   #66d9ef;
   --ss-purple: #b98cff;
 
+  /* sentiment — decouples good/bad meaning from up/down direction (DS-0037).
+     success aliases the brand green; danger the status red. Soft variants back
+     the opt-in emphasis chip without colour being the only signal. */
+  --ss-success:      var(--ss-primary);
+  --ss-success-soft: var(--ss-primary-soft);
+  --ss-danger:       var(--ss-red);
+  --ss-danger-soft:  rgba(255, 92, 92, 0.18);
+
+  /* skeleton — neutral wash for loading bars (DS-0037) */
+  --ss-skeleton: rgba(255, 255, 255, 0.10);
+
   /* code */
   --ss-code-bg:      #011627;
   --ss-code-fg:      #d6deeb;
@@ -91,6 +102,15 @@
   --ss-blue:   #2f3bd6;
   --ss-cyan:   #0b6e7d;
   --ss-purple: #6a35c9;
+
+  /* sentiment (DS-0037) — track the light brand/status values */
+  --ss-success:      var(--ss-primary);
+  --ss-success-soft: var(--ss-primary-soft);
+  --ss-danger:       var(--ss-red);
+  --ss-danger-soft:  rgba(198, 40, 40, 0.12);
+
+  /* skeleton — neutral wash for loading bars (DS-0037) */
+  --ss-skeleton: rgba(0, 0, 0, 0.10);
 
   /* code — a light syntax palette (the dark Night-Owl set is unreadable here) */
   --ss-code-bg:      #f5f5f5;

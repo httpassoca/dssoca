@@ -8,6 +8,7 @@ import InputHarness from '../harness/InputHarness.svelte';
 import ServiceCard from '$lib/components/ServiceCard.svelte';
 import Sidebar from '$lib/components/Sidebar.svelte';
 import MetricTile from '$lib/components/MetricTile.svelte';
+import MetricTileHarness from '../harness/MetricTileHarness.svelte';
 import Icon from '$lib/components/Icon.svelte';
 
 // jsdom can't compute layout, so `color-contrast` is unreliable here (covered by
@@ -56,6 +57,16 @@ describe('a11y (axe) — no violations', () => {
 
 	it('MetricTile', async () => {
 		const { container } = render(MetricTile, { label: 'cpu', value: 62, suffix: '%', delta: '5%' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('MetricTile (sentiment + period + chart slot)', async () => {
+		const { container } = render(MetricTileHarness, {});
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('MetricTile (loading)', async () => {
+		const { container } = render(MetricTile, { label: 'cpu', value: 62, delta: '5%', loading: true });
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
 	});
 
