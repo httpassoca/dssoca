@@ -12,6 +12,7 @@
 <style lang="scss">
   .prose {
     max-width: 56rem;
+    margin-inline: auto;
 
     :global(h1) {
       font-family: var(--ss-font-display);

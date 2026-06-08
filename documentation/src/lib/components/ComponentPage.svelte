@@ -36,6 +36,7 @@
 <style lang="scss">
   article {
     max-width: 56rem;
+    margin-inline: auto;
     display: flex;
     flex-direction: column;
     gap: var(--ss-block-gap);
