@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/svelte';
 import Toaster from '$lib/components/Toaster.svelte';
 import { toasts } from '$lib/toast.svelte';
@@ -72,5 +72,78 @@ describe('Toaster', () => {
 		toasts.push('info', 'x', 0);
 		await Promise.resolve();
 		expect(container.querySelector('.ss-toast .x')).toHaveAttribute('aria-label', 'Dismiss');
+	});
+
+	it('renders a spinner (no glyph) for the loading kind', async () => {
+		const { container } = render(Toaster, {});
+		toasts.push('loading', 'working', 0);
+		await Promise.resolve();
+		const toastEl = container.querySelector('.ss-toast');
+		expect(toastEl).toHaveClass('loading');
+		expect(container.querySelector('.ss-toast .spinner')).not.toBeNull();
+	});
+
+	it('renders an action button when a toast carries an action', async () => {
+		const { container } = render(Toaster, {});
+		toasts.push('info', 'undo me', { action: { label: 'Undo', onClick: () => {} } });
+		await Promise.resolve();
+		const btn = container.querySelector('.ss-toast .action');
+		expect(btn).not.toBeNull();
+		expect(btn).toHaveTextContent('Undo');
+	});
+
+	it('invoking the action runs the callback and dismisses by default', async () => {
+		const { container } = render(Toaster, {});
+		let ran = false;
+		toasts.push('info', 'x', { action: { label: 'Go', onClick: () => { ran = true; } } });
+		await Promise.resolve();
+		await fireEvent.click(container.querySelector('.ss-toast .action')!);
+		expect(ran).toBe(true);
+		expect(toasts.items).toHaveLength(0);
+	});
+
+	it('an action returning false keeps the toast open', async () => {
+		const { container } = render(Toaster, {});
+		toasts.push('info', 'x', { action: { label: 'Keep', onClick: () => false } });
+		await Promise.resolve();
+		await fireEvent.click(container.querySelector('.ss-toast .action')!);
+		expect(toasts.items).toHaveLength(1);
+	});
+
+	it('applies the position as data-position (default top-right)', () => {
+		const { container } = render(Toaster, {});
+		expect(container.querySelector('.ss-toaster')).toHaveAttribute('data-position', 'top-right');
+	});
+
+	it('honors a custom position prop', () => {
+		const { container } = render(Toaster, { position: 'bottom-center' });
+		expect(container.querySelector('.ss-toaster')).toHaveAttribute(
+			'data-position',
+			'bottom-center'
+		);
+	});
+
+	it('pauses on pointer enter and resumes on leave', async () => {
+		const { container } = render(Toaster, {});
+		const pause = vi.spyOn(toasts, 'pause');
+		const resume = vi.spyOn(toasts, 'resume');
+		toasts.push('info', 'hover', 1000);
+		await Promise.resolve();
+		const el = container.querySelector('.ss-toast')!;
+		await fireEvent.pointerEnter(el);
+		expect(pause).toHaveBeenCalled();
+		await fireEvent.pointerLeave(el);
+		expect(resume).toHaveBeenCalled();
+		pause.mockRestore();
+		resume.mockRestore();
+	});
+
+	it('dismisses on Escape when the toast is focused', async () => {
+		const { container } = render(Toaster, {});
+		toasts.push('info', 'esc', 0);
+		await Promise.resolve();
+		const el = container.querySelector('.ss-toast')!;
+		await fireEvent.keyDown(el, { key: 'Escape' });
+		expect(toasts.items).toHaveLength(0);
 	});
 });
