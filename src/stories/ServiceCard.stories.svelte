@@ -17,7 +17,7 @@
       },
       status: {
         control: { type: 'inline-radio' },
-        options: ['up', 'deg', 'down'],
+        options: ['up', 'deg', 'down', 'maint'],
         description: 'Service health status; drives Badge tone and sparkline color.',
       },
       latency: {
@@ -47,3 +47,13 @@
 <Story name="Down" args={{ name: 'tasks-api', host: 'tasks.home', status: 'down', latency: '—', spark: [10, 8, 6, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0] }} />
 
 <Story name="No Latency" args={{ name: 'caddy', host: ':80 :443', status: 'up', latency: '' }} />
+
+<Story name="Maintenance" args={{ name: 'grafana', host: 'grafana.home', status: 'maint', latency: '—', spark: [8, 8, 8, 0, 0, 0, 0, 0, 8, 8, 8, 8, 8] }} />
+
+<Story name="Link" args={{ name: 'movies-api', host: 'movies.home', status: 'up', latency: '4ms', href: '#movies' }} />
+
+<Story name="Loading" args={{ loading: true }} />
+
+<Story name="Disabled" args={{ name: 'archive', host: 'archive.home', status: 'maint', latency: '—', disabled: true, onclick: undefined }} />
+
+<Story name="With Timestamp" args={{ name: 'movies-api', host: 'movies.home', status: 'up', latency: '4ms', updatedAt: new Date(Date.now() - 42_000) }} />
