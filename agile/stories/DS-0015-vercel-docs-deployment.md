@@ -33,9 +33,10 @@ adapter swap, so the local `pnpm docs:dev` / `docs:preview` workflow is unchange
   unaffected (docs aren't published); agile + board rebuilt.
 
 ## Notes
-- **Root Directory = repo root** (see the second follow-up below — an initial attempt with Root
-  Directory = `documentation/` was wrong). The docs read the library source from `../src` at build
-  time (kit.alias), so the build context must include the repo root.
+- **Final Vercel model (see the third follow-up — supersedes the earlier two):** Root Directory =
+  `documentation`; `vercel.json` at the **repo root** (Vercel reads it there) with
+  `buildCommand: pnpm build` + `outputDirectory: build` (both resolve in/relative to the Root
+  Directory). "Include files outside the Root Directory" must be on for `../src`.
 
 ## Follow-up — fresh-clone build failure (2026-06-08)
 First Vercel deploy failed with `Tsconfig not found .../.svelte-kit/tsconfig.json`. `.svelte-kit/`
@@ -53,6 +54,18 @@ tsconfig error). And the docs need `../src` (the library source) in the build co
 setup is: **Root Directory = repo root**, `vercel.json` at the **repo root**,
 `buildCommand: pnpm docs:build`, `outputDirectory: documentation/build`. No "include files outside
 the Root Directory" toggle needed (everything is within the root).
+
+## Follow-up — final config: Root Directory = `documentation` (2026-06-08)
+The previous follow-up was half-right. Reality, confirmed by the deploy errors:
+- Vercel **reads `vercel.json` from the repo root** (a `documentation/vercel.json` is ignored), **but
+  runs the build commands *in* the Root Directory** (`documentation/`). Evidence: `pnpm docs:build`
+  errored with *"Command docs:build not found — did you mean pnpm build?"*, which only happens when
+  cwd is `documentation/` (its package.json has `build`, not `docs:build`).
+- So the working config is: Root Directory = `documentation`, `vercel.json` at the **repo root**,
+  `buildCommand: pnpm build` (this package's `svelte-kit sync && vite build`),
+  `outputDirectory: build` (relative to the Root Directory), with **"Include files outside the Root
+  Directory" enabled** so `../src` resolves. No dashboard Root-Directory change from the user's
+  existing setting.
 - **Storybook embeds:** the per-component pages iframe live stories from `STORYBOOK_URL` (default
   `http://localhost:6006`). On the deployed site they're blank unless `VITE_STORYBOOK_URL` is set (a
   Vercel env var) to a deployed Storybook. Deploying Storybook is **out of scope** for this story.
