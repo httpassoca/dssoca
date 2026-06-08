@@ -12,6 +12,7 @@
   /* surfaces */
   --ss-bg:          #100f10;
   --ss-bg-elev:     #1e1e1e;
+  --ss-bg-elev-hover: #262626;   /* slightly raised surface for hovered cards/rows */
   --ss-bg-inset:    rgba(7, 6, 7, 0);
   --ss-line:        rgba(255, 255, 255, 0.12);
   --ss-line-strong: rgba(255, 255, 255, 0.22);
@@ -60,6 +61,7 @@
      Not blinding-bright; lines are stronger so square borders stay legible. */
   --ss-bg:          #f0f0f0;
   --ss-bg-elev:     #ffffff;
+  --ss-bg-elev-hover: #f4f4f4;   /* slightly raised surface for hovered cards/rows */
   --ss-bg-inset:    rgba(0, 0, 0, 0);
   --ss-line:        rgba(0, 0, 0, 0.16);
   --ss-line-strong: rgba(0, 0, 0, 0.30);
