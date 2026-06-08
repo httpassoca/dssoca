@@ -9,6 +9,7 @@ import ServiceCard from '$lib/components/ServiceCard.svelte';
 import Sidebar from '$lib/components/Sidebar.svelte';
 import MetricTile from '$lib/components/MetricTile.svelte';
 import Icon from '$lib/components/Icon.svelte';
+import Topbar from '$lib/components/Topbar.svelte';
 
 // jsdom can't compute layout, so `color-contrast` is unreliable here (covered by
 // @storybook/addon-a11y in a real browser); and fragment-level renders lack the
@@ -61,6 +62,11 @@ describe('a11y (axe) — no violations', () => {
 
 	it('Icon (decorative, aria-hidden)', async () => {
 		const { container } = render(Icon, { name: 'grid' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('Topbar', async () => {
+		const { container } = render(Topbar, {});
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
 	});
 });
