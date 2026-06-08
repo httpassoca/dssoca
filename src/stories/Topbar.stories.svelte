@@ -27,12 +27,27 @@
         action: 'onTab',
         description: 'Callback fired with the tab name when a tab is clicked.',
       },
+      onCommand: {
+        action: 'onCommand',
+        description: 'Fired when the command menu opens (⌘K chip or Cmd/Ctrl+K).',
+      },
+      onUser: {
+        action: 'onUser',
+        description: 'Fired when the user chip is activated.',
+      },
+      sticky: {
+        control: 'boolean',
+        description: 'When true, the header sticks to the top of the viewport.',
+      },
     },
     args: {
       tabs: ['overview', 'services', 'logs', 'shell'],
       active: 'overview',
       user: 'rafael@hub.home',
+      sticky: true,
       onTab: () => {},
+      onCommand: () => {},
+      onUser: () => {},
     },
   });
 </script>
@@ -42,7 +57,10 @@
     tabs={args.tabs as string[]}
     active={args.active as string}
     user={args.user as string}
+    sticky={args.sticky as boolean}
     onTab={args.onTab as (tab: string) => void}
+    onCommand={args.onCommand as () => void}
+    onUser={args.onUser as () => void}
   />
 {/snippet}
 
@@ -51,3 +69,5 @@
 <Story name="Services Active" args={{ active: 'services' }} />
 
 <Story name="Logs Active" args={{ active: 'logs' }} />
+
+<Story name="Non-sticky" args={{ active: 'overview', sticky: false }} />

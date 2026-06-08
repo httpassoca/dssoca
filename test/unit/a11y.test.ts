@@ -10,6 +10,7 @@ import Sidebar from '$lib/components/Sidebar.svelte';
 import MetricTile from '$lib/components/MetricTile.svelte';
 import MetricTileHarness from '../harness/MetricTileHarness.svelte';
 import Icon from '$lib/components/Icon.svelte';
+import Topbar from '$lib/components/Topbar.svelte';
 import Toaster from '$lib/components/Toaster.svelte';
 import { toasts } from '$lib/toast.svelte';
 
@@ -115,6 +116,12 @@ describe('a11y (axe) — no violations', () => {
 		const { container } = render(Icon, { name: 'grid' });
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
 	});
+
+	it('Topbar', async () => {
+		const { container } = render(Topbar, {});
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
 
 	it('Toaster (with action + loading toasts)', async () => {
 		toasts.clear();
