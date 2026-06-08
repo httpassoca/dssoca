@@ -1,0 +1,6 @@
+packages:
+  - documentation
+
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: true

@@ -22,25 +22,38 @@
 </script>
 
 <script lang="ts">
+  import { resolveComponentSize, type Size } from '../config.js'
+
   interface Props {
     name: IconName
-    size?: number
+    /** Token-driven size (sm|md|lg); inherits the active size when unset. */
+    size?: Size
+    /** Explicit pixel size — overrides the token sizing. */
+    px?: number
+    /** Accessible name; when set the icon is exposed to AT (role="img"). Omit for decorative icons (default: aria-hidden). */
+    title?: string
     class?: string
   }
-  let { name, size = 16, class: cls = '' }: Props = $props()
+  let { name, size, px, title, class: cls = '' }: Props = $props()
+
+  const dim = $derived(px != null ? `${px}px` : 'var(--ss-icon)')
 </script>
 
 <!-- eslint-disable-next-line svelte/no-at-html-tags -->
 <svg
   viewBox="0 0 24 24"
-  width={size}
-  height={size}
   fill="none"
   stroke="currentColor"
   stroke-width="2"
   stroke-linecap="square"
   stroke-linejoin="miter"
   class={cls}
+  data-size-variant={resolveComponentSize('Icon', size)}
+  style="width:{dim};height:{dim}"
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
 >
   {@html PATHS[name] ?? ''}
 </svg>

@@ -1,61 +1,98 @@
 /**
  * Design system runtime config.
  *
- * Two independent axes drive the whole system (see DESIGN.md):
- *   • color   — `dark` | `light`   → written as [data-theme]
- *   • density — `comfy` | `compact` → written as [data-density]
+ * The available axes, their values, and the defaults are declared once in
+ * `dssoca.config.ts`; this module derives its types + defaults from that
+ * manifest and provides the runtime helpers (see DESIGN.md):
+ *   • color — written as [data-theme]
+ *   • size  — written as [data-size-variant]  (renamed from `density` in 0.4.0)
  *
- * `comfy` is the general-purpose default; the hub opts into `compact`.
+ * Sizing has three layers (highest priority first):
+ *   1. a component's `size` prop          (per instance)
+ *   2. `componentsSize[Name]`             (per-component default)
+ *   3. `sizeVariant` on an ancestor       (global default; `md` out of the box)
  */
 
-export type ColorTheme = 'dark' | 'light'
-export type Density = 'comfy' | 'compact'
+import {
+  dssocaConfig,
+  type ColorTheme,
+  type Size,
+  type ComponentName,
+  type ComponentsSize,
+} from './dssoca.config.js'
+
+// Re-exported so the `dssoca` / `./config` import paths expose the config vocab.
+export { dssocaConfig }
+export type { ColorTheme, Size, ComponentName, ComponentsSize }
+export type { DssocaConfig, DesignAxis } from './dssoca.config.js'
 
 export interface DesignConfig {
   theme: ColorTheme
-  density: Density
+  /** Global default size for every component — written as [data-size-variant]. */
+  sizeVariant: Size
+  /** Per-component default sizes; components not listed inherit `sizeVariant`. */
+  componentsSize: ComponentsSize
 }
 
+/** Defaults derived from the manifest — change them in `dssoca.config.ts`. */
 export const defaultDesignConfig: DesignConfig = {
-  theme: 'dark',
-  density: 'comfy',
+  theme: dssocaConfig.theme.default,
+  sizeVariant: dssocaConfig.size.default,
+  componentsSize: {},
 }
 
-let current: DesignConfig = { ...defaultDesignConfig }
+let current: DesignConfig = {
+  ...defaultDesignConfig,
+  componentsSize: { ...defaultDesignConfig.componentsSize },
+}
 
 /** Current resolved config (last applied, or defaults). */
 export function getDesignConfig(): DesignConfig {
-  return { ...current }
+  return { ...current, componentsSize: { ...current.componentsSize } }
 }
 
 /**
- * Build the `data-*` attribute map for a config — handy for SSR / markup
- * so the correct density paints on first frame with no flash.
+ * Build the `data-*` attribute map for a config — handy for SSR / markup so the
+ * correct theme + size paint on the first frame with no flash.
  *
- *   <div {...designAttributes({ density: 'compact' })}> … </div>
+ *   <html {...designAttributes({ sizeVariant: 'sm' })}> … </html>
  */
 export function designAttributes(
   config: Partial<DesignConfig> = {},
-): { 'data-theme': ColorTheme; 'data-density': Density } {
+): { 'data-theme': ColorTheme; 'data-size-variant': Size } {
   const merged = { ...defaultDesignConfig, ...config }
-  return { 'data-theme': merged.theme, 'data-density': merged.density }
+  return { 'data-theme': merged.theme, 'data-size-variant': merged.sizeVariant }
 }
 
 /**
- * Apply theme + density to a DOM element (defaults to <html>).
- * Merges over the current config so callers can flip one axis at a time.
- * SSR-safe: no-op when no document and no explicit target.
+ * Apply theme + size to a DOM element (defaults to <html>). Merges over the
+ * current config so callers can flip one axis at a time (`componentsSize` is
+ * merged key-by-key). SSR-safe: no-op when no document and no explicit target.
  */
 export function applyDesignConfig(
   config: Partial<DesignConfig> = {},
   target?: HTMLElement,
 ): DesignConfig {
-  current = { ...current, ...config }
+  current = {
+    ...current,
+    ...config,
+    componentsSize: { ...current.componentsSize, ...(config.componentsSize ?? {}) },
+  }
   const el =
     target ?? (typeof document !== 'undefined' ? document.documentElement : undefined)
   if (el) {
     el.setAttribute('data-theme', current.theme)
-    el.setAttribute('data-density', current.density)
+    el.setAttribute('data-size-variant', current.sizeVariant)
   }
   return getDesignConfig()
+}
+
+/**
+ * Resolve the size a component should APPLY on its own root (as
+ * `data-size-variant`), or `undefined` to inherit the global `sizeVariant`
+ * through the cascade. Resolution order: explicit `size` prop →
+ * `componentsSize[name]` → inherit.
+ */
+export function resolveComponentSize(name: ComponentName, size?: Size): Size | undefined {
+  return size ?? current.componentsSize[name]
 }

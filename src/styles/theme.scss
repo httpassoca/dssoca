@@ -1,0 +1,21 @@
+// ============================================================
+//  dssoca — design system stylesheet (compiled to dist/theme.css).
+//  Derived from passoca.dev — signal green on near-black.
+//  House rule: NO ROUNDED CORNERS. Everything is squared.
+//
+//  Two independent axes (see DESIGN.md):
+//    • color →  [data-theme="dark" | "light"]          (dark = default)
+//    • size  →  [data-size-variant="sm" | "md" | "lg"] (md = default)
+//  Set them via the config helpers in $lib/config.ts, or by hand on
+//  any ancestor element (usually <html>).
+//
+//  Authored as @use partials; the Dart Sass CLI in `prepack` emits the
+//  published dist/theme.css. Component styling now lives in each component's
+//  scoped <style lang="scss"> (DS-0009); theme.css carries only tokens, base
+//  styles, and app-shell/layout. Order matters: _fonts first so the CSS
+//  @import is a valid leading rule; _tokens before the rules that consume them.
+// ============================================================
+@use 'fonts';
+@use 'tokens';
+@use 'base';
+@use 'layout';

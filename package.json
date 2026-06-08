@@ -1,6 +1,6 @@
 {
 	"name": "dssoca",
-	"version": "0.2.0",
+	"version": "0.5.0",
 	"description": "Svelte 5 design system — signal green on near-black, monospace-forward, zero border-radius; configured along two axes (color: dark/light, density: comfy/compact).",
 	"license": "MIT",
 	"author": "Rafael Passoca",
@@ -18,11 +18,18 @@
 		"build": "vite build && npm run prepack",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
-		"prepack": "svelte-kit sync && svelte-package && publint",
+		"build:css": "sass src/styles/theme.scss dist/theme.css --no-source-map --no-charset --style=expanded",
+		"prepack": "svelte-kit sync && svelte-package && pnpm build:css && publint",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build",
+		"docs:dev": "pnpm --filter dssoca-docs dev",
+		"docs:build": "pnpm --filter dssoca-docs build",
+		"docs:preview": "pnpm --filter dssoca-docs preview",
+		"docs:test": "pnpm --filter dssoca-docs test"
 	},
 	"files": [
 		"dist",
@@ -46,6 +53,10 @@
 		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
+		"@storybook/addon-a11y": "10.4.2",
+		"@storybook/addon-docs": "^10.4.2",
+		"@storybook/addon-svelte-csf": "^5.1.2",
+		"@storybook/sveltekit": "^10.4.2",
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/kit": "^2.57.0",
 		"@sveltejs/package": "^2.5.7",
@@ -54,11 +65,14 @@
 		"@testing-library/svelte": "^5.3.1",
 		"jsdom": "^29.1.1",
 		"publint": "^0.3.18",
+		"sass": "^1.100.0",
+		"storybook": "^10.4.2",
 		"svelte": "^5.55.2",
 		"svelte-check": "^4.4.6",
 		"typescript": "^6.0.2",
 		"vite": "^8.0.7",
-		"vitest": "^4.1.7"
+		"vitest": "^4.1.7",
+		"vitest-axe": "^0.1.0"
 	},
 	"keywords": [
 		"svelte",

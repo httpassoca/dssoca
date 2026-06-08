@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
 import MetricTile from '$lib/components/MetricTile.svelte';
 import Sparkline from '$lib/components/Sparkline.svelte';
-import PassocaMark from '$lib/components/PassocaMark.svelte';
 
 describe('MetricTile', () => {
 	it('renders the label and value', () => {
@@ -85,28 +84,5 @@ describe('Sparkline', () => {
 		const { container } = render(Sparkline, { data: [] });
 		expect(container.querySelector('.ss-spark')).not.toBeNull();
 		expect(container.querySelectorAll('.ss-spark i')).toHaveLength(0);
-	});
-});
-
-describe('PassocaMark', () => {
-	it('renders an svg logo', () => {
-		const { container } = render(PassocaMark, {});
-		const svg = container.querySelector('svg');
-		expect(svg).not.toBeNull();
-		expect(svg).toHaveAttribute('viewBox', '0 0 103 89');
-	});
-
-	it('defaults to size 22', () => {
-		const { container } = render(PassocaMark, {});
-		const svg = container.querySelector('svg')!;
-		expect(svg).toHaveAttribute('width', '22');
-		expect(svg).toHaveAttribute('height', '22');
-	});
-
-	it('applies an explicit size and color', () => {
-		const { container } = render(PassocaMark, { size: 40, color: '#abc' });
-		const svg = container.querySelector('svg')!;
-		expect(svg).toHaveAttribute('width', '40');
-		expect(svg).toHaveAttribute('fill', '#abc');
 	});
 });

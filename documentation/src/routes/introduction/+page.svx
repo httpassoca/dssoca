@@ -1,0 +1,42 @@
+# Introduction
+
+**dssoca** is a token-driven [Svelte 5](https://svelte.dev) design system: signal green on
+near-black, monospace-forward, and **zero border-radius** everywhere. It is one global stylesheet
+(`theme.css`) plus a small set of components — the building blocks of the `hubssoca` homelab UI,
+extracted to stand on their own.
+
+## The two axes
+
+Everything is configured along **two orthogonal axes**, each written as a `data-*` attribute on an
+ancestor element (usually `<html>`). Flip an axis and every component below it responds, because the
+components only read CSS custom properties that the axes redefine.
+
+| Axis      | Attribute            | Values              | Default |
+| --------- | -------------------- | ------------------- | ------- |
+| **Color** | `data-theme`         | `dark` · `light`    | `dark`  |
+| **Size**  | `data-size-variant`  | `sm` · `md` · `lg`  | `md`    |
+
+The two axes are independent: any theme combines with any size. See
+[Theming & config](/theming) for how to set them and [Tokens](/tokens) for the live values they
+resolve to.
+
+## Principles
+
+- **Zero border-radius.** Every radius token is `0`. Square corners are part of the identity.
+- **Token-driven.** Components never hardcode sizes or colors — they read `--ss-*` custom
+  properties, so one attribute flip rescales or recolors the whole tree.
+- **Scoped styling.** Each component carries its own styles; the global stylesheet holds only
+  tokens, base element styles, and app-shell layout.
+- **Per-instance overrides.** Most components take a `size` prop to opt a single instance out of the
+  ambient size, without touching anything else.
+
+## What's here
+
+The library ships **14 components** — from primitives like
+[Button](/components/button), [Badge](/components/badge), and [Input](/components/input) to
+app-shell pieces like [Topbar](/components/topbar), [Sidebar](/components/sidebar), and
+[LogStream](/components/log-stream). Browse them in the sidebar, or start with
+[Installation](/installation).
+
+> This site dogfoods dssoca for its own chrome and embeds the live
+> [Storybook](http://localhost:6006) stories on each component page.
