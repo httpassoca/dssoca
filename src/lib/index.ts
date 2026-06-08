@@ -28,7 +28,7 @@ export { default as MetricTile }  from './components/MetricTile.svelte'
 export { default as Topbar }      from './components/Topbar.svelte'
 export { default as Sidebar }     from './components/Sidebar.svelte'
 export { type SideItem, type SideGroup, type SideStatus } from './components/Sidebar.svelte'
-export { default as LogStream }   from './components/LogStream.svelte'
+export { default as LogStream, type LogLevel, type LogLine } from './components/LogStream.svelte'
 export { default as Toaster }     from './components/Toaster.svelte'
 export { default as EmptyState }  from './components/EmptyState.svelte'
 
