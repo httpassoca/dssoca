@@ -52,6 +52,12 @@
   --ss-code-func:    #82aaff;
   --ss-code-comment: #637777;
 
+  /* log-level accents — theme-correct on the code surface */
+  --ss-log-info: var(--ss-code-func);
+  --ss-log-warn: var(--ss-yellow);
+  --ss-log-err:  var(--ss-red);
+  --ss-log-ok:   var(--ss-code-string);
+
   --ss-selection-bg: var(--ss-primary);
   --ss-selection-fg: var(--ss-fg-on-primary);
 }
@@ -102,6 +108,12 @@
   --ss-code-keyword: #c5221f;
   --ss-code-func:    #6639ba;
   --ss-code-comment: #6a737d;
+
+  /* log-level accents — darkened code/status values for AA on the light code surface */
+  --ss-log-info: var(--ss-code-func);
+  --ss-log-warn: var(--ss-yellow);
+  --ss-log-err:  var(--ss-red);
+  --ss-log-ok:   var(--ss-code-string);
 }
 
 // ------------------------------------------------------------
