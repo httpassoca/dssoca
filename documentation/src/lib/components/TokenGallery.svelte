@@ -7,15 +7,37 @@
   // the axes automatically); the resolved value text is read with
   // getComputedStyle and refreshed whenever the <html> axes change.
   const colorGroups: { title: string; tokens: string[] }[] = [
-    { title: 'surfaces', tokens: ['--ss-bg', '--ss-bg-elev', '--ss-line', '--ss-line-strong'] },
+    {
+      title: 'surfaces',
+      tokens: ['--ss-bg', '--ss-bg-elev', '--ss-bg-elev-hover', '--ss-line', '--ss-line-strong', '--ss-hover'],
+    },
     {
       title: 'foreground',
       tokens: ['--ss-fg', '--ss-fg-shine', '--ss-fg-muted', '--ss-fg-faint', '--ss-fg-on-primary'],
     },
-    { title: 'brand', tokens: ['--ss-primary', '--ss-primary-soft'] },
+    { title: 'brand', tokens: ['--ss-primary', '--ss-primary-soft', '--ss-primary-hover', '--ss-lime'] },
     {
       title: 'status',
       tokens: ['--ss-red', '--ss-yellow', '--ss-blue', '--ss-cyan', '--ss-purple'],
+    },
+    {
+      title: 'sentiment',
+      tokens: ['--ss-success', '--ss-success-soft', '--ss-danger', '--ss-danger-hover', '--ss-danger-soft', '--ss-skeleton'],
+    },
+    {
+      title: 'log levels',
+      tokens: ['--ss-log-info', '--ss-log-warn', '--ss-log-err', '--ss-log-ok'],
+    },
+    {
+      title: 'badge tones',
+      tokens: [
+        '--ss-badge-up-bg',
+        '--ss-badge-deg-bg',
+        '--ss-badge-down-bg',
+        '--ss-badge-maint-bg',
+        '--ss-badge-info-bg',
+        '--ss-badge-neutral-bg',
+      ],
     },
     {
       title: 'code',
@@ -56,6 +78,16 @@
     '--ss-block-gap',
     '--ss-shell-side-w',
     '--ss-shell-top-h',
+    '--ss-badge-dot',
+    '--ss-badge-gap',
+    '--ss-side-w',
+    '--ss-side-w-rail',
+    '--ss-spark-h',
+    '--ss-spark-bar-w',
+    '--ss-toast-ic',
+    '--ss-toast-swipe',
+    '--ss-empty-glyph',
+    '--ss-empty-max-w',
   ];
 
   let version = $state(0);

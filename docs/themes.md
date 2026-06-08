@@ -145,3 +145,11 @@ putting it on a wrapper:
 - The two axes are independent — setting one never disturbs the other.
 - Attributes can live on any ancestor; nearest one wins, so scoped overrides work.
 - The showcase (`pnpm dev`) has live toggles for both axes.
+- **Theme-tracked colors.** `data-theme` controls the *full* color surface, not
+  just bg/fg: the sentiment tokens (`--ss-success`/`-soft`,
+  `--ss-danger`/`-hover`/`-soft`, `--ss-fg-on-danger`), the log-level accents
+  (`--ss-log-info`/`-warn`/`-err`/`-ok`), and the per-tone badge fills/borders
+  (`--ss-badge-<tone>-bg`/`-border` for `up`/`deg`/`down`/`maint`/`info`/`neutral`)
+  all carry light-mode overrides so they hold AA contrast in both themes. Read
+  these tokens (never raw hexes) so a theme flip recolors your component too. The
+  full per-theme value table lives in `docs/tokens.md`.
