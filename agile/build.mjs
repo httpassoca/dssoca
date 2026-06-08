@@ -201,6 +201,7 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2366ef73' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='23 4 23 10 17 10'/><polyline points='1 20 1 14 7 14'/><path d='M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'/></svg>" />
 <title>${PROJECT_TITLE} · agile · ${SCOPE}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -265,8 +266,8 @@ a{color:inherit}
 .detail p{margin:4px 0;color:var(--muted)}
 .detail ul{margin:4px 0;padding-left:18px} .detail li{color:var(--muted)}
 .detail .md-checks{list-style:none;padding-left:0}
-.detail .md-checks li{display:flex;gap:8px;align-items:baseline}
-.detail .md-checks li .box{width:14px;height:14px;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:var(--primary);flex:none}
+.detail .md-checks li{position:relative;padding-left:22px;margin:2px 0}
+.detail .md-checks li .box{position:absolute;left:0;top:1px;width:14px;height:14px;border:1px solid var(--line);display:inline-block;text-align:center;line-height:13px;font-size:10px;color:var(--primary)}
 .detail .md-checks li.done{color:var(--fg)} .detail .md-checks li.done .box{border-color:var(--primary)}
 .detail code{font-family:var(--mono);background:rgba(255,255,255,.06);padding:.1em .35em;font-size:.92em;color:#d6deeb}
 .detail .kv{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11px;color:var(--faint);margin-top:10px}
@@ -279,10 +280,10 @@ a{color:inherit}
 .tagchip{font-size:10px;color:var(--blue);margin-right:6px}
 .row.sel{background:rgba(102,239,115,.08);box-shadow:inset 2px 0 0 var(--primary)}
 .tableview tbody tr.sel td{background:rgba(102,239,115,.08)}
-.drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .18s;z-index:55}
-.drawer-backdrop.open{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;right:0;height:100vh;width:min(460px,94vw);background:var(--bg);border-left:1px solid var(--line2);box-shadow:-14px 0 44px rgba(0,0,0,.55);z-index:60;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .18s ease}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:var(--drawer-w,800px);min-width:320px;max-width:96vw;background:var(--bg);border-left:1px solid var(--line2);box-shadow:-14px 0 44px rgba(0,0,0,.55);z-index:60;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .18s ease}
 .drawer.open{transform:none}
+.drawer-grip{position:absolute;left:0;top:0;width:7px;height:100%;cursor:ew-resize;z-index:2;transition:background .15s}
+.drawer-grip:hover,.drawer-grip.drag{background:var(--primary);opacity:.5}
 .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg)}
 .drawer-idrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .drawer-id{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
@@ -316,8 +317,8 @@ a{color:inherit}
   <div id="board"></div>
   <div class="foot">agile board · ${SCOPE} · see /AGILE.md for the method · zero deps, open from file://</div>
 </div>
-<div class="drawer-backdrop" id="drawer-backdrop"></div>
 <aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-grip" id="drawer-grip"></div>
   <div class="drawer-head">
     <div class="drawer-meta">
       <div class="drawer-idrow"><span class="drawer-id" id="d-id"></span><span id="d-badge"></span><span id="d-pri"></span></div>
@@ -417,12 +418,19 @@ function renderTable(list){
 }
 let openId = null;
 const drawer = document.getElementById('drawer');
-const backdrop = document.getElementById('drawer-backdrop');
+// Resizable sidebar: drag the left-edge grip to set the drawer width.
+(function(){
+  const grip = document.getElementById('drawer-grip');
+  let dragging = false;
+  grip.addEventListener('mousedown', e => { dragging = true; grip.classList.add('drag'); document.body.style.userSelect = 'none'; e.preventDefault(); });
+  window.addEventListener('mousemove', e => { if(!dragging) return; const w = Math.max(320, Math.min(window.innerWidth - e.clientX, window.innerWidth * 0.96)); drawer.style.width = w + 'px'; });
+  window.addEventListener('mouseup', () => { if(!dragging) return; dragging = false; grip.classList.remove('drag'); document.body.style.userSelect = ''; });
+})();
 function markSel(){
   document.querySelectorAll('.row.sel,.tableview tbody tr.sel').forEach(el=>el.classList.remove('sel'));
   if(openId){ const el=document.querySelector('[data-id="'+openId+'"]'); if(el) el.classList.add('sel'); }
 }
-function closeDrawer(){ openId=null; drawer.classList.remove('open'); backdrop.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); markSel(); }
+function closeDrawer(){ openId=null; drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); markSel(); }
 function openItem(id){
   if(id===openId){ closeDrawer(); return; }
   const i=ITEMS.find(x=>x.id===id); if(!i) return;
@@ -432,11 +440,10 @@ function openItem(id){
   document.getElementById('d-pri').innerHTML='<span class="pri '+i.priority+'">'+i.priority+'</span>';
   document.getElementById('d-title').innerHTML='<span class="typ">'+i.type+'</span>'+i.title;
   document.getElementById('drawer-body').innerHTML=detail(i);
-  drawer.classList.add('open'); backdrop.classList.add('open'); drawer.setAttribute('aria-hidden','false');
+  drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false');
   markSel();
 }
 document.getElementById('drawer-close').onclick=closeDrawer;
-backdrop.onclick=closeDrawer;
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
 function render(){
   renderMetrics();
