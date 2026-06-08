@@ -63,4 +63,17 @@ describe('a11y (axe) — no violations', () => {
 		const { container } = render(Icon, { name: 'grid' });
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
 	});
+
+	it('Input (error + hint + clearable) — DS-0033', async () => {
+		const { container } = render(InputHarness, {
+			label: 'Email',
+			type: 'email',
+			error: 'Enter a valid email.',
+			hint: 'Work address preferred.',
+			required: true,
+			clearable: true,
+			initial: 'x'
+		});
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
 });
