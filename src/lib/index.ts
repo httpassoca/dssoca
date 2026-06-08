@@ -17,7 +17,7 @@ export {
   type ComponentsSize,
 } from './dssoca.config.js'
 
-export { default as Icon }        from './components/Icon.svelte'
+export { default as Icon, registerIcon, type IconName } from './components/Icon.svelte'
 export { default as Badge }       from './components/Badge.svelte'
 export { default as Button }      from './components/Button.svelte'
 export { default as Input }       from './components/Input.svelte'
@@ -27,7 +27,7 @@ export { default as ServiceCard } from './components/ServiceCard.svelte'
 export { default as MetricTile }  from './components/MetricTile.svelte'
 export { default as Topbar }      from './components/Topbar.svelte'
 export { default as Sidebar }     from './components/Sidebar.svelte'
-export { default as LogStream }   from './components/LogStream.svelte'
+export { default as LogStream, type LogLevel, type LogLine } from './components/LogStream.svelte'
 export { default as Toaster }     from './components/Toaster.svelte'
 export { default as EmptyState }  from './components/EmptyState.svelte'
 

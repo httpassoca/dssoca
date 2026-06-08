@@ -49,6 +49,21 @@ describe('a11y (axe) — no violations', () => {
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
 	});
 
+	it('ServiceCard (link mode)', async () => {
+		const { container } = render(ServiceCard, { name: 'movies', host: 'movies.home', href: '/svc/movies' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('ServiceCard (loading)', async () => {
+		const { container } = render(ServiceCard, { name: 'movies', host: 'movies.home', loading: true });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('ServiceCard (disabled, maintenance)', async () => {
+		const { container } = render(ServiceCard, { name: 'movies', host: 'movies.home', status: 'maint', disabled: true });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
 	it('Sidebar', async () => {
 		const { container } = render(Sidebar, {});
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
@@ -71,6 +86,8 @@ describe('a11y (axe) — no violations', () => {
 
 	it('Button (icon-only, labelled)', async () => {
 		const { container } = render(ButtonHarness, { iconOnly: true, label: 'Settings', text: '⚙' });
+	it('Icon (titled, role=img + aria-labelledby)', async () => {
+		const { container } = render(Icon, { name: 'user', title: 'User profile' });
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
 	});
 });
