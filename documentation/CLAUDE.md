@@ -28,23 +28,24 @@ pnpm docs:test     # Vitest unit tests (docs config + highlighter)
 
 ## Deployment (Vercel)
 
-The site deploys to **Vercel** as a static build. The Vercel **Root Directory is this
-`documentation/` folder**, so the config lives in **`documentation/vercel.json`** and uses this
-package's own scripts (the root `pnpm docs:build` isn't visible from here):
+The site deploys to **Vercel** as a static build. The Vercel **Root Directory must be the repo
+root** (not `documentation/`) — the docs dogfood the library by importing its **source** via `../src`
+(see Aliases), so the build context has to include the repo root. Vercel reads `vercel.json` from the
+repo root regardless of Root Directory, so the config lives in **`vercel.json` at the repo root**:
 
 - `framework: null` — we drive the build ourselves (don't let Vercel's SvelteKit detection assume
   `adapter-vercel`); we ship the `adapter-static` output instead.
-- `buildCommand: pnpm build` → this package's `vite build`, which writes `build/`.
-- `outputDirectory: build` (relative to the Root Directory → `documentation/build`).
+- `buildCommand: pnpm docs:build` → runs at the repo root (workspace filter), which is
+  `svelte-kit sync && vite build` for the docs package; writes `documentation/build/`.
+- `outputDirectory: documentation/build` (relative to the repo root).
 - `trailingSlash: true` — matches the docs' `trailingSlash: 'always'` so prerendered
   `route/index.html` files resolve.
 
 **One-time setup (Vercel dashboard):**
-- *Root Directory* = `documentation`, Framework Preset = "Other" (the committed `vercel.json`
-  supplies the commands).
-- **Enable "Include files outside the Root Directory in the Build Step"** — required: the docs
-  dogfood the library by importing its **source** via `../src` (see Aliases), which lives above this
-  folder. pnpm + the workspace install resolve from the repo root above.
+- *Root Directory* = **repo root** (leave the Root Directory field blank / `./`), Framework Preset =
+  "Other" (the committed root `vercel.json` supplies the commands). pnpm comes from the root
+  `packageManager` field. With the repo root as the build context, `../src` resolves and no
+  "include files outside the Root Directory" toggle is needed.
 
 **Caveat — Storybook embeds:** the per-component pages embed live Storybook stories from
 `STORYBOOK_URL` (default `http://localhost:6006`). On the deployed site those iframes are blank
