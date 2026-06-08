@@ -42,6 +42,12 @@
   --ss-cyan:   #66d9ef;
   --ss-purple: #b98cff;
 
+  /* destructive — danger aliases --ss-red; hover deepens it, label is dark
+     for AA contrast on the bright neon red (DS-0032) */
+  --ss-danger:        var(--ss-red);
+  --ss-danger-hover:  #ff7a7a;
+  --ss-fg-on-danger:  #100f10;
+
   /* code */
   --ss-code-bg:      #011627;
   --ss-code-fg:      #d6deeb;
@@ -91,6 +97,11 @@
   --ss-blue:   #2f3bd6;
   --ss-cyan:   #0b6e7d;
   --ss-purple: #6a35c9;
+
+  /* destructive — the deep light-mode red carries a white label at AA (DS-0032) */
+  --ss-danger:        var(--ss-red);
+  --ss-danger-hover:  #a91f1f;
+  --ss-fg-on-danger:  #ffffff;
 
   /* code — a light syntax palette (the dark Night-Owl set is unreadable here) */
   --ss-code-bg:      #f5f5f5;

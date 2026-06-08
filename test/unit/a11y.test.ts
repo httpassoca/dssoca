@@ -63,4 +63,14 @@ describe('a11y (axe) — no violations', () => {
 		const { container } = render(Icon, { name: 'grid' });
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
 	});
+
+	it('Button (loading, soft-disabled)', async () => {
+		const { container } = render(ButtonHarness, { text: 'Save', loading: true, loadingLabel: 'Saving…' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('Button (icon-only, labelled)', async () => {
+		const { container } = render(ButtonHarness, { iconOnly: true, label: 'Settings', text: '⚙' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
 });
