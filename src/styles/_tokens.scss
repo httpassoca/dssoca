@@ -200,6 +200,9 @@
   --ss-dur:       250ms;
   --ss-dur-slow:  350ms;
   --ss-dur-xslow: 650ms;
+
+  /* Icon spin (loader) — one full 360° turn; disabled under reduced motion. */
+  --ss-icon-spin-dur: 900ms;
 }
 
 // ------------------------------------------------------------
