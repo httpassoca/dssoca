@@ -35,8 +35,9 @@ adapter swap, so the local `pnpm docs:dev` / `docs:preview` workflow is unchange
 ## Notes
 - **Final Vercel model (see the third follow-up — supersedes the earlier two):** Root Directory =
   `documentation`; `vercel.json` at the **repo root** (Vercel reads it there) with
-  `buildCommand: pnpm build` + `outputDirectory: build` (both resolve in/relative to the Root
-  Directory). "Include files outside the Root Directory" must be on for `../src`.
+  `buildCommand: pnpm -w run prepare && pnpm build` (sync the library root, then build the docs) +
+  `outputDirectory: build` (relative to the Root Directory). "Include files outside the Root
+  Directory" must be on for `../src`.
 
 ## Follow-up — fresh-clone build failure (2026-06-08)
 First Vercel deploy failed with `Tsconfig not found .../.svelte-kit/tsconfig.json`. `.svelte-kit/`
@@ -66,6 +67,17 @@ The previous follow-up was half-right. Reality, confirmed by the deploy errors:
   `outputDirectory: build` (relative to the Root Directory), with **"Include files outside the Root
   Directory" enabled** so `../src` resolves. No dashboard Root-Directory change from the user's
   existing setting.
+
+## Follow-up — library `.svelte-kit` must be synced too (2026-06-08)
+Even with the right build command, Vercel still failed:
+`Tsconfig not found /vercel/path0/.svelte-kit/tsconfig.json` (the **repo-root** one). Reproduced
+locally by deleting **both** `.svelte-kit` dirs. Cause: the docs build transforms the dogfooded
+`../src` library files, which are governed by the repo-root `tsconfig.json`
+(`extends "./.svelte-kit/tsconfig.json"`) — but only the **library's** `svelte-kit sync` creates that
+file, and it never ran on Vercel (only the docs package's sync did). Fix: `buildCommand` now runs the
+root sync first — `pnpm -w run prepare && pnpm build` (root `prepare` = `svelte-kit sync`). Verified
+from a `documentation/` cwd with both `.svelte-kit` dirs deleted: both tsconfigs regenerate, build
+succeeds.
 - **Storybook embeds:** the per-component pages iframe live stories from `STORYBOOK_URL` (default
   `http://localhost:6006`). On the deployed site they're blank unless `VITE_STORYBOOK_URL` is set (a
   Vercel env var) to a deployed Storybook. Deploying Storybook is **out of scope** for this story.
