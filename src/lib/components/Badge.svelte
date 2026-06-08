@@ -2,7 +2,7 @@
   import type { Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
 
-  type Tone = 'up' | 'deg' | 'down' | 'info' | 'neutral'
+  type Tone = 'up' | 'deg' | 'down' | 'maint' | 'info' | 'neutral'
 
   interface Props {
     /** Semantic tone; `neutral` is the safe baseline for non-status labels. */
@@ -93,10 +93,11 @@
     text-transform: lowercase;
     border: 1px solid var(--ss-line);
 
-    &.up   { background: var(--ss-badge-up-bg);   color: var(--ss-primary); border-color: var(--ss-badge-up-border); }
-    &.deg  { background: var(--ss-badge-deg-bg);  color: var(--ss-yellow);  border-color: var(--ss-badge-deg-border); }
-    &.down { background: var(--ss-badge-down-bg); color: var(--ss-red);     border-color: var(--ss-badge-down-border); }
-    &.info { background: var(--ss-badge-info-bg); color: var(--ss-cyan);    border-color: var(--ss-badge-info-border); }
+    &.up    { background: var(--ss-badge-up-bg);    color: var(--ss-primary); border-color: var(--ss-badge-up-border); }
+    &.deg   { background: var(--ss-badge-deg-bg);   color: var(--ss-yellow);  border-color: var(--ss-badge-deg-border); }
+    &.down  { background: var(--ss-badge-down-bg);  color: var(--ss-red);     border-color: var(--ss-badge-down-border); }
+    &.maint { background: var(--ss-badge-maint-bg); color: var(--ss-blue);    border-color: var(--ss-badge-maint-border); }
+    &.info  { background: var(--ss-badge-info-bg);  color: var(--ss-cyan);    border-color: var(--ss-badge-info-border); }
     &.neutral {
       background: var(--ss-badge-neutral-bg);
       color: var(--ss-fg-muted);

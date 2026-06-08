@@ -12,6 +12,7 @@
   /* surfaces */
   --ss-bg:          #100f10;
   --ss-bg-elev:     #1e1e1e;
+  --ss-bg-elev-hover: #262626;   /* slightly raised surface for hovered cards/rows */
   --ss-bg-inset:    rgba(7, 6, 7, 0);
   --ss-line:        rgba(255, 255, 255, 0.12);
   --ss-line-strong: rgba(255, 255, 255, 0.22);
@@ -51,6 +52,12 @@
   --ss-code-func:    #82aaff;
   --ss-code-comment: #637777;
 
+  /* log-level accents — theme-correct on the code surface */
+  --ss-log-info: var(--ss-code-func);
+  --ss-log-warn: var(--ss-yellow);
+  --ss-log-err:  var(--ss-red);
+  --ss-log-ok:   var(--ss-code-string);
+
   --ss-selection-bg: var(--ss-primary);
   --ss-selection-fg: var(--ss-fg-on-primary);
 
@@ -63,6 +70,8 @@
   --ss-badge-deg-border:  rgba(224, 195, 106, 0.40);
   --ss-badge-down-bg:     rgba(255, 92, 92, 0.12);
   --ss-badge-down-border: rgba(255, 92, 92, 0.40);
+  --ss-badge-maint-bg:     rgba(154, 164, 255, 0.12);
+  --ss-badge-maint-border: rgba(154, 164, 255, 0.40);
   --ss-badge-info-bg:     rgba(102, 217, 239, 0.12);
   --ss-badge-info-border: rgba(102, 217, 239, 0.40);
   --ss-badge-neutral-bg:     rgba(255, 255, 255, 0.06);
@@ -74,6 +83,7 @@
      Not blinding-bright; lines are stronger so square borders stay legible. */
   --ss-bg:          #f0f0f0;
   --ss-bg-elev:     #ffffff;
+  --ss-bg-elev-hover: #f4f4f4;   /* slightly raised surface for hovered cards/rows */
   --ss-bg-inset:    rgba(0, 0, 0, 0);
   --ss-line:        rgba(0, 0, 0, 0.16);
   --ss-line-strong: rgba(0, 0, 0, 0.30);
@@ -124,10 +134,18 @@
   --ss-badge-deg-border:  rgba(138, 109, 26, 0.35);
   --ss-badge-down-bg:     rgba(198, 40, 40, 0.10);
   --ss-badge-down-border: rgba(198, 40, 40, 0.35);
+  --ss-badge-maint-bg:     rgba(47, 59, 214, 0.10);
+  --ss-badge-maint-border: rgba(47, 59, 214, 0.35);
   --ss-badge-info-bg:     rgba(11, 110, 125, 0.10);
   --ss-badge-info-border: rgba(11, 110, 125, 0.35);
   --ss-badge-neutral-bg:     rgba(0, 0, 0, 0.05);
   --ss-badge-neutral-border: var(--ss-line);
+
+  /* log-level accents — darkened code/status values for AA on the light code surface */
+  --ss-log-info: var(--ss-code-func);
+  --ss-log-warn: var(--ss-yellow);
+  --ss-log-err:  var(--ss-red);
+  --ss-log-ok:   var(--ss-code-string);
 }
 
 // ------------------------------------------------------------

@@ -3,7 +3,7 @@
   import type { Size } from '$lib/config.js'
 
   interface Props {
-    tone?: 'up' | 'deg' | 'down' | 'info' | 'neutral'
+    tone?: 'up' | 'deg' | 'down' | 'maint' | 'info' | 'neutral'
     size?: Size
     text?: string
     /** Omit the child snippet to render a dot-only / count-only badge. */
