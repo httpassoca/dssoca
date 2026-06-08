@@ -44,19 +44,16 @@
   --ss-purple: #b98cff;
   --ss-red-rgb: 255, 92, 92;   /* soft invalid focus ring (DS-0033) */
 
-  /* destructive — danger aliases --ss-red; hover deepens it, label is dark
-     for AA contrast on the bright neon red (DS-0032) */
+  /* destructive + sentiment — danger/success alias the status red / brand green;
+     hover deepens danger, -soft washes back the opt-in emphasis chip, on-danger is
+     the readable label on the bright red. Used by Button (DS-0032), Sparkline trend
+     (DS-0035) and MetricTile sentiment (DS-0037). */
   --ss-danger:        var(--ss-red);
   --ss-danger-hover:  #ff7a7a;
+  --ss-danger-soft:   rgba(255, 92, 92, 0.18);
   --ss-fg-on-danger:  #100f10;
-
-  /* sentiment — decouples good/bad meaning from up/down direction (DS-0037).
-     success aliases the brand green; danger the status red. Soft variants back
-     the opt-in emphasis chip without colour being the only signal. */
-  --ss-success:      var(--ss-primary);
-  --ss-success-soft: var(--ss-primary-soft);
-  --ss-danger:       var(--ss-red);
-  --ss-danger-soft:  rgba(255, 92, 92, 0.18);
+  --ss-success:       var(--ss-primary);
+  --ss-success-soft:  var(--ss-primary-soft);
 
   /* skeleton — neutral wash for loading bars (DS-0037) */
   --ss-skeleton: rgba(255, 255, 255, 0.10);
@@ -69,10 +66,6 @@
   --ss-code-keyword: #c792ea;
   --ss-code-func:    #82aaff;
   --ss-code-comment: #637777;
-
-  /* semantic status aliases — sparkline trend colouring (DS-0035) */
-  --ss-success: var(--ss-primary);
-  --ss-danger:  var(--ss-red);
 
   /* log-level accents — theme-correct on the code surface */
   --ss-log-info: var(--ss-code-func);
@@ -139,16 +132,14 @@
   --ss-purple: #6a35c9;
   --ss-red-rgb: 198, 40, 40;   /* soft invalid focus ring (DS-0033) */
 
-  /* destructive — the deep light-mode red carries a white label at AA (DS-0032) */
+  /* destructive + sentiment — the deep light-mode red carries a white label at AA;
+     success/-soft track the light brand green (DS-0032/0035/0037) */
   --ss-danger:        var(--ss-red);
   --ss-danger-hover:  #a91f1f;
+  --ss-danger-soft:   rgba(198, 40, 40, 0.12);
   --ss-fg-on-danger:  #ffffff;
-
-  /* sentiment (DS-0037) — track the light brand/status values */
-  --ss-success:      var(--ss-primary);
-  --ss-success-soft: var(--ss-primary-soft);
-  --ss-danger:       var(--ss-red);
-  --ss-danger-soft:  rgba(198, 40, 40, 0.12);
+  --ss-success:       var(--ss-primary);
+  --ss-success-soft:  var(--ss-primary-soft);
 
   /* skeleton — neutral wash for loading bars (DS-0037) */
   --ss-skeleton: rgba(0, 0, 0, 0.10);
