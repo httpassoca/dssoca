@@ -42,6 +42,24 @@
   --ss-blue:   #9aa4ff;
   --ss-cyan:   #66d9ef;
   --ss-purple: #b98cff;
+  --ss-red-rgb: 255, 92, 92;   /* soft invalid focus ring (DS-0033) */
+
+  /* destructive — danger aliases --ss-red; hover deepens it, label is dark
+     for AA contrast on the bright neon red (DS-0032) */
+  --ss-danger:        var(--ss-red);
+  --ss-danger-hover:  #ff7a7a;
+  --ss-fg-on-danger:  #100f10;
+
+  /* sentiment — decouples good/bad meaning from up/down direction (DS-0037).
+     success aliases the brand green; danger the status red. Soft variants back
+     the opt-in emphasis chip without colour being the only signal. */
+  --ss-success:      var(--ss-primary);
+  --ss-success-soft: var(--ss-primary-soft);
+  --ss-danger:       var(--ss-red);
+  --ss-danger-soft:  rgba(255, 92, 92, 0.18);
+
+  /* skeleton — neutral wash for loading bars (DS-0037) */
+  --ss-skeleton: rgba(255, 255, 255, 0.10);
 
   /* code */
   --ss-code-bg:      #011627;
@@ -119,6 +137,21 @@
   --ss-blue:   #2f3bd6;
   --ss-cyan:   #0b6e7d;
   --ss-purple: #6a35c9;
+  --ss-red-rgb: 198, 40, 40;   /* soft invalid focus ring (DS-0033) */
+
+  /* destructive — the deep light-mode red carries a white label at AA (DS-0032) */
+  --ss-danger:        var(--ss-red);
+  --ss-danger-hover:  #a91f1f;
+  --ss-fg-on-danger:  #ffffff;
+
+  /* sentiment (DS-0037) — track the light brand/status values */
+  --ss-success:      var(--ss-primary);
+  --ss-success-soft: var(--ss-primary-soft);
+  --ss-danger:       var(--ss-red);
+  --ss-danger-soft:  rgba(198, 40, 40, 0.12);
+
+  /* skeleton — neutral wash for loading bars (DS-0037) */
+  --ss-skeleton: rgba(0, 0, 0, 0.10);
 
   /* code — a light syntax palette (the dark Night-Owl set is unreadable here) */
   --ss-code-bg:      #f5f5f5;
@@ -200,6 +233,9 @@
   --ss-dur:       250ms;
   --ss-dur-slow:  350ms;
   --ss-dur-xslow: 650ms;
+
+  /* Icon spin (loader) — one full 360° turn; disabled under reduced motion. */
+  --ss-icon-spin-dur: 900ms;
 }
 
 // ------------------------------------------------------------
