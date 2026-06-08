@@ -74,6 +74,39 @@
   {/snippet}
 </Story>
 
+<!-- Elevated surface variant (shadow tokens instead of a heavier border) -->
+<Story name="Elevated" args={{ title: 'Metrics', meta: 'live', withAction: false }}>
+  {#snippet children()}
+    <Card title="Metrics" meta="live" variant="elevated">
+      <p style="margin:0;font-size:13px">Elevated card uses --ss-shadow-1/2.</p>
+    </Card>
+  {/snippet}
+</Story>
+
+<!-- Title + description + footer + media regions -->
+<Story name="FullRegions" args={{ title: 'Build', meta: '', withAction: false }}>
+  {#snippet children()}
+    <Card title="Build #482" description="main · 2m ago">
+      {#snippet media()}
+        <div style="height:80px;background:var(--ss-bg-inset);border-bottom:1px solid var(--ss-line)"></div>
+      {/snippet}
+      <p style="margin:0;font-size:13px">Body content with a footer band below.</p>
+      {#snippet footer()}
+        <Badge tone="up">passed</Badge>
+      {/snippet}
+    </Card>
+  {/snippet}
+</Story>
+
+<!-- Linkable card: whole surface is a primary link -->
+<Story name="Linkable" args={{ title: 'Docs', meta: '', withAction: false }}>
+  {#snippet children()}
+    <Card title="Read the docs" description="opens dssoca docs" href="https://example.com">
+      <p style="margin:0;font-size:13px">The entire card is clickable.</p>
+    </Card>
+  {/snippet}
+</Story>
+
 <!-- Realistic: a simple data list inside the body -->
 <Story name="DataList" args={{ title: 'Queue', meta: '4 items', withAction: false }}>
   {#snippet children()}
