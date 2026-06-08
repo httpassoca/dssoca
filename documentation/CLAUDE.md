@@ -9,8 +9,9 @@ A standalone **SvelteKit + mdsvex** app (package `dssoca-docs`, `private`) that 
 the spirit of [ui.shadcn.com](https://ui.shadcn.com/): a landing page, narrative guides, a live
 token gallery, and a page per component that **embeds the component's live Storybook story**.
 
-- **Local-only.** No deploy/CI (intentionally out of scope). Run it locally; `pnpm docs:build`
-  produces a static site via `adapter-static`.
+- **Static site.** `pnpm docs:build` produces a fully prerendered static site via `adapter-static`
+  → `documentation/build/`. Run it locally with `pnpm docs:dev` / `pnpm docs:preview`.
+- **Deployed to Vercel** (see `vercel.json` at the repo root + the Deployment section below).
 - **Not published.** It's a separate workspace package — nothing here ships in the npm tarball
   (`pnpm pack` stays clean).
 - **Dogfoods dssoca.** The chrome (nav, theme/size toggles, cards) is built from dssoca components +
@@ -24,6 +25,31 @@ pnpm docs:build    # static build → documentation/build/
 pnpm docs:preview  # preview the static build
 pnpm docs:test     # Vitest unit tests (docs config + highlighter)
 ```
+
+## Deployment (Vercel)
+
+The site deploys to **Vercel** as a static build. The Vercel **Root Directory is this
+`documentation/` folder**, so the config lives in **`documentation/vercel.json`** and uses this
+package's own scripts (the root `pnpm docs:build` isn't visible from here):
+
+- `framework: null` — we drive the build ourselves (don't let Vercel's SvelteKit detection assume
+  `adapter-vercel`); we ship the `adapter-static` output instead.
+- `buildCommand: pnpm build` → this package's `vite build`, which writes `build/`.
+- `outputDirectory: build` (relative to the Root Directory → `documentation/build`).
+- `trailingSlash: true` — matches the docs' `trailingSlash: 'always'` so prerendered
+  `route/index.html` files resolve.
+
+**One-time setup (Vercel dashboard):**
+- *Root Directory* = `documentation`, Framework Preset = "Other" (the committed `vercel.json`
+  supplies the commands).
+- **Enable "Include files outside the Root Directory in the Build Step"** — required: the docs
+  dogfood the library by importing its **source** via `../src` (see Aliases), which lives above this
+  folder. pnpm + the workspace install resolve from the repo root above.
+
+**Caveat — Storybook embeds:** the per-component pages embed live Storybook stories from
+`STORYBOOK_URL` (default `http://localhost:6006`). On the deployed site those iframes are blank
+unless you set **`VITE_STORYBOOK_URL`** (a Vercel env var) to a deployed Storybook. Deploying
+Storybook itself is out of scope.
 
 ## Layout
 
