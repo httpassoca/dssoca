@@ -27,10 +27,10 @@ const config = {
 
   kit: {
     // Static build → `documentation/build/` (`pnpm docs:build`; `… preview` to
-    // serve it locally). Deployed to Vercel as a static site (see `vercel.json`
-    // at the repo root; Vercel Root Directory = repo root, since the docs import
-    // the library source from `../src`): served from the domain root, so no base
-    // path is needed. The `404.html` fallback doubles as Vercel's not-found page.
+    // serve it locally). Deployed to Vercel as a static site (config in
+    // `vercel.json` at the repo root, which Vercel reads even though it runs the
+    // build in the `documentation/` Root Directory): served from the domain root,
+    // so no base path is needed. The `404.html` fallback is Vercel's not-found page.
     adapter: adapter({ fallback: '404.html' }),
 
     // Dogfood the design system by importing its SOURCE from the repo above.
