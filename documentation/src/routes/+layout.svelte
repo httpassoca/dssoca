@@ -3,7 +3,7 @@
   import '$lib/styles/code.css';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
-  import { PassocaMark, Sidebar, Icon } from 'dssoca';
+  import { Sidebar, Icon } from 'dssoca';
   import { NAV } from '$lib/docs.config';
   import ThemeControls from '$lib/components/ThemeControls.svelte';
 
@@ -27,7 +27,7 @@
 <div class="docs">
   <header class="topbar">
     <a class="brand" href="/">
-      <PassocaMark px={22} />
+      <img class="logo" src="/passoca-logo.svg" alt="" width="22" height="22" />
       <span class="name">dssoca</span>
       <span class="tag">docs</span>
     </a>
@@ -103,6 +103,9 @@
     gap: var(--ss-s-2);
     text-decoration: none;
 
+    .logo {
+      display: block;
+    }
     .name {
       font-family: var(--ss-font-display);
       font-size: var(--ss-ui-lg);

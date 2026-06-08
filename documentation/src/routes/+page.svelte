@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, Badge, Card, PassocaMark } from 'dssoca';
+  import { Button, Badge, Card } from 'dssoca';
   import { COMPONENTS } from '$lib/docs.config';
 </script>
 
@@ -8,7 +8,7 @@
 </svelte:head>
 
 <section class="hero">
-  <div class="mark"><PassocaMark px={56} /></div>
+  <div class="mark"><img src="/passoca-logo.svg" alt="" width="56" height="56" /></div>
   <h1>dssoca</h1>
   <p class="lede">
     A token-driven <strong>Svelte 5</strong> design system — signal green on near-black,
@@ -51,6 +51,10 @@
 
     .mark {
       margin-bottom: var(--ss-s-4);
+
+      img {
+        display: block;
+      }
     }
     h1 {
       font-family: var(--ss-font-display);
