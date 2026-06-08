@@ -203,6 +203,11 @@
   --ss-shell-top-h:    48px;
   --ss-main-py:        28px;
   --ss-main-px:        36px;
+
+  /* empty-state visual + width (rescales with the size axis) */
+  --ss-empty-glyph:         40px;
+  --ss-empty-glyph-compact: 28px;
+  --ss-empty-max-w:         420px;
 }
 
 [data-size-variant="sm"] {
@@ -246,6 +251,11 @@
   --ss-shell-top-h:    36px;
   --ss-main-py:        16px;
   --ss-main-px:        20px;
+
+  /* empty-state visual + width */
+  --ss-empty-glyph:         32px;
+  --ss-empty-glyph-compact: 22px;
+  --ss-empty-max-w:         360px;
 }
 
 [data-size-variant="lg"] {
@@ -289,6 +299,11 @@
   --ss-shell-top-h:    56px;
   --ss-main-py:        36px;
   --ss-main-px:        48px;
+
+  /* empty-state visual + width */
+  --ss-empty-glyph:         52px;
+  --ss-empty-glyph-compact: 36px;
+  --ss-empty-max-w:         480px;
 }
 
 // ------------------------------------------------------------
