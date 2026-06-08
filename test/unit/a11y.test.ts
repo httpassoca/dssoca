@@ -63,4 +63,9 @@ describe('a11y (axe) — no violations', () => {
 		const { container } = render(Icon, { name: 'grid' });
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
 	});
+
+	it('Icon (titled, role=img + aria-labelledby)', async () => {
+		const { container } = render(Icon, { name: 'user', title: 'User profile' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
 });
