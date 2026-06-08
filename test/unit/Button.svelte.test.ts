@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import { createRawSnippet } from 'svelte';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import ButtonHarness from '../harness/ButtonHarness.svelte';
 
@@ -15,7 +16,7 @@ describe('Button', () => {
 		expect(btn).toHaveAttribute('type', 'button');
 	});
 
-	it.each(['primary', 'secondary', 'ghost'] as const)('applies the %s variant class', (variant) => {
+	it.each(['primary', 'secondary', 'ghost', 'danger'] as const)('applies the %s variant class', (variant) => {
 		const { container } = render(ButtonHarness, { variant, text: 'x' });
 		expect(container.querySelector('button')).toHaveClass(variant);
 	});
@@ -44,5 +45,80 @@ describe('Button', () => {
 		const onclick = vi.fn();
 		const { container } = render(ButtonHarness, { onclick, disabled: true, text: 'Tap' });
 		expect(container.querySelector('button')).toBeDisabled();
+	});
+
+	describe('loading', () => {
+		it('sets aria-busy and a loading class when loading', () => {
+			const { container } = render(ButtonHarness, { loading: true, text: 'Save' });
+			const btn = container.querySelector('button')!;
+			expect(btn).toHaveAttribute('aria-busy', 'true');
+			expect(btn).toHaveAttribute('aria-disabled', 'true');
+			expect(btn).toHaveClass('loading');
+		});
+
+		it('is not aria-busy when not loading', () => {
+			const { container } = render(ButtonHarness, { text: 'Save' });
+			const btn = container.querySelector('button')!;
+			expect(btn).not.toHaveAttribute('aria-busy');
+			expect(btn).not.toHaveAttribute('aria-disabled');
+		});
+
+		it('renders a spinner while loading', () => {
+			const { container } = render(ButtonHarness, { loading: true, text: 'Save' });
+			expect(container.querySelector('.spinner')).toBeInTheDocument();
+		});
+
+		it('guards onclick while loading (handler does not fire)', async () => {
+			const onclick = vi.fn();
+			render(ButtonHarness, { onclick, loading: true, text: 'Tap' });
+			await fireEvent.click(screen.getByRole('button', { name: 'Tap' }));
+			expect(onclick).not.toHaveBeenCalled();
+		});
+
+		it('stays focusable while loading (soft-disable, no native disabled)', () => {
+			const { container } = render(ButtonHarness, { loading: true, text: 'Save' });
+			expect(container.querySelector('button')).not.toBeDisabled();
+		});
+
+		it('keeps a stable accessible name via loadingLabel', () => {
+			render(ButtonHarness, { loading: true, loadingLabel: 'Saving…', text: 'Save' });
+			expect(screen.getByRole('button', { name: 'Saving…' })).toBeInTheDocument();
+		});
+	});
+
+	describe('icon-only', () => {
+		it('exposes label as the aria-label and applies the icon-only class', () => {
+			const { container } = render(ButtonHarness, { iconOnly: true, label: 'Settings', text: '⚙' });
+			const btn = container.querySelector('button')!;
+			expect(btn).toHaveClass('icon-only');
+			expect(screen.getByRole('button', { name: 'Settings' })).toBe(btn);
+		});
+	});
+
+	describe('fullWidth', () => {
+		it('applies the full-width class', () => {
+			const { container } = render(ButtonHarness, { fullWidth: true, text: 'Wide' });
+			expect(container.querySelector('button')).toHaveClass('full-width');
+		});
+	});
+
+	describe('leading / trailing snippets', () => {
+		it('renders leading and trailing affixes around the label', () => {
+			const { container } = render(ButtonHarness, {
+				text: 'Next',
+				leading: createRawSnippet(() => ({ render: () => '<i>L</i>' })),
+				trailing: createRawSnippet(() => ({ render: () => '<i>T</i>' }))
+			});
+			const affixes = container.querySelectorAll('.affix');
+			expect(affixes).toHaveLength(2);
+			expect(container.querySelector('.label')?.textContent).toBe('Next');
+		});
+	});
+
+	describe('rest props', () => {
+		it('forwards unknown attributes onto the <button>', () => {
+			const { container } = render(ButtonHarness, { text: 'x', 'data-testid': 'my-btn' });
+			expect(container.querySelector('button')).toHaveAttribute('data-testid', 'my-btn');
+		});
 	});
 });

@@ -42,6 +42,24 @@
   --ss-blue:   #9aa4ff;
   --ss-cyan:   #66d9ef;
   --ss-purple: #b98cff;
+  --ss-red-rgb: 255, 92, 92;   /* soft invalid focus ring (DS-0033) */
+
+  /* destructive — danger aliases --ss-red; hover deepens it, label is dark
+     for AA contrast on the bright neon red (DS-0032) */
+  --ss-danger:        var(--ss-red);
+  --ss-danger-hover:  #ff7a7a;
+  --ss-fg-on-danger:  #100f10;
+
+  /* sentiment — decouples good/bad meaning from up/down direction (DS-0037).
+     success aliases the brand green; danger the status red. Soft variants back
+     the opt-in emphasis chip without colour being the only signal. */
+  --ss-success:      var(--ss-primary);
+  --ss-success-soft: var(--ss-primary-soft);
+  --ss-danger:       var(--ss-red);
+  --ss-danger-soft:  rgba(255, 92, 92, 0.18);
+
+  /* skeleton — neutral wash for loading bars (DS-0037) */
+  --ss-skeleton: rgba(255, 255, 255, 0.10);
 
   /* code */
   --ss-code-bg:      #011627;
@@ -119,6 +137,21 @@
   --ss-blue:   #2f3bd6;
   --ss-cyan:   #0b6e7d;
   --ss-purple: #6a35c9;
+  --ss-red-rgb: 198, 40, 40;   /* soft invalid focus ring (DS-0033) */
+
+  /* destructive — the deep light-mode red carries a white label at AA (DS-0032) */
+  --ss-danger:        var(--ss-red);
+  --ss-danger-hover:  #a91f1f;
+  --ss-fg-on-danger:  #ffffff;
+
+  /* sentiment (DS-0037) — track the light brand/status values */
+  --ss-success:      var(--ss-primary);
+  --ss-success-soft: var(--ss-primary-soft);
+  --ss-danger:       var(--ss-red);
+  --ss-danger-soft:  rgba(198, 40, 40, 0.12);
+
+  /* skeleton — neutral wash for loading bars (DS-0037) */
+  --ss-skeleton: rgba(0, 0, 0, 0.10);
 
   /* code — a light syntax palette (the dark Night-Owl set is unreadable here) */
   --ss-code-bg:      #f5f5f5;
@@ -200,6 +233,9 @@
   --ss-dur:       250ms;
   --ss-dur-slow:  350ms;
   --ss-dur-xslow: 650ms;
+
+  /* Icon spin (loader) — one full 360° turn; disabled under reduced motion. */
+  --ss-icon-spin-dur: 900ms;
 }
 
 // ------------------------------------------------------------
@@ -261,6 +297,13 @@
   --ss-side-w-rail:    56px;
   --ss-side-badge-py:  2px;
   --ss-side-badge-px:  6px;
+  /* toast (DS-0041) — icon box + swipe-dismiss threshold */
+  --ss-toast-ic:       18px;
+  --ss-toast-swipe:    72px;
+  /* empty-state visual + width (rescales with the size axis) */
+  --ss-empty-glyph:         40px;
+  --ss-empty-glyph-compact: 28px;
+  --ss-empty-max-w:         420px;
 
   /* sparkline (DS-0035) */
   --ss-spark-h:        18px;
@@ -317,6 +360,13 @@
   --ss-side-w-rail:    44px;
   --ss-side-badge-py:  1px;
   --ss-side-badge-px:  5px;
+  /* toast (DS-0041) */
+  --ss-toast-ic:       15px;
+  --ss-toast-swipe:    60px;
+  /* empty-state visual + width */
+  --ss-empty-glyph:         32px;
+  --ss-empty-glyph-compact: 22px;
+  --ss-empty-max-w:         360px;
 
   /* sparkline (DS-0035) */
   --ss-spark-h:        14px;
@@ -373,6 +423,13 @@
   --ss-side-w-rail:    64px;
   --ss-side-badge-py:  3px;
   --ss-side-badge-px:  8px;
+  /* toast (DS-0041) */
+  --ss-toast-ic:       22px;
+  --ss-toast-swipe:    88px;
+  /* empty-state visual + width */
+  --ss-empty-glyph:         52px;
+  --ss-empty-glyph-compact: 36px;
+  --ss-empty-max-w:         480px;
 
   /* sparkline (DS-0035) */
   --ss-spark-h:        26px;
