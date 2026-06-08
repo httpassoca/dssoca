@@ -51,6 +51,21 @@ describe('a11y (axe) — no violations', () => {
 		expect(await axe(container, axeOpts)).toHaveNoViolations();
 	});
 
+	it('ServiceCard (link mode)', async () => {
+		const { container } = render(ServiceCard, { name: 'movies', host: 'movies.home', href: '/svc/movies' });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('ServiceCard (loading)', async () => {
+		const { container } = render(ServiceCard, { name: 'movies', host: 'movies.home', loading: true });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	it('ServiceCard (disabled, maintenance)', async () => {
+		const { container } = render(ServiceCard, { name: 'movies', host: 'movies.home', status: 'maint', disabled: true });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
 	it('Sidebar', async () => {
 		const { container } = render(Sidebar, {});
 		expect(await axe(container, axeOpts)).toHaveNoViolations();

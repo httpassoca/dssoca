@@ -13,7 +13,21 @@
       },
       color: {
         control: 'color',
-        description: 'Bar fill color. Defaults to var(--ss-primary).',
+        description: 'Bar/line fill color. Defaults to var(--ss-primary). Overridden when trend resolves a direction.',
+      },
+      variant: {
+        control: 'inline-radio',
+        options: ['bars', 'line', 'area'],
+        description: 'Rendering style.',
+      },
+      trend: {
+        control: 'inline-radio',
+        options: ['none', 'auto', 'up', 'down', 'flat'],
+        description: 'Colour by direction; auto derives from first-vs-last.',
+      },
+      fluid: {
+        control: 'boolean',
+        description: 'Flex to fill the container width.',
       },
     },
     args: {
@@ -32,3 +46,19 @@
 <Story name="Flat" args={{ data: [50, 52, 48, 51, 49, 50, 53, 47, 50, 51] }} />
 
 <Story name="Custom Color" args={{ data: [5, 10, 15, 22, 30, 38, 50, 65, 80, 95], color: 'var(--ss-accent)' }} />
+
+<Story name="Trend Auto (rising)" args={{ data: [5, 10, 15, 22, 30, 38, 50, 65, 80, 95], trend: 'auto' }} />
+
+<Story name="Trend Auto (falling)" args={{ data: [95, 80, 70, 60, 48, 38, 28, 18, 10, 5], trend: 'auto' }} />
+
+<Story name="Line" args={{ data: [5, 10, 15, 22, 30, 38, 50, 65, 80, 95], variant: 'line', trend: 'auto' }} />
+
+<Story name="Area" args={{ data: [5, 10, 15, 22, 30, 38, 50, 65, 80, 95], variant: 'area', trend: 'auto' }} />
+
+<Story name="Near-flat (min-normalised)" args={{ data: [48, 50, 52, 49, 51, 50, 53, 47, 50, 51] }} />
+
+<Story name="Fluid" args={{ data: [40, 90, 20, 75, 10, 60, 30, 85, 15, 70], fluid: true, variant: 'area', trend: 'auto' }} />
+
+<Story name="Empty" args={{ data: [] }} />
+
+<Story name="Single point" args={{ data: [42] }} />
