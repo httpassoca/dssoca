@@ -33,10 +33,9 @@ adapter swap, so the local `pnpm docs:dev` / `docs:preview` workflow is unchange
   unaffected (docs aren't published); agile + board rebuilt.
 
 ## Notes
-- **Root Directory = `documentation`** means Vercel can't see the repo-root `pnpm docs:build`
-  script, so the build uses this package's `pnpm build`. It also means **"Include files outside the
-  Root Directory in the Build Step"** must be enabled — the docs read the library source from
-  `../src` at build time (kit.alias), which lives above the Root Directory.
+- **Root Directory = repo root** (see the second follow-up below — an initial attempt with Root
+  Directory = `documentation/` was wrong). The docs read the library source from `../src` at build
+  time (kit.alias), so the build context must include the repo root.
 
 ## Follow-up — fresh-clone build failure (2026-06-08)
 First Vercel deploy failed with `Tsconfig not found .../.svelte-kit/tsconfig.json`. `.svelte-kit/`
@@ -45,6 +44,15 @@ but in Vercel's monorepo install that didn't fire for this package, so `vite bui
 `.svelte-kit/`. (Local builds passed only because the dir already existed.) Fixed by making the
 build self-contained: `build: "svelte-kit sync && vite build"`. Verified by deleting
 `documentation/.svelte-kit` and rebuilding from scratch.
+
+## Follow-up — Root Directory must be the repo root (2026-06-08)
+Tried Root Directory = `documentation/` first; that's wrong for this monorepo. Vercel reads
+`vercel.json` **from the repo root regardless of Root Directory** (evidence: a root `vercel.json`'s
+`buildCommand` ran, while a `documentation/vercel.json` was ignored → bare `vite build`, no sync,
+tsconfig error). And the docs need `../src` (the library source) in the build context. So the final
+setup is: **Root Directory = repo root**, `vercel.json` at the **repo root**,
+`buildCommand: pnpm docs:build`, `outputDirectory: documentation/build`. No "include files outside
+the Root Directory" toggle needed (everything is within the root).
 - **Storybook embeds:** the per-component pages iframe live stories from `STORYBOOK_URL` (default
   `http://localhost:6006`). On the deployed site they're blank unless `VITE_STORYBOOK_URL` is set (a
   Vercel env var) to a deployed Storybook. Deploying Storybook is **out of scope** for this story.
