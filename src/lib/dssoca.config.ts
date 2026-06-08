@@ -53,7 +53,6 @@ export const COMPONENT_NAMES = [
   'Input',
   'LogStream',
   'MetricTile',
-  'PassocaMark',
   'ServiceCard',
   'Sidebar',
   'Sparkline',

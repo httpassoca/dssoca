@@ -17,6 +17,8 @@
     size = (el.getAttribute('data-size-variant') as Size) ?? size;
   });
 
+  // The smooth recolor/rescale on flip is handled by a plain CSS transition in
+  // +layout.svelte (docs-only) — no JS timing needed here.
   function nextTheme() {
     theme = themes[(themes.indexOf(theme) + 1) % themes.length];
     applyDesignConfig({ theme });

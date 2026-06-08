@@ -38,7 +38,7 @@ and `[data-size-variant="lg"]` override them. These rescale the entire chrome.
 | `--ss-ui-sm` | `10.5px` | `12px` | `13.5px` | secondary chrome text |
 | `--ss-ui-md` | `11.5px` | `13px` | `15px` | primary chrome text |
 | `--ss-ui-lg` | `13px` | `15px` | `17px` | names, logo |
-| `--ss-icon` | `14px` | `16px` | `20px` | Icon / PassocaMark default size |
+| `--ss-icon` | `14px` | `16px` | `20px` | Icon default size |
 | `--ss-control-font` | `12px` | `14px` | `16px` | buttons |
 | `--ss-control-py` | `5px` | `9px` | `12px` | button padding-y |
 | `--ss-control-px` | `9px` | `16px` | `22px` | button padding-x |

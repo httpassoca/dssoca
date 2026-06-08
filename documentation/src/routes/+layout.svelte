@@ -3,7 +3,7 @@
   import '$lib/styles/code.css';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
-  import { PassocaMark, Sidebar, Icon } from 'dssoca';
+  import { Sidebar, Icon } from 'dssoca';
   import { NAV } from '$lib/docs.config';
   import ThemeControls from '$lib/components/ThemeControls.svelte';
 
@@ -27,7 +27,7 @@
 <div class="docs">
   <header class="topbar">
     <a class="brand" href="/">
-      <PassocaMark px={22} />
+      <img class="logo" src="/passoca-logo.svg" alt="" width="22" height="22" />
       <span class="name">dssoca</span>
       <span class="tag">docs</span>
     </a>
@@ -50,6 +50,34 @@
 </div>
 
 <style lang="scss">
+  // Docs-only polish: a plain, always-on transition so flipping the theme
+  // (data-theme) or size (data-size-variant) eases instead of snapping. Token
+  // values change → these properties recompute → they animate. No !important,
+  // so a component's own hover/focus transitions still win where they set one;
+  // this just covers the page surfaces (background, text, borders) and the
+  // size-driven box metrics.
+  //
+  // NOTE: deliberately NOT gated on prefers-reduced-motion. The design tokens
+  // collapse --ss-dur* to 0ms under "reduce motion", and a media query here did
+  // the same — which made this flip instant on machines with that OS setting.
+  // This is a mild ~250ms color/size crossfade (no large motion), so we keep it
+  // on for everyone; revisit if it needs to honour reduced-motion later.
+  :global(html),
+  :global(html *),
+  :global(html *::before),
+  :global(html *::after) {
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease,
+      outline-color 0.25s ease,
+      fill 0.25s ease,
+      stroke 0.25s ease,
+      padding 0.25s ease,
+      gap 0.25s ease,
+      font-size 0.25s ease;
+  }
+
   .docs {
     min-height: 100vh;
     display: flex;
@@ -75,6 +103,9 @@
     gap: var(--ss-s-2);
     text-decoration: none;
 
+    .logo {
+      display: block;
+    }
     .name {
       font-family: var(--ss-font-display);
       font-size: var(--ss-ui-lg);

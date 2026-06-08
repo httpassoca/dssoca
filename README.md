@@ -69,7 +69,7 @@ SSR / no-flash — spread the attributes directly in markup instead of mutating 
 
 ## What's in the box
 
-**Components:** `PassocaMark`, `Icon`, `Badge`, `Button`, `Input`, `Card`, `Sparkline`,
+**Components:** `Icon`, `Badge`, `Button`, `Input`, `Card`, `Sparkline`,
 `ServiceCard`, `MetricTile`, `Topbar`, `Sidebar`, `LogStream`, `Toaster`, `EmptyState`.
 
 **Toasts:** `toast` (`.success` / `.error` / `.info`) + the `toasts` store — render once with
