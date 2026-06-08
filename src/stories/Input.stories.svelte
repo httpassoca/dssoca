@@ -13,7 +13,7 @@
     argTypes: {
       label: {
         control: 'text',
-        description: 'Label text. When set, wraps the input in a <label class="ss-field">.',
+        description: 'Label text. When set, renders a <label class="lbl"> inside the .ss-field wrapper.',
       },
       type: {
         control: { type: 'inline-radio' },
