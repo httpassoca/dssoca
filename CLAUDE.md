@@ -5,7 +5,7 @@ Extracted from the `hubssoca` homelab monorepo (was `@homelab/ui`). Read this be
 
 ## What it is
 
-A token-driven component library. One `theme.css` + ~14 components. Configured along **two
+A token-driven component library. One `theme.css` + ~13 components. Configured along **two
 orthogonal axes**:
 
 | Axis        | Attribute      | Values              | Default |

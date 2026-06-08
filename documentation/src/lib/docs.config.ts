@@ -1,6 +1,6 @@
 /**
  * Documentation site config — the single source of truth for the docs nav and
- * the per-component reference pages. Mirrors *what exists today* (the 14
+ * the per-component reference pages. Mirrors *what exists today* (the 13
  * components + the two axes + tokens); no speculative/future content.
  *
  * Story IDs map to the dssoca Storybook build (title `Components/<Name>` →
@@ -61,25 +61,6 @@ const SIZE_PROP: PropDoc = {
 };
 
 export const COMPONENTS: ComponentDoc[] = [
-  {
-    name: 'PassocaMark',
-    slug: 'passoca-mark',
-    icon: 'target',
-    tagline: 'The animated brand mark.',
-    description: 'The dssoca brand glyph. Scales with the size axis or an explicit pixel size.',
-    storyId: 'components-passocamark--default',
-    usage: `<script>
-  import { PassocaMark } from 'dssoca';
-</script>
-
-<PassocaMark />
-<PassocaMark px={48} color="var(--ss-cyan)" />`,
-    props: [
-      SIZE_PROP,
-      { name: 'px', type: 'number', desc: 'Explicit pixel size; overrides the size axis.' },
-      { name: 'color', type: 'string', default: 'var(--ss-primary)', desc: 'Mark color.' },
-    ],
-  },
   {
     name: 'Icon',
     slug: 'icon',
