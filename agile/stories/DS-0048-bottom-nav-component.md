@@ -2,7 +2,7 @@
 id: DS-0048
 type: story
 title: "BottomNav component"
-status: backlog
+status: done
 priority: low
 tags: [ui, a11y]
 depends_on: []

@@ -2,7 +2,7 @@
 id: DS-0054
 type: task
 title: "BottomNav implementation"
-status: backlog
+status: done
 priority: low
 tags: [ui, a11y]
 depends_on: []
