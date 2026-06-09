@@ -8,6 +8,28 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+## [0.8.2] — components overview & landing field polish — 2026-06-09
+
+Published library: a single `BottomNav` default-data fix; everything else is docs-site only.
+
+### Fixed
+
+- **`BottomNav`** (`DS-0065`): the default `services` item referenced an invalid icon name —
+  `'flex'` → `'database'` — which was a type error in the shipped default items (lib + story + test).
+
+### Changed
+
+- **Components overview** (`/components`, docs): the category grids now use `minmax(0, 1fr)` tracks so
+  every card is equal width — the `Topbar` preview no longer blows out its column past a third nor
+  stretches vertically (it's pinned to the top of the stage at its real shell height). The page is a
+  single full-width, left-aligned container (heading, lede, and grids share one edge, matching the
+  Tokens page), and the `Image` preview shows a real photo capped to its 16∶9 frame instead of a flat
+  gradient filling the card.
+- **Landing field** (`DS-0064`, `DS-0065`, docs): each tile cycles independently via a per-tile
+  `HubTile` (its own 0.5–2s timer) with a crossfade on value changes and a staggered fade+scale
+  entrance; a full-screen radial scrim sits over the dimmed field (a hovered tile still pops); the
+  `image` component is dropped from the field; and the field's sample data is fully typed.
+
 ## [0.8.1] — landing polish — 2026-06-09
 
 Docs-site only (the published library is unchanged from `0.8.0`).
