@@ -267,6 +267,13 @@
     display: flex; flex-direction: column; gap: 1px;
     background: var(--ss-bg);
     width: var(--ss-side-w);
+    // Fill the host container's height so the rail (border-right + background)
+    // spans the full screen/column instead of stopping at the last item. Uses
+    // min-height so it still grows past the viewport when the nav is long (the
+    // host scrolls). A percentage min-height against an indefinite-height parent
+    // imposes no constraint (effectively 0), so a bare/standalone Sidebar falls
+    // back to its content height and is unaffected.
+    min-height: 100%;
     transition: width var(--ss-dur-fast) var(--ss-ease);
 
     &[data-collapsed] {
