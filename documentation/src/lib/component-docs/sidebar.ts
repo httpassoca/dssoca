@@ -28,5 +28,5 @@ export const sidebar: ComponentDoc = {
       SIZE_PROP,
     ],
     notes:
-      'Exports the `SideItem`, `SideGroup`, and `SideStatus` types from `dssoca`. `SideItem` gains `href`, `badge`, optional `icon` (omit for a text-only item), and one level of nested `children`.',
+      'Exports the `SideItem`, `SideGroup`, and `SideStatus` types from `dssoca`. `SideItem` gains `href`, `badge`, optional `icon` (omit for a text-only item), and one level of nested `children`. The rail stretches to fill its host container’s height (`min-height: 100%`), so the border/background span the full screen or column; it still grows past the viewport when the nav is long.',
   };
