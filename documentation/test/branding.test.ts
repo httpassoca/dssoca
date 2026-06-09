@@ -15,4 +15,14 @@ describe('branding — no personal-name logo references', () => {
   it('the dssoca-logo.svg asset exists', () => {
     expect(() => read('static/dssoca-logo.svg')).not.toThrow();
   });
+
+  it('docs chrome carries no personal name (passoca / rafael)', () => {
+    for (const f of ['src/app.html', 'src/routes/+layout.svelte', 'src/routes/+page.svelte']) {
+      const s = read(f);
+      // `httpassoca` (GitHub URL) and `dssoca` (the brand) are intentionally kept.
+      const personal = s.replace(/httpassoca/g, '').replace(/dssoca/gi, '');
+      expect(personal, `${f}: passoca`).not.toMatch(/passoca/i);
+      expect(s, `${f}: rafael`).not.toMatch(/rafael/i);
+    }
+  });
 });
