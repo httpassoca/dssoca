@@ -80,8 +80,10 @@ describe('Button', () => {
 		it('has no ungated :hover anywhere (every :hover is :not(:disabled)-guarded)', () => {
 			// Stronger than the bare-&:hover check: also catches a full-selector
 			// hover (e.g. `.ss-btn.primary:hover { … }`) that skips the SCSS parent.
-			const hovers = (source.match(/:hover/g) ?? []).length;
-			const guarded = (source.match(/:not\(:disabled\):hover/g) ?? []).length;
+			// Strip comments first so prose mentioning ":hover" isn't counted.
+			const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+			const hovers = (code.match(/:hover/g) ?? []).length;
+			const guarded = (code.match(/:not\(:disabled\):hover/g) ?? []).length;
 			expect(hovers).toBeGreaterThan(0);
 			expect(guarded).toBe(hovers);
 		});
