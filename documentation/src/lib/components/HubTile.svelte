@@ -4,54 +4,58 @@
    * 0.5–2s cycler, so every tile changes independently (no two show the same
    * value) and the cycling can't be disturbed by the parent's resize/measure.
    * Each value change crossfades (the design system "breathing"); chrome tiles
-   * update in place via their own transitions. Frozen under reduced motion.
+   * update in place via their own transitions. Tiles fade + scale in on mount
+   * (staggered). Frozen under reduced motion.
    */
   import { fade } from 'svelte/transition';
   import { prefersReducedMotion } from 'svelte/motion';
   import {
     Button, Input, SegmentedControl, Sidebar, Topbar, BottomNav, Menu, Link,
     Card, Accordion, Badge, MetricTile, ServiceCard, Sparkline, LogStream,
-    EmptyState, Icon,
+    EmptyState, Icon, type IconName, type SideGroup, type BottomNavItem,
+    type MenuItem, type SegmentOption, type AccordionItem, type LogLine,
   } from 'dssoca';
-  import { V, BLEED, CYCLE_MIN, CYCLE_MAX } from '$lib/hub-data';
+  import { V, BLEED, CYCLE_MIN, CYCLE_MAX, type Variant } from '$lib/hub-data';
 
   let { slug }: { slug: string } = $props();
 
-  const pool = V[slug] ?? [];
-  const chrome = BLEED.has(slug);
+  const pool = $derived<Variant[]>(V[slug] ?? []);
+  const chrome = $derived(BLEED.has(slug));
+  // staggered entrance so the field "materialises" rather than popping in
+  const enterDelay = Math.round(Math.random() * 450);
 
   // Static sub-data the cycling props slot into.
-  const sideGroups = [
+  const sideGroups: SideGroup[] = [
     { section: 'nav', items: [
-      { id: 'hub', label: 'Hub', icon: 'grid' as const, status: 'up' as const },
-      { id: 'logs', label: 'Logs', icon: 'logs' as const },
-      { id: 'auth', label: 'Auth', icon: 'user' as const, status: 'deg' as const },
+      { id: 'hub', label: 'Hub', icon: 'grid', status: 'up' },
+      { id: 'logs', label: 'Logs', icon: 'logs' },
+      { id: 'auth', label: 'Auth', icon: 'user', status: 'deg' },
     ] },
   ];
-  const bnItems = [
-    { id: 'home', label: 'Home', icon: 'grid' as const },
-    { id: 'data', label: 'Data', icon: 'database' as const },
-    { id: 'activity', label: 'Activity', icon: 'activity' as const, badge: 3 },
-    { id: 'account', label: 'Account', icon: 'user' as const },
+  const bnItems: BottomNavItem[] = [
+    { id: 'home', label: 'Home', icon: 'grid' },
+    { id: 'data', label: 'Data', icon: 'database' },
+    { id: 'activity', label: 'Activity', icon: 'activity', badge: 3 },
+    { id: 'account', label: 'Account', icon: 'user' },
   ];
-  const menuItems = [
-    { id: 'edit', label: 'Edit', icon: 'note' as const },
-    { id: 'dup', label: 'Duplicate', icon: 'grid' as const },
-    { id: 'del', label: 'Delete', icon: 'logs' as const },
+  const menuItems: MenuItem[] = [
+    { id: 'edit', label: 'Edit', icon: 'note' },
+    { id: 'dup', label: 'Duplicate', icon: 'grid' },
+    { id: 'del', label: 'Delete', icon: 'logs' },
   ];
-  const segOptions = [
-    { value: 'list', label: 'List', icon: 'logs' as const },
-    { value: 'grid', label: 'Grid', icon: 'grid' as const },
+  const segOptions: SegmentOption[] = [
+    { value: 'list', label: 'List', icon: 'logs' },
+    { value: 'grid', label: 'Grid', icon: 'grid' },
     { value: 'map', label: 'Map' },
   ];
-  const accItems = [
+  const accItems: AccordionItem[] = [
     { id: 'overview', label: 'Overview' },
     { id: 'usage', label: 'Usage', hint: '1 min' },
   ];
-  const logLines = [
-    { t: '12:00:01', lvl: 'info' as const, svc: '[hub]', msg: 'session refresh — user=admin' },
-    { t: '12:00:03', lvl: 'ok' as const, svc: '[movies-api]', msg: 'GET /movies — 4ms' },
-    { t: '12:00:06', lvl: 'warn' as const, svc: '[caddy]', msg: 'tls renewing hub.home' },
+  const logLines: LogLine[] = [
+    { t: '12:00:01', lvl: 'info', svc: '[hub]', msg: 'session refresh — user=admin' },
+    { t: '12:00:03', lvl: 'ok', svc: '[movies-api]', msg: 'GET /movies — 4ms' },
+    { t: '12:00:06', lvl: 'warn', svc: '[caddy]', msg: 'tls renewing hub.home' },
   ];
   const demoDate = new Date();
 
@@ -59,16 +63,22 @@
 
   // this tile's current variant
   let vi = $state(0);
-  const v = $derived<any>(pool.length ? pool[vi % pool.length] : {});
-  const dur = $derived(reduced ? 0 : 240);
+  const v = $derived<Variant>(pool.length ? pool[vi % pool.length] : {});
+  // crossfade duration: 0 on first paint (the tile entrance covers it) and under
+  // reduced motion; otherwise a gentle fade on each value change.
+  let mounted = $state(false);
+  $effect(() => {
+    mounted = true;
+  });
+  const dur = $derived(reduced || !mounted ? 0 : 240);
 
   // Independent random 0.5–2s cycler. Depends only on `reduced` + the constant
   // pool, so it is immune to the parent's layout/resize churn.
   $effect(() => {
     if (reduced || pool.length < 2) return;
     let timer: ReturnType<typeof setTimeout>;
-    const delay = () => CYCLE_MIN + Math.random() * (CYCLE_MAX - CYCLE_MIN);
-    const tick = () => {
+    const delay = (): number => CYCLE_MIN + Math.random() * (CYCLE_MAX - CYCLE_MIN);
+    const tick = (): void => {
       let next = Math.floor(Math.random() * pool.length);
       if (next === vi) next = (next + 1) % pool.length;
       vi = next;
@@ -114,7 +124,7 @@
       </div>
     {:else if slug === 'metric-tile'}
       <div class="w-full">
-        <MetricTile label="req/min" value={v.val} delta={v.d} dir={v.dir}>
+        <MetricTile label="req/min" value={v.val ?? '0'} delta={v.d} dir={v.dir}>
           {#snippet chart()}<Sparkline data={[3, 7, 4, 9, 6, 11]} trend="auto" fluid />{/snippet}
         </MetricTile>
       </div>
@@ -123,17 +133,15 @@
         <ServiceCard name="movies-api" host="movies.home" status={v.status} latency={v.lat} updatedAt={demoDate} />
       </div>
     {:else if slug === 'sparkline'}
-      <div class="w-full"><Sparkline data={v.data} label="req/min, last 6h" variant="area" fluid /></div>
+      <div class="w-full"><Sparkline data={v.data ?? []} label="req/min, last 6h" variant="area" fluid /></div>
     {:else if slug === 'log-stream'}
       {#if reduced}<LogStream lines={logLines} />{:else}<LogStream demo />{/if}
     {:else if slug === 'empty-state'}
-      <EmptyState title={v.title} message={v.msg} icon={v.icon} />
+      <EmptyState title={v.title ?? ''} message={v.msg} icon={v.icon} />
     {:else if slug === 'icon'}
       <div class="row icons">
-        {#each v.names as n}<Icon name={n} px={20} />{/each}
+        {#each v.names ?? [] as n}<Icon name={n} px={20} />{/each}
       </div>
-    {:else if slug === 'image'}
-      <img class="img" src={v.src} alt="" loading="lazy" decoding="async" />
     {:else if slug === 'toaster'}
       <div class="toasts">
         <div class="ft"><span class="ft-g {v.k}">{v.g}</span><span>{v.t}</span></div>
@@ -145,7 +153,7 @@
   </svelte:boundary>
 {/snippet}
 
-<div class="tile" class:chrome data-slug={slug}>
+<div class="tile" class:chrome data-slug={slug} style="--enter-delay: {enterDelay}ms">
   <div class="inner" inert>
     {#if chrome}
       <!-- chrome updates in place (its own transitions smooth the change) -->
@@ -161,18 +169,27 @@
 </div>
 
 <style lang="scss">
+  @keyframes tile-in {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 0.2; transform: scale(1); }
+  }
+
   .tile {
     position: relative;
     overflow: hidden;
     transform: translateZ(0); // containing block for any position:fixed child
     background: var(--ss-bg);
-    opacity: 0.28;
+    opacity: 0.2;
+    // staggered fade + scale entrance (backwards fill: hold the start during the
+    // delay, then revert to the CSS opacity so :hover still works afterwards)
+    animation: tile-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+    animation-delay: var(--enter-delay, 0ms);
     // smooth dim → full on hover (opacity only: GPU-friendly, never janky)
     transition: opacity 0.4s ease;
 
     &:hover {
       opacity: 1;
-      z-index: 5; // pops above neighbours (and above the page gradient)
+      z-index: 5; // pops above the page gradient + neighbours
     }
   }
 
@@ -200,10 +217,6 @@
   .tile[data-slug='topbar'] :global(.ss-topbar) { width: 100%; }
   .tile[data-slug='log-stream'] :global(.ss-logs) { width: 100%; height: 100%; }
 
-  // Image tiles fill the cell with a random photo at lower opacity.
-  .tile[data-slug='image'] .content { padding: 0; }
-  .img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
-
   .row { display: flex; align-items: center; gap: var(--ss-s-2); flex-wrap: wrap; justify-content: center; }
   .icons { gap: var(--ss-s-3); color: var(--ss-fg-muted); }
   .w-full { width: 100%; }
@@ -223,4 +236,8 @@
   .ft-g.ok { color: var(--ss-primary); }
   .ft-g.info { color: var(--ss-cyan); }
   .ft-g.err { color: var(--ss-red); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile { animation: none; }
+  }
 </style>
