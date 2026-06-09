@@ -8,6 +8,20 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+## [0.8.1] — landing polish — 2026-06-09
+
+Docs-site only (the published library is unchanged from `0.8.0`).
+
+### Changed
+
+- **Landing** (`DS-0063`): the `/` route is now a full-screen branded hero with **no docs
+  shell** (top bar / sidebar hidden). The component "workstation" **fills the viewport** with a
+  randomized, repeating pool (~5 tiles per row at 1920px), chrome components (sidebar / topbar /
+  log-stream / bottom-nav) are **adapted to their cell**, the logo and `DSSOCA` sit **side by side**,
+  the background is a `radial-gradient(circle, rgba(0,0,0,.83), rgba(0,0,0,.4))` behind the dimmed
+  tiles (a hovered tile pops to full), the prop-cycle cadence is **0.5–2s**, the description carries a
+  contrast `text-shadow`, and the field is **hidden on mobile**.
+
 ## [0.8.0] — docs experience, Storybook deploy & branding — 2026-06-09
 
 ### Added
