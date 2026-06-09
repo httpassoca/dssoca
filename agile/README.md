@@ -40,12 +40,17 @@ What + why (user POV for stories).
 
 ## Acceptance criteria
 - [ ] testable outcome
+- [ ] Documentation updated (docs.config.ts component page + docs/tokens.md / docs/themes.md as needed)
 
 ## Notes
 - verification cmd, file refs
 ```
 
 Tasks need only `## Description`. A task's done-ness is its `status`, not a checkbox.
+
+The **Documentation updated** acceptance criterion is a standing default: every story (and any
+task that changes a user-facing API or token) carries it, mirroring the repo-root CLAUDE.md
+"Docs are a RULE". Drop it only when the work genuinely has no docs surface (e.g. pure CI tweaks).
 
 ## Keep it agile — the RULE
 
