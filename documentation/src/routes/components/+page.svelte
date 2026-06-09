@@ -52,14 +52,9 @@
     { t: '12:00:06', lvl: 'warn' as const, svc: '[caddy]', msg: 'tls renewing hub.home' },
     { t: '12:00:08', lvl: 'err' as const, svc: '[tasks-api]', msg: 'EADDRINUSE :3004' },
   ];
-  const imgSrc =
-    'data:image/svg+xml;utf8,' +
-    encodeURIComponent(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180">' +
-        '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
-        '<stop offset="0" stop-color="#66ef73"/><stop offset="1" stop-color="#1e1e1e"/>' +
-        '</linearGradient></defs><rect width="320" height="180" fill="url(#g)"/></svg>',
-    );
+  // A real photograph (Lorem Picsum, fixed id) instead of a flat gradient —
+  // mirrors the Image Storybook story; the fixed id keeps the preview stable.
+  const imgSrc = 'https://picsum.photos/id/1018/480/270';
 </script>
 
 <svelte:head>
@@ -160,7 +155,7 @@
       <Icon name="user" px={20} /><Icon name="grid" px={20} /><Icon name="logs" px={20} />
     </div>
   {:else if slug === 'image'}
-    <div class="w-full"><Image src={imgSrc} alt="Gradient preview" ratio={16 / 9} /></div>
+    <div class="img-preview"><Image src={imgSrc} alt="A mountain landscape at dawn" ratio={16 / 9} /></div>
   {:else if slug === 'toaster'}
     <!-- Toaster reads the global toast store and is position:fixed, so a live
          instance would be empty / escape the card; show a faithful static stand-in. -->
@@ -173,8 +168,9 @@
 
 <style lang="scss">
   .intro {
-    max-width: 56rem;
-    margin: 0 auto var(--ss-block-gap);
+    // Full content width, left-aligned (matches the tokens page) so the heading
+    // and lede share the grids' left edge instead of floating centered+narrow.
+    margin: 0 0 var(--ss-block-gap);
 
     h1 {
       font-family: var(--ss-font-display);
@@ -192,8 +188,7 @@
     }
   }
   .cat {
-    max-width: 72rem;
-    margin: 0 auto var(--ss-block-gap);
+    margin: 0 0 var(--ss-block-gap);
 
     h2 {
       font-family: var(--ss-font-subhead);
@@ -207,14 +202,18 @@
   .grid {
     display: grid;
     // Three per line on wide; degrade gracefully on narrower viewports.
-    grid-template-columns: repeat(3, 1fr);
+    // minmax(0, 1fr) (not the implicit minmax(auto, 1fr)) forces every track to
+    // an equal share: without the 0 floor a wide, non-wrapping preview — e.g.
+    // Topbar's tabs + user email — blows its column past 1/3 and squeezes its
+    // row-mates. The stage clips the overflow.
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--ss-gap);
   }
   @media (max-width: 880px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 560px) {
-    .grid { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: minmax(0, 1fr); }
   }
 
   .card {
@@ -258,6 +257,14 @@
     &.bleed :global(.ss-logs) {
       width: 100%;
     }
+    // Topbar is a horizontal bar, not a vertical fill like Sidebar/LogStream:
+    // it has no intrinsic height (the app shell sizes it via its grid row), so
+    // `align-items: stretch` blew it up to the full stage. Pin it to the top at
+    // its real shell height, same as the docs top bar.
+    &.bleed :global(.ss-topbar) {
+      align-self: flex-start;
+      height: var(--ss-shell-top-h);
+    }
 
     .row {
       display: flex;
@@ -268,6 +275,10 @@
     }
     .icons { gap: var(--ss-s-3); color: var(--ss-fg-muted); }
     .w-full { width: 100%; }
+    // Cap the Image preview so its 16/9 frame fits the stage (168px − 2×16px
+    // padding = 136px tall → 136 × 16/9 ≈ 242px) instead of overflowing to full
+    // height; the stage centers it, so it sits proportionally with breathing room.
+    .img-preview { width: 100%; max-width: 220px; }
     .card-body {
       margin: 0;
       font-family: var(--ss-font-body);
