@@ -47,13 +47,24 @@
   ];
   const demoDate = new Date();
 
+  const reduced = $derived(prefersReducedMotion.current);
+  // static log snapshot so the LogStream tile also freezes under reduced motion
+  // (its own demo ticker doesn't honour the OS setting).
+  const logLines = [
+    { t: '12:00:01', lvl: 'info' as const, svc: '[hub]', msg: 'session refresh — user=admin' },
+    { t: '12:00:03', lvl: 'ok' as const, svc: '[movies-api]', msg: 'GET /movies — 4ms' },
+    { t: '12:00:06', lvl: 'warn' as const, svc: '[caddy]', msg: 'tls renewing hub.home' },
+  ];
+
   // current variant index per tile (keyed by tile position so repeats cycle apart)
   let idx = $state<number[]>(TILES.map(() => 0));
 
   // Independent random 1–4s cyclers; frozen (and torn down) under reduced motion.
   $effect(() => {
     if (prefersReducedMotion.current) return;
-    const timers: ReturnType<typeof setTimeout>[] = [];
+    // keyed by tile index and overwritten each tick, so it stays bounded to
+    // TILES.length entries (no unbounded growth over a long session).
+    const timers = new Map<number, ReturnType<typeof setTimeout>>();
     TILES.forEach((slug, i) => {
       const pool = V[slug];
       if (!pool || pool.length < 2) return;
@@ -61,9 +72,9 @@
         let next = Math.floor(Math.random() * pool.length);
         if (next === idx[i]) next = (next + 1) % pool.length;
         idx[i] = next;
-        timers.push(setTimeout(tick, 1000 + Math.random() * 3000));
+        timers.set(i, setTimeout(tick, 1000 + Math.random() * 3000));
       };
-      timers.push(setTimeout(tick, 1000 + Math.random() * 3000));
+      timers.set(i, setTimeout(tick, 1000 + Math.random() * 3000));
     });
     return () => timers.forEach(clearTimeout);
   });
@@ -78,7 +89,10 @@
   {#each TILES as slug, i (i)}
     {@const v = variant(slug, idx[i])}
     <div class="tile" class:bleed={BLEED.has(slug)}>
-      <div class="inner">
+      <!-- inert: the live components are decorative; keep their focusable controls
+           out of the tab order + a11y tree. It sits on .inner (not .tile) so the
+           per-card :hover reveal still works. -->
+      <div class="inner" inert>
         <svelte:boundary>
         {#if slug === 'button'}
           <Button variant={v.variant}>{v.t}</Button>
@@ -107,7 +121,7 @@
           </div>
         {:else if slug === 'accordion'}
           <div class="w-full">
-            <Accordion items={accItems} defaultValue={v.open}>
+            <Accordion items={accItems} value={v.open}>
               {#snippet panel(item)}<p class="body">Content for {item.label}.</p>{/snippet}
             </Accordion>
           </div>
@@ -124,7 +138,7 @@
         {:else if slug === 'sparkline'}
           <div class="w-full"><Sparkline data={v.data} label="req/min, last 6h" variant="area" fluid /></div>
         {:else if slug === 'log-stream'}
-          <LogStream demo />
+          {#if reduced}<LogStream lines={logLines} />{:else}<LogStream demo />{/if}
         {:else if slug === 'empty-state'}
           <EmptyState title={v.title} message={v.msg} icon={v.icon} />
         {:else if slug === 'icon'}

@@ -55,9 +55,10 @@ export const V: Record<string, Record<string, unknown>[]> = {
   link: [{ t: 'about' }, { t: 'docs' }, { t: 'changelog' }, { t: 'get started' }],
   accordion: [{ open: 'overview' }, { open: 'usage' }],
   'empty-state': [
-    { title: 'No services', msg: 'Add one to start', icon: 'grid' },
-    { title: 'All clear', msg: 'Nothing to review', icon: 'check' },
-    { title: 'No logs', msg: 'Waiting for activity', icon: 'logs' },
+    // EmptyState renders `icon` verbatim as a glyph (not an Icon name), so use real glyphs.
+    { title: 'No services', msg: 'Add one to start', icon: '∅' },
+    { title: 'All clear', msg: 'Nothing to review', icon: '✓' },
+    { title: 'No logs', msg: 'Waiting for activity', icon: '⋯' },
   ],
   icon: [
     { names: ['activity', 'settings', 'check', 'user', 'grid'] },
