@@ -19,11 +19,18 @@
   // Normalise trailing slash so the active item matches (trailingSlash: always).
   const current = $derived(page.url.pathname.replace(/\/$/, '') || '/');
 
+  // The landing route ('/') is a full-screen branded hero — render it WITHOUT the
+  // docs shell (no top bar / sidebar).
+  const isLanding = $derived(current === '/');
+
   function navigate(id: string) {
     goto(id);
   }
 </script>
 
+{#if isLanding}
+  {@render children?.()}
+{:else}
 <div class="docs">
   <header class="topbar">
     <a class="brand" href="/">
@@ -48,6 +55,7 @@
     </main>
   </div>
 </div>
+{/if}
 
 <style lang="scss">
   // Docs-only polish: a plain, always-on transition so flipping the theme
