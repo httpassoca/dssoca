@@ -1,0 +1,22 @@
+// ============================================================
+//  Per-component token partials — one file per component (DS-0043).
+//
+//  Why this split: the new components from the passoca website are built in
+//  parallel, one PR each. Keeping each component's --ss-* size tokens in its
+//  OWN partial (instead of all piling into _tokens.scss) means two parallel
+//  branches never edit the same file → no merge conflicts. This joiner is the
+//  "one file to bring them all together"; it is wired into theme.scss once and
+//  should not need editing when a component's tokens are filled in — only the
+//  individual partial below changes.
+//
+//  Each partial defines tokens inside [data-size-variant="sm|md|lg"] blocks
+//  (and :root for the md default), exactly like the size axis in _tokens.scss;
+//  CSS custom properties from multiple rule blocks with the same selector just
+//  cascade, so a component can extend each size tier from its own file.
+// ============================================================
+@use 'menu';
+@use 'accordion';
+@use 'link';
+@use 'segmented-control';
+@use 'bottom-nav';
+@use 'image';

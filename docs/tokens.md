@@ -192,6 +192,65 @@ and `[data-size-variant="lg"]` override them. These rescale the entire chrome.
 `lg` is a new larger step. Global default is `md`; set it via `sizeVariant`, or per
 component via the `size` prop / `componentsSize`.
 
+### Component size tokens (`DS-0043`)
+
+The components ported from the passoca website (`DS-0043`) keep their size-sensitive
+metrics in per-component partials under `src/styles/components/` (joined by
+`_index.scss`, the source of truth for the values below). Each rescales with the size
+axis; reuse a shared token from the table above before adding a component-specific one.
+
+**Menu** (`--ss-menu-*`)
+
+| Token | `sm` | `md` | `lg` | Role |
+|---|---|---|---|---|
+| `--ss-menu-pad` | `3px` | `4px` | `6px` | Floating-panel inner padding |
+| `--ss-menu-item-py` | `5px` | `8px` | `11px` | Row vertical padding |
+| `--ss-menu-item-px` | `9px` | `12px` | `16px` | Row horizontal padding |
+| `--ss-menu-item-gap` | `8px` | `10px` | `12px` | Icon / label / marker gap |
+| `--ss-menu-min-w` | `150px` | `180px` | `220px` | Panel min width |
+| `--ss-menu-offset` | `5px` | `6px` | `8px` | Trigger→panel offset |
+
+**SegmentedControl** (`--ss-seg-*`)
+
+| Token | `sm` | `md` | `lg` | Role |
+|---|---|---|---|---|
+| `--ss-seg-font` | `--ss-ui-sm` | `--ss-ui-md` | `--ss-ui-lg` | Segment label size |
+| `--ss-seg-py` | `4px` | `7px` | `10px` | Segment vertical padding |
+| `--ss-seg-px` | `9px` | `14px` | `20px` | Segment horizontal padding |
+| `--ss-seg-gap` | `6px` | `--ss-gap-sm` | `12px` | Gap between segments |
+
+**Accordion** (`--ss-acc-*`)
+
+| Token | `sm` | `md` | `lg` | Role |
+|---|---|---|---|---|
+| `--ss-acc-head-py` | `--ss-s-1` | `--ss-row-py` | `--ss-s-3` | Header vertical padding |
+| `--ss-acc-head-px` | `--ss-s-2` | `--ss-row-px` | `--ss-s-4` | Header horizontal padding |
+| `--ss-acc-body-py` | `--ss-s-2` | `--ss-s-3` | `--ss-s-4` | Panel vertical padding |
+| `--ss-acc-body-px` | `--ss-s-2` | `--ss-row-px` | `--ss-s-4` | Panel horizontal padding |
+| `--ss-acc-chevron` | `7px` | `9px` | `11px` | Disclosure chevron size |
+| `--ss-acc-gap` | `--ss-s-2` | `--ss-s-3` | `--ss-s-4` | Header label/hint gap |
+
+**BottomNav** (`--ss-bottom-nav-*`) — derived from the shell/spacing scale (single tier):
+`--ss-bottom-nav-h` (= `--ss-shell-top-h`, bar height), `--ss-bottom-nav-px` (= `--ss-s-2`,
+tab horizontal padding), `--ss-bottom-nav-tab-py` (= `--ss-s-1`), `--ss-bottom-nav-gap`
+(`4px`, glyph→label), `--ss-bottom-nav-label-fs` (= `--ss-ui-xs`).
+
+**Image** (`--ss-image-*`) — size-sensitive chrome (the image itself is not scaled):
+
+| Token | `sm` | `md` | `lg` | Role |
+|---|---|---|---|---|
+| `--ss-image-glyph` | `22px` | `28px` | `36px` | Error-fallback glyph |
+| `--ss-image-fallback-min` | `96px` | `120px` | `160px` | Min height without a ratio |
+| `--ss-image-close` | `30px` | `36px` | `44px` | Lightbox close hit area |
+
+Image also defines size-invariant tokens under `:root` (theme-aware where noted):
+`--ss-image-frame-bg` (= `--ss-bg-elev`), `--ss-image-shimmer` (skeleton sweep, per-theme),
+`--ss-image-shimmer-dur` (= `--ss-dur-xslow`), `--ss-image-focus-w` (`2px`),
+`--ss-image-caption-gap` (= `--ss-s-2`), `--ss-image-backdrop` (lightbox scrim, per-theme),
+`--ss-image-lightbox-z` (`1000`), `--ss-image-lightbox-pad` (= `--ss-s-8`).
+
+(**Link** added no new tokens — it reuses the brand, motion, and chrome tokens above.)
+
 ## 3. Static tokens — not axis-controlled
 
 Defined once under `:root`. Same in every theme/size.
