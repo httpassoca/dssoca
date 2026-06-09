@@ -3,7 +3,7 @@ id: DS-0064
 type: story
 title: "Landing field fixes — independent cycling, crossfade, photos, gradient"
 status: done
-priority: medium
+priority: high
 tags: [docs, landing, motion, bugfix]
 depends_on: [DS-0063]
 parent: null
