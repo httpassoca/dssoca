@@ -5,7 +5,8 @@
   export interface SideItem {
     id: string
     label: string
-    icon: IconName
+    /** Optional leading glyph. Omit for a text-only nav item. */
+    icon?: IconName
     status?: SideStatus
     /** Optional URL — when set the item renders as a real `<a href>`. */
     href?: string
@@ -140,7 +141,7 @@
               title={collapsed ? accessibleName(item) : undefined}
               onclick={() => toggleOpen(item)}
             >
-              <Icon name={item.icon} px={13} />
+              {#if item.icon}<Icon name={item.icon} px={13} />{/if}
               <span class="label">{item.label}</span>
               {#if item.badge != null && item.badge !== ''}
                 <span class="badge">{item.badge}</span>
@@ -165,7 +166,7 @@
                       title={collapsed ? accessibleName(child) : undefined}
                       onclick={(e) => selectIfSpa(child, e)}
                     >
-                      <Icon name={child.icon} px={13} />
+                      {#if child.icon}<Icon name={child.icon} px={13} />{/if}
                       <span class="label">{child.label}</span>
                       {#if child.badge != null && child.badge !== ''}
                         <span class="badge">{child.badge}</span>
@@ -190,7 +191,7 @@
                         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect?.(child.id) }
                       }}
                     >
-                      <Icon name={child.icon} px={13} />
+                      {#if child.icon}<Icon name={child.icon} px={13} />{/if}
                       <span class="label">{child.label}</span>
                       {#if child.badge != null && child.badge !== ''}
                         <span class="badge">{child.badge}</span>
@@ -215,7 +216,7 @@
               title={collapsed ? accessibleName(item) : undefined}
               onclick={(e) => selectIfSpa(item, e)}
             >
-              <Icon name={item.icon} px={13} />
+              {#if item.icon}<Icon name={item.icon} px={13} />{/if}
               <span class="label">{item.label}</span>
               {#if item.badge != null && item.badge !== ''}
                 <span class="badge">{item.badge}</span>
@@ -240,7 +241,7 @@
                 if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect?.(item.id) }
               }}
             >
-              <Icon name={item.icon} px={13} />
+              {#if item.icon}<Icon name={item.icon} px={13} />{/if}
               <span class="label">{item.label}</span>
               {#if item.badge != null && item.badge !== ''}
                 <span class="badge">{item.badge}</span>
