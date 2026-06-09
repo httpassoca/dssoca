@@ -179,17 +179,16 @@
     overflow: hidden;
     transform: translateZ(0); // containing block for any position:fixed child
     background: var(--ss-bg);
-    opacity: 0.2;
+    opacity: 0.3;
     // staggered fade + scale entrance (backwards fill: hold the start during the
     // delay, then revert to the CSS opacity so :hover still works afterwards)
     animation: tile-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
     animation-delay: var(--enter-delay, 0ms);
     // smooth dim → full on hover (opacity only: GPU-friendly, never janky)
-    transition: opacity 0.4s ease;
+    transition: opacity .4s ease;
 
     &:hover {
       opacity: 1;
-      z-index: 5; // pops above the page gradient + neighbours
     }
   }
 

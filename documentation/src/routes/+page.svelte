@@ -71,7 +71,7 @@
     z-index: 2; // over the dimmed field; under a hovered tile (z:5) and the hero
     pointer-events: none;
     // darkest at the centre (behind the hero), fading out to the edges
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 100%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.67) 0%, rgba(0, 0, 0, 0) 100%);
   }
 
   .hero {
@@ -114,7 +114,7 @@
       font-family: var(--ss-font-body);
       font-size: var(--ss-size-body);
       line-height: var(--ss-leading);
-      color: var(--ss-fg-muted);
+      color: var(--ss-fg-shine);
       max-width: 42rem;
       // clear separation between the description and the buttons
       margin: 0 0 var(--ss-s-8);
