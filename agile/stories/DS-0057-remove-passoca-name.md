@@ -29,9 +29,15 @@ preserving infrastructure and legal ownership.
   `documentation/src/lib/component-docs/bottom-nav.ts` (user-facing description),
   `DESIGN.md` (intro line + the 0.4.0 changelog line that named the removed
   `PassocaMark`).
+- [x] **First name too** ("not my name"): the author's first name `rafael` shipped
+  as sample/default data — scrubbed to a neutral `admin`: the published `Topbar`
+  `user` default (`admin@hub.home`), the `LogStream` demo line (`user=admin`), the
+  Storybook stories (Topbar/Input/LogStream), the `Input` docs placeholder, and the
+  two unit tests that assert those literals. The homelab flavour (`hub.home`,
+  service names) is impersonal and kept.
 - [x] Regression guard: `documentation/test/branding.test.ts` (chrome never
   references `passoca-logo`; the `dssoca-logo.svg` asset exists).
-- [x] `pnpm test` + `pnpm docs:test` green; `pnpm docs:build` clean (logo resolves).
+- [x] `pnpm test` (496) + `pnpm docs:test` green; `pnpm docs:build` clean (logo resolves).
 
 ## Intentionally KEPT (with reasons — see follow-up for the decision)
 - **GitHub URLs** containing `httpassoca` (repo / homepage / bugs / repository) —

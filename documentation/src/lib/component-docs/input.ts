@@ -16,7 +16,7 @@ export const input: ComponentDoc = {
   label="email"
   type="email"
   bind:value={email}
-  placeholder="rafael@hub.home"
+  placeholder="admin@hub.home"
   hint="we never share it"
   clearable
 />`,

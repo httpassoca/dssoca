@@ -43,7 +43,7 @@
     args: {
       tabs: ['overview', 'services', 'logs', 'shell'],
       active: 'overview',
-      user: 'rafael@hub.home',
+      user: 'admin@hub.home',
       sticky: true,
       onTab: () => {},
       onCommand: () => {},

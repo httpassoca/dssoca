@@ -4,7 +4,7 @@
   import type { LogLine } from '$lib/components/LogStream.svelte';
 
   const multiLevelLines: LogLine[] = [
-    { t: '12:00:01', lvl: 'info', svc: '[hub]',        msg: 'session refresh — user=rafael' },
+    { t: '12:00:01', lvl: 'info', svc: '[hub]',        msg: 'session refresh — user=admin' },
     { t: '12:00:03', lvl: 'ok',   svc: '[movies-api]', msg: 'GET /movies?status=to_watch — 3 rows · 4ms' },
     { t: '12:00:06', lvl: 'warn', svc: '[caddy]',      msg: 'tls internal renewing hub.home' },
     { t: '12:00:09', lvl: 'err',  svc: '[tasks-api]',  msg: 'EADDRINUSE :3004 — retrying in 2s' },
