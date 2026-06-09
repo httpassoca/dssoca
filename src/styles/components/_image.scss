@@ -1,6 +1,49 @@
-// --- image tokens (DS-0043) ---------------------------------------------------
-// Component-scoped --ss-* size tokens for the image component live here.
-// Fill in [data-size-variant="sm|md|lg"] blocks (and :root for the md default)
-// as the component is implemented. Reuse shared tokens from _tokens.scss
-// (--ss-gap, --ss-control-py, --ss-icon, …) where possible; only add a new
-// token when no existing one fits. Keep zero border-radius (house rule).
+// --- image tokens (DS-0055) --------------------------------------------------
+// Component-scoped --ss-* tokens for the Image component. Chrome (skeleton,
+// error fallback, lightbox) reads these so it rescales with the size axis;
+// the intrinsic image dimensions are NOT driven by them. Colour/wash tokens
+// are size-invariant and live in :root; only the size-sensitive chrome metrics
+// vary per [data-size-variant]. Reuses shared tokens (--ss-skeleton, --ss-line,
+// --ss-shadow-pop, --ss-dur-*, --ss-s-*, --ss-ui-*) where possible. Zero radius.
+
+:root {
+  // Surface behind a ratio box before/while the image paints.
+  --ss-image-frame-bg: var(--ss-bg-elev);
+  // Shimmer highlight that sweeps across the skeleton (over --ss-skeleton).
+  --ss-image-shimmer: rgba(255, 255, 255, 0.06);
+  --ss-image-shimmer-dur: var(--ss-dur-xslow);
+  // Focus ring thickness for the (inset) lightbox trigger.
+  --ss-image-focus-w: 2px;
+  // Caption spacing under the figure.
+  --ss-image-caption-gap: var(--ss-s-2);
+
+  // Lightbox overlay.
+  --ss-image-backdrop: rgba(0, 0, 0, 0.82);
+  --ss-image-lightbox-z: 1000;       // matches the toaster layer
+  --ss-image-lightbox-pad: var(--ss-s-8);
+}
+
+[data-theme='light'] {
+  --ss-image-shimmer: rgba(255, 255, 255, 0.5);
+  --ss-image-backdrop: rgba(0, 0, 0, 0.66);
+}
+
+// ── size axis — chrome metrics only ─────────────────────────────────────────
+[data-size-variant='md'],
+:root {
+  --ss-image-glyph: 28px;            // error-fallback glyph
+  --ss-image-fallback-min: 120px;    // min height when no ratio reserves space
+  --ss-image-close: 36px;            // lightbox close-button hit area
+}
+
+[data-size-variant='sm'] {
+  --ss-image-glyph: 22px;
+  --ss-image-fallback-min: 96px;
+  --ss-image-close: 30px;
+}
+
+[data-size-variant='lg'] {
+  --ss-image-glyph: 36px;
+  --ss-image-fallback-min: 160px;
+  --ss-image-close: 44px;
+}
