@@ -87,7 +87,10 @@ pnpm build-storybook    # static Storybook build → storybook-static/ (gitignor
 Storybook config lives in `.storybook/` (`main.ts`, `preview.ts`); stories live in `src/stories/`
 (**never** `src/lib/` — `svelte-package` would publish them). Stories use Svelte CSF
 (`*.stories.svelte`); the preview exposes both design axes as toolbar globals applied to `<html>`.
-Not wired into CI.
+Not wired into CI. **Deploys to Vercel** as its own project alongside the docs site — the repo-root
+`vercel.json` branches its `buildCommand` on a `VERCEL_DEPLOY_TARGET=storybook` env var (agile
+`DS-0056`); see `documentation/CLAUDE.md` → *Storybook deployment* for the dashboard setup and the
+`VITE_STORYBOOK_URL` docs-embed wiring.
 
 Note: `pnpm check` (svelte-check) currently reports a known `$lib` alias error under its tsconfig
 context — pre-existing from the library template, not a real type bug. CI does **not** run it; it
