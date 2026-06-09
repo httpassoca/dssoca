@@ -1,6 +1,43 @@
-// --- accordion tokens (DS-0043) ---------------------------------------------------
-// Component-scoped --ss-* size tokens for the accordion component live here.
-// Fill in [data-size-variant="sm|md|lg"] blocks (and :root for the md default)
-// as the component is implemented. Reuse shared tokens from _tokens.scss
-// (--ss-gap, --ss-control-py, --ss-icon, …) where possible; only add a new
-// token when no existing one fits. Keep zero border-radius (house rule).
+// ============================================================
+//  Accordion — size tokens (--ss-acc-*) for the size axis (DS-0051).
+//
+//  NOTE: these are the canonical Accordion size tokens. They are *also*
+//  declared inside Accordion.svelte's scoped <style> (on `.ss-accordion`,
+//  in [data-size-variant] blocks) so the component ships self-contained —
+//  custom properties cascade through Svelte's scoped boundary, so the
+//  component works whether or not this partial is compiled into theme.css.
+//  Reuse the global spacing/row tokens; only the chevron + gaps are new.
+//
+//  This partial mirrors those values for any consumer that wants the tokens
+//  globally. It is intentionally NOT @used by theme.scss yet (that entry is
+//  shared across parallel work); wire it in when the global component layer
+//  lands. House rule: zero border-radius; size-sensitive values are tokens.
+// ============================================================
+
+[data-size-variant="md"],
+:root {
+  --ss-acc-head-py: var(--ss-row-py);
+  --ss-acc-head-px: var(--ss-row-px);
+  --ss-acc-body-py: var(--ss-s-3);
+  --ss-acc-body-px: var(--ss-row-px);
+  --ss-acc-chevron: 9px;
+  --ss-acc-gap:     var(--ss-s-3);
+}
+
+[data-size-variant="sm"] {
+  --ss-acc-head-py: var(--ss-s-1);
+  --ss-acc-head-px: var(--ss-s-2);
+  --ss-acc-body-py: var(--ss-s-2);
+  --ss-acc-body-px: var(--ss-s-2);
+  --ss-acc-chevron: 7px;
+  --ss-acc-gap:     var(--ss-s-2);
+}
+
+[data-size-variant="lg"] {
+  --ss-acc-head-py: var(--ss-s-3);
+  --ss-acc-head-px: var(--ss-s-4);
+  --ss-acc-body-py: var(--ss-s-4);
+  --ss-acc-body-px: var(--ss-s-4);
+  --ss-acc-chevron: 11px;
+  --ss-acc-gap:     var(--ss-s-4);
+}
