@@ -2,7 +2,7 @@
 id: DS-0046
 type: story
 title: "Link component"
-status: backlog
+status: done
 priority: low
 tags: [ui, a11y]
 depends_on: []

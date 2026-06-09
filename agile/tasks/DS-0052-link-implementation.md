@@ -2,7 +2,7 @@
 id: DS-0052
 type: task
 title: "Link implementation"
-status: backlog
+status: done
 priority: low
 tags: [ui, a11y]
 depends_on: []
