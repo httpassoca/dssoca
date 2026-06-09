@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { createRawSnippet } from 'svelte';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import ButtonHarness from '../harness/ButtonHarness.svelte';
@@ -45,6 +47,46 @@ describe('Button', () => {
 		const onclick = vi.fn();
 		const { container } = render(ButtonHarness, { onclick, disabled: true, text: 'Tap' });
 		expect(container.querySelector('button')).toBeDisabled();
+	});
+
+	describe('disabled — no glow / brighten', () => {
+		// jsdom's getComputedStyle does not apply Svelte's scoped <style> cascade,
+		// and :hover can't be simulated, so the disabled-glow guard can't be read
+		// off the rendered DOM. It is a pure CSS contract — assert it at the source
+		// so a regression (re-introducing a bare hover glow) fails the suite.
+		const source = readFileSync(
+			resolve(process.cwd(), 'src/lib/components/Button.svelte'),
+			'utf8',
+		);
+
+		it('still renders disabled buttons as natively disabled (inert)', () => {
+			const { container } = render(ButtonHarness, { variant: 'primary', disabled: true, text: 'Save' });
+			expect(container.querySelector('button')).toBeDisabled();
+		});
+
+		it('has no un-guarded &:hover rule (every hover affordance excludes :disabled)', () => {
+			expect(source).not.toContain('&:hover');
+			expect(source).toContain('&:not(:disabled):hover');
+		});
+
+		it('gates the primary brand glow behind :not(:disabled):hover', () => {
+			expect(source).toMatch(/&:not\(:disabled\):hover\s*\{[^}]*--ss-shadow-glow/);
+		});
+
+		it('resets box-shadow to none on :disabled', () => {
+			expect(source).toMatch(/&:disabled\s*\{[^}]*box-shadow:\s*none/);
+		});
+
+		it('has no ungated :hover anywhere (every :hover is :not(:disabled)-guarded)', () => {
+			// Stronger than the bare-&:hover check: also catches a full-selector
+			// hover (e.g. `.ss-btn.primary:hover { … }`) that skips the SCSS parent.
+			// Strip comments first so prose mentioning ":hover" isn't counted.
+			const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+			const hovers = (code.match(/:hover/g) ?? []).length;
+			const guarded = (code.match(/:not\(:disabled\):hover/g) ?? []).length;
+			expect(hovers).toBeGreaterThan(0);
+			expect(guarded).toBe(hovers);
+		});
 	});
 
 	describe('loading', () => {

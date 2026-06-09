@@ -27,7 +27,7 @@
 <div class="docs">
   <header class="topbar">
     <a class="brand" href="/">
-      <img class="logo" src="/passoca-logo.svg" alt="" width="22" height="22" />
+      <img class="logo" src="/dssoca-logo.svg" alt="" width="22" height="22" />
       <span class="name">dssoca</span>
       <span class="tag">docs</span>
     </a>

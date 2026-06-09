@@ -194,7 +194,7 @@ component via the `size` prop / `componentsSize`.
 
 ### Component size tokens (`DS-0043`)
 
-The components ported from the passoca website (`DS-0043`) keep their size-sensitive
+The components ported from the source website (`DS-0043`) keep their size-sensitive
 metrics in per-component partials under `src/styles/components/` (joined by
 `_index.scss`, the source of truth for the values below). Each rescales with the size
 axis; reuse a shared token from the table above before adding a component-specific one.

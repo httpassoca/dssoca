@@ -63,9 +63,9 @@
 
 <Story name="Bare" args={{ placeholder: 'Type something…' }} />
 
-<Story name="With Label" args={{ label: 'Email', type: 'email', placeholder: 'rafael@hub.home' }} />
+<Story name="With Label" args={{ label: 'Email', type: 'email', placeholder: 'admin@hub.home' }} />
 
-<Story name="Prefilled" args={{ label: 'Username', value: 'rafael' }} />
+<Story name="Prefilled" args={{ label: 'Username', value: 'admin' }} />
 
 <Story name="Password" args={{ label: 'Password', type: 'password', placeholder: '••••••••' }} />
 

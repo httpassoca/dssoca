@@ -1,6 +1,22 @@
 import { describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { render, fireEvent } from '@testing-library/svelte';
 import Sidebar from '$lib/components/Sidebar.svelte';
+
+describe('Sidebar — fills its container height', () => {
+	// Layout height can't be measured in jsdom, so lock the fill rule at source:
+	// `.ss-side` must stretch to the host's height (min-height: 100%) so the rail
+	// border/background span the full screen/column rather than ending at the
+	// last item.
+	it('stretches .ss-side to the host height via min-height: 100%', () => {
+		const source = readFileSync(
+			resolve(process.cwd(), 'src/lib/components/Sidebar.svelte'),
+			'utf8',
+		);
+		expect(source).toMatch(/\.ss-side\s*\{[\s\S]*?min-height:\s*100%/);
+	});
+});
 
 describe('Sidebar', () => {
 	it('renders a nav landmark labelled "Sidebar"', () => {

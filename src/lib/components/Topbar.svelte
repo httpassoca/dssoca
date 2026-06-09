@@ -35,7 +35,7 @@
 
   let {
     active = 'overview',
-    user = 'rafael@hub.home',
+    user = 'admin@hub.home',
     tabs = ['overview', 'services', 'logs', 'shell'],
     onTab,
     onCommand,

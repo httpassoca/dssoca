@@ -50,6 +50,18 @@ describe('docs.config — nav', () => {
       expect.arrayContaining(['/introduction', '/installation', '/theming', '/tokens']),
     );
   });
+
+  it('lists the components alphabetically by name', () => {
+    const componentsGroup = NAV.find((g) => g.section === 'components')!;
+    const labels = componentsGroup.items.map((i) => i.label);
+    // Pin the exact expected order (not a self-referential re-sort), so a wrong
+    // sort key would be caught. Source/insertion order started with Icon.
+    expect(labels).toEqual([
+      'Accordion', 'Badge', 'BottomNav', 'Button', 'Card', 'EmptyState', 'Icon',
+      'Image', 'Input', 'Link', 'LogStream', 'Menu', 'MetricTile',
+      'SegmentedControl', 'ServiceCard', 'Sidebar', 'Sparkline', 'Toaster', 'Topbar',
+    ]);
+  });
 });
 
 describe('docs.config — storybook links', () => {

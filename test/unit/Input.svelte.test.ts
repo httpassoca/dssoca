@@ -57,8 +57,8 @@ describe('Input', () => {
 	it('two-way binds: typing updates the parent-bound value', async () => {
 		const { container } = render(InputHarness, {});
 		const input = container.querySelector('input')!;
-		await fireEvent.input(input, { target: { value: 'rafael' } });
-		expect(screen.getByTestId('bound-value')).toHaveTextContent('rafael');
+		await fireEvent.input(input, { target: { value: 'admin' } });
+		expect(screen.getByTestId('bound-value')).toHaveTextContent('admin');
 	});
 
 	// ----- hint + error text (DS-0033) -----

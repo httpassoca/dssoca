@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "pnpm -w run prepare && pnpm build",
+  "buildCommand": "if [ \"$VERCEL_DEPLOY_TARGET\" = \"storybook\" ]; then pnpm -w run prepare && pnpm exec storybook build --output-dir build; else pnpm -w run prepare && pnpm build; fi",
   "outputDirectory": "build",
   "trailingSlash": true
 }

@@ -58,10 +58,34 @@ drive the config:
   library **source** via `../src` (see Aliases), which lives above the Root Directory; pnpm's
   workspace install also resolves from the repo root above.
 
-**Caveat — Storybook embeds:** the per-component pages embed live Storybook stories from
-`STORYBOOK_URL` (default `http://localhost:6006`). On the deployed site those iframes are blank
-unless you set **`VITE_STORYBOOK_URL`** (a Vercel env var) to a deployed Storybook. Deploying
-Storybook itself is out of scope.
+### Storybook deployment (second Vercel project)
+
+Storybook deploys to Vercel as its **own** static project from this same repo (agile `DS-0056`).
+Because Vercel reads a **single repo-root `vercel.json`** (a `documentation/vercel.json` is ignored —
+see DS-0015), the two projects can't each have their own config file; instead the one root
+`vercel.json` **branches its `buildCommand` on a `VERCEL_DEPLOY_TARGET` env var**:
+
+```jsonc
+"buildCommand": "if [ \"$VERCEL_DEPLOY_TARGET\" = \"storybook\" ]; then pnpm -w run prepare && pnpm exec storybook build --output-dir build; else pnpm -w run prepare && pnpm build; fi"
+```
+
+- The **docs** project sets no such env var → the `else` branch runs — **byte-for-byte the previous
+  command** (`pnpm -w run prepare && pnpm build`). The docs deploy is unchanged.
+- The **Storybook** project sets `VERCEL_DEPLOY_TARGET=storybook` → builds Storybook into `build`
+  (`pnpm exec storybook build --output-dir build`; `pnpm exec` avoids pnpm's `--` arg-forwarding
+  quirk, and `--output-dir build` matches the shared `outputDirectory`, which resolves relative to
+  **each project's** Root Directory).
+
+**One-time setup for the Storybook project (Vercel dashboard):**
+- New Project → import this repo → *Root Directory* = repo root (default), Framework Preset = "Other".
+- Add env var **`VERCEL_DEPLOY_TARGET = storybook`** (Production + Preview).
+- Deploy. The project serves the built Storybook at its own URL.
+
+**Wiring the docs embeds to the deployed Storybook:** the per-component pages embed live Storybook
+stories from `STORYBOOK_URL` (default `http://localhost:6006`). On the deployed docs those iframes are
+blank until you set **`VITE_STORYBOOK_URL`** on the **docs** project to the Storybook deploy URL, then
+redeploy the docs. (Set as a Vercel env var; placeholder until the Storybook URL exists — tracked as a
+flagged follow-up.)
 
 ## Layout
 
@@ -81,7 +105,7 @@ documentation/
       layouts/Prose.svelte         mdsvex layout (prose styling for .svx)
       components/      CodeBlock, StoryEmbed, PropsTable, TokenGallery, ThemeControls, ComponentPage
     routes/
-      +layout.svelte   shell: top bar (passoca logo + ThemeControls) + dssoca Sidebar nav
+      +layout.svelte   shell: top bar (dssoca logo + ThemeControls) + dssoca Sidebar nav
       +layout.ts       prerender = true; trailingSlash = 'always'
       +page.svelte                 landing
       introduction|installation|theming/+page.svx   guide pages (Markdown)

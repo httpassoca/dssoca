@@ -53,7 +53,7 @@
   const TEMPLATES: Omit<LogLine, 'id'>[] = [
     { lvl: 'info', svc: '[movies-api]', msg: 'GET /movies?status=to_watch — 3 rows · 4ms' },
     { lvl: 'ok',   svc: '[hub]',        msg: 'GET /api/auth/session — 8ms' },
-    { lvl: 'info', svc: '[hub]',        msg: 'session refresh — user=rafael' },
+    { lvl: 'info', svc: '[hub]',        msg: 'session refresh — user=admin' },
     { lvl: 'warn', svc: '[caddy]',      msg: 'tls internal renewing hub.home' },
     { lvl: 'err',  svc: '[tasks-api]',  msg: 'EADDRINUSE :3004 — retrying in 2s' },
     { lvl: 'info', svc: '[notes-api]',  msg: 'slow query · 182ms · SELECT * FROM notes' },
