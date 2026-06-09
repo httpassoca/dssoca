@@ -1,7 +1,7 @@
 // ============================================================
 //  Per-component token partials — one file per component (DS-0043).
 //
-//  Why this split: the new components from the passoca website are built in
+//  Why this split: the new components from the source website are built in
 //  parallel, one PR each. Keeping each component's --ss-* size tokens in its
 //  OWN partial (instead of all piling into _tokens.scss) means two parallel
 //  branches never edit the same file → no merge conflicts. This joiner is the

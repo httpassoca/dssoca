@@ -105,7 +105,7 @@ documentation/
       layouts/Prose.svelte         mdsvex layout (prose styling for .svx)
       components/      CodeBlock, StoryEmbed, PropsTable, TokenGallery, ThemeControls, ComponentPage
     routes/
-      +layout.svelte   shell: top bar (passoca logo + ThemeControls) + dssoca Sidebar nav
+      +layout.svelte   shell: top bar (dssoca logo + ThemeControls) + dssoca Sidebar nav
       +layout.ts       prerender = true; trailingSlash = 'always'
       +page.svelte                 landing
       introduction|installation|theming/+page.svx   guide pages (Markdown)

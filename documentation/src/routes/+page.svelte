@@ -8,7 +8,7 @@
 </svelte:head>
 
 <section class="hero">
-  <div class="mark"><img src="/passoca-logo.svg" alt="" width="56" height="56" /></div>
+  <div class="mark"><img src="/dssoca-logo.svg" alt="" width="56" height="56" /></div>
   <h1>dssoca</h1>
   <p class="lede">
     A token-driven <strong>Svelte 5</strong> design system — signal green on near-black,

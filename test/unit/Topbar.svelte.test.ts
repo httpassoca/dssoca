@@ -33,8 +33,8 @@ describe('Topbar', () => {
 	});
 
 	it('renders the user label', () => {
-		render(Topbar, { user: 'rafael@hub.home' });
-		expect(screen.getByText('rafael@hub.home')).toBeInTheDocument();
+		render(Topbar, { user: 'admin@hub.home' });
+		expect(screen.getByText('admin@hub.home')).toBeInTheDocument();
 	});
 
 	it('calls onTab with the tab id when a tab is clicked', async () => {

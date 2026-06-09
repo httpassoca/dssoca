@@ -1,7 +1,7 @@
 # `dssoca` — Design System
 
 Signal green on near-black, monospace-forward, **zero border-radius** everywhere
-(house rule — never override). Derived from passoca.dev.
+(house rule — never override).
 
 This package is the single source of truth for the look of every homelab
 project. The hub is one consumer; other projects are free to consume it too,
@@ -113,8 +113,8 @@ unprefixed scoped names (`.head`, `.title`, `.dot`, …).
 > **Breaking in 0.4.0:** the **density** axis became the **size** axis.
 > `data-density` → `data-size-variant`, `Density`(comfy/compact) → `Size`(sm/md/lg)
 > with `compact → sm`, `comfy → md` (+ new `lg`), `applyDesignConfig({ density })`
-> → `{ sizeVariant }`. Components gained a `size` prop; Icon/PassocaMark's numeric
-> `size` prop was renamed to `px`.
+> → `{ sizeVariant }`. Components gained a `size` prop; the icon-style numeric
+> `size` prop (e.g. `Icon`) was renamed to `px`.
 
 ## Preview both modes
 
