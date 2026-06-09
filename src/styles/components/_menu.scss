@@ -1,6 +1,39 @@
-// --- menu tokens (DS-0043) ---------------------------------------------------
-// Component-scoped --ss-* size tokens for the menu component live here.
-// Fill in [data-size-variant="sm|md|lg"] blocks (and :root for the md default)
-// as the component is implemented. Reuse shared tokens from _tokens.scss
-// (--ss-gap, --ss-control-py, --ss-icon, …) where possible; only add a new
-// token when no existing one fits. Keep zero border-radius (house rule).
+// --- menu tokens (DS-0050) ---------------------------------------------------
+// Component-scoped --ss-* size tokens for the Menu (Dropdown) component.
+// Defined per size tier so the floating panel + its rows rescale with the size
+// axis. The md tier lives in :root (the global default); sm/lg override it.
+// Reuses shared tokens (--ss-icon, --ss-gap-sm, --ss-shadow-pop, …) where they
+// fit; only genuinely menu-specific metrics live here.
+// Zero border-radius is a house rule — no radius token here.
+
+:root {
+  // Inner padding of the floating panel (around the row stack).
+  --ss-menu-pad:        4px;
+  // Per-row padding (its own scale so dense action lists stay compact).
+  --ss-menu-item-py:    8px;
+  --ss-menu-item-px:    12px;
+  // Gap between a row's leading icon / label / trailing marker.
+  --ss-menu-item-gap:   10px;
+  // Min width of the panel so short labels still read as a menu, not a chip.
+  --ss-menu-min-w:      180px;
+  // Vertical offset between the trigger and the panel edge.
+  --ss-menu-offset:     6px;
+}
+
+[data-size-variant="sm"] {
+  --ss-menu-pad:        3px;
+  --ss-menu-item-py:    5px;
+  --ss-menu-item-px:    9px;
+  --ss-menu-item-gap:   8px;
+  --ss-menu-min-w:      150px;
+  --ss-menu-offset:     5px;
+}
+
+[data-size-variant="lg"] {
+  --ss-menu-pad:        6px;
+  --ss-menu-item-py:    11px;
+  --ss-menu-item-px:    16px;
+  --ss-menu-item-gap:   12px;
+  --ss-menu-min-w:      220px;
+  --ss-menu-offset:     8px;
+}

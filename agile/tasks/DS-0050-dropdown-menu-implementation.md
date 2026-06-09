@@ -2,7 +2,7 @@
 id: DS-0050
 type: task
 title: "Dropdown / Menu implementation"
-status: backlog
+status: done
 priority: low
 tags: [ui, a11y]
 depends_on: []
@@ -19,16 +19,16 @@ hand-rolled popovers on the website (`ThemeMenu`, `LanguageMenu`, `FloatNavButto
 concrete prop/state/behaviour.
 
 ## Acceptance criteria
-- [ ] **Trigger + panel** — a trigger snippet/button toggles a floating panel; panel rendered with the popover shadow token (`--ss-shadow-pop`), zero radius
-- [ ] **Items model** — `items: MenuItem[]` with `{ id, label, icon?, disabled?, selected?, onSelect }`; render a checkmark/active marker for `selected`
-- [ ] **Open/close control** — `open` bindable + uncontrolled fallback; close on item select, click-outside, and `Esc`
-- [ ] **Keyboard nav** — roving focus with `ArrowUp`/`ArrowDown`/`Home`/`End`, `Enter`/`Space` to activate; focus returns to trigger on close
-- [ ] **ARIA** — trigger `aria-haspopup="menu"` + `aria-expanded`/`aria-controls`; panel `role="menu"`, items `role="menuitem"` (or `menuitemradio` when selectable)
-- [ ] **Placement** — `align` (start|end) and `side` (bottom|top); reads size tokens so it rescales across sm/md/lg
-- [ ] **`size?: Size`** prop resolved via `resolveComponentSize('Menu', size)` (`src/lib/config.ts`)
-- [ ] Exported from `src/lib/index.ts` with `MenuItem` type
-- [ ] Tests added in `test/unit/Menu.svelte.test.ts` (+ harness if needed); `pnpm test` green, `pnpm pack` clean
-- [ ] Docs: `Menu` page added to `documentation/src/lib/docs.config.ts` (`COMPONENTS`); `pnpm docs:test` green
+- [x] **Trigger + panel** — a trigger snippet/button toggles a floating panel; panel rendered with the popover shadow token (`--ss-shadow-pop`), zero radius
+- [x] **Items model** — `items: MenuItem[]` with `{ id, label, icon?, disabled?, selected?, onSelect }`; render a checkmark/active marker for `selected`
+- [x] **Open/close control** — `open` bindable + uncontrolled fallback; close on item select, click-outside, and `Esc`
+- [x] **Keyboard nav** — roving focus with `ArrowUp`/`ArrowDown`/`Home`/`End`, `Enter`/`Space` to activate; focus returns to trigger on close
+- [x] **ARIA** — trigger `aria-haspopup="menu"` + `aria-expanded`/`aria-controls`; panel `role="menu"`, items `role="menuitem"` (or `menuitemradio` when selectable)
+- [x] **Placement** — `align` (start|end) and `side` (bottom|top); reads size tokens so it rescales across sm/md/lg
+- [x] **`size?: Size`** prop resolved via `resolveComponentSize('Menu', size)` (`src/lib/config.ts`)
+- [x] Exported from `src/lib/index.ts` with `MenuItem` type
+- [x] Tests added in `test/unit/Menu.svelte.test.ts` (+ harness if needed); `pnpm test` green, `pnpm pack` clean
+- [x] Docs: `Menu` page added to `documentation/src/lib/docs.config.ts` (`COMPONENTS`); `pnpm docs:test` green
 
 ## Notes
 - Story: [[ds-0044-dropdown-menu-component]] · Epic: [[DS-0043-new-components-from-website]].

@@ -2,7 +2,7 @@
 id: DS-0044
 type: story
 title: "Dropdown / Menu component"
-status: backlog
+status: done
 priority: low
 tags: [ui, a11y]
 depends_on: []
@@ -21,10 +21,10 @@ hand-rolls this same pattern three times (`ThemeMenu.svelte`, `LanguageMenu.svel
 and `aria-expanded` wiring — exactly the duplication a design-system primitive removes.
 
 ## Acceptance criteria
-- [ ] `Menu` (Dropdown) component gains the behaviour tracked in [[ds-0050-dropdown-menu-implementation]] (the per-component task)
-- [ ] Changes are additive — new file + barrel export; no existing component touched
-- [ ] New chrome reads `--ss-*` size tokens and respects zero border-radius
-- [ ] WCAG 2.2 AA upheld; `pnpm test` green and `pnpm pack` clean
+- [x] `Menu` (Dropdown) component gains the behaviour tracked in [[ds-0050-dropdown-menu-implementation]] (the per-component task)
+- [x] Changes are additive — new file + barrel export; no existing component touched
+- [x] New chrome reads `--ss-*` size tokens and respects zero border-radius
+- [x] WCAG 2.2 AA upheld; `pnpm test` green and `pnpm pack` clean
 
 ## Notes
 - Part of epic [[DS-0043-new-components-from-website]].
