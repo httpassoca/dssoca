@@ -76,6 +76,15 @@ describe('Button', () => {
 		it('resets box-shadow to none on :disabled', () => {
 			expect(source).toMatch(/&:disabled\s*\{[^}]*box-shadow:\s*none/);
 		});
+
+		it('has no ungated :hover anywhere (every :hover is :not(:disabled)-guarded)', () => {
+			// Stronger than the bare-&:hover check: also catches a full-selector
+			// hover (e.g. `.ss-btn.primary:hover { … }`) that skips the SCSS parent.
+			const hovers = (source.match(/:hover/g) ?? []).length;
+			const guarded = (source.match(/:not\(:disabled\):hover/g) ?? []).length;
+			expect(hovers).toBeGreaterThan(0);
+			expect(guarded).toBe(hovers);
+		});
 	});
 
 	describe('loading', () => {
