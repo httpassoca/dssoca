@@ -17,6 +17,11 @@
     <div class="hub-bg"><Hub /></div>
   {/if}
 
+  <!-- Full-screen radial gradient centred on the hero, over the dimmed field (so
+       the centre reads dark behind the hero) but below a hovered tile (z:5), so a
+       hovered card still pops to full. Spans the whole screen. -->
+  <div class="scrim" aria-hidden="true"></div>
+
   <div class="hero">
     <div class="brand">
       <svg class="mark" viewBox="0 0 103 89" aria-hidden="true">
@@ -51,17 +56,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    // The requested page gradient sits *behind* the dimmed tiles (which show it
-    // through their opacity) — so a hovered tile becomes opaque and pops to full.
-    background:
-      radial-gradient(circle, rgba(0, 0, 0, 0.83) 0%, rgba(0, 0, 0, 0.4) 100%),
-      var(--ss-bg);
+    background: var(--ss-bg);
   }
 
   .hub-bg {
     position: absolute;
     inset: 0;
     // no stacking context here, so a hovered tile can lift above its neighbours
+  }
+
+  .scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 2; // over the dimmed field; under a hovered tile (z:5) and the hero
+    pointer-events: none;
+    // darkest at the centre (behind the hero), fading out to the edges
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.67) 0%, rgba(0, 0, 0, 0) 100%);
   }
 
   .hero {
@@ -104,7 +114,7 @@
       font-family: var(--ss-font-body);
       font-size: var(--ss-size-body);
       line-height: var(--ss-leading);
-      color: var(--ss-fg-muted);
+      color: var(--ss-fg-shine);
       max-width: 42rem;
       // clear separation between the description and the buttons
       margin: 0 0 var(--ss-s-8);

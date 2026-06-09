@@ -14,7 +14,7 @@ const axeOpts = {
 
 const ITEMS = [
 	{ id: 'home', label: 'Home', icon: 'grid' as const },
-	{ id: 'services', label: 'Services', icon: 'flex' as const },
+	{ id: 'services', label: 'Services', icon: 'database' as const },
 	{ id: 'account', label: 'Account', icon: 'user' as const }
 ];
 

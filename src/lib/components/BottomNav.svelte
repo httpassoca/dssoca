@@ -35,7 +35,7 @@
 
   const DEFAULT_ITEMS: BottomNavItem[] = [
     { id: 'home',     label: 'Home',     icon: 'grid' },
-    { id: 'services', label: 'Services', icon: 'flex' },
+    { id: 'services', label: 'Services', icon: 'database' },
     { id: 'activity', label: 'Activity', icon: 'activity' },
     { id: 'account',  label: 'Account',  icon: 'user' },
   ]
