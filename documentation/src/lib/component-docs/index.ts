@@ -13,6 +13,13 @@ import { sidebar } from './sidebar';
 import { logStream } from './log-stream';
 import { toaster } from './toaster';
 import { emptyState } from './empty-state';
+// New components ported from the passoca website (DS-0043).
+import { menu } from './menu';
+import { accordion } from './accordion';
+import { link } from './link';
+import { segmentedControl } from './segmented-control';
+import { bottomNav } from './bottom-nav';
+import { image } from './image';
 
 export type { PropDoc, ComponentDoc } from './types';
 
@@ -30,4 +37,11 @@ export const COMPONENTS: ComponentDoc[] = [
   logStream,
   toaster,
   emptyState,
+  // DS-0043 — website-derived components.
+  menu,
+  accordion,
+  link,
+  segmentedControl,
+  bottomNav,
+  image,
 ];
