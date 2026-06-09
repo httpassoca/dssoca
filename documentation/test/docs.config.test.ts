@@ -50,6 +50,15 @@ describe('docs.config — nav', () => {
       expect.arrayContaining(['/introduction', '/installation', '/theming', '/tokens']),
     );
   });
+
+  it('lists the components alphabetically by name', () => {
+    const componentsGroup = NAV.find((g) => g.section === 'components')!;
+    const labels = componentsGroup.items.map((i) => i.label);
+    const sorted = [...labels].sort((a, b) => a.localeCompare(b));
+    expect(labels).toEqual(sorted);
+    // sanity: the source/insertion order started with Icon, not Accordion
+    expect(labels[0]).toBe('Accordion');
+  });
 });
 
 describe('docs.config — storybook links', () => {

@@ -63,7 +63,11 @@ export const NAV: NavGroup[] = [
   },
   {
     section: 'components',
-    // Component links are intentionally icon-less (cleaner nav).
-    items: COMPONENTS.map((c) => ({ label: c.name, href: `/components/${c.slug}` })),
+    // Component links are intentionally icon-less (cleaner nav), and sorted
+    // alphabetically by name so the sidebar is scannable (COMPONENTS itself
+    // keeps its source/insertion order for the per-component prerender).
+    items: [...COMPONENTS]
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((c) => ({ label: c.name, href: `/components/${c.slug}` })),
   },
 ];
