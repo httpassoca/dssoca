@@ -1,0 +1,312 @@
+<script lang="ts">
+  import { browser } from '$app/environment';
+  import {
+    Button, Input, SegmentedControl, Sidebar, Topbar, BottomNav, Menu, Link,
+    Card, Accordion, Badge, MetricTile, ServiceCard, Sparkline, LogStream,
+    EmptyState, Icon, Image,
+  } from 'dssoca';
+  import { componentsByCategory } from '$lib/categories';
+  import { COMPONENTS } from '$lib/docs.config';
+
+  const groups = componentsByCategory();
+
+  // Previews are non-interactive (the whole card is a link) and render only in
+  // the browser — they never run through SSR/prerender, so a component that
+  // touches the DOM at render time can't break the static build.
+  // Chrome/full-bleed components fill the stage; everything else is centered.
+  const BLEED = new Set(['sidebar', 'topbar', 'bottom-nav', 'log-stream']);
+
+  // --- representative sample data for the previews ------------------------
+  const spark = [3, 7, 4, 9, 6, 11];
+  const demoDate = new Date();
+  const sideGroups = [
+    { section: 'nav', items: [
+      { id: 'hub', label: 'Hub', icon: 'grid' as const, status: 'up' as const },
+      { id: 'logs', label: 'Logs', icon: 'logs' as const },
+      { id: 'auth', label: 'Auth', icon: 'user' as const, status: 'deg' as const },
+    ] },
+  ];
+  const bnItems = [
+    { id: 'home', label: 'Home', icon: 'grid' as const },
+    { id: 'data', label: 'Data', icon: 'database' as const },
+    { id: 'activity', label: 'Activity', icon: 'activity' as const, badge: 3 },
+    { id: 'account', label: 'Account', icon: 'user' as const },
+  ];
+  const menuItems = [
+    { id: 'edit', label: 'Edit', icon: 'note' as const },
+    { id: 'dup', label: 'Duplicate', icon: 'grid' as const },
+    { id: 'del', label: 'Delete', icon: 'logs' as const },
+  ];
+  const segOptions = [
+    { value: 'list', label: 'List', icon: 'logs' as const },
+    { value: 'grid', label: 'Grid', icon: 'grid' as const },
+    { value: 'map', label: 'Map' },
+  ];
+  const accItems = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'usage', label: 'Usage', hint: '1 min' },
+  ];
+  const logLines = [
+    { t: '12:00:01', lvl: 'info' as const, svc: '[hub]', msg: 'session refresh — user=admin' },
+    { t: '12:00:03', lvl: 'ok' as const, svc: '[movies-api]', msg: 'GET /movies — 3 rows · 4ms' },
+    { t: '12:00:06', lvl: 'warn' as const, svc: '[caddy]', msg: 'tls renewing hub.home' },
+    { t: '12:00:08', lvl: 'err' as const, svc: '[tasks-api]', msg: 'EADDRINUSE :3004' },
+  ];
+  const imgSrc =
+    'data:image/svg+xml;utf8,' +
+    encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180">' +
+        '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0" stop-color="#66ef73"/><stop offset="1" stop-color="#1e1e1e"/>' +
+        '</linearGradient></defs><rect width="320" height="180" fill="url(#g)"/></svg>',
+    );
+</script>
+
+<svelte:head>
+  <title>Components — dssoca</title>
+  <meta name="description" content="Every dssoca component, grouped by category, with a live preview." />
+</svelte:head>
+
+<section class="intro">
+  <h1>Components</h1>
+  <p class="lede">
+    All {COMPONENTS.length} components, grouped by purpose. Each card previews the live component —
+    select one to open its full page (props, usage, demo).
+  </p>
+</section>
+
+{#each groups as { category, components } (category.id)}
+  <section class="cat">
+    <h2>{category.label}</h2>
+    <div class="grid">
+      {#each components as c (c.slug)}
+        <a class="card" href={`/components/${c.slug}`}>
+          <div class="stage" class:bleed={BLEED.has(c.slug)} aria-hidden="true">
+            {#if browser}{@render preview(c.slug)}{/if}
+          </div>
+          <div class="meta">
+            <span class="name">{c.name}</span>
+            <span class="tag">{c.tagline}</span>
+          </div>
+        </a>
+      {/each}
+    </div>
+  </section>
+{/each}
+
+{#snippet preview(slug: string)}
+  {#if slug === 'button'}
+    <div class="row">
+      <Button variant="primary">deploy</Button>
+      <Button variant="secondary">cancel</Button>
+    </div>
+  {:else if slug === 'input'}
+    <div class="w-full"><Input label="email" value="admin@hub.home" hint="we never share it" /></div>
+  {:else if slug === 'segmented-control'}
+    <SegmentedControl label="View mode" options={segOptions} value="grid" />
+  {:else if slug === 'sidebar'}
+    <Sidebar active="hub" groups={sideGroups} />
+  {:else if slug === 'topbar'}
+    <Topbar active="overview" tabs={['overview', 'logs']} user="admin@hub.home" />
+  {:else if slug === 'bottom-nav'}
+    <BottomNav items={bnItems} active="home" />
+  {:else if slug === 'menu'}
+    <Menu items={menuItems} label="Actions" open={false}>Actions</Menu>
+  {:else if slug === 'link'}
+    <div class="row">
+      <Link href="/about">about</Link>
+      <Link variant="button" href="/get-started">get started</Link>
+    </div>
+  {:else if slug === 'card'}
+    <div class="w-full">
+      <Card title="Services" meta="6 of 7 healthy" description="last sync 2m ago">
+        <p class="card-body">All systems nominal.</p>
+      </Card>
+    </div>
+  {:else if slug === 'accordion'}
+    <div class="w-full">
+      <Accordion items={accItems} defaultValue="overview">
+        {#snippet panel(item)}<p class="card-body">Content for {item.label}.</p>{/snippet}
+      </Accordion>
+    </div>
+  {:else if slug === 'badge'}
+    <div class="row">
+      <Badge tone="up" dot>up</Badge>
+      <Badge tone="down">down</Badge>
+      <Badge tone="info">to_watch</Badge>
+    </div>
+  {:else if slug === 'metric-tile'}
+    <div class="w-full">
+      <MetricTile label="req/min" value="142" delta="12%" dir="up" deltaLabel="vs prev 7d">
+        {#snippet chart()}<Sparkline data={spark} trend="auto" fluid />{/snippet}
+      </MetricTile>
+    </div>
+  {:else if slug === 'service-card'}
+    <div class="w-full">
+      <ServiceCard name="movies-api" host="movies.home" status="up" latency="4ms" updatedAt={demoDate} />
+    </div>
+  {:else if slug === 'sparkline'}
+    <div class="w-full"><Sparkline data={spark} label="req/min, last 6h" variant="area" fluid /></div>
+  {:else if slug === 'log-stream'}
+    <LogStream lines={logLines} />
+  {:else if slug === 'empty-state'}
+    <EmptyState title="No services yet" message="Add one to get started." icon="grid" />
+  {:else if slug === 'icon'}
+    <div class="row icons">
+      <Icon name="activity" px={20} /><Icon name="settings" px={20} /><Icon name="check" px={20} />
+      <Icon name="user" px={20} /><Icon name="grid" px={20} /><Icon name="logs" px={20} />
+    </div>
+  {:else if slug === 'image'}
+    <div class="w-full"><Image src={imgSrc} alt="Gradient preview" ratio={16 / 9} /></div>
+  {:else if slug === 'toaster'}
+    <!-- Toaster reads the global toast store and is position:fixed, so a live
+         instance would be empty / escape the card; show a faithful static stand-in. -->
+    <div class="toasts">
+      <div class="ft"><span class="ft-g ok">✓</span><span>saved!</span></div>
+      <div class="ft"><span class="ft-g info">i</span><span>3 services syncing…</span></div>
+    </div>
+  {/if}
+{/snippet}
+
+<style lang="scss">
+  .intro {
+    max-width: 56rem;
+    margin: 0 auto var(--ss-block-gap);
+
+    h1 {
+      font-family: var(--ss-font-display);
+      font-size: var(--ss-size-h1);
+      color: var(--ss-fg-shine);
+      margin: 0 0 var(--ss-s-2);
+    }
+    .lede {
+      font-family: var(--ss-font-body);
+      font-size: var(--ss-size-body);
+      line-height: var(--ss-leading);
+      color: var(--ss-fg-muted);
+      margin: 0;
+      max-width: 44rem;
+    }
+  }
+  .cat {
+    max-width: 72rem;
+    margin: 0 auto var(--ss-block-gap);
+
+    h2 {
+      font-family: var(--ss-font-subhead);
+      font-size: var(--ss-size-h2);
+      color: var(--ss-fg-shine);
+      margin: 0 0 var(--ss-s-4);
+      padding-bottom: var(--ss-s-2);
+      border-bottom: 1px solid var(--ss-line);
+    }
+  }
+  .grid {
+    display: grid;
+    // Three per line on wide; degrade gracefully on narrower viewports.
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--ss-gap);
+  }
+  @media (max-width: 880px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ss-line);
+    background: var(--ss-bg-elev);
+    text-decoration: none;
+    transition: border-color var(--ss-dur-fast) var(--ss-ease);
+
+    &:hover { border-color: var(--ss-primary); }
+    &:focus-visible { outline: 2px solid var(--ss-primary); outline-offset: 2px; }
+  }
+
+  .stage {
+    // Fixed box keeps the grid stable no matter what the preview renders.
+    // A transform turns this into the containing block for any position:fixed /
+    // absolute descendant (BottomNav, Menu popover), so previews never escape.
+    position: relative;
+    height: 168px;
+    overflow: hidden;
+    transform: translateZ(0);
+    pointer-events: none; // the whole card is the link; previews are illustrative
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ss-s-4);
+    background:
+      linear-gradient(0deg, rgba(var(--ss-primary-rgb), 0.015), rgba(var(--ss-primary-rgb), 0.015)),
+      var(--ss-bg);
+    border-bottom: 1px solid var(--ss-line);
+
+    // Full-bleed chrome (sidebar/topbar/bottom-nav/log-stream) fills the stage.
+    &.bleed {
+      padding: 0;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+    &.bleed :global(.ss-side),
+    &.bleed :global(.ss-topbar),
+    &.bleed :global(.ss-log) {
+      width: 100%;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: var(--ss-s-2);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .icons { gap: var(--ss-s-3); color: var(--ss-fg-muted); }
+    .w-full { width: 100%; }
+    .card-body {
+      margin: 0;
+      font-family: var(--ss-font-body);
+      font-size: var(--ss-size-sm);
+      color: var(--ss-fg-muted);
+    }
+
+    // static Toaster stand-in
+    .toasts { display: flex; flex-direction: column; gap: var(--ss-s-2); width: 100%; }
+    .ft {
+      display: inline-flex; align-items: center; gap: var(--ss-s-2);
+      padding: var(--ss-s-2) var(--ss-s-3);
+      border: 1px solid var(--ss-line);
+      background: var(--ss-bg-elev-hover);
+      font-family: var(--ss-font-body);
+      font-size: var(--ss-ui-md);
+      color: var(--ss-fg);
+    }
+    .ft-g {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 16px; height: 16px;
+      font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs); font-weight: 700;
+    }
+    .ft-g.ok { color: var(--ss-primary); }
+    .ft-g.info { color: var(--ss-cyan); }
+  }
+
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--ss-card-py) var(--ss-card-px);
+
+    .name {
+      font-family: var(--ss-font-body);
+      font-size: var(--ss-size-sm);
+      color: var(--ss-fg-shine);
+    }
+    .tag {
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-xs);
+      color: var(--ss-fg-faint);
+    }
+  }
+</style>
