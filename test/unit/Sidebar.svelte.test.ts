@@ -40,6 +40,15 @@ describe('Sidebar', () => {
 		items.forEach((item) => expect(item.querySelector('svg')).not.toBeNull());
 	});
 
+	it('renders a text-only item when icon is omitted', () => {
+		const { container } = render(Sidebar, {
+			groups: [{ section: 'plain', items: [{ id: 'p', label: 'Plain' }] }]
+		});
+		const item = container.querySelector('.item');
+		expect(item).toHaveTextContent('Plain');
+		expect(item?.querySelector('svg')).toBeNull();
+	});
+
 	it('marks the active item (default hub) with aria-current=page', () => {
 		const { container } = render(Sidebar, {});
 		const active = container.querySelector('.item.active');
