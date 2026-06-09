@@ -3,7 +3,7 @@ id: DS-0057
 type: story
 title: "Remove the personal name 'Passoca' from product-facing surfaces"
 status: done
-priority: medium
+priority: high
 tags: [branding, cleanup, docs]
 depends_on: []
 parent: null

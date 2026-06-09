@@ -8,6 +8,37 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+## [0.8.0] — docs experience, Storybook deploy & branding — 2026-06-09
+
+### Added
+
+- **Landing redesign** (`DS-0060`): the docs homepage is now a centred brand hero (inline mark +
+  `DSSOCA` + description + two CTAs) over a full-viewport "workstation" — a tiled field of every
+  component, dimmed, where each card lifts to full opacity on hover and continuously cycles its own
+  props on independent random 1–4s timers (no layout shift; frozen under `prefers-reduced-motion`).
+- **Components overview page** at `/components` (`DS-0062`): every component grouped by category in a
+  three-per-line grid of linked, live-preview cards. The "Browse components" CTA points here.
+- **Storybook deploys to Vercel** (`DS-0056`) as its own project, via a `VERCEL_DEPLOY_TARGET`
+  env-var branch in the shared repo-root `vercel.json` (the docs build path is unchanged).
+- Alphabetical ordering of the components in the docs sidebar (`DS-0061`).
+
+### Changed
+
+- **Branding** (`DS-0057`): removed the author's personal name from product/branding/source surfaces.
+  The brand logo is renamed `passoca-logo.svg` → `dssoca-logo.svg`, and sample/default data uses a
+  neutral `admin` instead of a first name — including the published **`Topbar` default `user`**
+  (now `admin@hub.home`) and the `LogStream` demo line. Legal attribution (LICENSE / `author`) and
+  the GitHub URLs are intentionally retained.
+- **`Sidebar`** (`DS-0058`): the rail now fills its host container's height (`min-height: 100%`), so
+  its border/background span the full screen/column instead of stopping at the last item.
+
+### Fixed
+
+- **`Button`** (`DS-0059`): a disabled button no longer brightens or shows the brand glow on hover —
+  every hover affordance is gated behind `:not(:disabled)`.
+
+## [Unreleased — earlier]
+
 ### Added
 
 - **Documentation site** (`DS-0010`): a SvelteKit + mdsvex docs app under `documentation/` that
