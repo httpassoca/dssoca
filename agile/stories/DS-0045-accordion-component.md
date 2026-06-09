@@ -2,7 +2,7 @@
 id: DS-0045
 type: story
 title: "Accordion component"
-status: backlog
+status: done
 priority: low
 tags: [ui, a11y]
 depends_on: []

@@ -2,7 +2,7 @@
 id: DS-0051
 type: task
 title: "Accordion implementation"
-status: backlog
+status: done
 priority: low
 tags: [ui, a11y]
 depends_on: []
