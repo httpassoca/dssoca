@@ -17,7 +17,7 @@
   </p>
   <div class="cta">
     <a href="/introduction"><Button variant="primary">Get started</Button></a>
-    <a href="/components/button"><Button variant="secondary">Browse components</Button></a>
+    <a href="/components"><Button variant="secondary">Browse components</Button></a>
   </div>
 </section>
 
