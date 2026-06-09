@@ -63,6 +63,11 @@ ships (`files` field); `src/`, `test/`, `docs/` do not.
 - **New chrome reads size tokens** (`--ss-*`), not hardcoded px, or it won't rescale.
 - **Tests are a RULE**: run `pnpm test` and add/extend tests for any change before calling it done.
   A11y is covered by `vitest-axe` (unit) + `@storybook/addon-a11y` (Storybook); target WCAG 2.2 AA.
+- **Docs are a RULE**: every user-facing change ships its docs. Update the component page in
+  `documentation/src/lib/docs.config.ts` (`COMPONENTS` — `props`/`usage`/`description`/`notes`) for
+  any API change, and `docs/tokens.md` (+ `docs/themes.md` when colors/theming change) for any token
+  add/rename/value change. Keep `pnpm docs:test` green. Content = *what exists today* — no
+  speculative APIs.
 - **Agile is a RULE**: update `agile/` items on any change (move status, add stories/tasks, bump
   `updated`), then `node build.mjs` in `agile/` to rebuild the board.
 
@@ -96,7 +101,10 @@ runs `pnpm test` + `pnpm pack`.
 2. Export it from `src/lib/index.ts`.
 3. Add a Vitest test under `test/unit/` (mirror an existing one; harness in `test/harness/` if needed).
 4. `pnpm test` green; `pnpm pack` clean (publint).
-5. Update `agile/` + rebuild board.
+5. Update the docs: the component's entry in `documentation/src/lib/docs.config.ts` (props/usage/
+   description/notes) and `docs/tokens.md` / `docs/themes.md` for any new/changed tokens; keep
+   `pnpm docs:test` green.
+6. Update `agile/` + rebuild board.
 
 ## Git flow — ALL changes follow this
 

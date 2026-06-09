@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render } from '@testing-library/svelte';
-import Icon, { PATHS } from '$lib/components/Icon.svelte';
+import Icon, { PATHS, registerIcon } from '$lib/components/Icon.svelte';
 
 describe('Icon', () => {
 	it('renders an svg with a 0 0 24 24 viewBox and currentColor stroke', () => {
@@ -60,5 +60,165 @@ describe('Icon', () => {
 		expect(PATHS.book).not.toBe(PATHS.film);
 		expect(PATHS.book).not.toBe(PATHS.note);
 		expect(PATHS.film).not.toBe(PATHS.note);
+	});
+
+	// ----------------------------------------------------------------
+	//  DS-0030 — registration, spin/rotate/flip, solid, robust a11y name
+	// ----------------------------------------------------------------
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	describe('accessible name (title → <title> + aria-labelledby)', () => {
+		it('renders a real <title> and wires it via aria-labelledby (role=img)', () => {
+			const { container } = render(Icon, { name: 'user', title: 'User profile' });
+			const svg = container.querySelector('svg')!;
+			expect(svg).toHaveAttribute('role', 'img');
+			const titleEl = svg.querySelector('title')!;
+			expect(titleEl).not.toBeNull();
+			expect(titleEl.textContent).toBe('User profile');
+			const labelledBy = svg.getAttribute('aria-labelledby');
+			expect(labelledBy).toBe(titleEl.id);
+			expect(labelledBy).toBeTruthy();
+			// titled icon is exposed, not hidden
+			expect(svg).not.toHaveAttribute('aria-hidden');
+		});
+
+		it('appends <desc> to aria-labelledby when provided', () => {
+			const { container } = render(Icon, {
+				name: 'user',
+				title: 'Profile',
+				desc: 'Opens the account page'
+			});
+			const svg = container.querySelector('svg')!;
+			const titleEl = svg.querySelector('title')!;
+			const descEl = svg.querySelector('desc')!;
+			expect(descEl).not.toBeNull();
+			expect(descEl.textContent).toBe('Opens the account page');
+			expect(svg.getAttribute('aria-labelledby')).toBe(`${titleEl.id} ${descEl.id}`);
+		});
+
+		it('is decorative (aria-hidden, no role) without a title', () => {
+			const { container } = render(Icon, { name: 'grid' });
+			const svg = container.querySelector('svg')!;
+			expect(svg).toHaveAttribute('aria-hidden', 'true');
+			expect(svg).not.toHaveAttribute('role');
+			expect(svg).not.toHaveAttribute('aria-labelledby');
+		});
+
+		it('explicit decorative=true hides even when a title is given', () => {
+			const { container } = render(Icon, { name: 'grid', title: 'x', decorative: true });
+			const svg = container.querySelector('svg')!;
+			expect(svg).toHaveAttribute('aria-hidden', 'true');
+			expect(svg).not.toHaveAttribute('role');
+			expect(svg).not.toHaveAttribute('aria-labelledby');
+		});
+	});
+
+	describe('spin / rotate / flip', () => {
+		it('adds the spin class when spin is set', () => {
+			const { container } = render(Icon, { name: 'spinner', spin: true });
+			expect(container.querySelector('svg')).toHaveClass('spin');
+		});
+
+		it('does not add spin class by default', () => {
+			const { container } = render(Icon, { name: 'grid' });
+			expect(container.querySelector('svg')).not.toHaveClass('spin');
+		});
+
+		it.each([90, 180, 270] as const)('stamps data-rotate=%i', (deg) => {
+			const { container } = render(Icon, { name: 'arrow', rotate: deg });
+			expect(container.querySelector('svg')).toHaveAttribute('data-rotate', String(deg));
+		});
+
+		it('omits data-rotate for 0 (the default)', () => {
+			const { container } = render(Icon, { name: 'arrow', rotate: 0 });
+			expect(container.querySelector('svg')).not.toHaveAttribute('data-rotate');
+		});
+
+		it('adds flip-h / flip-v classes', () => {
+			const h = render(Icon, { name: 'arrow', flip: 'horizontal' });
+			expect(h.container.querySelector('svg')).toHaveClass('flip-h');
+			const v = render(Icon, { name: 'arrow', flip: 'vertical' });
+			expect(v.container.querySelector('svg')).toHaveClass('flip-v');
+		});
+	});
+
+	describe('variant (outline | solid)', () => {
+		it('outline (default) strokes with currentColor, no fill', () => {
+			const { container } = render(Icon, { name: 'check' });
+			const svg = container.querySelector('svg')!;
+			expect(svg).toHaveAttribute('stroke', 'currentColor');
+			expect(svg).toHaveAttribute('fill', 'none');
+		});
+
+		it('solid fills with currentColor and drops the stroke', () => {
+			const { container } = render(Icon, { name: 'check', variant: 'solid' });
+			const svg = container.querySelector('svg')!;
+			expect(svg).toHaveAttribute('fill', 'currentColor');
+			expect(svg).toHaveAttribute('stroke', 'none');
+		});
+	});
+
+	describe('stroke width', () => {
+		it('defaults stroke-width to 2', () => {
+			const { container } = render(Icon, { name: 'grid' });
+			expect(container.querySelector('svg')).toHaveAttribute('stroke-width', '2');
+		});
+
+		it('passes an explicit strokeWidth through', () => {
+			const { container } = render(Icon, { name: 'grid', strokeWidth: 1.5 });
+			expect(container.querySelector('svg')).toHaveAttribute('stroke-width', '1.5');
+		});
+
+		it('absoluteStroke recomputes weight from resolved px (px=48 → 2*24/48=1)', () => {
+			const { container } = render(Icon, {
+				name: 'grid',
+				px: 48,
+				strokeWidth: 2,
+				absoluteStroke: true
+			});
+			expect(container.querySelector('svg')).toHaveAttribute('stroke-width', '1');
+		});
+
+		it('absoluteStroke uses the token px for a size variant (lg=20 → 2*24/20=2.4)', () => {
+			const { container } = render(Icon, {
+				name: 'grid',
+				size: 'lg',
+				strokeWidth: 2,
+				absoluteStroke: true
+			});
+			expect(container.querySelector('svg')).toHaveAttribute('stroke-width', '2.4');
+		});
+	});
+
+	describe('custom registration & escape hatch', () => {
+		const HEART = '<path d="M12 21 4 13a5 5 0 0 1 7-7l1 1 1-1a5 5 0 0 1 7 7z"/>';
+
+		it('registerIcon adds a runtime glyph resolvable by name', () => {
+			registerIcon('heart', HEART);
+			expect(PATHS.heart).toBe(HEART);
+			const { container } = render(Icon, { name: 'heart' as never });
+			expect(container.querySelector('svg')!.innerHTML).toBe(normalise(HEART));
+		});
+
+		it('paths prop is a one-off escape hatch (rendered verbatim, no warning)', () => {
+			const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+			const RAW = '<circle cx="12" cy="12" r="6"/>';
+			const { container } = render(Icon, { name: 'totally-unknown' as never, paths: RAW });
+			expect(container.querySelector('svg')!.innerHTML).toBe(normalise(RAW));
+			expect(warn).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('unknown name', () => {
+		it('console.warns and renders empty for an unresolved name', () => {
+			const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+			const { container } = render(Icon, { name: 'does-not-exist' as never });
+			expect(warn).toHaveBeenCalledTimes(1);
+			expect(String(warn.mock.calls[0][0])).toContain('does-not-exist');
+			expect(container.querySelector('svg')!.innerHTML).toBe('');
+		});
 	});
 });

@@ -12,6 +12,7 @@
   /* surfaces */
   --ss-bg:          #100f10;
   --ss-bg-elev:     #1e1e1e;
+  --ss-bg-elev-hover: #262626;   /* slightly raised surface for hovered cards/rows */
   --ss-bg-inset:    rgba(7, 6, 7, 0);
   --ss-line:        rgba(255, 255, 255, 0.12);
   --ss-line-strong: rgba(255, 255, 255, 0.22);
@@ -41,6 +42,21 @@
   --ss-blue:   #9aa4ff;
   --ss-cyan:   #66d9ef;
   --ss-purple: #b98cff;
+  --ss-red-rgb: 255, 92, 92;   /* soft invalid focus ring (DS-0033) */
+
+  /* destructive + sentiment — danger/success alias the status red / brand green;
+     hover deepens danger, -soft washes back the opt-in emphasis chip, on-danger is
+     the readable label on the bright red. Used by Button (DS-0032), Sparkline trend
+     (DS-0035) and MetricTile sentiment (DS-0037). */
+  --ss-danger:        var(--ss-red);
+  --ss-danger-hover:  #ff7a7a;
+  --ss-danger-soft:   rgba(255, 92, 92, 0.18);
+  --ss-fg-on-danger:  #100f10;
+  --ss-success:       var(--ss-primary);
+  --ss-success-soft:  var(--ss-primary-soft);
+
+  /* skeleton — neutral wash for loading bars (DS-0037) */
+  --ss-skeleton: rgba(255, 255, 255, 0.10);
 
   /* code */
   --ss-code-bg:      #011627;
@@ -51,8 +67,30 @@
   --ss-code-func:    #82aaff;
   --ss-code-comment: #637777;
 
+  /* log-level accents — theme-correct on the code surface */
+  --ss-log-info: var(--ss-code-func);
+  --ss-log-warn: var(--ss-yellow);
+  --ss-log-err:  var(--ss-red);
+  --ss-log-ok:   var(--ss-code-string);
+
   --ss-selection-bg: var(--ss-primary);
   --ss-selection-fg: var(--ss-fg-on-primary);
+
+  /* badge tones — theme-tracked fills/borders so light mode is correct
+     (DS-0031). fg uses the matching status token; bg/border are translucent
+     washes tuned for the dark surfaces. */
+  --ss-badge-up-bg:       rgba(102, 239, 115, 0.12);
+  --ss-badge-up-border:   rgba(102, 239, 115, 0.40);
+  --ss-badge-deg-bg:      rgba(224, 195, 106, 0.12);
+  --ss-badge-deg-border:  rgba(224, 195, 106, 0.40);
+  --ss-badge-down-bg:     rgba(255, 92, 92, 0.12);
+  --ss-badge-down-border: rgba(255, 92, 92, 0.40);
+  --ss-badge-maint-bg:     rgba(154, 164, 255, 0.12);
+  --ss-badge-maint-border: rgba(154, 164, 255, 0.40);
+  --ss-badge-info-bg:     rgba(102, 217, 239, 0.12);
+  --ss-badge-info-border: rgba(102, 217, 239, 0.40);
+  --ss-badge-neutral-bg:     rgba(255, 255, 255, 0.06);
+  --ss-badge-neutral-border: var(--ss-line);
 }
 
 [data-theme="light"] {
@@ -60,6 +98,7 @@
      Not blinding-bright; lines are stronger so square borders stay legible. */
   --ss-bg:          #f0f0f0;
   --ss-bg-elev:     #ffffff;
+  --ss-bg-elev-hover: #f4f4f4;   /* slightly raised surface for hovered cards/rows */
   --ss-bg-inset:    rgba(0, 0, 0, 0);
   --ss-line:        rgba(0, 0, 0, 0.16);
   --ss-line-strong: rgba(0, 0, 0, 0.30);
@@ -91,6 +130,19 @@
   --ss-blue:   #2f3bd6;
   --ss-cyan:   #0b6e7d;
   --ss-purple: #6a35c9;
+  --ss-red-rgb: 198, 40, 40;   /* soft invalid focus ring (DS-0033) */
+
+  /* destructive + sentiment — the deep light-mode red carries a white label at AA;
+     success/-soft track the light brand green (DS-0032/0035/0037) */
+  --ss-danger:        var(--ss-red);
+  --ss-danger-hover:  #a91f1f;
+  --ss-danger-soft:   rgba(198, 40, 40, 0.12);
+  --ss-fg-on-danger:  #ffffff;
+  --ss-success:       var(--ss-primary);
+  --ss-success-soft:  var(--ss-primary-soft);
+
+  /* skeleton — neutral wash for loading bars (DS-0037) */
+  --ss-skeleton: rgba(0, 0, 0, 0.10);
 
   /* code — a light syntax palette (the dark Night-Owl set is unreadable here) */
   --ss-code-bg:      #f5f5f5;
@@ -100,6 +152,28 @@
   --ss-code-keyword: #c5221f;
   --ss-code-func:    #6639ba;
   --ss-code-comment: #6a737d;
+
+  /* badge tones — deeper washes/borders so the fills read on the light page
+     (the dark-mode neon washes wash out on #f0f0f0). fg tracks the darkened
+     light-mode status tokens already defined above. */
+  --ss-badge-up-bg:       rgba(21, 127, 59, 0.10);
+  --ss-badge-up-border:   rgba(21, 127, 59, 0.35);
+  --ss-badge-deg-bg:      rgba(138, 109, 26, 0.10);
+  --ss-badge-deg-border:  rgba(138, 109, 26, 0.35);
+  --ss-badge-down-bg:     rgba(198, 40, 40, 0.10);
+  --ss-badge-down-border: rgba(198, 40, 40, 0.35);
+  --ss-badge-maint-bg:     rgba(47, 59, 214, 0.10);
+  --ss-badge-maint-border: rgba(47, 59, 214, 0.35);
+  --ss-badge-info-bg:     rgba(11, 110, 125, 0.10);
+  --ss-badge-info-border: rgba(11, 110, 125, 0.35);
+  --ss-badge-neutral-bg:     rgba(0, 0, 0, 0.05);
+  --ss-badge-neutral-border: var(--ss-line);
+
+  /* log-level accents — darkened code/status values for AA on the light code surface */
+  --ss-log-info: var(--ss-code-func);
+  --ss-log-warn: var(--ss-yellow);
+  --ss-log-err:  var(--ss-red);
+  --ss-log-ok:   var(--ss-code-string);
 }
 
 // ------------------------------------------------------------
@@ -150,6 +224,9 @@
   --ss-dur:       250ms;
   --ss-dur-slow:  350ms;
   --ss-dur-xslow: 650ms;
+
+  /* Icon spin (loader) — one full 360° turn; disabled under reduced motion. */
+  --ss-icon-spin-dur: 900ms;
 }
 
 // ------------------------------------------------------------
@@ -194,6 +271,8 @@
 
   --ss-badge-py:       5px;
   --ss-badge-px:       12px;
+  --ss-badge-dot:      5px;
+  --ss-badge-gap:      6px;
 
   --ss-gap:            14px;
   --ss-gap-sm:         10px;
@@ -203,6 +282,24 @@
   --ss-shell-top-h:    48px;
   --ss-main-py:        28px;
   --ss-main-px:        36px;
+
+  /* Sidebar component — expanded/rail widths + per-item badge padding (DS-0039) */
+  --ss-side-w:         220px;
+  --ss-side-w-rail:    56px;
+  --ss-side-badge-py:  2px;
+  --ss-side-badge-px:  6px;
+  /* toast (DS-0041) — icon box + swipe-dismiss threshold */
+  --ss-toast-ic:       18px;
+  --ss-toast-swipe:    72px;
+  /* empty-state visual + width (rescales with the size axis) */
+  --ss-empty-glyph:         40px;
+  --ss-empty-glyph-compact: 28px;
+  --ss-empty-max-w:         420px;
+
+  /* sparkline (DS-0035) */
+  --ss-spark-h:        18px;
+  --ss-spark-bar-w:    3px;
+  --ss-spark-gap:      1px;
 }
 
 [data-size-variant="sm"] {
@@ -237,6 +334,8 @@
 
   --ss-badge-py:       3px;
   --ss-badge-px:       8px;
+  --ss-badge-dot:      4px;
+  --ss-badge-gap:      5px;
 
   --ss-gap:            8px;
   --ss-gap-sm:         6px;
@@ -246,6 +345,24 @@
   --ss-shell-top-h:    36px;
   --ss-main-py:        16px;
   --ss-main-px:        20px;
+
+  /* Sidebar component (DS-0039) */
+  --ss-side-w:         180px;
+  --ss-side-w-rail:    44px;
+  --ss-side-badge-py:  1px;
+  --ss-side-badge-px:  5px;
+  /* toast (DS-0041) */
+  --ss-toast-ic:       15px;
+  --ss-toast-swipe:    60px;
+  /* empty-state visual + width */
+  --ss-empty-glyph:         32px;
+  --ss-empty-glyph-compact: 22px;
+  --ss-empty-max-w:         360px;
+
+  /* sparkline (DS-0035) */
+  --ss-spark-h:        14px;
+  --ss-spark-bar-w:    2px;
+  --ss-spark-gap:      1px;
 }
 
 [data-size-variant="lg"] {
@@ -280,6 +397,8 @@
 
   --ss-badge-py:       7px;
   --ss-badge-px:       16px;
+  --ss-badge-dot:      6px;
+  --ss-badge-gap:      7px;
 
   --ss-gap:            18px;
   --ss-gap-sm:         13px;
@@ -289,6 +408,24 @@
   --ss-shell-top-h:    56px;
   --ss-main-py:        36px;
   --ss-main-px:        48px;
+
+  /* Sidebar component (DS-0039) */
+  --ss-side-w:         260px;
+  --ss-side-w-rail:    64px;
+  --ss-side-badge-py:  3px;
+  --ss-side-badge-px:  8px;
+  /* toast (DS-0041) */
+  --ss-toast-ic:       22px;
+  --ss-toast-swipe:    88px;
+  /* empty-state visual + width */
+  --ss-empty-glyph:         52px;
+  --ss-empty-glyph-compact: 36px;
+  --ss-empty-max-w:         480px;
+
+  /* sparkline (DS-0035) */
+  --ss-spark-h:        26px;
+  --ss-spark-bar-w:    4px;
+  --ss-spark-gap:      2px;
 }
 
 // ------------------------------------------------------------
