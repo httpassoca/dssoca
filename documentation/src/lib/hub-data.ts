@@ -80,17 +80,32 @@ export const V: Record<string, Record<string, unknown>[]> = {
   'log-stream': [], // self-animating via `demo`; no prop cycling needed
 };
 
-/**
- * Fixed, pleasing tile order for the field; repeats allowed so it fills wide /
- * tall viewports. Every component slug appears at least once (asserted in tests).
- */
-export const TILES: string[] = [
-  'button', 'metric-tile', 'badge', 'sparkline', 'service-card', 'input',
-  'log-stream', 'card', 'segmented-control', 'sidebar', 'menu', 'topbar',
-  'link', 'image', 'accordion', 'bottom-nav', 'empty-state', 'icon', 'toaster',
-  'button', 'badge', 'metric-tile', 'sparkline', 'service-card', 'card',
-  'link', 'icon', 'input',
+/** Every component slug — each appears at least once when the pool is large enough. */
+export const ALL_SLUGS: string[] = [
+  'button', 'badge', 'input', 'segmented-control', 'card', 'accordion',
+  'metric-tile', 'sparkline', 'service-card', 'log-stream', 'menu', 'link',
+  'image', 'icon', 'empty-state', 'toaster', 'sidebar', 'topbar', 'bottom-nav',
 ];
+
+/**
+ * Build a randomized pool of `n` tile slugs that fills the field: every component
+ * appears at least once (when `n >= ALL_SLUGS.length`), the remainder are random
+ * repeats, and the whole thing is shuffled so nothing clusters. Uses `Math.random`,
+ * so call it once on the client — the Hub is client-only, so there's no SSR mismatch.
+ */
+export function buildTilePool(n: number): string[] {
+  const out = [...ALL_SLUGS];
+  while (out.length < n) out.push(ALL_SLUGS[Math.floor(Math.random() * ALL_SLUGS.length)]);
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out.slice(0, Math.max(0, n));
+}
+
+/** Prop-cycle cadence bounds (ms). */
+export const CYCLE_MIN = 500;
+export const CYCLE_MAX = 2000;
 
 /** Full-bleed chrome tiles fill their cell rather than centering. */
 export const BLEED = new Set(['sidebar', 'topbar', 'bottom-nav', 'log-stream']);
