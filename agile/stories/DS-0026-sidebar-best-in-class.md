@@ -2,14 +2,14 @@
 id: DS-0026
 type: story
 title: "Best-in-class Sidebar component"
-status: todo
+status: done
 priority: low
 tags: [ui, a11y, app-shell]
 depends_on: []
 parent: null
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

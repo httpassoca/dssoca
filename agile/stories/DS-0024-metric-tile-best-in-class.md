@@ -2,14 +2,14 @@
 id: DS-0024
 type: story
 title: "Best-in-class MetricTile component"
-status: todo
+status: done
 priority: low
 tags: [ui, a11y, dataviz]
 depends_on: []
 parent: null
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

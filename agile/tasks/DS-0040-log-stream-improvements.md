@@ -2,14 +2,14 @@
 id: DS-0040
 type: task
 title: "LogStream improvements"
-status: in-progress
+status: done
 priority: high
 tags: [ui, a11y]
 depends_on: []
 parent: DS-0027
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

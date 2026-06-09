@@ -2,14 +2,14 @@
 id: DS-0037
 type: task
 title: "MetricTile improvements"
-status: todo
+status: done
 priority: low
 tags: [ui, a11y, dataviz]
 depends_on: []
 parent: DS-0024
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

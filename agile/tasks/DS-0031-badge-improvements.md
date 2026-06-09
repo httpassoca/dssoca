@@ -2,14 +2,14 @@
 id: DS-0031
 type: task
 title: "Badge improvements"
-status: in-progress
+status: done
 priority: high
 tags: [ui, a11y]
 depends_on: []
 parent: DS-0018
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

@@ -2,14 +2,14 @@
 id: DS-0034
 type: task
 title: "Card improvements"
-status: in-progress
+status: done
 priority: high
 tags: [ui, a11y]
 depends_on: []
 parent: DS-0021
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

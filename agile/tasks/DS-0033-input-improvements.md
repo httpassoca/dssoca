@@ -2,14 +2,14 @@
 id: DS-0033
 type: task
 title: "Input improvements"
-status: todo
+status: done
 priority: low
 tags: [ui, a11y, forms]
 depends_on: []
 parent: DS-0020
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

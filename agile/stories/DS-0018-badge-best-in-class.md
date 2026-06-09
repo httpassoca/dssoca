@@ -2,14 +2,14 @@
 id: DS-0018
 type: story
 title: "Best-in-class Badge component"
-status: in-progress
+status: done
 priority: high
 tags: [ui, a11y]
 depends_on: []
 parent: null
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

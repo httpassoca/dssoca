@@ -2,14 +2,14 @@
 id: DS-0038
 type: task
 title: "Topbar improvements"
-status: todo
+status: done
 priority: low
 tags: [ui, a11y, app-shell]
 depends_on: []
 parent: DS-0025
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

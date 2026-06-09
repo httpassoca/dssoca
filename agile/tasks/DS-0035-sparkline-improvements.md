@@ -2,14 +2,14 @@
 id: DS-0035
 type: task
 title: "Sparkline improvements"
-status: in-progress
+status: done
 priority: high
 tags: [ui, dataviz, a11y]
 depends_on: []
 parent: DS-0022
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

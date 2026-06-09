@@ -2,14 +2,14 @@
 id: DS-0041
 type: task
 title: "Toaster improvements"
-status: todo
+status: done
 priority: low
 tags: [ui, a11y]
 depends_on: []
 parent: DS-0028
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

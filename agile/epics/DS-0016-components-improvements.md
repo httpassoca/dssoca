@@ -2,14 +2,14 @@
 id: DS-0016
 type: epic
 title: "Components improvements — best-in-class pass"
-status: in-progress
+status: done
 priority: high
 tags: [ui, epic, quality]
 depends_on: []
 parent: null
 epic: null
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

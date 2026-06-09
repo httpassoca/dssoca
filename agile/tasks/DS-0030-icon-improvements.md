@@ -2,14 +2,14 @@
 id: DS-0030
 type: task
 title: "Icon improvements"
-status: todo
+status: done
 priority: low
 tags: [ui, icon]
 depends_on: []
 parent: DS-0017
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

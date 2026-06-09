@@ -2,14 +2,14 @@
 id: DS-0032
 type: task
 title: "Button improvements"
-status: todo
+status: done
 priority: low
 tags: [ui]
 depends_on: []
 parent: DS-0019
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description

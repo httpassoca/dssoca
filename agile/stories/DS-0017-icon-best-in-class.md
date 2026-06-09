@@ -2,14 +2,14 @@
 id: DS-0017
 type: story
 title: "Best-in-class Icon component"
-status: todo
+status: done
 priority: low
 tags: [ui, icon]
 depends_on: []
 parent: null
 epic: DS-0016
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Description
