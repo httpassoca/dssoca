@@ -45,14 +45,20 @@ export type Size = (typeof dssocaConfig)['size']['values'][number]
 
 /** Names of the components that accept a `size` prop / `componentsSize` entry. */
 export const COMPONENT_NAMES = [
+  'Accordion',
   'Badge',
+  'BottomNav',
   'Button',
   'Card',
   'EmptyState',
   'Icon',
+  'Image',
   'Input',
+  'Link',
   'LogStream',
+  'Menu',
   'MetricTile',
+  'SegmentedControl',
   'ServiceCard',
   'Sidebar',
   'Sparkline',

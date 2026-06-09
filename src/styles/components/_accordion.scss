@@ -1,0 +1,6 @@
+// --- accordion tokens (DS-0043) ---------------------------------------------------
+// Component-scoped --ss-* size tokens for the accordion component live here.
+// Fill in [data-size-variant="sm|md|lg"] blocks (and :root for the md default)
+// as the component is implemented. Reuse shared tokens from _tokens.scss
+// (--ss-gap, --ss-control-py, --ss-icon, …) where possible; only add a new
+// token when no existing one fits. Keep zero border-radius (house rule).
