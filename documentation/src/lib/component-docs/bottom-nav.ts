@@ -5,7 +5,7 @@ export const bottomNav: ComponentDoc = {
   slug: 'bottom-nav',
   tagline: 'Fixed, thumb-reachable bottom tab bar.',
   description:
-    'A fixed, bottom-anchored row of equal-width icon+label tabs for mobile/compact app shells: a blurred, elevated `<nav>` + `<ul>/<li>` list with an active highlight, optional per-tab count badges, and safe-area inset padding. Tabs can be real links (`href`) or selection buttons. Ported from the passoca.dev mobile bottom nav.',
+    'A fixed, bottom-anchored row of equal-width icon+label tabs for mobile/compact app shells: a blurred, elevated `<nav>` + `<ul>/<li>` list with an active highlight, optional per-tab count badges, and safe-area inset padding. Tabs can be real links (`href`) or selection buttons. Ported from a mobile bottom-nav pattern.',
   storyId: 'components-bottomnav--default',
   usage: `<script>
   import { BottomNav } from 'dssoca';

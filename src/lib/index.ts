@@ -32,7 +32,7 @@ export { default as LogStream, type LogLevel, type LogLine } from './components/
 export { default as Toaster }     from './components/Toaster.svelte'
 export { default as EmptyState }  from './components/EmptyState.svelte'
 
-// New components ported from the passoca website (DS-0043). Each line is the
+// New components ported from the source website (DS-0043). Each line is the
 // single, complete public surface for that component, so the per-component
 // implementation PRs (DS-0050…0055) need not edit this barrel.
 export { default as Menu, type MenuItem } from './components/Menu.svelte'
