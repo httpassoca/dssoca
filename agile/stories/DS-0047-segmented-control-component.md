@@ -2,7 +2,7 @@
 id: DS-0047
 type: story
 title: "SegmentedControl component"
-status: backlog
+status: done
 priority: low
 tags: [ui, a11y]
 depends_on: []
@@ -20,10 +20,10 @@ border buttons with an active state); a design-system version should generalize 
 proper keyboard navigation and a bindable value.
 
 ## Acceptance criteria
-- [ ] `SegmentedControl` gains the behaviour tracked in [[ds-0053-segmented-control-implementation]] (the per-component task)
-- [ ] Changes are additive — new file + barrel export; no existing component touched
-- [ ] New chrome reads `--ss-*` size tokens and respects zero border-radius
-- [ ] WCAG 2.2 AA upheld (radiogroup/tablist semantics + arrow-key nav); `pnpm test` green and `pnpm pack` clean
+- [x] `SegmentedControl` gains the behaviour tracked in [[ds-0053-segmented-control-implementation]] (the per-component task)
+- [x] Changes are additive — new file + barrel export; no existing component touched
+- [x] New chrome reads `--ss-*` size tokens and respects zero border-radius
+- [x] WCAG 2.2 AA upheld (radiogroup/tablist semantics + arrow-key nav); `pnpm test` green and `pnpm pack` clean
 
 ## Notes
 - Part of epic [[DS-0043-new-components-from-website]].
