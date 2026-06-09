@@ -3,7 +3,7 @@ id: DS-0060
 type: story
 title: "Docs homepage redesign — centred hero over a live component hub"
 status: done
-priority: medium
+priority: high
 tags: [docs, landing, motion]
 depends_on: [DS-0062]
 parent: null

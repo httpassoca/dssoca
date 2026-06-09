@@ -3,7 +3,7 @@ id: DS-0062
 type: story
 title: "Docs components overview page (/components)"
 status: done
-priority: medium
+priority: high
 tags: [docs, components, nav]
 depends_on: []
 parent: null
