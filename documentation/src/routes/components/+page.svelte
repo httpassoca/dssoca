@@ -81,7 +81,10 @@
     <div class="grid">
       {#each components as c (c.slug)}
         <a class="card" href={`/components/${c.slug}`}>
-          <div class="stage" class:bleed={BLEED.has(c.slug)} aria-hidden="true">
+          <!-- inert pulls the preview's focusable controls out of the tab order
+               and the a11y tree (the card's <a> is the only interactive element);
+               aria-hidden alone would leave them keyboard-reachable. -->
+          <div class="stage" class:bleed={BLEED.has(c.slug)} inert aria-hidden="true">
             {#if browser}{@render preview(c.slug)}{/if}
           </div>
           <div class="meta">
@@ -150,7 +153,7 @@
   {:else if slug === 'log-stream'}
     <LogStream lines={logLines} />
   {:else if slug === 'empty-state'}
-    <EmptyState title="No services yet" message="Add one to get started." icon="grid" />
+    <EmptyState title="No services yet" message="Add one to get started." icon="∅" />
   {:else if slug === 'icon'}
     <div class="row icons">
       <Icon name="activity" px={20} /><Icon name="settings" px={20} /><Icon name="check" px={20} />
@@ -252,7 +255,7 @@
     }
     &.bleed :global(.ss-side),
     &.bleed :global(.ss-topbar),
-    &.bleed :global(.ss-log) {
+    &.bleed :global(.ss-logs) {
       width: 100%;
     }
 

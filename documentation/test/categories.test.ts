@@ -1,6 +1,21 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { CATEGORIES, componentsByCategory } from '../src/lib/categories';
 import { COMPONENTS } from '../src/lib/docs.config';
+
+describe('components overview — a11y contract', () => {
+  // The previews render real, focusable controls; the whole card is the link.
+  // `inert` must keep them out of the tab order + a11y tree (jsdom/axe can't
+  // run here, so lock the contract at the source).
+  it('marks the preview stage inert', () => {
+    const src = readFileSync(
+      resolve(process.cwd(), 'src/routes/components/+page.svelte'),
+      'utf8',
+    );
+    expect(src).toMatch(/class="stage"[^>]*\binert\b/);
+  });
+});
 
 describe('component categories', () => {
   it('covers every component exactly once', () => {
