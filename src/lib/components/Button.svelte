@@ -94,18 +94,23 @@
     cursor: pointer; display: inline-flex; align-items: center; gap: var(--ss-gap-sm);
     transition: all var(--ss-dur-fast) var(--ss-ease);
 
-    &:hover { background: var(--ss-hover); border-color: var(--ss-line-strong); }
+    // Hover affordances are gated on :not(:disabled) so a disabled button never
+    // brightens or glows on hover — disabled stays inert (dim, no lift). Browsers
+    // still match :hover on a disabled <button>, so without this guard the
+    // primary glow / fill would fire under the pointer even though the control
+    // is non-interactive.
+    &:not(:disabled):hover { background: var(--ss-hover); border-color: var(--ss-line-strong); }
     &.primary {
       background: var(--ss-primary); color: var(--ss-fg-on-primary); border-color: var(--ss-primary); font-weight: 600;
-      &:hover { background: var(--ss-primary-hover); border-color: var(--ss-primary-hover); box-shadow: var(--ss-shadow-glow); }
+      &:not(:disabled):hover { background: var(--ss-primary-hover); border-color: var(--ss-primary-hover); box-shadow: var(--ss-shadow-glow); }
     }
     &.danger {
       background: var(--ss-danger); color: var(--ss-fg-on-danger); border-color: var(--ss-danger); font-weight: 600;
-      &:hover { background: var(--ss-danger-hover); border-color: var(--ss-danger-hover); }
+      &:not(:disabled):hover { background: var(--ss-danger-hover); border-color: var(--ss-danger-hover); }
     }
     &.ghost {
       border-color: transparent; color: var(--ss-fg-muted); padding: var(--ss-control-py) var(--ss-gap-sm);
-      &:hover { color: var(--ss-fg); background: var(--ss-hover); border-color: transparent; }
+      &:not(:disabled):hover { color: var(--ss-fg); background: var(--ss-hover); border-color: transparent; }
     }
 
     /* Icon-only: square padding derived from the vertical control token. */
@@ -128,6 +133,7 @@
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
+      box-shadow: none;
     }
   }
 
