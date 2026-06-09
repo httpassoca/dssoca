@@ -54,7 +54,7 @@
     // The requested page gradient sits *behind* the dimmed tiles (which show it
     // through their opacity) — so a hovered tile becomes opaque and pops to full.
     background:
-      radial-gradient(circle, rgba(0, 0, 0, 0.83) 0%, rgba(0, 0, 0, 0.4) 100%),
+      radial-gradient(circle, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 100%),
       var(--ss-bg);
   }
 

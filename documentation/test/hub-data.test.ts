@@ -1,20 +1,36 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { ALL_SLUGS, buildTilePool, V, BLEED, grad, CYCLE_MIN, CYCLE_MAX } from '../src/lib/hub-data';
+import { ALL_SLUGS, buildTilePool, V, BLEED, PICSUM, CYCLE_MIN, CYCLE_MAX } from '../src/lib/hub-data';
 import { COMPONENTS } from '../src/lib/docs.config';
 
 const slugs = new Set(COMPONENTS.map((c) => c.slug));
+const read = (p: string) => readFileSync(resolve(process.cwd(), p), 'utf8');
 
-describe('Hub.svelte — a11y + motion contract', () => {
-  const src = readFileSync(resolve(process.cwd(), 'src/lib/components/Hub.svelte'), 'utf8');
+describe('HubTile.svelte — cycling + a11y + motion contract', () => {
+  const src = read('src/lib/components/HubTile.svelte');
+
+  it('each tile owns an independent random cycler (not the parent measure)', () => {
+    // a local $state variant index advanced by a self-rescheduling timeout
+    expect(src).toMatch(/let vi\s*=\s*\$state\(0\)/);
+    expect(src).toMatch(/setTimeout\(tick,\s*delay\(\)\)/);
+    expect(src).toMatch(/CYCLE_MIN\s*\+\s*Math\.random\(\)/);
+  });
+
+  it('crossfades each value change (the "alive" transition)', () => {
+    expect(src).toContain('{#key vi}');
+    expect(src).toMatch(/in:fade=/);
+    expect(src).toMatch(/out:fade=/);
+  });
+
+  it('freezes the cycler + crossfade under reduced motion', () => {
+    expect(src).toMatch(/if\s*\(reduced\s*\|\|\s*pool\.length\s*<\s*2\)\s*return/);
+    expect(src).toMatch(/reduced\s*\?\s*0\s*:\s*240/); // crossfade duration → 0 under reduce
+    expect(src).toMatch(/\{#if reduced\}<LogStream lines=/); // log tile static under reduce
+  });
 
   it('marks the component wrapper inert (focusables out of tab order/a11y tree)', () => {
     expect(src).toMatch(/class="inner"\s+inert/);
-  });
-
-  it('freezes the LogStream tile under reduced motion (static lines, not demo)', () => {
-    expect(src).toMatch(/\{#if reduced\}<LogStream lines=/);
   });
 
   it('drives the Accordion tile via controlled `value` so cycling actually toggles', () => {
@@ -46,6 +62,11 @@ describe('hub-data (landing field)', () => {
     for (const key of Object.keys(V)) expect(slugs.has(key), key).toBe(true);
   });
 
+  it('image tiles use random internet images (Picsum)', () => {
+    for (const variant of V.image) expect(String(variant.src)).toContain('picsum.photos');
+    expect(PICSUM('x')).toBe('https://picsum.photos/seed/x/480/300');
+  });
+
   it('BLEED entries are real component slugs', () => {
     for (const s of BLEED) expect(slugs.has(s), s).toBe(true);
   });
@@ -53,11 +74,5 @@ describe('hub-data (landing field)', () => {
   it('cycle cadence is the requested 0.5–2s window', () => {
     expect(CYCLE_MIN).toBe(500);
     expect(CYCLE_MAX).toBe(2000);
-  });
-
-  it('grad() builds a valid inline svg data URI', () => {
-    const u = grad('#000000', '#ffffff');
-    expect(u.startsWith('data:image/svg+xml')).toBe(true);
-    expect(decodeURIComponent(u)).toContain('<svg');
   });
 });

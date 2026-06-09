@@ -6,15 +6,12 @@
  * cycling never shifts a tile's fixed-size box.
  */
 
-/** Gradient stand-in src for the Image tile (same ratio → no layout shift). */
-export const grad = (a: string, b: string): string =>
-  'data:image/svg+xml;utf8,' +
-  encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><defs>` +
-      `<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/>` +
-      `<stop offset="1" stop-color="${b}"/></linearGradient></defs>` +
-      `<rect width="320" height="180" fill="url(#g)"/></svg>`,
-  );
+/**
+ * Random internet images for the Image tiles — Lorem Picsum, seeded so each is a
+ * stable random photo that the browser caches (smooth crossfades, no reload flash).
+ * Rendered at lower opacity by the Hub so they sit back in the field.
+ */
+export const PICSUM = (seed: string) => `https://picsum.photos/seed/${seed}/480/300`;
 
 /** Per-component variant pools (keyed by component slug). */
 export const V: Record<string, Record<string, unknown>[]> = {
@@ -67,8 +64,8 @@ export const V: Record<string, Record<string, unknown>[]> = {
     { names: ['grid', 'user', 'activity', 'logs', 'settings'] },
   ],
   image: [
-    { src: grad('#66ef73', '#1e1e1e') }, { src: grad('#9aa4ff', '#100f10') },
-    { src: grad('#e0c36a', '#1e1e1e') }, { src: grad('#66d9ef', '#100f10') },
+    { src: PICSUM('dssoca-a') }, { src: PICSUM('dssoca-b') }, { src: PICSUM('dssoca-c') },
+    { src: PICSUM('dssoca-d') }, { src: PICSUM('dssoca-e') }, { src: PICSUM('dssoca-f') },
   ],
   sidebar: [{ active: 'hub' }, { active: 'logs' }, { active: 'auth' }],
   topbar: [{ active: 'overview' }, { active: 'logs' }, { active: 'services' }],
