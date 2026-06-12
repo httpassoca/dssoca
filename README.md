@@ -7,10 +7,10 @@
 A Svelte 5 design system — **signal green on near-black, monospace-forward, zero border-radius**
 everywhere. Configured along two orthogonal axes:
 
-| Axis       | Attribute            | Values             | Default |
-|------------|----------------------|--------------------|---------|
-| **Color**  | `data-theme`         | `dark` · `light`   | `dark`  |
-| **Size**   | `data-size-variant`  | `sm` · `md` · `lg` | `md`    |
+| Axis      | Attribute           | Values             | Default |
+| --------- | ------------------- | ------------------ | ------- |
+| **Color** | `data-theme`        | `dark` · `light`   | `dark`  |
+| **Size**  | `data-size-variant` | `sm` · `md` · `lg` | `md`    |
 
 Each component styles itself in a scoped block and consumes token-driven CSS custom properties;
 flip an axis on any ancestor (usually `<html>`) and everything below rescales/recolors. Components
@@ -58,9 +58,9 @@ import 'dssoca/tokens.css'
 import { applyDesignConfig, designAttributes } from 'dssoca'
 
 // flip axes; merges over current config; writes to <html>
-applyDesignConfig({ sizeVariant: 'sm' })                 // global: everything small
-applyDesignConfig({ theme: 'light' })                    // keeps size
-applyDesignConfig({ componentsSize: { Button: 'lg' } })  // per-component default
+applyDesignConfig({ sizeVariant: 'sm' }) // global: everything small
+applyDesignConfig({ theme: 'light' }) // keeps size
+applyDesignConfig({ componentsSize: { Button: 'lg' } }) // per-component default
 ```
 
 Per instance, just set the `size` prop: `<Button size="lg">`.
@@ -77,15 +77,24 @@ SSR / no-flash — spread the attributes directly in markup instead of mutating 
 
 ## What's in the box
 
-**Components:** `Icon`, `Badge`, `Button`, `Input`, `Card`, `Sparkline`,
-`ServiceCard`, `MetricTile`, `Topbar`, `Sidebar`, `LogStream`, `Toaster`, `EmptyState`.
+**Components (23):** `Icon`, `Badge`, `Button`, `Input`, `Textarea`, `Card`, `Sparkline`,
+`ServiceCard`, `MetricTile`, `Topbar`, `Sidebar`, `BottomNav`, `Menu`, `Link`,
+`SegmentedControl`, `Accordion`, `LogStream`, `Toaster`, `EmptyState`, `Image`,
+`Heading`, `Container`, `Spinner`.
 
-**Toasts:** `toast` (`.success` / `.error` / `.info`) + the `toasts` store — render once with
-`<Toaster />`.
+**Toasts:** `toast` (`.success` / `.error` / `.info` / `.loading` / `.promise`) + the `toasts`
+store (`update` / `dismiss` / `pause` / `resume` / `clear`, `max` cap) — render once with
+`<Toaster />`. Types: `Toast`, `ToastKind`, `ToastAction`, `ToastOptions`, `ToastPatch`,
+`PromiseMessages`.
 
 **Config:** `dssocaConfig` (the manifest), `applyDesignConfig`, `designAttributes`,
 `getDesignConfig`, `resolveComponentSize`, `defaultDesignConfig`, and the `ColorTheme` / `Size` /
-`DesignConfig` / `ComponentsSize` types.
+`DesignConfig` / `ComponentsSize` / `DesignAxis` / `ComponentName` / `DssocaConfig` types.
+
+**Component types:** `IconName` (+ `registerIcon`), `TopbarTab`, `TopbarServices`, `SideItem` /
+`SideGroup` / `SideStatus`, `LogLevel` / `LogLine`, `MenuItem`, `AccordionItem`,
+`SegmentOption`, `BottomNavItem`, `ImageSource`, and `SpinnerVariant` / `SpinnerFrames`
+(+ `SPINNER_VARIANTS` / `SPINNER_VARIANT_NAMES`).
 
 ## Accessibility
 
@@ -112,7 +121,16 @@ pnpm docs:dev      # docs site (run `pnpm storybook` alongside for the live demo
 pnpm docs:build    # static build of the docs site
 ```
 
-The docs app is local-only and is **not** part of the published npm package.
+The docs app is **not** part of the published npm package.
+
+### Deployment (maintainers)
+
+The docs site and Storybook deploy to **Vercel as two projects** from this one repo; the
+repo-root `vercel.json` branches its `buildCommand` on a `VERCEL_DEPLOY_TARGET=storybook` env
+var. The per-component Storybook embeds on the deployed docs default to
+`http://localhost:6006` — set **`VITE_STORYBOOK_URL`** (Vercel env var on the **docs**
+project) to the deployed Storybook URL and redeploy, or the iframes stay blank. Full setup:
+[`documentation/CLAUDE.md`](./documentation/CLAUDE.md) → _Deployment_.
 
 ## Develop
 

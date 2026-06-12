@@ -34,7 +34,7 @@ export interface DssocaConfig {
  */
 export const dssocaConfig = {
   theme: { values: ['dark', 'light'], default: 'dark' },
-  size:  { values: ['sm', 'md', 'lg'], default: 'md' },
+  size: { values: ['sm', 'md', 'lg'], default: 'md' },
 } as const satisfies DssocaConfig
 
 /** Color axis values — derived from the manifest (`'dark' | 'light'`). */

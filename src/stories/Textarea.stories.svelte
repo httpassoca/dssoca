@@ -1,6 +1,6 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import Textarea from '$lib/components/Textarea.svelte';
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import Textarea from '$lib/components/Textarea.svelte'
 
   const { Story } = defineMeta({
     title: 'Components/Textarea',
@@ -10,10 +10,20 @@
     // $bindable prop; passed one-way here it still types freely (the binding
     // falls back to the child) and each story seeds a different initial value.
     render: template,
+    parameters: {
+      // Form fields are an a11y hotspot (labels, describedby, contrast) — fail hard.
+      a11y: { test: 'error' },
+    },
     argTypes: {
+      size: {
+        control: { type: 'inline-radio' },
+        options: ['sm', 'md', 'lg'],
+        description: 'Token size override; inherits the ancestor data-size-variant when unset.',
+      },
       label: {
         control: 'text',
-        description: 'Label text. When set, renders a <label class="lbl"> inside the .ss-textarea root.',
+        description:
+          'Label text. When set, renders a <label class="lbl"> inside the .ss-textarea root.',
       },
       placeholder: {
         control: 'text',
@@ -69,11 +79,12 @@
       readonly: false,
       required: false,
     },
-  });
+  })
 </script>
 
 {#snippet template(args: Record<string, unknown>)}
   <Textarea
+    size={args.size as 'sm' | 'md' | 'lg' | undefined}
     label={args.label as string}
     placeholder={args.placeholder as string}
     value={args.value as string}
@@ -119,7 +130,14 @@
 
 <Story
   name="Readonly"
-  args={{ label: 'Generated summary', value: 'Read-only content, selectable but not editable.', readonly: true }}
+  args={{
+    label: 'Generated summary',
+    value: 'Read-only content, selectable but not editable.',
+    readonly: true,
+  }}
 />
 
-<Story name="Required" args={{ label: 'Feedback', placeholder: 'Cannot be blank', required: true }} />
+<Story
+  name="Required"
+  args={{ label: 'Feedback', placeholder: 'Cannot be blank', required: true }}
+/>

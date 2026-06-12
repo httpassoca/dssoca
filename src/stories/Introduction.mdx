@@ -1,0 +1,85 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Introduction" />
+
+# dssoca
+
+A token-driven **Svelte 5 design system**, published to npm as
+[`dssoca`](https://www.npmjs.com/package/dssoca). One `theme.css` plus a small set of
+components, all consuming the same `--ss-*` design tokens. Zero border-radius, mono-flavoured,
+homelab-bred.
+
+## The two axes
+
+Every component is configured along **two orthogonal axes**, written as data-attributes on any
+ancestor element (usually `<html>`):
+
+| Axis      | Attribute           | Values             | Default |
+| --------- | ------------------- | ------------------ | ------- |
+| **Color** | `data-theme`        | `dark` · `light`   | `dark`  |
+| **Size**  | `data-size-variant` | `sm` · `md` · `lg` | `md`    |
+
+Flip an axis on an ancestor and everything below recolors/rescales — custom properties cascade
+through Svelte's scoped style boundary, so no component needs to know which theme or density it
+lives in. Most components also accept a local `size` prop (`sm | md | lg`) to override the
+inherited size for just that subtree.
+
+In this Storybook both axes are exposed as **toolbar globals** (the _Theme_ and _Size_
+dropdowns above) and applied to `<html>`, so every story responds exactly as it would in an app.
+
+```svelte
+<script>
+  import { Button } from 'dssoca'
+  import 'dssoca/theme.css'
+</script>
+
+<!-- somewhere up the tree -->
+<html data-theme="dark" data-size-variant="md">
+  <Button variant="primary">Deploy</Button>
+</html>
+```
+
+## Component index
+
+### Actions & navigation
+
+- **Button** — primary/secondary/ghost/danger, loading state, icon-only, leading/trailing icons.
+- **Link** — inline (animated underline) or button-styled anchor; external-link auto-detection.
+- **Menu** — dropdown menu with keyboard nav, selectable rows, icon/swatch/emoji leading visuals.
+- **SegmentedControl** — compact radiogroup row of mutually-exclusive options.
+- **Topbar** — app header: brand, tab strip, stats, services summary, clock, command chip.
+- **Sidebar** — grouped nav rail with status dots, badges, nesting, collapsible icon-only mode.
+- **BottomNav** — fixed mobile tab bar with icons and badges.
+
+### Content & layout
+
+- **Container** — centered max-width page wrapper; optional page mode.
+- **Heading** — display heading (h1–h6) with the accent underline.
+- **Card** — outlined/elevated surface with title/meta/action/media/footer regions.
+- **Accordion** — disclosure list.
+- **EmptyState** — empty/error/no-results placeholder with actions.
+- **Image** — image with built-in loading/error states.
+- **Icon** — curated stroke icon set (registerable).
+
+### Forms
+
+- **Input** — labelled text field: hint/error, prefix/suffix, clearable, sizes.
+- **Textarea** — labelled multi-line field with autosize.
+
+### Data display & feedback
+
+- **Badge** — status/tag badge: tones, dot, count, live region, dismissible.
+- **MetricTile** — KPI tile: value, delta with decoupled trend sentiment, skeleton, chart slot.
+- **Sparkline** — tiny bars/line/area chart with trend colouring.
+- **LogStream** — terminal-style log viewer with filters, search, wrap, copy.
+- **ServiceCard** — homelab service status card.
+- **Spinner** — terminal-flavoured glyph spinner.
+- **Toaster** — toast stack driven by the imperative `toast` API.
+
+## Controls, actions & a11y
+
+- Every story exposes its component's props as **controls**; snippet-valued props
+  (icons, prefixes, charts) are toggled via story-only booleans that swap demo snippets in.
+- Callback props are wired to the **Actions** panel.
+- The **Accessibility** addon audits each story; form fields and buttons run with
+  violations escalated to test failures (WCAG 2.2 AA target).

@@ -1,0 +1,40 @@
+// ============================================================
+//  LogStream — size tokens (--ss-log-*) for the size axis (DS-0068).
+//
+//  The viewer's viewport heights (min/max) and the fixed timestamp/level
+//  column widths were hardcoded px, so they ignored the size axis and
+//  couldn't be overridden by consumers. md mirrors the previous values
+//  exactly (visually unchanged); sm/lg tighten/loosen with the chrome.
+//
+//  NOTE: these are *also* declared as fallbacks inside LogStream.svelte's
+//  scoped <style> (`var(--ss-log-*, <md px>)` + per-size overrides on the
+//  component's own [data-size-variant]), so the component ships
+//  self-contained even before this partial is wired into _index.scss —
+//  custom properties cascade through Svelte's scoped boundary.
+//
+//  Colour accents (--ss-log-info/warn/err/ok) live in _tokens.scss; this
+//  partial owns only the size-axis metrics. House rule: zero border-radius;
+//  size-sensitive values are tokens.
+// ============================================================
+
+:root,
+[data-size-variant='md'] {
+  --ss-log-min-h: 160px; // viewport floor — keeps the empty state visible
+  --ss-log-max-h: 240px; // viewport ceiling — scrolls beyond this
+  --ss-log-t-w: 58px; // timestamp column (hh:mm:ss in the mono face)
+  --ss-log-lvl-w: 38px; // level column (INFO/WARN/ERR/OK)
+}
+
+[data-size-variant='sm'] {
+  --ss-log-min-h: 120px;
+  --ss-log-max-h: 200px;
+  --ss-log-t-w: 52px;
+  --ss-log-lvl-w: 34px;
+}
+
+[data-size-variant='lg'] {
+  --ss-log-min-h: 200px;
+  --ss-log-max-h: 320px;
+  --ss-log-t-w: 64px;
+  --ss-log-lvl-w: 42px;
+}

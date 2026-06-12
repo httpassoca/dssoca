@@ -57,9 +57,10 @@ export function getDesignConfig(): DesignConfig {
  *
  *   <html {...designAttributes({ sizeVariant: 'sm' })}> … </html>
  */
-export function designAttributes(
-  config: Partial<DesignConfig> = {},
-): { 'data-theme': ColorTheme; 'data-size-variant': Size } {
+export function designAttributes(config: Partial<DesignConfig> = {}): {
+  'data-theme': ColorTheme
+  'data-size-variant': Size
+} {
   const merged = { ...defaultDesignConfig, ...config }
   return { 'data-theme': merged.theme, 'data-size-variant': merged.sizeVariant }
 }
@@ -78,8 +79,7 @@ export function applyDesignConfig(
     ...config,
     componentsSize: { ...current.componentsSize, ...(config.componentsSize ?? {}) },
   }
-  const el =
-    target ?? (typeof document !== 'undefined' ? document.documentElement : undefined)
+  const el = target ?? (typeof document !== 'undefined' ? document.documentElement : undefined)
   if (el) {
     el.setAttribute('data-theme', current.theme)
     el.setAttribute('data-size-variant', current.sizeVariant)

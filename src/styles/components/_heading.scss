@@ -12,21 +12,21 @@
 //  globally. House rule: zero border-radius; size-sensitive values are tokens.
 // ============================================================
 
-[data-size-variant="md"],
+[data-size-variant='md'],
 :root {
-  --ss-heading-size:   var(--ss-size-display);
-  --ss-heading-mb:     var(--ss-s-4);
+  --ss-heading-size: var(--ss-size-display);
+  --ss-heading-mb: var(--ss-s-4);
   --ss-heading-shadow: 3px;
 }
 
-[data-size-variant="sm"] {
-  --ss-heading-size:   clamp(30px, 6.5vw, 44px);
-  --ss-heading-mb:     var(--ss-s-3);
+[data-size-variant='sm'] {
+  --ss-heading-size: clamp(30px, 6.5vw, 44px);
+  --ss-heading-mb: var(--ss-s-3);
   --ss-heading-shadow: 2px;
 }
 
-[data-size-variant="lg"] {
-  --ss-heading-size:   clamp(44px, 9vw, 64px);
-  --ss-heading-mb:     var(--ss-s-6);
+[data-size-variant='lg'] {
+  --ss-heading-size: clamp(44px, 9vw, 64px);
+  --ss-heading-mb: var(--ss-s-6);
   --ss-heading-shadow: 4px;
 }

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { ComponentDoc } from '$lib/docs.config';
-  import StoryEmbed from './StoryEmbed.svelte';
-  import CodeBlock from './CodeBlock.svelte';
-  import PropsTable from './PropsTable.svelte';
+  import type { ComponentDoc } from '$lib/docs.config'
+  import StoryEmbed from './StoryEmbed.svelte'
+  import CodeBlock from './CodeBlock.svelte'
+  import PropsTable from './PropsTable.svelte'
 
-  let { doc }: { doc: ComponentDoc } = $props();
+  let { doc }: { doc: ComponentDoc } = $props()
 </script>
 
 <article>

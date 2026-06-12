@@ -1,5 +1,5 @@
-import type { Decorator, Preview } from '@storybook/sveltekit';
-import '../src/styles/theme.scss';
+import type { Decorator, Preview } from '@storybook/sveltekit'
+import '../src/styles/theme.scss'
 
 /**
  * The design system is driven by two orthogonal axes written as data-attributes
@@ -9,12 +9,12 @@ import '../src/styles/theme.scss';
  */
 const withDesignAxes: Decorator = (story, context) => {
   if (typeof document !== 'undefined') {
-    const { theme, sizeVariant } = context.globals;
-    document.documentElement.setAttribute('data-theme', theme ?? 'dark');
-    document.documentElement.setAttribute('data-size-variant', sizeVariant ?? 'md');
+    const { theme, sizeVariant } = context.globals
+    document.documentElement.setAttribute('data-theme', theme ?? 'dark')
+    document.documentElement.setAttribute('data-size-variant', sizeVariant ?? 'md')
   }
-  return story();
-};
+  return story()
+}
 
 const preview: Preview = {
   decorators: [withDesignAxes],
@@ -55,6 +55,6 @@ const preview: Preview = {
       },
     },
   },
-};
+}
 
-export default preview;
+export default preview

@@ -25,7 +25,7 @@
     withAction = false,
     withSecondaryAction = false,
     withFooter = false,
-    withVisual = false
+    withVisual = false,
   }: Props = $props()
 </script>
 

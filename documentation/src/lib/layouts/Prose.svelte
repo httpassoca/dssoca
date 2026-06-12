@@ -2,7 +2,7 @@
   // mdsvex layout: wraps every `.svx` page's Markdown in a token-styled prose
   // shell. The Markdown elements are rendered by the child page (a different
   // Svelte scope), so they're styled via `:global(...)` below.
-  let { children } = $props();
+  let { children } = $props()
 </script>
 
 <article class="prose">

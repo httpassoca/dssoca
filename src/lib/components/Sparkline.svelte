@@ -41,7 +41,7 @@
     fluid = false,
     width,
     valueFormat,
-    summary
+    summary,
   }: Props = $props()
 
   const fmt = $derived(valueFormat ?? ((v: number) => String(v)))
@@ -71,10 +71,14 @@
   // Colour: a resolved direction overrides the `color` prop.
   const fill = $derived.by(() => {
     switch (direction) {
-      case 'up': return 'var(--ss-success)'
-      case 'down': return 'var(--ss-danger)'
-      case 'flat': return 'var(--ss-fg-muted)'
-      default: return color
+      case 'up':
+        return 'var(--ss-success)'
+      case 'down':
+        return 'var(--ss-danger)'
+      case 'flat':
+        return 'var(--ss-fg-muted)'
+      default:
+        return color
     }
   })
 
@@ -103,25 +107,23 @@
     }
     return data.map((v, i) => ({
       x: (i / (data.length - 1)) * VB_W,
-      y: VB_H - norm(v) * VB_H
+      y: VB_H - norm(v) * VB_H,
     }))
   })
   const polyline = $derived(points.map((p) => `${p.x},${p.y}`).join(' '))
   const areaPath = $derived(
     points.length
       ? `M${points[0].x},${VB_H} L` +
-        points.map((p) => `${p.x},${p.y}`).join(' ') +
-        ` L${points[points.length - 1].x},${VB_H} Z`
-      : ''
+          points.map((p) => `${p.x},${p.y}`).join(' ') +
+          ` L${points[points.length - 1].x},${VB_H} Z`
+      : '',
   )
 
   const isEmpty = $derived(data.length === 0)
   const isSingle = $derived(data.length === 1)
 
   const rootStyle = $derived(
-    [width ? `width:${width}` : '', fluid && !width ? 'width:100%' : '']
-      .filter(Boolean)
-      .join(';')
+    [width ? `width:${width}` : '', fluid && !width ? 'width:100%' : ''].filter(Boolean).join(';'),
   )
 </script>
 
@@ -173,10 +175,15 @@
     display: inline-flex;
     align-items: flex-end;
     gap: var(--ss-spark-gap, 1px);
-    height: var(--ss-spark-h, 18px);
+    // Height fallback chain (DS-0068): without --ss-spark-h the chart tracks
+    // the icon size token, so it still rescales with the size axis; the
+    // literal 18px (the md value) is only the no-stylesheet last resort.
+    height: var(--ss-spark-h, var(--ss-icon, 18px));
     position: relative;
 
-    &.fluid { width: 100%; }
+    &.fluid {
+      width: 100%;
+    }
 
     i {
       width: var(--ss-spark-bar-w, 3px);
@@ -185,9 +192,15 @@
       border-radius: 0;
     }
 
-    &.fluid i { flex: 1 1 0; width: auto; min-width: 1px; }
+    &.fluid i {
+      flex: 1 1 0;
+      width: auto;
+      min-width: 1px;
+    }
 
-    .single { margin: 0 auto; }
+    .single {
+      margin: 0 auto;
+    }
 
     .empty {
       align-self: center;
@@ -218,6 +231,8 @@
       stroke: none;
     }
 
-    .marker { fill: var(--ss-primary); }
+    .marker {
+      fill: var(--ss-primary);
+    }
   }
 </style>

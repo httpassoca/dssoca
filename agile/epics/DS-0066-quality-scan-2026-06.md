@@ -2,14 +2,14 @@
 id: DS-0066
 type: epic
 title: "Quality & consistency pass — full codebase scan (June 2026)"
-status: todo
+status: done
 priority: high
 tags: [quality, a11y, tokens, tests, ci, docs]
 depends_on: []
 parent: null
 epic: null
 created: 2026-06-11
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 ## Description
@@ -20,7 +20,7 @@ accuracy, Storybook controls, CI hardening, svelte-check fix, release automation
 component API consistency.
 
 ## Acceptance criteria
-- [ ] All child stories (DS-0067 … DS-0078) are done or explicitly descoped.
+- [x] All child stories (DS-0067 … DS-0078) are done or explicitly descoped.
 
 ## Notes
 - Scan ran 2026-06-11 with six parallel read-only agents over the whole repo.

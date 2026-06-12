@@ -15,7 +15,10 @@
     /** One level of nested sub-items, rendered with the Disclosure pattern. */
     children?: SideItem[]
   }
-  export interface SideGroup { section: string; items: SideItem[] }
+  export interface SideGroup {
+    section: string
+    items: SideItem[]
+  }
 </script>
 
 <script lang="ts">
@@ -35,16 +38,22 @@
   }
 
   const DEFAULT_GROUPS: SideGroup[] = [
-    { section: 'platform', items: [
-      { id: 'hub',   label: 'Hub',   icon: 'grid',     status: 'up' },
-      { id: 'auth',  label: 'Auth',  icon: 'user',     status: 'up' },
-      { id: 'caddy', label: 'Caddy', icon: 'settings', status: 'up' },
-    ]},
-    { section: 'services', items: [
-      { id: 'movies',  label: 'Movies',  icon: 'film',     status: 'up' },
-      { id: 'notes',   label: 'Notes',   icon: 'note',     status: 'up' },
-      { id: 'tasks',   label: 'Tasks',   icon: 'check',    status: 'up' },
-    ]},
+    {
+      section: 'platform',
+      items: [
+        { id: 'hub', label: 'Hub', icon: 'grid', status: 'up' },
+        { id: 'auth', label: 'Auth', icon: 'user', status: 'up' },
+        { id: 'caddy', label: 'Caddy', icon: 'settings', status: 'up' },
+      ],
+    },
+    {
+      section: 'services',
+      items: [
+        { id: 'movies', label: 'Movies', icon: 'film', status: 'up' },
+        { id: 'notes', label: 'Notes', icon: 'note', status: 'up' },
+        { id: 'tasks', label: 'Tasks', icon: 'check', status: 'up' },
+      ],
+    },
   ]
 
   let {
@@ -85,8 +94,7 @@
   // Per-disclosure open state. Auto-expanded when a descendant is active;
   // user toggles override afterwards.
   let openState = $state<Record<string, boolean>>({})
-  const isOpen = (item: SideItem): boolean =>
-    openState[item.id] ?? hasActiveDescendant(item)
+  const isOpen = (item: SideItem): boolean => openState[item.id] ?? hasActiveDescendant(item)
 
   function toggleOpen(item: SideItem) {
     openState[item.id] = !isOpen(item)
@@ -173,7 +181,11 @@
                       {/if}
                       {#if child.status}
                         <span
-                          class="dot {child.status === 'deg' ? 'warn' : child.status === 'down' ? 'err' : ''}"
+                          class="dot {child.status === 'deg'
+                            ? 'warn'
+                            : child.status === 'down'
+                              ? 'err'
+                              : ''}"
                           aria-hidden="true"
                         ></span>
                       {/if}
@@ -188,7 +200,10 @@
                       title={collapsed ? accessibleName(child) : undefined}
                       onclick={() => onSelect?.(child.id)}
                       onkeydown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect?.(child.id) }
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          onSelect?.(child.id)
+                        }
                       }}
                     >
                       {#if child.icon}<Icon name={child.icon} px={13} />{/if}
@@ -198,7 +213,11 @@
                       {/if}
                       {#if child.status}
                         <span
-                          class="dot {child.status === 'deg' ? 'warn' : child.status === 'down' ? 'err' : ''}"
+                          class="dot {child.status === 'deg'
+                            ? 'warn'
+                            : child.status === 'down'
+                              ? 'err'
+                              : ''}"
                           aria-hidden="true"
                         ></span>
                       {/if}
@@ -238,7 +257,10 @@
               title={collapsed ? accessibleName(item) : undefined}
               onclick={() => onSelect?.(item.id)}
               onkeydown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect?.(item.id) }
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onSelect?.(item.id)
+                }
               }}
             >
               {#if item.icon}<Icon name={item.icon} px={13} />{/if}
@@ -264,7 +286,9 @@
   .ss-side {
     border-right: 1px solid var(--ss-line);
     padding: var(--ss-gap) var(--ss-s-1);
-    display: flex; flex-direction: column; gap: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
     background: var(--ss-bg);
     width: var(--ss-side-w);
     // Fill the host container's height so the rail (border-right + background)
@@ -279,84 +303,160 @@
     &[data-collapsed] {
       width: var(--ss-side-w-rail);
 
-      .section { text-indent: -9999px; height: 1px; padding: 0; overflow: hidden; }
-      .label, .badge, .caret { display: none; }
-      .item { justify-content: center; gap: 0; }
-      .dot { margin-left: 0; }
-      .sublist { padding-left: 0; }
+      .section {
+        text-indent: -9999px;
+        height: 1px;
+        padding: 0;
+        overflow: hidden;
+      }
+      .label,
+      .badge,
+      .caret {
+        display: none;
+      }
+      .item {
+        justify-content: center;
+        gap: 0;
+      }
+      .dot {
+        margin-left: 0;
+      }
+      .sublist {
+        padding-left: 0;
+      }
     }
 
-    .list, .sublist {
-      list-style: none; margin: 0; padding: 0;
-      display: flex; flex-direction: column; gap: 1px;
+    .list,
+    .sublist {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
     }
-    .sublist { padding-left: var(--ss-s-3); }
-    .row { display: block; }
+    .sublist {
+      padding-left: var(--ss-s-3);
+    }
+    .row {
+      display: block;
+    }
 
     .rail-toggle {
-      display: flex; align-items: center; justify-content: center;
-      background: none; border: 0; cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: 0;
+      cursor: pointer;
       color: var(--ss-fg-faint);
       padding: var(--ss-row-py) var(--ss-row-px);
       margin-bottom: var(--ss-s-1);
       transition: color var(--ss-dur-fast) var(--ss-ease);
-      &:hover { color: var(--ss-fg); }
+      &:hover {
+        color: var(--ss-fg);
+      }
     }
 
     .section {
-      font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs);
-      color: var(--ss-fg-faint); text-transform: uppercase; letter-spacing: 0.12em;
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-xs);
+      color: var(--ss-fg-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
       padding: var(--ss-row-px) var(--ss-row-px) var(--ss-s-1);
     }
 
     .item {
-      display: flex; align-items: center; gap: 8px; width: 100%;
-      padding: var(--ss-row-py) var(--ss-row-px); cursor: pointer; color: var(--ss-fg-muted);
+      // spacing-scale token (DS-0068): --ss-s-2 = the former 8px.
+      display: flex;
+      align-items: center;
+      gap: var(--ss-s-2);
+      width: 100%;
+      padding: var(--ss-row-py) var(--ss-row-px);
+      cursor: pointer;
+      color: var(--ss-fg-muted);
       font: 500 var(--ss-ui-md) var(--ss-font-mono);
       border-left: 2px solid transparent;
-      border-top: 0; border-right: 0; border-bottom: 0;
-      background: none; text-align: left; text-decoration: none;
+      border-top: 0;
+      border-right: 0;
+      border-bottom: 0;
+      background: none;
+      text-align: left;
+      text-decoration: none;
       box-sizing: border-box;
       transition: all var(--ss-dur-fast) var(--ss-ease);
 
-      &:hover { color: var(--ss-fg); background: var(--ss-hover); }
-      &.active { color: var(--ss-fg); background: rgba(var(--ss-primary-rgb), .06); border-left-color: var(--ss-primary); }
+      &:hover {
+        color: var(--ss-fg);
+        background: var(--ss-hover);
+      }
+      &.active {
+        color: var(--ss-fg);
+        background: rgba(var(--ss-primary-rgb), 0.06);
+        border-left-color: var(--ss-primary);
+      }
 
-      .label { flex: 1 1 auto; min-width: 0; }
+      .label {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
 
       .badge {
-        flex: 0 0 auto; margin-left: auto;
-        font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs); line-height: 1;
-        color: var(--ss-fg-muted); background: var(--ss-hover);
+        flex: 0 0 auto;
+        margin-left: auto;
+        font-family: var(--ss-font-mono);
+        font-size: var(--ss-ui-xs);
+        line-height: 1;
+        color: var(--ss-fg-muted);
+        background: var(--ss-hover);
         border: 1px solid var(--ss-line);
         padding: var(--ss-side-badge-py) var(--ss-side-badge-px);
         border-radius: 0;
       }
-      .badge + .dot { margin-left: var(--ss-s-1); }
+      .badge + .dot {
+        margin-left: var(--ss-s-1);
+      }
 
       .dot {
         flex: 0 0 auto;
-        width: 5px; height: 5px; margin-left: auto; background: var(--ss-primary);
-        &.warn { background: var(--ss-yellow); }
-        &.err  { background: var(--ss-red); }
+        width: 5px;
+        height: 5px;
+        margin-left: auto;
+        background: var(--ss-primary);
+        &.warn {
+          background: var(--ss-yellow);
+        }
+        &.err {
+          background: var(--ss-red);
+        }
       }
 
       .caret {
-        flex: 0 0 auto; margin-left: var(--ss-s-1);
-        width: 0; height: 0;
+        flex: 0 0 auto;
+        margin-left: var(--ss-s-1);
+        width: 0;
+        height: 0;
         border-left: 4px solid currentColor;
         border-top: 3px solid transparent;
         border-bottom: 3px solid transparent;
         transition: transform var(--ss-dur-fast) var(--ss-ease);
-        &.open { transform: rotate(90deg); }
+        &.open {
+          transform: rotate(90deg);
+        }
       }
-      .badge + .caret, .dot + .caret { margin-left: var(--ss-s-1); }
+      .badge + .caret,
+      .dot + .caret {
+        margin-left: var(--ss-s-1);
+      }
     }
 
     .item.child {
       font-size: var(--ss-ui-sm);
       color: var(--ss-fg-faint);
-      &:hover { color: var(--ss-fg); }
+      &:hover {
+        color: var(--ss-fg);
+      }
     }
   }
 </style>

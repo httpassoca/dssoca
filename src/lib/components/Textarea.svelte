@@ -63,9 +63,8 @@
 
   // error wins, then hint, then any caller-supplied describedby — order matters for AT.
   const describedBy = $derived(
-    [error ? errorId : null, hint ? hintId : null, describedby]
-      .filter(Boolean)
-      .join(' ') || undefined,
+    [error ? errorId : null, hint ? hintId : null, describedby].filter(Boolean).join(' ') ||
+      undefined,
   )
   const isInvalid = $derived(invalid || Boolean(error) || undefined)
   // 'Textarea' is not in the ComponentName union yet (manifest is owned by the
@@ -129,59 +128,103 @@
   // Multiline twin of Input — same label / control / msg anatomy and the same
   // --ss-* field tokens, so the two sit side by side without visual drift.
   .ss-textarea {
-    display: flex; flex-direction: column; gap: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 
     .lbl {
-      font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs); color: var(--ss-fg-muted);
-      text-transform: uppercase; letter-spacing: 0.08em;
-      .req { color: var(--ss-red); margin-left: 2px; }
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-xs);
+      color: var(--ss-fg-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      .req {
+        color: var(--ss-red);
+        margin-left: 2px;
+      }
     }
 
     // The border/focus ring lives on the wrapper, mirroring Input's .control.
     .control {
-      display: flex; align-items: stretch;
-      background: transparent; color: var(--ss-fg);
+      display: flex;
+      align-items: stretch;
+      background: transparent;
+      color: var(--ss-fg);
       border: 1px solid var(--ss-line);
       padding: 0 var(--ss-input-px);
-      transition: border-color var(--ss-dur-fast) var(--ss-ease), box-shadow var(--ss-dur-fast) var(--ss-ease);
+      transition:
+        border-color var(--ss-dur-fast) var(--ss-ease),
+        box-shadow var(--ss-dur-fast) var(--ss-ease);
 
-      &:focus-within { border-color: var(--ss-primary); box-shadow: 0 0 0 3px var(--ss-primary-soft); }
+      &:focus-within {
+        border-color: var(--ss-primary);
+        box-shadow: 0 0 0 3px var(--ss-primary-soft);
+      }
     }
 
     &.invalid .control {
       border-color: var(--ss-red);
-      &:focus-within { border-color: var(--ss-red); box-shadow: 0 0 0 3px rgba(var(--ss-red-rgb), 0.22); }
+      &:focus-within {
+        border-color: var(--ss-red);
+        box-shadow: 0 0 0 3px rgba(var(--ss-red-rgb), 0.22);
+      }
     }
 
-    &.disabled .control { border-color: var(--ss-line); }
+    &.disabled .control {
+      border-color: var(--ss-line);
+    }
 
     .field {
-      font-family: var(--ss-font-body); font-size: var(--ss-input-font);
+      font-family: var(--ss-font-body);
+      font-size: var(--ss-input-font);
       line-height: 1.5;
-      background: transparent; color: var(--ss-fg);
-      border: none; padding: var(--ss-input-py) 0;
-      width: 100%; min-width: 0;
+      background: transparent;
+      color: var(--ss-fg);
+      border: none;
+      padding: var(--ss-input-py) 0;
+      width: 100%;
+      min-width: 0;
       resize: vertical;
       transition: color var(--ss-dur-fast) var(--ss-ease);
 
-      &:focus { outline: none; }
-      &::placeholder { font-style: italic; color: var(--ss-fg-faint); }
-      &[readonly] { color: var(--ss-fg-muted); cursor: default; }
-      &:disabled { color: var(--ss-fg-faint); cursor: not-allowed; -webkit-text-fill-color: var(--ss-fg-faint); }
+      &:focus {
+        outline: none;
+      }
+      &::placeholder {
+        font-style: italic;
+        color: var(--ss-fg-faint);
+      }
+      &[readonly] {
+        color: var(--ss-fg-muted);
+        cursor: default;
+      }
+      &:disabled {
+        color: var(--ss-fg-faint);
+        cursor: not-allowed;
+        -webkit-text-fill-color: var(--ss-fg-faint);
+      }
 
       // Grow with content; `rows` keeps the minimum, max-height (inline, from
       // maxRows) caps growth and the overflow takes over past the cap.
       &.autosize {
         resize: none;
         overflow-y: auto;
-        @supports (field-sizing: content) { field-sizing: content; }
+        @supports (field-sizing: content) {
+          field-sizing: content;
+        }
       }
     }
 
     .msg {
-      font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs); letter-spacing: 0.02em;
-      &.hint { color: var(--ss-fg-faint); }
-      &.error { color: var(--ss-red); }
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-xs);
+      letter-spacing: 0.02em;
+      &.hint {
+        color: var(--ss-fg-faint);
+      }
+      &.error {
+        color: var(--ss-red);
+      }
     }
   }
 </style>

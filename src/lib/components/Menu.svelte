@@ -192,12 +192,20 @@
   function onDocPointerDown(e: PointerEvent) {
     if (!open) return
     const t = e.target as Node
-    if (triggerEl?.contains(t) || panelEl?.contains(t)) return
+    // DS-0067 / DS-0078: triggerEl/panelEl may be unbound (pre-mount, SSR-ish
+    // eager evaluation) — null-check before .contains().
+    if (triggerEl && triggerEl.contains(t)) return
+    if (panelEl && panelEl.contains(t)) return
     closeMenu(false)
   }
 
+  // SSR safety (DS-0067): same guard pattern as toast.svelte.ts — effects
+  // normally don't run on the server, but the guard is the house convention
+  // and protects against eager evaluation.
+  const hasDocument = typeof document !== 'undefined'
+
   $effect(() => {
-    if (!open) return
+    if (!open || !hasDocument) return
     document.addEventListener('pointerdown', onDocPointerDown, true)
     return () => document.removeEventListener('pointerdown', onDocPointerDown, true)
   })
@@ -253,7 +261,9 @@
           <Icon name={item.icon} />
         {/if}
         <span class="label">{item.label}</span>
-        <span class="marker" aria-hidden="true">{#if item.selected}<Icon name="check" />{/if}</span>
+        <span class="marker" aria-hidden="true"
+          >{#if item.selected}<Icon name="check" />{/if}</span
+        >
       </button>
     {/each}
   </div>

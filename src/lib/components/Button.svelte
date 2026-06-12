@@ -87,11 +87,18 @@
 
 <style lang="scss">
   .ss-btn {
-    font-family: var(--ss-font-body); font-size: var(--ss-control-font); line-height: 1; font-weight: 500;
+    font-family: var(--ss-font-body);
+    font-size: var(--ss-control-font);
+    line-height: 1;
+    font-weight: 500;
     padding: var(--ss-control-py) var(--ss-control-px);
     border: 1px solid var(--ss-line);
-    background: transparent; color: var(--ss-fg);
-    cursor: pointer; display: inline-flex; align-items: center; gap: var(--ss-gap-sm);
+    background: transparent;
+    color: var(--ss-fg);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ss-gap-sm);
     transition: all var(--ss-dur-fast) var(--ss-ease);
 
     // Hover affordances are gated on :not(:disabled) so a disabled button never
@@ -99,18 +106,40 @@
     // still match :hover on a disabled <button>, so without this guard the
     // primary glow / fill would fire under the pointer even though the control
     // is non-interactive.
-    &:not(:disabled):hover { background: var(--ss-hover); border-color: var(--ss-line-strong); }
+    &:not(:disabled):hover {
+      background: var(--ss-hover);
+      border-color: var(--ss-line-strong);
+    }
     &.primary {
-      background: var(--ss-primary); color: var(--ss-fg-on-primary); border-color: var(--ss-primary); font-weight: 600;
-      &:not(:disabled):hover { background: var(--ss-primary-hover); border-color: var(--ss-primary-hover); box-shadow: var(--ss-shadow-glow); }
+      background: var(--ss-primary);
+      color: var(--ss-fg-on-primary);
+      border-color: var(--ss-primary);
+      font-weight: 600;
+      &:not(:disabled):hover {
+        background: var(--ss-primary-hover);
+        border-color: var(--ss-primary-hover);
+        box-shadow: var(--ss-shadow-glow);
+      }
     }
     &.danger {
-      background: var(--ss-danger); color: var(--ss-fg-on-danger); border-color: var(--ss-danger); font-weight: 600;
-      &:not(:disabled):hover { background: var(--ss-danger-hover); border-color: var(--ss-danger-hover); }
+      background: var(--ss-danger);
+      color: var(--ss-fg-on-danger);
+      border-color: var(--ss-danger);
+      font-weight: 600;
+      &:not(:disabled):hover {
+        background: var(--ss-danger-hover);
+        border-color: var(--ss-danger-hover);
+      }
     }
     &.ghost {
-      border-color: transparent; color: var(--ss-fg-muted); padding: var(--ss-control-py) var(--ss-gap-sm);
-      &:not(:disabled):hover { color: var(--ss-fg); background: var(--ss-hover); border-color: transparent; }
+      border-color: transparent;
+      color: var(--ss-fg-muted);
+      padding: var(--ss-control-py) var(--ss-gap-sm);
+      &:not(:disabled):hover {
+        color: var(--ss-fg);
+        background: var(--ss-hover);
+        border-color: transparent;
+      }
     }
 
     /* Icon-only: square padding derived from the vertical control token. */
@@ -137,17 +166,23 @@
     }
   }
 
-  .label { display: inline-flex; align-items: center; }
+  .label {
+    display: inline-flex;
+    align-items: center;
+  }
 
   .affix {
-    display: inline-flex; align-items: center; justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     line-height: 0;
   }
 
   /* em-sized spinner so it tracks the button font; reduced-motion safe. */
   .spinner {
     display: inline-block;
-    width: 1em; height: 1em;
+    width: 1em;
+    height: 1em;
     border: 2px solid currentColor;
     border-top-color: transparent;
     box-sizing: border-box;
@@ -155,10 +190,14 @@
   }
 
   @keyframes ss-btn-spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .spinner { animation: none; }
+    .spinner {
+      animation: none;
+    }
   }
 </style>

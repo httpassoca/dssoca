@@ -1,7 +1,7 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import EmptyState from '$lib/components/EmptyState.svelte';
-  import Button from '$lib/components/Button.svelte';
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import EmptyState from '$lib/components/EmptyState.svelte'
+  import Button from '$lib/components/Button.svelte'
 
   const { Story } = defineMeta({
     title: 'Components/EmptyState',
@@ -13,8 +13,18 @@
     argTypes: {
       variant: {
         control: { type: 'inline-radio' },
-        options: ['empty', 'error'],
-        description: 'Visual tone — neutral empty state or error state (title turns red).',
+        options: ['empty', 'error', 'no-results'],
+        description:
+          'Visual tone — neutral empty state, error state (title turns red), or no-results.',
+      },
+      size: {
+        control: { type: 'inline-radio' },
+        options: ['sm', 'md', 'lg'],
+        description: 'Token size override; inherits the ancestor data-size-variant when unset.',
+      },
+      ariaLabel: {
+        control: 'text',
+        description: 'Accessible name for the empty-state region.',
       },
       title: {
         control: 'text',
@@ -40,16 +50,18 @@
       icon: undefined,
       withAction: false,
     },
-  });
+  })
 </script>
 
 {#snippet template(args: Record<string, unknown>)}
   {#if args.withAction}
     <EmptyState
-      variant={args.variant as 'empty' | 'error'}
+      variant={args.variant as 'empty' | 'error' | 'no-results'}
       title={args.title as string}
       message={args.message as string | undefined}
       icon={args.icon as string | undefined}
+      size={args.size as 'sm' | 'md' | 'lg' | undefined}
+      ariaLabel={args.ariaLabel as string | undefined}
     >
       {#snippet action()}
         <Button variant="primary" onclick={() => {}}>Retry</Button>
@@ -57,10 +69,12 @@
     </EmptyState>
   {:else}
     <EmptyState
-      variant={args.variant as 'empty' | 'error'}
+      variant={args.variant as 'empty' | 'error' | 'no-results'}
       title={args.title as string}
       message={args.message as string | undefined}
       icon={args.icon as string | undefined}
+      size={args.size as 'sm' | 'md' | 'lg' | undefined}
+      ariaLabel={args.ariaLabel as string | undefined}
     />
   {/if}
 {/snippet}

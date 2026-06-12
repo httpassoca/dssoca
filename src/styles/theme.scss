@@ -16,7 +16,7 @@
 //  @import is a valid leading rule; _tokens before the rules that consume them.
 // ============================================================
 @use 'fonts';
-@use '_tokens';   // underscore-explicit: the tokens.css entry (DS-0089) shares this basename
-@use 'components';   // per-component token partials (DS-0043) — one file per component
+@use '_tokens'; // underscore-explicit: the tokens.css entry (DS-0089) shares this basename
+@use 'components'; // per-component token partials (DS-0043) — one file per component
 @use 'base';
 @use 'layout';

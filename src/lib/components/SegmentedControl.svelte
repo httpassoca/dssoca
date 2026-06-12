@@ -31,6 +31,13 @@
     onChange?: (value: string) => void
     /** Stretch segments to equal widths and fill the container. */
     fullWidth?: boolean
+    /**
+     * Disable the whole control (DS-0078): every segment is rendered inert
+     * (`disabled` + skipped by keyboard nav) and the group carries
+     * `aria-disabled="true"`. Per-option `disabled` still works for
+     * disabling individual segments.
+     */
+    disabled?: boolean
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
     /**
@@ -45,29 +52,33 @@
     value = $bindable(),
     onChange,
     fullWidth = false,
+    disabled = false,
     size,
     label,
   }: Props = $props()
+
+  // Component-wide `disabled` wins over (and combines with) per-option flags.
+  const isOptionDisabled = (o: SegmentOption) => disabled || Boolean(o.disabled)
 
   // Bound references to each segment, indexed by option position, so keyboard
   // navigation can move focus across the roving-tabindex group.
   let segments = $state<(HTMLButtonElement | undefined)[]>([])
 
   const enabledIndexes = $derived(
-    options.map((o, i) => (o.disabled ? -1 : i)).filter((i) => i >= 0),
+    options.map((o, i) => (isOptionDisabled(o) ? -1 : i)).filter((i) => i >= 0),
   )
 
   /** Index that owns the single tab stop (roving tabindex). The selected option
    *  when it's enabled; otherwise the first enabled option; -1 when none. */
   const tabbableIndex = $derived.by(() => {
-    const sel = options.findIndex((o) => o.value === value && !o.disabled)
+    const sel = options.findIndex((o) => o.value === value && !isOptionDisabled(o))
     if (sel >= 0) return sel
     return enabledIndexes[0] ?? -1
   })
 
   function select(index: number) {
     const opt = options[index]
-    if (!opt || opt.disabled) return
+    if (!opt || isOptionDisabled(opt)) return
     if (opt.value !== value) {
       value = opt.value
       onChange?.(opt.value)
@@ -123,6 +134,7 @@
   class:full={fullWidth}
   role="radiogroup"
   aria-label={label}
+  aria-disabled={disabled ? 'true' : undefined}
   data-size-variant={sizeAttr}
 >
   {#each options as opt, i (opt.value)}
@@ -135,7 +147,7 @@
       role="radio"
       aria-checked={selected}
       tabindex={i === tabbableIndex ? 0 : -1}
-      disabled={opt.disabled}
+      disabled={isOptionDisabled(opt)}
       onclick={() => select(i)}
       onkeydown={(e) => onKeydown(e, i)}
     >

@@ -1,6 +1,6 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import Heading from '$lib/components/Heading.svelte';
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import Heading from '$lib/components/Heading.svelte'
 
   const { Story } = defineMeta({
     title: 'Components/Heading',
@@ -24,6 +24,11 @@
         control: 'boolean',
         description: 'Center the heading.',
       },
+      size: {
+        control: { type: 'inline-radio' },
+        options: ['sm', 'md', 'lg'],
+        description: 'Token size override; inherits the ancestor data-size-variant when unset.',
+      },
       text: {
         control: 'text',
         description: 'Heading text (rendered as the child snippet).',
@@ -35,7 +40,7 @@
       centered: false,
       text: 'hub_dashboard',
     },
-  });
+  })
 </script>
 
 {#snippet template(args: Record<string, unknown>)}
@@ -43,6 +48,7 @@
     level={args.level as 1 | 2 | 3 | 4 | 5 | 6}
     accent={args.accent as boolean}
     centered={args.centered as boolean}
+    size={args.size as 'sm' | 'md' | 'lg' | undefined}
   >
     {args.text}
   </Heading>
@@ -56,7 +62,4 @@
 
 <Story name="Level2" args={{ level: 2, text: 'h2 semantics, display styling' }} />
 
-<Story
-  name="CenteredNoAccent"
-  args={{ centered: true, accent: false, text: 'quiet + centered' }}
-/>
+<Story name="CenteredNoAccent" args={{ centered: true, accent: false, text: 'quiet + centered' }} />

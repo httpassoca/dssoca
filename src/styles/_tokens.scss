@@ -8,70 +8,77 @@
 //  AXIS 1 — COLOR THEME
 // ------------------------------------------------------------
 :root,
-[data-theme="dark"] {
+[data-theme='dark'] {
+  /* Native form controls + scrollbars follow the theme (DS-0069). Lives here
+     (not _base.scss) so the planned tokens-only entry ships it too. */
+  color-scheme: dark;
+
   /* surfaces */
-  --ss-bg:          #100f10;
-  --ss-bg-elev:     #1e1e1e;
-  --ss-bg-elev-hover: #262626;   /* slightly raised surface for hovered cards/rows */
-  --ss-bg-inset:    rgba(7, 6, 7, 0);
-  --ss-line:        rgba(255, 255, 255, 0.12);
+  --ss-bg: #100f10;
+  --ss-bg-elev: #1e1e1e;
+  --ss-bg-elev-hover: #262626; /* slightly raised surface for hovered cards/rows */
+  --ss-bg-inset: rgba(7, 6, 7, 0);
+  --ss-line: rgba(255, 255, 255, 0.12);
   --ss-line-strong: rgba(255, 255, 255, 0.22);
 
   /* foreground */
-  --ss-fg:          #e0e0e0;
-  --ss-fg-shine:    #ffffff;
-  --ss-fg-muted:    #aaaaaa;
-  --ss-fg-faint:    #8a8a8a;   /* WCAG AA ≥4.5:1 on bg + bg-elev (DS-0013) */
+  --ss-fg: #e0e0e0;
+  --ss-fg-shine: #ffffff;
+  --ss-fg-muted: #aaaaaa;
+  --ss-fg-faint: #8a8a8a; /* WCAG AA ≥4.5:1 on bg + bg-elev (DS-0013) */
   --ss-fg-on-primary: #100f10;
 
   /* brand */
-  --ss-primary:     #66ef73;
+  --ss-primary: #66ef73;
   --ss-primary-soft: rgba(102, 239, 115, 0.18);
   --ss-primary-rgb: 102, 239, 115;
   --ss-primary-hover: #7df089;
 
   /* lime — softer green accent for monospace/code text (not the loud primary) */
-  --ss-lime:        #a6e22e;
+  --ss-lime: #a6e22e;
 
   /* neutral hover wash — theme-aware so it stays visible in light mode */
-  --ss-hover:       rgba(255, 255, 255, 0.05);
+  --ss-hover: rgba(255, 255, 255, 0.05);
+
+  /* inline code/kbd wash — light overlay on the dark surfaces (DS-0069) */
+  --ss-code-overlay: rgba(255, 255, 255, 0.06);
 
   /* status */
-  --ss-red:    #ff5c5c;
+  --ss-red: #ff5c5c;
   --ss-yellow: #e0c36a;
-  --ss-blue:   #9aa4ff;
-  --ss-cyan:   #66d9ef;
+  --ss-blue: #9aa4ff;
+  --ss-cyan: #66d9ef;
   --ss-purple: #b98cff;
-  --ss-red-rgb: 255, 92, 92;   /* soft invalid focus ring (DS-0033) */
+  --ss-red-rgb: 255, 92, 92; /* soft invalid focus ring (DS-0033) */
 
   /* destructive + sentiment — danger/success alias the status red / brand green;
      hover deepens danger, -soft washes back the opt-in emphasis chip, on-danger is
      the readable label on the bright red. Used by Button (DS-0032), Sparkline trend
      (DS-0035) and MetricTile sentiment (DS-0037). */
-  --ss-danger:        var(--ss-red);
-  --ss-danger-hover:  #ff7a7a;
-  --ss-danger-soft:   rgba(255, 92, 92, 0.18);
-  --ss-fg-on-danger:  #100f10;
-  --ss-success:       var(--ss-primary);
-  --ss-success-soft:  var(--ss-primary-soft);
+  --ss-danger: var(--ss-red);
+  --ss-danger-hover: #ff7a7a;
+  --ss-danger-soft: rgba(255, 92, 92, 0.18);
+  --ss-fg-on-danger: #100f10;
+  --ss-success: var(--ss-primary);
+  --ss-success-soft: var(--ss-primary-soft);
 
   /* skeleton — neutral wash for loading bars (DS-0037) */
-  --ss-skeleton: rgba(255, 255, 255, 0.10);
+  --ss-skeleton: rgba(255, 255, 255, 0.1);
 
   /* code */
-  --ss-code-bg:      #011627;
-  --ss-code-fg:      #d6deeb;
-  --ss-code-string:  #addb67;
-  --ss-code-number:  #f78c6c;
+  --ss-code-bg: #011627;
+  --ss-code-fg: #d6deeb;
+  --ss-code-string: #addb67;
+  --ss-code-number: #f78c6c;
   --ss-code-keyword: #c792ea;
-  --ss-code-func:    #82aaff;
+  --ss-code-func: #82aaff;
   --ss-code-comment: #637777;
 
   /* log-level accents — theme-correct on the code surface */
   --ss-log-info: var(--ss-code-func);
   --ss-log-warn: var(--ss-yellow);
-  --ss-log-err:  var(--ss-red);
-  --ss-log-ok:   var(--ss-code-string);
+  --ss-log-err: var(--ss-red);
+  --ss-log-ok: var(--ss-code-string);
 
   --ss-selection-bg: var(--ss-primary);
   --ss-selection-fg: var(--ss-fg-on-primary);
@@ -79,150 +86,167 @@
   /* badge tones — theme-tracked fills/borders so light mode is correct
      (DS-0031). fg uses the matching status token; bg/border are translucent
      washes tuned for the dark surfaces. */
-  --ss-badge-up-bg:       rgba(102, 239, 115, 0.12);
-  --ss-badge-up-border:   rgba(102, 239, 115, 0.40);
-  --ss-badge-deg-bg:      rgba(224, 195, 106, 0.12);
-  --ss-badge-deg-border:  rgba(224, 195, 106, 0.40);
-  --ss-badge-down-bg:     rgba(255, 92, 92, 0.12);
-  --ss-badge-down-border: rgba(255, 92, 92, 0.40);
-  --ss-badge-maint-bg:     rgba(154, 164, 255, 0.12);
-  --ss-badge-maint-border: rgba(154, 164, 255, 0.40);
-  --ss-badge-info-bg:     rgba(102, 217, 239, 0.12);
-  --ss-badge-info-border: rgba(102, 217, 239, 0.40);
-  --ss-badge-neutral-bg:     rgba(255, 255, 255, 0.06);
+  --ss-badge-up-bg: rgba(102, 239, 115, 0.12);
+  --ss-badge-up-border: rgba(102, 239, 115, 0.4);
+  --ss-badge-deg-bg: rgba(224, 195, 106, 0.12);
+  --ss-badge-deg-border: rgba(224, 195, 106, 0.4);
+  --ss-badge-down-bg: rgba(255, 92, 92, 0.12);
+  --ss-badge-down-border: rgba(255, 92, 92, 0.4);
+  --ss-badge-maint-bg: rgba(154, 164, 255, 0.12);
+  --ss-badge-maint-border: rgba(154, 164, 255, 0.4);
+  --ss-badge-info-bg: rgba(102, 217, 239, 0.12);
+  --ss-badge-info-border: rgba(102, 217, 239, 0.4);
+  --ss-badge-neutral-bg: rgba(255, 255, 255, 0.06);
   --ss-badge-neutral-border: var(--ss-line);
 }
 
-[data-theme="light"] {
+[data-theme='light'] {
+  /* Native form controls + scrollbars follow the theme (DS-0069). */
+  color-scheme: light;
+
   /* surfaces — a soft off-white page (#f0f0f0), white panels to read as elevated.
      Not blinding-bright; lines are stronger so square borders stay legible. */
-  --ss-bg:          #f0f0f0;
-  --ss-bg-elev:     #ffffff;
-  --ss-bg-elev-hover: #f4f4f4;   /* slightly raised surface for hovered cards/rows */
-  --ss-bg-inset:    rgba(0, 0, 0, 0);
-  --ss-line:        rgba(0, 0, 0, 0.16);
-  --ss-line-strong: rgba(0, 0, 0, 0.30);
+  --ss-bg: #f0f0f0;
+  --ss-bg-elev: #ffffff;
+  --ss-bg-elev-hover: #f4f4f4; /* slightly raised surface for hovered cards/rows */
+  --ss-bg-inset: rgba(0, 0, 0, 0);
+  --ss-line: rgba(0, 0, 0, 0.16);
+  --ss-line-strong: rgba(0, 0, 0, 0.3);
 
   /* foreground — all AA (≥4.5:1) on both #f0f0f0 and #ffffff */
-  --ss-fg:          #1a1a1a;
-  --ss-fg-shine:    #000000;
-  --ss-fg-muted:    #525252;
-  --ss-fg-faint:    #5d5d5d;   /* WCAG AA ≥4.5:1 on the light surfaces (DS-0013) */
+  --ss-fg: #1a1a1a;
+  --ss-fg-shine: #000000;
+  --ss-fg-muted: #525252;
+  --ss-fg-faint: #5d5d5d; /* WCAG AA ≥4.5:1 on the light surfaces (DS-0013) */
   --ss-fg-on-primary: #ffffff; /* the light-mode primary is dark → white label */
 
   /* brand — the dark-mode greens are far too bright on a light page, so light
      mode uses deeper, saturated values that hold AA contrast both as accent
-     TEXT on the surfaces and as the Button background (with white label). */
-  --ss-primary:     #157f3b;
-  --ss-primary-soft: rgba(21, 127, 59, 0.12);
-  --ss-primary-rgb: 21, 127, 59;
+     TEXT on the surfaces and as the Button background (with white label).
+     DS-0069 contrast audit: was #157f3b (4.46:1 on --ss-bg — a hair under AA
+     for normal-size accent text); darkened to #147c3a → 4.64:1 on #f0f0f0,
+     5.28:1 white-label. */
+  --ss-primary: #147c3a;
+  --ss-primary-soft: rgba(20, 124, 58, 0.12);
+  --ss-primary-rgb: 20, 124, 58;
   --ss-primary-hover: #0f6e31;
 
   /* lime — darkened so monospace/code accents stay readable on light */
-  --ss-lime:        #2f7a14;
+  --ss-lime: #2f7a14;
 
   /* neutral hover wash — a dark tint reads on the light surfaces */
-  --ss-hover:       rgba(0, 0, 0, 0.05);
+  --ss-hover: rgba(0, 0, 0, 0.05);
+
+  /* inline code/kbd wash — flipped to a dark overlay on the light page (DS-0069) */
+  --ss-code-overlay: rgba(0, 0, 0, 0.06);
+
+  /* selection — redeclared explicitly (DS-0069). The :root declarations would
+     resolve correctly anyway (var() chases the element's own --ss-primary /
+     --ss-fg-on-primary), but the override documents the light pairing:
+     white text on the deep light-mode green (5.28:1, AA). */
+  --ss-selection-bg: var(--ss-primary);
+  --ss-selection-fg: var(--ss-fg-on-primary);
 
   /* status — darkened from the neon dark-mode set for AA on light */
-  --ss-red:    #c62828;
+  --ss-red: #c62828;
   --ss-yellow: #8a6d1a;
-  --ss-blue:   #2f3bd6;
-  --ss-cyan:   #0b6e7d;
+  --ss-blue: #2f3bd6;
+  --ss-cyan: #0b6e7d;
   --ss-purple: #6a35c9;
-  --ss-red-rgb: 198, 40, 40;   /* soft invalid focus ring (DS-0033) */
+  --ss-red-rgb: 198, 40, 40; /* soft invalid focus ring (DS-0033) */
 
   /* destructive + sentiment — the deep light-mode red carries a white label at AA;
      success/-soft track the light brand green (DS-0032/0035/0037) */
-  --ss-danger:        var(--ss-red);
-  --ss-danger-hover:  #a91f1f;
-  --ss-danger-soft:   rgba(198, 40, 40, 0.12);
-  --ss-fg-on-danger:  #ffffff;
-  --ss-success:       var(--ss-primary);
-  --ss-success-soft:  var(--ss-primary-soft);
+  --ss-danger: var(--ss-red);
+  --ss-danger-hover: #a91f1f;
+  --ss-danger-soft: rgba(198, 40, 40, 0.12);
+  --ss-fg-on-danger: #ffffff;
+  --ss-success: var(--ss-primary);
+  --ss-success-soft: var(--ss-primary-soft);
 
   /* skeleton — neutral wash for loading bars (DS-0037) */
-  --ss-skeleton: rgba(0, 0, 0, 0.10);
+  --ss-skeleton: rgba(0, 0, 0, 0.1);
 
   /* code — a light syntax palette (the dark Night-Owl set is unreadable here) */
-  --ss-code-bg:      #f5f5f5;
-  --ss-code-fg:      #24292e;
-  --ss-code-string:  #1f7a33;
-  --ss-code-number:  #b35309;
+  --ss-code-bg: #f5f5f5;
+  --ss-code-fg: #24292e;
+  --ss-code-string: #1f7a33;
+  --ss-code-number: #b35309;
   --ss-code-keyword: #c5221f;
-  --ss-code-func:    #6639ba;
+  --ss-code-func: #6639ba;
   --ss-code-comment: #6a737d;
 
   /* badge tones — deeper washes/borders so the fills read on the light page
      (the dark-mode neon washes wash out on #f0f0f0). fg tracks the darkened
      light-mode status tokens already defined above. */
-  --ss-badge-up-bg:       rgba(21, 127, 59, 0.10);
-  --ss-badge-up-border:   rgba(21, 127, 59, 0.35);
-  --ss-badge-deg-bg:      rgba(138, 109, 26, 0.10);
-  --ss-badge-deg-border:  rgba(138, 109, 26, 0.35);
-  --ss-badge-down-bg:     rgba(198, 40, 40, 0.10);
+  --ss-badge-up-bg: rgba(20, 124, 58, 0.1);
+  --ss-badge-up-border: rgba(20, 124, 58, 0.35);
+  --ss-badge-deg-bg: rgba(138, 109, 26, 0.1);
+  --ss-badge-deg-border: rgba(138, 109, 26, 0.35);
+  --ss-badge-down-bg: rgba(198, 40, 40, 0.1);
   --ss-badge-down-border: rgba(198, 40, 40, 0.35);
-  --ss-badge-maint-bg:     rgba(47, 59, 214, 0.10);
+  --ss-badge-maint-bg: rgba(47, 59, 214, 0.1);
   --ss-badge-maint-border: rgba(47, 59, 214, 0.35);
-  --ss-badge-info-bg:     rgba(11, 110, 125, 0.10);
+  --ss-badge-info-bg: rgba(11, 110, 125, 0.1);
   --ss-badge-info-border: rgba(11, 110, 125, 0.35);
-  --ss-badge-neutral-bg:     rgba(0, 0, 0, 0.05);
+  --ss-badge-neutral-bg: rgba(0, 0, 0, 0.05);
   --ss-badge-neutral-border: var(--ss-line);
 
   /* log-level accents — darkened code/status values for AA on the light code surface */
   --ss-log-info: var(--ss-code-func);
   --ss-log-warn: var(--ss-yellow);
-  --ss-log-err:  var(--ss-red);
-  --ss-log-ok:   var(--ss-code-string);
+  --ss-log-err: var(--ss-red);
+  --ss-log-ok: var(--ss-code-string);
 }
 
 // ------------------------------------------------------------
 //  type + radii + motion (density-independent)
 // ------------------------------------------------------------
 :root {
-  --ss-font-display: "Electrolize", "Space Grotesk", "Inter", system-ui, sans-serif;
-  --ss-font-subhead: "Electrolize", "Space Grotesk", "Inter", system-ui, sans-serif;
-  --ss-font-body:    "JetBrains Mono", "Caskaydia Cove", ui-monospace, "SF Mono", Menlo, monospace;
-  --ss-font-alt:     "Electrolize", "Inter", system-ui, sans-serif;
-  --ss-font-mono:    "JetBrains Mono", "Caskaydia Cove Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --ss-font-display: 'Electrolize', 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --ss-font-subhead: 'Electrolize', 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --ss-font-body: 'JetBrains Mono', 'Caskaydia Cove', ui-monospace, 'SF Mono', Menlo, monospace;
+  --ss-font-alt: 'Electrolize', 'Inter', system-ui, sans-serif;
+  --ss-font-mono:
+    'JetBrains Mono', 'Caskaydia Cove Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
   --ss-size-display: clamp(36px, 8vw, 54px);
-  --ss-size-h1:  32px;
-  --ss-size-h2:  24px;
-  --ss-size-h3:  20px;
+  --ss-size-h1: 32px;
+  --ss-size-h2: 24px;
+  --ss-size-h3: 20px;
   --ss-size-body: 16px;
-  --ss-size-sm:  14px;
-  --ss-size-xs:  12px;
+  --ss-size-sm: 14px;
+  --ss-size-xs: 12px;
 
-  --ss-s-1:   4px;
-  --ss-s-2:   8px;
-  --ss-s-3:  12px;
-  --ss-s-4:  16px;
-  --ss-s-5:  20px;
-  --ss-s-6:  24px;
-  --ss-s-8:  32px;
+  --ss-s-1: 4px;
+  --ss-s-2: 8px;
+  --ss-s-3: 12px;
+  --ss-s-4: 16px;
+  --ss-s-5: 20px;
+  --ss-s-6: 24px;
+  --ss-s-8: 32px;
   --ss-s-10: 40px;
   --ss-s-12: 48px;
   --ss-s-16: 64px;
 
   /* radii — ALL SQUARE */
-  --ss-radius-0:    0;
-  --ss-radius-1:    0;
-  --ss-radius-2:    0;
+  --ss-radius-0: 0;
+  --ss-radius-1: 0;
+  --ss-radius-2: 0;
   --ss-radius-pill: 0;
 
   /* elevation */
-  --ss-shadow-0:   none;
-  --ss-shadow-1:   0 0 0 1px var(--ss-line);
-  --ss-shadow-2:   0 1px 0 0 rgba(0, 0, 0, 0.4), 0 0 0 1px var(--ss-line);
+  --ss-shadow-0: none;
+  --ss-shadow-1: 0 0 0 1px var(--ss-line);
+  --ss-shadow-2: 0 1px 0 0 rgba(0, 0, 0, 0.4), 0 0 0 1px var(--ss-line);
   --ss-shadow-pop: 0 12px 40px rgba(0, 0, 0, 0.35);
   --ss-shadow-glow: 0 0 24px rgba(var(--ss-primary-rgb), 0.35);
 
   /* motion */
-  --ss-ease:      cubic-bezier(0.215, 0.61, 0.355, 1);
-  --ss-dur-fast:  150ms;
-  --ss-dur:       250ms;
-  --ss-dur-slow:  350ms;
+  --ss-ease: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ss-dur-fast: 150ms;
+  --ss-dur: 250ms;
+  --ss-dur-slow: 350ms;
   --ss-dur-xslow: 650ms;
 
   /* Icon spin (loader) — one full 360° turn; disabled under reduced motion. */
@@ -239,193 +263,193 @@
 //  rescales the whole chrome.  (md ← former comfy, sm ← former compact.)
 // ------------------------------------------------------------
 :root,
-[data-size-variant="md"] {
-  --ss-leading:        1.5;
+[data-size-variant='md'] {
+  --ss-leading: 1.5;
 
-  --ss-ui-xs:          11px;   /* micro uppercase labels */
-  --ss-ui-sm:          12px;   /* secondary chrome text  */
-  --ss-ui-md:          13px;   /* primary chrome text    */
-  --ss-ui-lg:          15px;   /* names / logo           */
+  --ss-ui-xs: 11px; /* micro uppercase labels */
+  --ss-ui-sm: 12px; /* secondary chrome text  */
+  --ss-ui-md: 13px; /* primary chrome text    */
+  --ss-ui-lg: 15px; /* names / logo           */
 
-  --ss-icon:           16px;
+  --ss-icon: 16px;
 
-  --ss-control-font:   14px;
-  --ss-control-py:     9px;
-  --ss-control-px:     16px;
+  --ss-control-font: 14px;
+  --ss-control-py: 9px;
+  --ss-control-px: 16px;
 
-  --ss-input-font:     15px;
-  --ss-input-py:       13px;
-  --ss-input-px:       16px;
+  --ss-input-font: 15px;
+  --ss-input-py: 13px;
+  --ss-input-px: 16px;
 
-  --ss-panel-head-py:  12px;
-  --ss-panel-head-px:  18px;
-  --ss-panel-body-py:  18px;
-  --ss-panel-body-px:  18px;
+  --ss-panel-head-py: 12px;
+  --ss-panel-head-px: 18px;
+  --ss-panel-body-py: 18px;
+  --ss-panel-body-px: 18px;
 
-  --ss-card-py:        16px;
-  --ss-card-px:        18px;
-  --ss-metric-val:     32px;
+  --ss-card-py: 16px;
+  --ss-card-px: 18px;
+  --ss-metric-val: 32px;
 
-  --ss-row-py:         9px;
-  --ss-row-px:         14px;
+  --ss-row-py: 9px;
+  --ss-row-px: 14px;
 
-  --ss-badge-py:       5px;
-  --ss-badge-px:       12px;
-  --ss-badge-dot:      5px;
-  --ss-badge-gap:      6px;
+  --ss-badge-py: 5px;
+  --ss-badge-px: 12px;
+  --ss-badge-dot: 5px;
+  --ss-badge-gap: 6px;
 
-  --ss-gap:            14px;
-  --ss-gap-sm:         10px;
-  --ss-block-gap:      28px;
+  --ss-gap: 14px;
+  --ss-gap-sm: 10px;
+  --ss-block-gap: 28px;
 
-  --ss-shell-side-w:   220px;
-  --ss-shell-top-h:    48px;
-  --ss-main-py:        28px;
-  --ss-main-px:        36px;
+  --ss-shell-side-w: 220px;
+  --ss-shell-top-h: 48px;
+  --ss-main-py: 28px;
+  --ss-main-px: 36px;
 
   /* Sidebar component — expanded/rail widths + per-item badge padding (DS-0039) */
-  --ss-side-w:         220px;
-  --ss-side-w-rail:    56px;
-  --ss-side-badge-py:  2px;
-  --ss-side-badge-px:  6px;
+  --ss-side-w: 220px;
+  --ss-side-w-rail: 56px;
+  --ss-side-badge-py: 2px;
+  --ss-side-badge-px: 6px;
   /* toast (DS-0041) — icon box + swipe-dismiss threshold */
-  --ss-toast-ic:       18px;
-  --ss-toast-swipe:    72px;
+  --ss-toast-ic: 18px;
+  --ss-toast-swipe: 72px;
   /* empty-state visual + width (rescales with the size axis) */
-  --ss-empty-glyph:         40px;
+  --ss-empty-glyph: 40px;
   --ss-empty-glyph-compact: 28px;
-  --ss-empty-max-w:         420px;
+  --ss-empty-max-w: 420px;
 
   /* sparkline (DS-0035) */
-  --ss-spark-h:        18px;
-  --ss-spark-bar-w:    3px;
-  --ss-spark-gap:      1px;
+  --ss-spark-h: 18px;
+  --ss-spark-bar-w: 3px;
+  --ss-spark-gap: 1px;
 }
 
-[data-size-variant="sm"] {
-  --ss-leading:        1.3;
+[data-size-variant='sm'] {
+  --ss-leading: 1.3;
 
-  --ss-ui-xs:          9.5px;
-  --ss-ui-sm:          10.5px;
-  --ss-ui-md:          11.5px;
-  --ss-ui-lg:          13px;
+  --ss-ui-xs: 9.5px;
+  --ss-ui-sm: 10.5px;
+  --ss-ui-md: 11.5px;
+  --ss-ui-lg: 13px;
 
-  --ss-icon:           14px;
+  --ss-icon: 14px;
 
-  --ss-control-font:   12px;
-  --ss-control-py:     5px;
-  --ss-control-px:     9px;
+  --ss-control-font: 12px;
+  --ss-control-py: 5px;
+  --ss-control-px: 9px;
 
-  --ss-input-font:     14px;
-  --ss-input-py:       10px;
-  --ss-input-px:       12px;
+  --ss-input-font: 14px;
+  --ss-input-py: 10px;
+  --ss-input-px: 12px;
 
-  --ss-panel-head-py:  7px;
-  --ss-panel-head-px:  12px;
-  --ss-panel-body-py:  10px;
-  --ss-panel-body-px:  12px;
+  --ss-panel-head-py: 7px;
+  --ss-panel-head-px: 12px;
+  --ss-panel-body-py: 10px;
+  --ss-panel-body-px: 12px;
 
-  --ss-card-py:        10px;
-  --ss-card-px:        12px;
-  --ss-metric-val:     26px;
+  --ss-card-py: 10px;
+  --ss-card-px: 12px;
+  --ss-metric-val: 26px;
 
-  --ss-row-py:         5px;
-  --ss-row-px:         10px;
+  --ss-row-py: 5px;
+  --ss-row-px: 10px;
 
-  --ss-badge-py:       3px;
-  --ss-badge-px:       8px;
-  --ss-badge-dot:      4px;
-  --ss-badge-gap:      5px;
+  --ss-badge-py: 3px;
+  --ss-badge-px: 8px;
+  --ss-badge-dot: 4px;
+  --ss-badge-gap: 5px;
 
-  --ss-gap:            8px;
-  --ss-gap-sm:         6px;
-  --ss-block-gap:      16px;
+  --ss-gap: 8px;
+  --ss-gap-sm: 6px;
+  --ss-block-gap: 16px;
 
-  --ss-shell-side-w:   180px;
-  --ss-shell-top-h:    36px;
-  --ss-main-py:        16px;
-  --ss-main-px:        20px;
+  --ss-shell-side-w: 180px;
+  --ss-shell-top-h: 36px;
+  --ss-main-py: 16px;
+  --ss-main-px: 20px;
 
   /* Sidebar component (DS-0039) */
-  --ss-side-w:         180px;
-  --ss-side-w-rail:    44px;
-  --ss-side-badge-py:  1px;
-  --ss-side-badge-px:  5px;
+  --ss-side-w: 180px;
+  --ss-side-w-rail: 44px;
+  --ss-side-badge-py: 1px;
+  --ss-side-badge-px: 5px;
   /* toast (DS-0041) */
-  --ss-toast-ic:       15px;
-  --ss-toast-swipe:    60px;
+  --ss-toast-ic: 15px;
+  --ss-toast-swipe: 60px;
   /* empty-state visual + width */
-  --ss-empty-glyph:         32px;
+  --ss-empty-glyph: 32px;
   --ss-empty-glyph-compact: 22px;
-  --ss-empty-max-w:         360px;
+  --ss-empty-max-w: 360px;
 
   /* sparkline (DS-0035) */
-  --ss-spark-h:        14px;
-  --ss-spark-bar-w:    2px;
-  --ss-spark-gap:      1px;
+  --ss-spark-h: 14px;
+  --ss-spark-bar-w: 2px;
+  --ss-spark-gap: 1px;
 }
 
-[data-size-variant="lg"] {
-  --ss-leading:        1.6;
+[data-size-variant='lg'] {
+  --ss-leading: 1.6;
 
-  --ss-ui-xs:          12.5px;
-  --ss-ui-sm:          13.5px;
-  --ss-ui-md:          15px;
-  --ss-ui-lg:          17px;
+  --ss-ui-xs: 12.5px;
+  --ss-ui-sm: 13.5px;
+  --ss-ui-md: 15px;
+  --ss-ui-lg: 17px;
 
-  --ss-icon:           20px;
+  --ss-icon: 20px;
 
-  --ss-control-font:   16px;
-  --ss-control-py:     12px;
-  --ss-control-px:     22px;
+  --ss-control-font: 16px;
+  --ss-control-py: 12px;
+  --ss-control-px: 22px;
 
-  --ss-input-font:     17px;
-  --ss-input-py:       17px;
-  --ss-input-px:       20px;
+  --ss-input-font: 17px;
+  --ss-input-py: 17px;
+  --ss-input-px: 20px;
 
-  --ss-panel-head-py:  16px;
-  --ss-panel-head-px:  24px;
-  --ss-panel-body-py:  24px;
-  --ss-panel-body-px:  24px;
+  --ss-panel-head-py: 16px;
+  --ss-panel-head-px: 24px;
+  --ss-panel-body-py: 24px;
+  --ss-panel-body-px: 24px;
 
-  --ss-card-py:        22px;
-  --ss-card-px:        24px;
-  --ss-metric-val:     40px;
+  --ss-card-py: 22px;
+  --ss-card-px: 24px;
+  --ss-metric-val: 40px;
 
-  --ss-row-py:         12px;
-  --ss-row-px:         18px;
+  --ss-row-py: 12px;
+  --ss-row-px: 18px;
 
-  --ss-badge-py:       7px;
-  --ss-badge-px:       16px;
-  --ss-badge-dot:      6px;
-  --ss-badge-gap:      7px;
+  --ss-badge-py: 7px;
+  --ss-badge-px: 16px;
+  --ss-badge-dot: 6px;
+  --ss-badge-gap: 7px;
 
-  --ss-gap:            18px;
-  --ss-gap-sm:         13px;
-  --ss-block-gap:      36px;
+  --ss-gap: 18px;
+  --ss-gap-sm: 13px;
+  --ss-block-gap: 36px;
 
-  --ss-shell-side-w:   260px;
-  --ss-shell-top-h:    56px;
-  --ss-main-py:        36px;
-  --ss-main-px:        48px;
+  --ss-shell-side-w: 260px;
+  --ss-shell-top-h: 56px;
+  --ss-main-py: 36px;
+  --ss-main-px: 48px;
 
   /* Sidebar component (DS-0039) */
-  --ss-side-w:         260px;
-  --ss-side-w-rail:    64px;
-  --ss-side-badge-py:  3px;
-  --ss-side-badge-px:  8px;
+  --ss-side-w: 260px;
+  --ss-side-w-rail: 64px;
+  --ss-side-badge-py: 3px;
+  --ss-side-badge-px: 8px;
   /* toast (DS-0041) */
-  --ss-toast-ic:       22px;
-  --ss-toast-swipe:    88px;
+  --ss-toast-ic: 22px;
+  --ss-toast-swipe: 88px;
   /* empty-state visual + width */
-  --ss-empty-glyph:         52px;
+  --ss-empty-glyph: 52px;
   --ss-empty-glyph-compact: 36px;
-  --ss-empty-max-w:         480px;
+  --ss-empty-max-w: 480px;
 
   /* sparkline (DS-0035) */
-  --ss-spark-h:        26px;
-  --ss-spark-bar-w:    4px;
-  --ss-spark-gap:      2px;
+  --ss-spark-h: 26px;
+  --ss-spark-bar-w: 4px;
+  --ss-spark-gap: 2px;
 }
 
 // ------------------------------------------------------------
@@ -435,9 +459,9 @@
 // ------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --ss-dur-fast:  0ms;
-    --ss-dur:       0ms;
-    --ss-dur-slow:  0ms;
+    --ss-dur-fast: 0ms;
+    --ss-dur: 0ms;
+    --ss-dur-slow: 0ms;
     --ss-dur-xslow: 0ms;
   }
 }

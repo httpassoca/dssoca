@@ -1,7 +1,7 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import Spinner, { SPINNER_VARIANT_NAMES } from '$lib/components/Spinner.svelte';
-  import type { SpinnerVariant } from '$lib/components/Spinner.svelte';
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import Spinner, { SPINNER_VARIANT_NAMES } from '$lib/components/Spinner.svelte'
+  import type { SpinnerVariant } from '$lib/components/Spinner.svelte'
 
   const { Story } = defineMeta({
     title: 'Components/Spinner',
@@ -38,7 +38,7 @@
       label: 'Loading',
       showLabel: false,
     },
-  });
+  })
 </script>
 
 {#snippet template(args: Record<string, unknown>)}
@@ -85,6 +85,6 @@
 
 <Story name="Slowed Down" args={{ variant: 'toggle4', speed: 400, showLabel: true }} />
 
-<Story name="Sizes" render={sizes} />
+<Story name="Sizes" template={sizes} />
 
-<Story name="All Variants" render={gallery} />
+<Story name="All Variants" template={gallery} />

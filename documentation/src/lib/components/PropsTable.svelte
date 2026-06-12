@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { PropDoc } from '$lib/docs.config';
-  let { props }: { props: PropDoc[] } = $props();
+  import type { PropDoc } from '$lib/docs.config'
+  let { props }: { props: PropDoc[] } = $props()
 </script>
 
 <div class="wrap">
@@ -18,7 +18,9 @@
         <tr>
           <td><code class="name">{p.name}</code></td>
           <td><code class="type">{p.type}</code></td>
-          <td>{#if p.default}<code>{p.default}</code>{:else}<span class="dash">—</span>{/if}</td>
+          <td
+            >{#if p.default}<code>{p.default}</code>{:else}<span class="dash">—</span>{/if}</td
+          >
           <td>{p.desc}</td>
         </tr>
       {/each}

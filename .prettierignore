@@ -1,0 +1,15 @@
+# Build / generated output
+dist/
+build/
+.svelte-kit/
+storybook-static/
+coverage/
+documentation/build/
+documentation/.svelte-kit/
+pnpm-lock.yaml
+
+# Agile tracker (generated board + its tooling)
+agile/
+
+# Static assets
+static/

@@ -1,7 +1,7 @@
-import adapter from '@sveltejs/adapter-static';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { mdsvex } from 'mdsvex';
-import mdsvexConfig from './mdsvex.config.js';
+import adapter from '@sveltejs/adapter-static'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
+import { mdsvex } from 'mdsvex'
+import mdsvexConfig from './mdsvex.config.js'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -19,9 +19,9 @@ const config = {
     // Exception: mdsvex's `.svx` output uses `$$props`, so it must stay legacy
     // (it contains no runes of its own — only Markdown + the layout wrapper).
     runes: ({ filename }) => {
-      if (filename.split(/[/\\]/).includes('node_modules')) return undefined;
-      if (filename.endsWith('.svx')) return false;
-      return true;
+      if (filename.split(/[/\\]/).includes('node_modules')) return undefined
+      if (filename.endsWith('.svx')) return false
+      return true
     },
   },
 
@@ -42,6 +42,6 @@ const config = {
       '@dssoca/lib': '../src/lib',
     },
   },
-};
+}
 
-export default config;
+export default config

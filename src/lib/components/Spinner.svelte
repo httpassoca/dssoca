@@ -13,16 +13,19 @@
   }
 
   export const SPINNER_VARIANTS = {
-    boxBounce2:     { interval: 100, frames: ['▌', '▀', '▐', '▄'] },
-    boxBounce:      { interval: 120, frames: ['▖', '▘', '▝', '▗'] },
-    squareCorners:  { interval: 180, frames: ['◰', '◳', '◲', '◱'] },
-    toggle2:        { interval: 80,  frames: ['▫', '▪'] },
-    toggle3:        { interval: 120, frames: ['□', '■'] },
-    toggle4:        { interval: 100, frames: ['■', '□', '▪', '▫'] },
-    pipe:           { interval: 100, frames: ['┤', '┘', '┴', '└', '├', '┌', '┬', '┐'] },
-    line:           { interval: 130, frames: ['-', '\\', '|', '/'] },
-    growVertical:   { interval: 120, frames: ['▁', '▃', '▄', '▅', '▆', '▇', '▆', '▅', '▄', '▃'] },
-    growHorizontal: { interval: 120, frames: ['▏', '▎', '▍', '▌', '▋', '▊', '▉', '▊', '▋', '▌', '▍', '▎'] },
+    boxBounce2: { interval: 100, frames: ['▌', '▀', '▐', '▄'] },
+    boxBounce: { interval: 120, frames: ['▖', '▘', '▝', '▗'] },
+    squareCorners: { interval: 180, frames: ['◰', '◳', '◲', '◱'] },
+    toggle2: { interval: 80, frames: ['▫', '▪'] },
+    toggle3: { interval: 120, frames: ['□', '■'] },
+    toggle4: { interval: 100, frames: ['■', '□', '▪', '▫'] },
+    pipe: { interval: 100, frames: ['┤', '┘', '┴', '└', '├', '┌', '┬', '┐'] },
+    line: { interval: 130, frames: ['-', '\\', '|', '/'] },
+    growVertical: { interval: 120, frames: ['▁', '▃', '▄', '▅', '▆', '▇', '▆', '▅', '▄', '▃'] },
+    growHorizontal: {
+      interval: 120,
+      frames: ['▏', '▎', '▍', '▌', '▋', '▊', '▉', '▊', '▋', '▌', '▍', '▎'],
+    },
   } as const satisfies Record<string, SpinnerFrames>
 
   export type SpinnerVariant = keyof typeof SPINNER_VARIANTS
@@ -90,7 +93,9 @@
 
 <style lang="scss">
   .ss-spinner {
-    display: inline-flex; align-items: center; gap: var(--ss-gap-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ss-gap-sm);
     // Accent by default; themeable via --ss-spinner-color (falls back through
     // to the accent), and the glyph itself tracks currentColor.
     color: var(--ss-spinner-color, var(--ss-primary));
@@ -108,8 +113,10 @@
     }
 
     .lbl {
-      font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm);
-      color: var(--ss-fg-muted); letter-spacing: 0.02em;
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-sm);
+      color: var(--ss-fg-muted);
+      letter-spacing: 0.02em;
     }
 
     // Visually hidden but announced (role="status" reads the label).

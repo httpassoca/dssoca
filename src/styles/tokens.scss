@@ -11,5 +11,5 @@
 //  Same Sass partials as theme.scss (single source of truth): theme.css =
 //  fonts + tokens + components + base + layout; tokens.css = tokens + components.
 // ============================================================
-@use '_tokens';      // underscore-explicit: this entry shares the partial's basename
-@use 'components';   // per-component token partials (DS-0043) — tokens only
+@use '_tokens'; // underscore-explicit: this entry shares the partial's basename
+@use 'components'; // per-component token partials (DS-0043) — tokens only

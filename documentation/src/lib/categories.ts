@@ -3,28 +3,40 @@
  * page (`/components`). Each component belongs to exactly one category; the
  * `categories.test.ts` invariant keeps this in lock-step with `COMPONENTS`.
  */
-import { COMPONENTS } from './docs.config';
-import type { ComponentDoc } from './docs.config';
+import { COMPONENTS } from './docs.config'
+import type { ComponentDoc } from './docs.config'
 
 export interface Category {
-  id: string;
-  label: string;
+  id: string
+  label: string
   /** Component slugs in this category, in display order. */
-  slugs: string[];
+  slugs: string[]
 }
 
 export const CATEGORIES: Category[] = [
-  { id: 'forms', label: 'Forms & controls', slugs: ['button', 'input', 'segmented-control'] },
-  { id: 'navigation', label: 'Navigation', slugs: ['sidebar', 'topbar', 'bottom-nav', 'menu', 'link'] },
-  { id: 'layout', label: 'Layout', slugs: ['card', 'accordion'] },
-  { id: 'data', label: 'Data display', slugs: ['badge', 'metric-tile', 'service-card', 'sparkline', 'log-stream'] },
-  { id: 'feedback', label: 'Feedback', slugs: ['toaster', 'empty-state'] },
+  {
+    id: 'forms',
+    label: 'Forms & controls',
+    slugs: ['button', 'input', 'textarea', 'segmented-control'],
+  },
+  {
+    id: 'navigation',
+    label: 'Navigation',
+    slugs: ['sidebar', 'topbar', 'bottom-nav', 'menu', 'link'],
+  },
+  { id: 'layout', label: 'Layout', slugs: ['card', 'accordion', 'container', 'heading'] },
+  {
+    id: 'data',
+    label: 'Data display',
+    slugs: ['badge', 'metric-tile', 'service-card', 'sparkline', 'log-stream'],
+  },
+  { id: 'feedback', label: 'Feedback', slugs: ['toaster', 'empty-state', 'spinner'] },
   { id: 'media', label: 'Media', slugs: ['icon', 'image'] },
-];
+]
 
 export interface CategorizedComponents {
-  category: Category;
-  components: ComponentDoc[];
+  category: Category
+  components: ComponentDoc[]
 }
 
 /** Resolve each category's slugs to their `ComponentDoc`s, preserving order. */
@@ -34,5 +46,5 @@ export function componentsByCategory(): CategorizedComponents[] {
     components: category.slugs
       .map((slug) => COMPONENTS.find((c) => c.slug === slug))
       .filter((c): c is ComponentDoc => Boolean(c)),
-  }));
+  }))
 }
