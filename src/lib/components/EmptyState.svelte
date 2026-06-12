@@ -15,6 +15,12 @@
     secondaryAction?: Snippet
     /** Low-emphasis footer (tertiary links) rendered below everything. */
     footer?: Snippet
+    /**
+     * Accessible name for the live region (DS-0078) — distinguishes multiple
+     * status/alert regions on one page. Optional; the visible `title` already
+     * provides the content.
+     */
+    ariaLabel?: string
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
     /** Heading level for the title (aria-level). `false` renders a plain <p> with no heading role. */
@@ -33,6 +39,7 @@
     action,
     secondaryAction,
     footer,
+    ariaLabel,
     size,
     headingLevel = 2,
     compact = false,
@@ -40,9 +47,7 @@
   }: Props = $props()
 
   // error → assertive alert; everything else announces politely without moving focus (WCAG 4.1.3).
-  const role = $derived(
-    variant === 'error' ? 'alert' : 'status'
-  )
+  const role = $derived(variant === 'error' ? 'alert' : 'status')
 </script>
 
 <div
@@ -51,6 +56,7 @@
   class:full-width={fullWidth}
   data-size-variant={resolveComponentSize('EmptyState', size)}
   {role}
+  aria-label={ariaLabel}
   aria-atomic="true"
 >
   {#if visual}
@@ -84,20 +90,26 @@
     max-width: var(--ss-empty-max-w);
     margin-inline: auto;
 
-    &.full-width { max-width: none; }
+    &.full-width {
+      max-width: none;
+    }
 
     .ic {
       line-height: 1;
       margin-bottom: var(--ss-s-1);
     }
-    .ic.glyph { font-size: var(--ss-empty-glyph); }
+    .ic.glyph {
+      font-size: var(--ss-empty-glyph);
+    }
     .title {
       margin: 0;
       font-family: var(--ss-font-display);
       font-size: var(--ss-size-h2);
       color: var(--ss-fg);
     }
-    &.error .title { color: var(--ss-red); }
+    &.error .title {
+      color: var(--ss-red);
+    }
     .msg {
       margin: 0;
       color: var(--ss-fg-muted);
@@ -124,9 +136,15 @@
       gap: var(--ss-s-2);
       padding: var(--ss-s-6) var(--ss-s-3);
 
-      .title { font-size: var(--ss-size-h3); }
-      .ic.glyph { font-size: var(--ss-empty-glyph-compact); }
-      .act { margin-top: var(--ss-s-3); }
+      .title {
+        font-size: var(--ss-size-h3);
+      }
+      .ic.glyph {
+        font-size: var(--ss-empty-glyph-compact);
+      }
+      .act {
+        margin-top: var(--ss-s-3);
+      }
     }
   }
 </style>

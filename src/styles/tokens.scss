@@ -1,0 +1,15 @@
+// ============================================================
+//  dssoca — tokens-only stylesheet (compiled to dist/tokens.css; DS-0089).
+//
+//  The complete --ss-* custom-property surface and NOTHING else: both
+//  [data-theme] palettes, every [data-size-variant] tier (core + per-component
+//  partials), and the prefers-reduced-motion duration zeroing. No element
+//  styles, no .ss-* layout classes, no webfont @import / @font-face — for
+//  consumers that own their own global styles and only need the components'
+//  custom properties to resolve.
+//
+//  Same Sass partials as theme.scss (single source of truth): theme.css =
+//  fonts + tokens + components + base + layout; tokens.css = tokens + components.
+// ============================================================
+@use '_tokens'; // underscore-explicit: this entry shares the partial's basename
+@use 'components'; // per-component token partials (DS-0043) — tokens only

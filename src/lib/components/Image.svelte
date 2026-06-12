@@ -80,21 +80,17 @@
   // Reserve space before load → no layout shift (CLS). Prefer an explicit
   // ratio, else derive from intrinsic width/height. `null` → no box reserved.
   const aspect = $derived(
-    ratio && ratio > 0
-      ? ratio
-      : width && height && height > 0
-        ? width / height
-        : null,
+    ratio && ratio > 0 ? ratio : width && height && height > 0 ? width / height : null,
   )
 
   type State = 'loading' | 'loaded' | 'error'
-  let state = $state<State>('loading')
+  let loadState = $state<State>('loading')
 
   function onLoad() {
-    state = 'loaded'
+    loadState = 'loaded'
   }
   function onError() {
-    state = 'error'
+    loadState = 'error'
   }
 
   // ── Lightbox ───────────────────────────────────────────────────────────
@@ -103,7 +99,7 @@
   let dialog = $state<HTMLDivElement | null>(null)
   let closeBtn = $state<HTMLButtonElement | null>(null)
 
-  const canOpen = $derived(lightbox && state !== 'error')
+  const canOpen = $derived(lightbox && loadState !== 'error')
 
   async function openLightbox() {
     if (!canOpen) return
@@ -127,8 +123,15 @@
       return
     }
     if (e.key !== 'Tab' || !dialog) return
+    // DS-0078: exclude disabled focusables (and anything opted out of the tab
+    // order with tabindex="-1", e.g. the backdrop button) so the trap never
+    // wraps relative to an element that cannot actually take tab focus.
     const focusables = dialog.querySelectorAll<HTMLElement>(
-      'button, [href], [tabindex]:not([tabindex="-1"])',
+      [
+        'button:not([disabled]):not([aria-disabled="true"]):not([tabindex="-1"])',
+        '[href]:not([aria-disabled="true"]):not([tabindex="-1"])',
+        '[tabindex]:not([tabindex="-1"]):not([disabled]):not([aria-disabled="true"])',
+      ].join(', '),
     )
     if (focusables.length === 0) return
     const first = focusables[0]
@@ -146,22 +149,22 @@
 
 <figure
   class="ss-image {className ?? ''}"
-  class:is-loading={state === 'loading'}
-  class:is-error={state === 'error'}
+  class:is-loading={loadState === 'loading'}
+  class:is-error={loadState === 'error'}
   class:has-ratio={aspect != null}
   data-size-variant={resolveComponentSize('Image', size)}
 >
   <div
     class="frame"
     style:aspect-ratio={aspect != null ? `${aspect}` : undefined}
-    aria-busy={state === 'loading'}
+    aria-busy={loadState === 'loading'}
   >
-    {#if state === 'error'}
+    {#if loadState === 'error'}
       <div class="fallback" role="img" aria-label={alt || 'Image failed to load'}>
         <span class="glyph" aria-hidden="true">⊘</span>
       </div>
     {:else}
-      {#if state === 'loading'}
+      {#if loadState === 'loading'}
         <div class="skeleton" aria-hidden="true"></div>
       {/if}
       {#if canOpen}
@@ -218,12 +221,7 @@
     tabindex="-1"
     onkeydown={onDialogKeydown}
   >
-    <button
-      type="button"
-      class="backdrop"
-      tabindex="-1"
-      aria-hidden="true"
-      onclick={closeLightbox}
+    <button type="button" class="backdrop" tabindex="-1" aria-hidden="true" onclick={closeLightbox}
     ></button>
     <div class="dialog-body">
       <button
@@ -311,8 +309,12 @@
   }
 
   @keyframes ss-image-shimmer {
-    from { background-position: 200% 0; }
-    to   { background-position: -200% 0; }
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -419,17 +421,28 @@
       align-items: center;
       justify-content: center;
 
-      &:hover { background: var(--ss-bg-elev-hover); }
-      &:focus-visible { outline: 2px solid var(--ss-primary); outline-offset: 2px; }
+      &:hover {
+        background: var(--ss-bg-elev-hover);
+      }
+      &:focus-visible {
+        outline: 2px solid var(--ss-primary);
+        outline-offset: 2px;
+      }
     }
   }
 
   @keyframes ss-image-fade {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .ss-image-lightbox .backdrop,
-    .ss-image-lightbox .dialog-body { animation: none; }
+    .ss-image-lightbox .dialog-body {
+      animation: none;
+    }
   }
 </style>

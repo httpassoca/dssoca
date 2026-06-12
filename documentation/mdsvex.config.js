@@ -1,26 +1,25 @@
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import Prism from './src/lib/prism-setup.js';
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import Prism from './src/lib/prism-setup.js'
 
-const here = dirname(fileURLToPath(import.meta.url));
+const here = dirname(fileURLToPath(import.meta.url))
 
-const ALIAS = { sh: 'bash', shell: 'bash', js: 'javascript', ts: 'typescript', html: 'markup' };
+const ALIAS = { sh: 'bash', shell: 'bash', js: 'javascript', ts: 'typescript', html: 'markup' }
 
 // Curly braces survive Prism untouched, but Svelte would parse them as
 // expressions once the highlighted HTML is inlined into the `.svx` component —
 // so escape them (and a literal backslash) after highlighting.
 const escapeBraces = (s) =>
-  s.replace(/\\/g, '&#92;').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;');
+  s.replace(/\\/g, '&#92;').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;')
 
-const escapeHtml = (s) =>
-  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 const highlighter = (code, lang) => {
-  const id = ALIAS[lang] ?? lang ?? '';
-  const grammar = id && Prism.languages[id];
-  const inner = grammar ? Prism.highlight(code, grammar, id) : escapeHtml(code);
-  return `<pre class="language-${id || 'none'}"><code class="language-${id || 'none'}">${escapeBraces(inner)}</code></pre>`;
-};
+  const id = ALIAS[lang] ?? lang ?? ''
+  const grammar = id && Prism.languages[id]
+  const inner = grammar ? Prism.highlight(code, grammar, id) : escapeHtml(code)
+  return `<pre class="language-${id || 'none'}"><code class="language-${id || 'none'}">${escapeBraces(inner)}</code></pre>`
+}
 
 /**
  * mdsvex configuration for the docs `.svx` pages.
@@ -40,6 +39,6 @@ const config = {
     _: join(here, 'src/lib/layouts/Prose.svelte'),
   },
   highlight: { highlighter },
-};
+}
 
-export default config;
+export default config

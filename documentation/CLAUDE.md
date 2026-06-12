@@ -33,7 +33,7 @@ drive the config:
 
 1. Vercel **reads `vercel.json` from the repo root** regardless of the Root Directory → the config
    lives at **`vercel.json` (repo root)**.
-2. Vercel **runs the build commands *in* the Root Directory** (`documentation/`) → so the commands
+2. Vercel **runs the build commands _in_ the Root Directory** (`documentation/`) → so the commands
    must be this package's own scripts (the repo-root `pnpm docs:build` isn't visible there).
 
 `vercel.json`:
@@ -52,7 +52,8 @@ drive the config:
   `route/index.html` files resolve.
 
 **One-time setup (Vercel dashboard):**
-- *Root Directory* = `documentation`, Framework Preset = "Other" (the repo-root `vercel.json`
+
+- _Root Directory_ = `documentation`, Framework Preset = "Other" (the repo-root `vercel.json`
   supplies the commands).
 - **Enable "Include files outside the Root Directory in the Build Step"** — the docs import the
   library **source** via `../src` (see Aliases), which lives above the Root Directory; pnpm's
@@ -77,7 +78,8 @@ see DS-0015), the two projects can't each have their own config file; instead th
   **each project's** Root Directory).
 
 **One-time setup for the Storybook project (Vercel dashboard):**
-- New Project → import this repo → *Root Directory* = repo root (default), Framework Preset = "Other".
+
+- New Project → import this repo → _Root Directory_ = repo root (default), Framework Preset = "Other".
 - Add env var **`VERCEL_DEPLOY_TARGET = storybook`** (Production + Preview).
 - Deploy. The project serves the built Storybook at its own URL.
 

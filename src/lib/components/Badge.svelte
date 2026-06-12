@@ -50,9 +50,7 @@
 
   // Numeric badge: clamp to max, hide entirely when zero.
   const showCount = $derived(count !== undefined && count !== 0)
-  const countText = $derived(
-    count === undefined ? '' : count > max ? `${max}+` : `${count}`,
-  )
+  const countText = $derived(count === undefined ? '' : count > max ? `${max}+` : `${count}`)
 
   const hasLabel = $derived(children !== undefined)
   // Dot-only / count-only badges have no visible text → carry an aria-label so
@@ -80,24 +78,48 @@
       class="x"
       type="button"
       aria-label={label ? `Remove ${label}` : 'Remove'}
-      onclick={ondismiss}
-    >×</button>
+      onclick={ondismiss}>×</button
+    >
   {/if}
 </span>
 
 <style lang="scss">
   .ss-badge {
-    font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs);
-    padding: var(--ss-badge-py) var(--ss-badge-px); letter-spacing: 0.05em;
-    display: inline-flex; align-items: center; gap: var(--ss-badge-gap);
+    font-family: var(--ss-font-mono);
+    font-size: var(--ss-ui-xs);
+    padding: var(--ss-badge-py) var(--ss-badge-px);
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ss-badge-gap);
     text-transform: lowercase;
     border: 1px solid var(--ss-line);
 
-    &.up    { background: var(--ss-badge-up-bg);    color: var(--ss-primary); border-color: var(--ss-badge-up-border); }
-    &.deg   { background: var(--ss-badge-deg-bg);   color: var(--ss-yellow);  border-color: var(--ss-badge-deg-border); }
-    &.down  { background: var(--ss-badge-down-bg);  color: var(--ss-red);     border-color: var(--ss-badge-down-border); }
-    &.maint { background: var(--ss-badge-maint-bg); color: var(--ss-blue);    border-color: var(--ss-badge-maint-border); }
-    &.info  { background: var(--ss-badge-info-bg);  color: var(--ss-cyan);    border-color: var(--ss-badge-info-border); }
+    &.up {
+      background: var(--ss-badge-up-bg);
+      color: var(--ss-primary);
+      border-color: var(--ss-badge-up-border);
+    }
+    &.deg {
+      background: var(--ss-badge-deg-bg);
+      color: var(--ss-yellow);
+      border-color: var(--ss-badge-deg-border);
+    }
+    &.down {
+      background: var(--ss-badge-down-bg);
+      color: var(--ss-red);
+      border-color: var(--ss-badge-down-border);
+    }
+    &.maint {
+      background: var(--ss-badge-maint-bg);
+      color: var(--ss-blue);
+      border-color: var(--ss-badge-maint-border);
+    }
+    &.info {
+      background: var(--ss-badge-info-bg);
+      color: var(--ss-cyan);
+      border-color: var(--ss-badge-info-border);
+    }
     &.neutral {
       background: var(--ss-badge-neutral-bg);
       color: var(--ss-fg-muted);
@@ -105,12 +127,17 @@
     }
 
     .dot {
-      width: var(--ss-badge-dot); height: var(--ss-badge-dot);
-      background: currentColor; flex: none;
+      width: var(--ss-badge-dot);
+      height: var(--ss-badge-dot);
+      background: currentColor;
+      flex: none;
     }
 
     // Numbers bypass the lowercase transform and align on tabular figures.
-    .count { text-transform: none; font-variant-numeric: tabular-nums; }
+    .count {
+      text-transform: none;
+      font-variant-numeric: tabular-nums;
+    }
 
     .x {
       flex: none;
@@ -124,7 +151,10 @@
       margin-inline-start: calc(var(--ss-badge-gap) * -0.25);
       opacity: 0.8;
 
-      &:hover, &:focus-visible { opacity: 1; }
+      &:hover,
+      &:focus-visible {
+        opacity: 1;
+      }
     }
   }
 </style>

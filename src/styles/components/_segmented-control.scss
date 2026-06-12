@@ -6,23 +6,23 @@
 // on :root; sm / lg override per the size axis.
 
 :root,
-[data-size-variant="md"] {
+[data-size-variant='md'] {
   --ss-seg-font: var(--ss-ui-md);
-  --ss-seg-py:   7px;
-  --ss-seg-px:   14px;
-  --ss-seg-gap:  var(--ss-gap-sm);
+  --ss-seg-py: 7px;
+  --ss-seg-px: 14px;
+  --ss-seg-gap: var(--ss-gap-sm);
 }
 
-[data-size-variant="sm"] {
+[data-size-variant='sm'] {
   --ss-seg-font: var(--ss-ui-sm);
-  --ss-seg-py:   4px;
-  --ss-seg-px:   9px;
-  --ss-seg-gap:  6px;
+  --ss-seg-py: 4px;
+  --ss-seg-px: 9px;
+  --ss-seg-gap: 6px;
 }
 
-[data-size-variant="lg"] {
+[data-size-variant='lg'] {
   --ss-seg-font: var(--ss-ui-lg);
-  --ss-seg-py:   10px;
-  --ss-seg-px:   20px;
-  --ss-seg-gap:  12px;
+  --ss-seg-py: 10px;
+  --ss-seg-px: 20px;
+  --ss-seg-gap: 12px;
 }

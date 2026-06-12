@@ -1,60 +1,66 @@
 <script lang="ts">
-  import '@dssoca/styles/theme.scss';
-  import '$lib/styles/code.css';
-  import { page } from '$app/state';
-  import { goto } from '$app/navigation';
-  import { Sidebar, Icon } from 'dssoca';
-  import { NAV } from '$lib/docs.config';
-  import ThemeControls from '$lib/components/ThemeControls.svelte';
+  import '@dssoca/styles/theme.scss'
+  import '$lib/styles/code.css'
+  import { page } from '$app/state'
+  import { goto } from '$app/navigation'
+  import { Sidebar, Icon } from 'dssoca'
+  import { NAV } from '$lib/docs.config'
+  import ThemeControls from '$lib/components/ThemeControls.svelte'
 
-  let { children } = $props();
+  let { children } = $props()
 
   // Map the docs nav into the dssoca Sidebar's group shape — the item `id` is
   // the route, so `active` / `onSelect` drive real navigation (dogfooding).
   const groups = NAV.map((g) => ({
     section: g.section,
     items: g.items.map((it) => ({ id: it.href, label: it.label, icon: it.icon as never })),
-  }));
+  }))
 
   // Normalise trailing slash so the active item matches (trailingSlash: always).
-  const current = $derived(page.url.pathname.replace(/\/$/, '') || '/');
+  const current = $derived(page.url.pathname.replace(/\/$/, '') || '/')
 
   // The landing route ('/') is a full-screen branded hero — render it WITHOUT the
   // docs shell (no top bar / sidebar).
-  const isLanding = $derived(current === '/');
+  const isLanding = $derived(current === '/')
 
   function navigate(id: string) {
-    goto(id);
+    goto(id)
   }
 </script>
 
 {#if isLanding}
   {@render children?.()}
 {:else}
-<div class="docs">
-  <header class="topbar">
-    <a class="brand" href="/">
-      <img class="logo" src="/dssoca-logo.svg" alt="" width="22" height="22" />
-      <span class="name">dssoca</span>
-      <span class="tag">docs</span>
-    </a>
-    <div class="right">
-      <ThemeControls />
-      <a class="ext" href="https://github.com/httpassoca/dssoca" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository">
-        <Icon name="external" px={16} title="GitHub repository" />
+  <div class="docs">
+    <header class="topbar">
+      <a class="brand" href="/">
+        <img class="logo" src="/dssoca-logo.svg" alt="" width="22" height="22" />
+        <span class="name">dssoca</span>
+        <span class="tag">docs</span>
       </a>
-    </div>
-  </header>
+      <div class="right">
+        <ThemeControls />
+        <a
+          class="ext"
+          href="https://github.com/httpassoca/dssoca"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub repository"
+        >
+          <Icon name="external" px={16} title="GitHub repository" />
+        </a>
+      </div>
+    </header>
 
-  <div class="body">
-    <nav class="nav" aria-label="Documentation">
-      <Sidebar active={current} groups={groups} onSelect={navigate} />
-    </nav>
-    <main class="main">
-      {@render children?.()}
-    </main>
+    <div class="body">
+      <nav class="nav" aria-label="Documentation">
+        <Sidebar active={current} {groups} onSelect={navigate} />
+      </nav>
+      <main class="main">
+        {@render children?.()}
+      </main>
+    </div>
   </div>
-</div>
 {/if}
 
 <style lang="scss">

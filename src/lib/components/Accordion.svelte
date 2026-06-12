@@ -45,9 +45,17 @@
     size?: Size
     /** Heading level wrapping each header button (for the document outline). */
     headingLevel?: 1 | 2 | 3 | 4 | 5 | 6
-    /** Base id used to namespace the generated header/panel ids. */
+    /**
+     * Base id used to namespace the generated header/panel ids. Defaults to a
+     * stable per-instance id from `$props.id()` so server- and client-rendered
+     * IDs match (SSR-safe, DS-0067).
+     */
     idBase?: string
   }
+
+  // Stable instance id — consistent between server and client renders, unlike
+  // the previous Math.random() default (DS-0067).
+  const uid = $props.id()
 
   let {
     items,
@@ -59,7 +67,7 @@
     onChange,
     size,
     headingLevel = 3,
-    idBase = `ss-acc-${Math.random().toString(36).slice(2, 8)}`,
+    idBase = `ss-acc-${uid}`,
   }: Props = $props()
 
   // --- open-state model ----------------------------------------------------
@@ -116,13 +124,21 @@
   function onHeaderKeydown(e: KeyboardEvent, index: number) {
     switch (e.key) {
       case 'ArrowDown':
-        e.preventDefault(); focusHeader(index + 1); break
+        e.preventDefault()
+        focusHeader(index + 1)
+        break
       case 'ArrowUp':
-        e.preventDefault(); focusHeader(index - 1); break
+        e.preventDefault()
+        focusHeader(index - 1)
+        break
       case 'Home':
-        e.preventDefault(); focusHeader(0); break
+        e.preventDefault()
+        focusHeader(0)
+        break
       case 'End':
-        e.preventDefault(); focusHeader(items.length - 1); break
+        e.preventDefault()
+        focusHeader(items.length - 1)
+        break
       // Enter / Space activate the native <button>; no extra handling needed.
     }
   }
@@ -206,7 +222,9 @@
     background: var(--ss-bg);
 
     .item {
-      & + .item { border-top: 1px solid var(--ss-line); }
+      & + .item {
+        border-top: 1px solid var(--ss-line);
+      }
     }
 
     .heading {
@@ -228,17 +246,26 @@
       cursor: pointer;
       color: var(--ss-fg);
       font: 500 var(--ss-ui-md) var(--ss-font-mono);
-      transition: background var(--ss-dur-fast) var(--ss-ease),
+      transition:
+        background var(--ss-dur-fast) var(--ss-ease),
         color var(--ss-dur-fast) var(--ss-ease);
 
-      &:hover:not([aria-disabled='true']) { background: var(--ss-hover); }
+      &:hover:not([aria-disabled='true']) {
+        background: var(--ss-hover);
+      }
       &:focus-visible {
         outline: 2px solid var(--ss-primary);
         outline-offset: -2px;
       }
-      &[aria-disabled='true'] { cursor: not-allowed; color: var(--ss-fg-faint); }
+      &[aria-disabled='true'] {
+        cursor: not-allowed;
+        color: var(--ss-fg-faint);
+      }
 
-      .title { flex: 1 1 auto; min-width: 0; }
+      .title {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
       .hint {
         flex: 0 0 auto;
         color: var(--ss-fg-faint);
@@ -276,7 +303,9 @@
         display: grid; // keep the grid so the collapse can animate
         grid-template-rows: 0fr;
       }
-      &:not([hidden]) { grid-template-rows: 1fr; }
+      &:not([hidden]) {
+        grid-template-rows: 1fr;
+      }
     }
 
     .panel-inner {

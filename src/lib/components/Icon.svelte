@@ -2,23 +2,35 @@
   /** Curated glyph set. `target`'s centre dot is a filled circle in the *outline*
    *  variant — handled by the `variant` switch in markup, not a per-glyph fill hack. */
   const BUILTIN_PATHS = {
-    grid:     '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
+    grid: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
     activity: '<path d="M3 12h4l3-8 4 16 3-8h4"/>',
     database: '<rect x="3" y="4" width="18" height="16"/><path d="M3 9h18M8 4v5"/>',
-    logs:     '<path d="M4 6h16M4 12h16M4 18h10"/>',
+    logs: '<path d="M4 6h16M4 12h16M4 18h10"/>',
     terminal: '<rect x="3" y="5" width="18" height="14"/><path d="M3 9h18M7 14h4"/>',
-    settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
-    user:     '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>',
-    arrow:    '<path d="M5 12h14M13 5l7 7-7 7"/>',
+    settings:
+      '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>',
+    arrow: '<path d="M5 12h14M13 5l7 7-7 7"/>',
     external: '<path d="M7 17L17 7M9 7h8v8"/>',
-    film:     '<rect x="3" y="4" width="18" height="16"/><path d="M3 8h4M3 16h4M17 8h4M17 16h4M3 12h18"/>',
-    note:     '<rect x="4" y="3" width="16" height="18"/><path d="M8 8h8M8 12h8M8 16h6"/>',
-    book:     '<path d="M6 4h11a1 1 0 011 1v15H7a1 1 0 01-1-1z"/><path d="M17 20a2 2 0 002-2V6a2 2 0 00-2-2"/><path d="M9 8h5"/>',
-    check:    '<path d="M5 12l4 4L19 6"/>',
-    cup:      '<path d="M4 8h12v6a4 4 0 01-4 4H8a4 4 0 01-4-4z"/><path d="M16 10h2a2 2 0 010 4h-2M6 4v2M10 4v2M14 4v2"/>',
-    wallet:   '<rect x="3" y="6" width="18" height="14"/><path d="M3 10h18M17 14h2"/>',
-    target:   '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" class="ss-icon-dot"/>',
-    spinner:  '<path d="M12 3a9 9 0 1 0 9 9" stroke-linecap="round"/>',
+    film: '<rect x="3" y="4" width="18" height="16"/><path d="M3 8h4M3 16h4M17 8h4M17 16h4M3 12h18"/>',
+    note: '<rect x="4" y="3" width="16" height="18"/><path d="M8 8h8M8 12h8M8 16h6"/>',
+    book: '<path d="M6 4h11a1 1 0 011 1v15H7a1 1 0 01-1-1z"/><path d="M17 20a2 2 0 002-2V6a2 2 0 00-2-2"/><path d="M9 8h5"/>',
+    check: '<path d="M5 12l4 4L19 6"/>',
+    cup: '<path d="M4 8h12v6a4 4 0 01-4 4H8a4 4 0 01-4-4z"/><path d="M16 10h2a2 2 0 010 4h-2M6 4v2M10 4v2M14 4v2"/>',
+    wallet: '<rect x="3" y="6" width="18" height="14"/><path d="M3 10h18M17 14h2"/>',
+    target:
+      '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" class="ss-icon-dot"/>',
+    spinner: '<path d="M12 3a9 9 0 1 0 9 9" stroke-linecap="round"/>',
+    home: '<path d="M4 11l8-8 8 8"/><path d="M6 9v12h12V9"/><path d="M10 21v-6h4v6"/>',
+    briefcase: '<rect x="3" y="7" width="18" height="13"/><path d="M9 7V4h6v3M3 12h18"/>',
+    folder: '<path d="M3 5h7l2 3h9v13H3z"/><path d="M3 8h9"/>',
+    github:
+      '<path d="M7 3h10l2 2v6l-2 3h-4l1 2v5h-4v-5l1-2H7l-2-3V5l2-2z"/><path d="M9 8h1M14 8h1"/>',
+    linkedin:
+      '<rect x="3" y="3" width="18" height="18"/><path d="M8 16v-5M8 8v.01M12 16v-5h2l2 2v3"/>',
+    language: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3L8 12l4 9M12 3l4 9-4 9"/>',
+    'color-swatch':
+      '<rect x="3" y="3" width="8" height="18"/><path d="M7 17v.01"/><path d="M11 19l8-8 2 2-8 8"/><path d="M13 21h8"/>',
   } as const
 
   export type IconName = keyof typeof BUILTIN_PATHS
@@ -114,17 +126,17 @@
     const found = resolveIcon(name)
     if (found != null) return found
     if (typeof console !== 'undefined') {
-      console.warn(`[dssoca] Icon: unknown name "${name}" (no registered glyph). Rendering empty; pass \`paths\` or call registerIcon().`)
+      console.warn(
+        `[dssoca] Icon: unknown name "${name}" (no registered glyph). Rendering empty; pass \`paths\` or call registerIcon().`,
+      )
     }
     return ''
   })
 
   // Optically-constant stroke: recompute weight from the resolved px so a
   // 2u stroke at the canonical 24-unit viewBox looks the same at 14/16/20px.
-  const resolvedPx = $derived(px != null ? px : SIZE_PX[size ?? 'md'] ?? DEFAULT_PX)
-  const stroke = $derived(
-    absoluteStroke ? (strokeWidth * 24) / resolvedPx : strokeWidth,
-  )
+  const resolvedPx = $derived(px != null ? px : (SIZE_PX[size ?? 'md'] ?? DEFAULT_PX))
+  const stroke = $derived(absoluteStroke ? (strokeWidth * 24) / resolvedPx : strokeWidth)
 
   const isSolid = $derived(variant === 'solid')
 
@@ -135,13 +147,10 @@
   const uid = $props.id()
   const titleId = $derived(title ? `${uid}-t` : undefined)
   const descId = $derived(desc ? `${uid}-d` : undefined)
-  const labelledBy = $derived(
-    [titleId, descId].filter(Boolean).join(' ') || undefined,
-  )
+  const labelledBy = $derived([titleId, descId].filter(Boolean).join(' ') || undefined)
   const labelled = $derived(!isDecorative && labelledBy != null)
 
-  const esc = (s: string) =>
-    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
   // <title>/<desc> are folded into the same @html string as the glyph so the
   // SVG carries no Svelte {#if} comment anchors (keeps innerHTML clean for AT
@@ -192,23 +201,39 @@
   // Quarter-turn rotation (composes with flip via the same transform stack
   // would conflict — keep rotate on its own selector; flip wins when both set
   // since flip selectors come later, matching a single-transform contract).
-  .ss-icon[data-rotate='90']  { transform: rotate(90deg); }
-  .ss-icon[data-rotate='180'] { transform: rotate(180deg); }
-  .ss-icon[data-rotate='270'] { transform: rotate(270deg); }
+  .ss-icon[data-rotate='90'] {
+    transform: rotate(90deg);
+  }
+  .ss-icon[data-rotate='180'] {
+    transform: rotate(180deg);
+  }
+  .ss-icon[data-rotate='270'] {
+    transform: rotate(270deg);
+  }
 
-  .ss-icon.flip-h { transform: scaleX(-1); }
-  .ss-icon.flip-v { transform: scaleY(-1); }
+  .ss-icon.flip-h {
+    transform: scaleX(-1);
+  }
+  .ss-icon.flip-v {
+    transform: scaleY(-1);
+  }
 
   .ss-icon.spin {
     animation: ss-icon-spin var(--ss-icon-spin-dur, 900ms) linear infinite;
   }
 
   @keyframes ss-icon-spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ss-icon.spin { animation: none; }
+    .ss-icon.spin {
+      animation: none;
+    }
   }
 </style>

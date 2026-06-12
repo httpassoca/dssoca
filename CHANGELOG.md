@@ -8,6 +8,78 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+## [0.9.0] — adoption gaps & tooling hardening — 2026-06-12
+
+Everything the passoca migration revealed as missing (`DS-0079` epic), plus the quality-scan
+tooling pass (`DS-0066` epic).
+
+### Added
+
+- **New components** (`DS-0083`–`DS-0086`): `Heading` (display recipe via tokens), `Container`
+  (page-width wrapper), `Textarea` (Input's multiline twin with autosize), and `Spinner` —
+  10 squared cli-spinners (MIT) text-frame variants, cycling via `$effect`, static under
+  reduced motion.
+- **`Topbar`** (`DS-0080`–`DS-0082`): link tabs (`{id,label,href}` → real `<a>` with
+  `aria-current`; `string[]` still works), optional chrome (`services`/`clock` props, ⌘K chip
+  only with `onCommand`), and a responsive scrolling tab strip.
+- **`Icon`** (`DS-0087`): 7 new built-in glyphs — `home`, `briefcase`, `folder`, `github`,
+  `linkedin`, `language`, `color-swatch`.
+- **`Menu`** (`DS-0088`): per-item leading visuals — snippet / swatch / emoji with documented
+  precedence.
+- **`dssoca/tokens.css`** (`DS-0089`): tokens-only stylesheet entry; `theme.css` output stays
+  byte-identical.
+- **API additions** (`DS-0078`): `disabled` on `Link` and component-wide on `SegmentedControl`
+  and per-item on `BottomNav`; `ariaLabel` on `Topbar` and `EmptyState`. Naming + disabled-state
+  conventions written into `DESIGN.md`.
+- **Tests** (`DS-0070`/`DS-0071`): +127 tests — parameterized sm/md/lg coverage for every
+  component, a size-cascade integration suite, theme-application tests, per-component axe
+  coverage, keyboard interaction tests; v8 coverage configured with thresholds
+  (lines 89 / statements 88 / functions 90 / branches 76).
+- **Tooling — lint** (`DS-0075`): ESLint (flat config: `eslint-plugin-svelte` +
+  `typescript-eslint` + `eslint-config-prettier`) and Prettier (`prettier-plugin-svelte`) with
+  `lint` / `format` / `format:check` scripts; rule severities tuned to the current tree as an
+  adoptable baseline.
+- **Tooling — CI** (`DS-0075`): CI now also runs lint, `format:check`, svelte-check (blocking —
+  `pnpm check` is clean), the docs suite (`pnpm docs:test`), a Storybook build, and collects v8
+  test coverage (uploaded as an artifact).
+- **Tooling — release** (`DS-0077`): `scripts/release.mjs` (`pnpm release`) validates the
+  version bump against the last tag, checks the git-flow `release/<x.y.z>` branch, drafts a
+  changelog stub from conventional commits, and prints the tag/publish/back-merge steps —
+  publishing now documents `--provenance`.
+
+### Fixed
+
+- **SSR safety** (`DS-0067`): `window`/`document` listeners in `Topbar`/`Menu` are
+  environment-guarded; `Menu`'s outside-click handler null-checks its elements; `Accordion`
+  ids derive from `$props.id()` (SSR-stable) instead of `Math.random()`.
+- **Image lightbox** (`DS-0078`): the focus trap now excludes disabled focusables and
+  `tabindex="-1"` elements (the backdrop no longer participates).
+- **BottomNav badge**: hardcoded `#001b04` text → `var(--ss-fg-on-primary)` (`DS-0069`).
+- Repo-wide Prettier formatting applied; whole-tree `pnpm check` is clean (0 errors).
+
+### Changed
+
+- **Tokenized chrome** (`DS-0068`): BottomNav badge metrics (`--ss-bottom-nav-badge-*`) and
+  LogStream viewport/column metrics (`--ss-log-min-h/max-h/t-w/lvl-w`) are size-aware tokens
+  (md = the former px, visually unchanged); ServiceCard/Sidebar/Topbar gaps read spacing
+  tokens; Toaster's fly duration reads `--ss-dur-fast`; Sparkline's height fallback reads
+  `--ss-icon`.
+- **Theming** (`DS-0069`): light `--ss-primary` darkened `#157f3b` → `#147c3a` for WCAG 2.2 AA
+  (4.46:1 → 4.64:1); new per-theme `--ss-code-overlay`; explicit light selection overrides;
+  `color-scheme` set per theme (ships in `tokens.css` too).
+- **Storybook** (`DS-0074`): every component prop exercisable via controls across 18 stories,
+  intro/overview MDX page, story-level a11y error params on interactive components.
+- **Docs** (`DS-0072`/`DS-0073`): full `--ss-*` token inventory documented (176 tokens),
+  `.hs-*` typography classes marked deprecated, README lists all 23 components + full type
+  surface, toast API got a canonical reference, dead docs links fixed.
+- **Packaging** (`DS-0077`): the root export gained a `"default": "./dist/index.js"` condition
+  (after `svelte`), so non-Svelte-aware bundlers/tools can resolve `dssoca`; `publint` stays
+  clean. `engines.node >= 24` declared.
+- **svelte-check** (`DS-0076`): `pnpm check` is trustworthy again — the root `tsconfig.json`
+  no longer overrides `module`/`moduleResolution` to `NodeNext` (inherits `bundler` from the
+  generated SvelteKit config), fixing the false `$lib` alias errors, and `test/types.d.ts`
+  augments vitest's `Assertion` with the `vitest-axe` matcher types (~55 false errors gone).
+
 ## [0.8.2] — components overview & landing field polish — 2026-06-09
 
 Published library: a single `BottomNav` default-data fix; everything else is docs-site only.
@@ -139,6 +211,7 @@ Docs-site only (the published library is unchanged from `0.8.0`).
   component set (`DS-0002`), toast notifications (`DS-0003`), and empty/error-state affordances
   (`DS-0004`).
 
-[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/httpassoca/dssoca/compare/v0.8.2...v0.9.0
 [0.2.0]: https://github.com/httpassoca/dssoca/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/httpassoca/dssoca/releases/tag/v0.1.0

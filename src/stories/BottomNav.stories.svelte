@@ -1,28 +1,20 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import BottomNav from '$lib/components/BottomNav.svelte';
-
-  interface BottomNavItem {
-    id: string;
-    label: string;
-    icon: string;
-    href?: string;
-    badge?: string | number;
-  }
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import BottomNav, { type BottomNavItem } from '$lib/components/BottomNav.svelte'
 
   const DEFAULT_ITEMS: BottomNavItem[] = [
-    { id: 'home',     label: 'Home',     icon: 'grid' },
+    { id: 'home', label: 'Home', icon: 'grid' },
     { id: 'services', label: 'Services', icon: 'database' },
     { id: 'activity', label: 'Activity', icon: 'activity' },
-    { id: 'account',  label: 'Account',  icon: 'user' },
-  ];
+    { id: 'account', label: 'Account', icon: 'user' },
+  ]
 
   const BADGED_ITEMS: BottomNavItem[] = [
-    { id: 'home',     label: 'Home',     icon: 'grid' },
-    { id: 'inbox',    label: 'Inbox',    icon: 'note', badge: 3 },
+    { id: 'home', label: 'Home', icon: 'grid' },
+    { id: 'inbox', label: 'Inbox', icon: 'note', badge: 3 },
     { id: 'activity', label: 'Activity', icon: 'activity', badge: 12 },
-    { id: 'account',  label: 'Account',  icon: 'user' },
-  ];
+    { id: 'account', label: 'Account', icon: 'user' },
+  ]
 
   const { Story } = defineMeta({
     title: 'Components/BottomNav',
@@ -33,15 +25,28 @@
     render: template,
     argTypes: {
       active: { control: 'text', description: 'Id of the active tab.' },
-      items: { control: 'object', description: 'Tabs ({ id, label, icon, href?, badge? }).' },
+      items: {
+        control: 'object',
+        description: 'Tabs ({ id, label, icon, href?, badge?, disabled? }).',
+      },
+      size: {
+        control: { type: 'inline-radio' },
+        options: ['sm', 'md', 'lg'],
+        description: 'Token size override; inherits the ancestor data-size-variant when unset.',
+      },
+      ariaLabel: {
+        control: 'text',
+        description: 'Accessible name for the wrapping <nav> landmark.',
+      },
       onSelect: { action: 'onSelect', description: 'Fired with the tab id on activation.' },
     },
     args: {
       active: 'home',
       items: DEFAULT_ITEMS,
+      ariaLabel: 'Primary',
       onSelect: () => {},
     },
-  });
+  })
 </script>
 
 {#snippet template(args: Record<string, unknown>)}
@@ -49,6 +54,8 @@
     <BottomNav
       active={args.active as string}
       items={args.items as BottomNavItem[]}
+      size={args.size as 'sm' | 'md' | 'lg' | undefined}
+      ariaLabel={args.ariaLabel as string | undefined}
       onSelect={args.onSelect as (id: string) => void}
     />
   </div>
@@ -59,3 +66,20 @@
 <Story name="Services Active" args={{ active: 'services', items: DEFAULT_ITEMS }} />
 
 <Story name="With Badges" args={{ active: 'home', items: BADGED_ITEMS }} />
+
+<!-- Explicit token size override, independent of the global size axis -->
+<Story name="Compact (sm)" args={{ active: 'home', items: DEFAULT_ITEMS, size: 'sm' }} />
+
+<!-- Per-item disabled tab: inert and skipped for activation -->
+<Story
+  name="With Disabled Item"
+  args={{
+    active: 'home',
+    items: [
+      { id: 'home', label: 'Home', icon: 'grid' },
+      { id: 'services', label: 'Services', icon: 'database' },
+      { id: 'activity', label: 'Activity', icon: 'activity', disabled: true },
+      { id: 'account', label: 'Account', icon: 'user' },
+    ],
+  }}
+/>

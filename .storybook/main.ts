@@ -1,4 +1,4 @@
-import type { StorybookConfig } from '@storybook/sveltekit';
+import type { StorybookConfig } from '@storybook/sveltekit'
 
 const config: StorybookConfig = {
   // Stories live outside src/lib so svelte-package never publishes them.
@@ -8,6 +8,6 @@ const config: StorybookConfig = {
     name: '@storybook/sveltekit',
     options: {},
   },
-};
+}
 
-export default config;
+export default config

@@ -42,17 +42,18 @@
   }: Props = $props()
 
   const sparkColor = $derived(
-    status === 'deg' ? 'var(--ss-yellow)'
-    : status === 'down' ? 'var(--ss-red)'
-    : status === 'maint' ? 'var(--ss-blue)'
-    : 'var(--ss-primary)'
+    status === 'deg'
+      ? 'var(--ss-yellow)'
+      : status === 'down'
+        ? 'var(--ss-red)'
+        : status === 'maint'
+          ? 'var(--ss-blue)'
+          : 'var(--ss-primary)',
   )
 
   // Spell the status out for assistive tech (the abbreviations are opaque).
   const statusLabel = $derived(
-    status === 'deg' ? 'degraded'
-    : status === 'maint' ? 'maintenance'
-    : status
+    status === 'deg' ? 'degraded' : status === 'maint' ? 'maintenance' : status,
   )
 
   // Status is decorative on the dot/badge, but meaningful — fold it into the label.
@@ -65,13 +66,9 @@
 
   // --- relative "last checked" timestamp -------------------------------------
   const updatedDate = $derived(
-    updatedAt == null ? undefined
-    : updatedAt instanceof Date ? updatedAt
-    : new Date(updatedAt)
+    updatedAt == null ? undefined : updatedAt instanceof Date ? updatedAt : new Date(updatedAt),
   )
-  const updatedValid = $derived(
-    !!updatedDate && !Number.isNaN(updatedDate.getTime())
-  )
+  const updatedValid = $derived(!!updatedDate && !Number.isNaN(updatedDate.getTime()))
   const updatedISO = $derived(updatedValid ? updatedDate!.toISOString() : undefined)
 
   function relativeTime(d: Date): string {
@@ -146,7 +143,10 @@
     data-size-variant={resolveComponentSize('ServiceCard', size)}
     {onclick}
     onkeydown={(e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onclick?.() }
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        onclick?.()
+      }
     }}
   >
     {@render body()}
@@ -168,8 +168,10 @@
 
 <style lang="scss">
   .ss-svc {
-    display: grid; grid-template-columns: 1fr auto;
-    gap: var(--ss-gap); padding: var(--ss-card-py) var(--ss-card-px);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--ss-gap);
+    padding: var(--ss-card-py) var(--ss-card-px);
     border: 1px solid var(--ss-line);
     background: var(--ss-bg-elev);
     color: var(--ss-fg);
@@ -177,28 +179,73 @@
     transition: all var(--ss-dur-fast) var(--ss-ease);
 
     .head {
-      display: flex; align-items: center; gap: 10px;
-      .name { font-family: var(--ss-font-display); font-size: var(--ss-ui-lg); letter-spacing: -0.005em; }
-      .host { font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm); color: var(--ss-fg-muted); }
+      // gap-sm (DS-0068): md = the former 10px; rescales with the size axis.
+      display: flex;
+      align-items: center;
+      gap: var(--ss-gap-sm);
+      .name {
+        font-family: var(--ss-font-display);
+        font-size: var(--ss-ui-lg);
+        letter-spacing: -0.005em;
+      }
+      .host {
+        font-family: var(--ss-font-mono);
+        font-size: var(--ss-ui-sm);
+        color: var(--ss-fg-muted);
+      }
     }
-    .status { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
     .meta {
       grid-column: 1 / -1;
-      font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm); color: var(--ss-fg-muted);
-      display: flex; flex-direction: column; gap: var(--ss-s-1);
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-sm);
+      color: var(--ss-fg-muted);
+      display: flex;
+      flex-direction: column;
+      gap: var(--ss-s-1);
     }
-    .footer { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: var(--ss-gap-sm); margin-top: 2px; }
-    .foot-meta { display: flex; align-items: center; gap: var(--ss-gap-sm); }
-    .latency { font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm); color: var(--ss-fg-muted); }
-    .updated { font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm); color: var(--ss-fg-muted); }
+    .footer {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--ss-gap-sm);
+      margin-top: 2px;
+    }
+    .foot-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--ss-gap-sm);
+    }
+    .latency {
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-sm);
+      color: var(--ss-fg-muted);
+    }
+    .updated {
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-sm);
+      color: var(--ss-fg-muted);
+    }
   }
 
   /* Interactive variants (anchor + role=button div) get the affordance. */
   a.ss-svc,
-  [role="button"].ss-svc {
+  [role='button'].ss-svc {
     cursor: pointer;
 
-    &:hover { border-color: var(--ss-line-strong); background: var(--ss-bg-elev-hover); }
+    &:hover {
+      border-color: var(--ss-line-strong);
+      background: var(--ss-bg-elev-hover);
+    }
+    // Focus ring (DS-0068): intentionally mirrors the global :focus-visible
+    // style in _base.scss (2px primary outline, 2px offset) — kept inline so
+    // the role=button <div> variant gets it even without the global sheet.
     &:focus-visible {
       outline: 2px solid var(--ss-primary);
       outline-offset: 2px;
@@ -212,7 +259,9 @@
   }
 
   /* Loading: no affordance, shimmer placeholders. */
-  .ss-svc.loading { cursor: default; }
+  .ss-svc.loading {
+    cursor: default;
+  }
 
   .sk {
     background: var(--ss-bg-elev-hover);
@@ -220,21 +269,39 @@
     overflow: hidden;
     &::after {
       content: '';
-      position: absolute; inset: 0;
+      position: absolute;
+      inset: 0;
       transform: translateX(-100%);
       background: linear-gradient(90deg, transparent, var(--ss-hover), transparent);
       animation: sk-shimmer var(--ss-dur-xslow) var(--ss-ease) infinite;
     }
   }
-  .sk-name  { width: 120px; height: var(--ss-ui-lg); margin-bottom: var(--ss-s-1); }
-  .sk-host  { width: 90px;  height: var(--ss-ui-sm); }
-  .sk-badge { width: 64px;  height: calc(var(--ss-ui-xs) + (var(--ss-badge-py) * 2)); }
-  .sk-spark { width: 100%;  height: var(--ss-icon); }
+  .sk-name {
+    width: 120px;
+    height: var(--ss-ui-lg);
+    margin-bottom: var(--ss-s-1);
+  }
+  .sk-host {
+    width: 90px;
+    height: var(--ss-ui-sm);
+  }
+  .sk-badge {
+    width: 64px;
+    height: calc(var(--ss-ui-xs) + (var(--ss-badge-py) * 2));
+  }
+  .sk-spark {
+    width: 100%;
+    height: var(--ss-icon);
+  }
 
   @keyframes sk-shimmer {
-    100% { transform: translateX(100%); }
+    100% {
+      transform: translateX(100%);
+    }
   }
   @media (prefers-reduced-motion: reduce) {
-    .sk::after { animation: none; }
+    .sk::after {
+      animation: none;
+    }
   }
 </style>

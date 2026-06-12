@@ -1,0 +1,33 @@
+// ============================================================
+//  Container — size tokens (--ss-container-*) for the size axis (DS-0085).
+//
+//  NOTE: these are the canonical Container size tokens. They are *also*
+//  declared inside Container.svelte's scoped <style> (on `.ss-container`,
+//  in [data-size-variant] blocks) so the component ships self-contained —
+//  custom properties cascade through Svelte's scoped boundary, so the
+//  component works whether or not this partial is compiled into theme.css.
+//  Width is the classic ~875px reading column at md; px reuses the main
+//  content gutters; page-py is the route-page vertical padding.
+//
+//  This partial mirrors those values for any consumer that wants the tokens
+//  globally. House rule: zero border-radius; size-sensitive values are tokens.
+// ============================================================
+
+[data-size-variant='md'],
+:root {
+  --ss-container-max-w: 875px;
+  --ss-container-px: var(--ss-main-px);
+  --ss-container-page-py: var(--ss-s-10);
+}
+
+[data-size-variant='sm'] {
+  --ss-container-max-w: 760px;
+  --ss-container-px: var(--ss-s-5);
+  --ss-container-page-py: var(--ss-s-8);
+}
+
+[data-size-variant='lg'] {
+  --ss-container-max-w: 1000px;
+  --ss-container-px: var(--ss-s-12);
+  --ss-container-page-py: var(--ss-s-12);
+}

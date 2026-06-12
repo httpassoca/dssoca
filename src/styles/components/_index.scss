@@ -19,4 +19,9 @@
 @use 'link';
 @use 'segmented-control';
 @use 'bottom-nav';
+@use 'log-stream';
 @use 'image';
+// DS-0079 — adoption-gap components.
+@use 'heading';
+@use 'container';
+@use 'spinner';

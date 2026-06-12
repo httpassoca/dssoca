@@ -10,11 +10,11 @@
  * `components-<name>--<story>`); the docs embed each one live via an iframe.
  */
 
-import { COMPONENTS } from './component-docs';
-import type { ComponentDoc } from './component-docs/types';
+import { COMPONENTS } from './component-docs'
+import type { ComponentDoc } from './component-docs/types'
 
-export { COMPONENTS };
-export type { PropDoc, ComponentDoc } from './component-docs/types';
+export { COMPONENTS }
+export type { PropDoc, ComponentDoc } from './component-docs/types'
 
 /**
  * Base URL of the running/built Storybook the per-component pages embed.
@@ -22,32 +22,31 @@ export type { PropDoc, ComponentDoc } from './component-docs/types';
  * `VITE_STORYBOOK_URL` (e.g. a co-deployed `/storybook`); deploy is out of
  * scope for the local-only setup.
  */
-export const STORYBOOK_URL: string =
-  import.meta.env.VITE_STORYBOOK_URL ?? 'http://localhost:6006';
+export const STORYBOOK_URL: string = import.meta.env.VITE_STORYBOOK_URL ?? 'http://localhost:6006'
 
 /** Live-story iframe URL for a given Storybook story id. */
 export function storyUrl(id: string): string {
-  return `${STORYBOOK_URL}/iframe.html?id=${id}&viewMode=story`;
+  return `${STORYBOOK_URL}/iframe.html?id=${id}&viewMode=story`
 }
 
 /** "Open in Storybook" deep link (full Storybook UI) for a story id. */
 export function storybookLink(id: string): string {
-  return `${STORYBOOK_URL}/?path=/story/${id}`;
+  return `${STORYBOOK_URL}/?path=/story/${id}`
 }
 
 export function getComponent(slug: string): ComponentDoc | undefined {
-  return COMPONENTS.find((c) => c.slug === slug);
+  return COMPONENTS.find((c) => c.slug === slug)
 }
 
 export interface NavItem {
-  label: string;
-  href: string;
+  label: string
+  href: string
   /** Optional leading glyph; component links render without one. */
-  icon?: string;
+  icon?: string
 }
 export interface NavGroup {
-  section: string;
-  items: NavItem[];
+  section: string
+  items: NavItem[]
 }
 
 /** Left-nav structure — guide pages first, then a page per component. */
@@ -71,4 +70,4 @@ export const NAV: NavGroup[] = [
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((c) => ({ label: c.name, href: `/components/${c.slug}` })),
   },
-];
+]

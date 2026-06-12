@@ -52,16 +52,18 @@
 
   const TEMPLATES: Omit<LogLine, 'id'>[] = [
     { lvl: 'info', svc: '[movies-api]', msg: 'GET /movies?status=to_watch — 3 rows · 4ms' },
-    { lvl: 'ok',   svc: '[hub]',        msg: 'GET /api/auth/session — 8ms' },
-    { lvl: 'info', svc: '[hub]',        msg: 'session refresh — user=admin' },
-    { lvl: 'warn', svc: '[caddy]',      msg: 'tls internal renewing hub.home' },
-    { lvl: 'err',  svc: '[tasks-api]',  msg: 'EADDRINUSE :3004 — retrying in 2s' },
-    { lvl: 'info', svc: '[notes-api]',  msg: 'slow query · 182ms · SELECT * FROM notes' },
-    { lvl: 'ok',   svc: '[meals-api]',  msg: 'POST /meals — created id=m_a4f1 · 6ms' },
+    { lvl: 'ok', svc: '[hub]', msg: 'GET /api/auth/session — 8ms' },
+    { lvl: 'info', svc: '[hub]', msg: 'session refresh — user=admin' },
+    { lvl: 'warn', svc: '[caddy]', msg: 'tls internal renewing hub.home' },
+    { lvl: 'err', svc: '[tasks-api]', msg: 'EADDRINUSE :3004 — retrying in 2s' },
+    { lvl: 'info', svc: '[notes-api]', msg: 'slow query · 182ms · SELECT * FROM notes' },
+    { lvl: 'ok', svc: '[meals-api]', msg: 'POST /meals — created id=m_a4f1 · 6ms' },
     { lvl: 'info', svc: '[movies-api]', msg: 'drizzle migrated 0002 · runtime 12ms' },
   ]
 
-  function pad(n: number) { return String(n).padStart(2, '0') }
+  function pad(n: number) {
+    return String(n).padStart(2, '0')
+  }
   function nowStr() {
     const d = new Date()
     return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
@@ -95,20 +97,18 @@
   // Internal demo buffer.
   const seed = untrack(() => initialLines ?? TEMPLATES)
   let counter = $state(seed.length)
-  let demoLines = $state<LogLine[]>(
-    seed.map((t, i) => ({ ...t, t: t.t || timeAgo(i * 4), id: i }))
-  )
+  let demoLines = $state<LogLine[]>(seed.map((t, i) => ({ ...t, t: t.t || timeAgo(i * 4), id: i })))
 
   // The source of truth, capped to maxLines.
-  const allLines = $derived(
-    (controlled ? (lines as LogLine[]) : demoLines).slice(-maxLines)
-  )
+  const allLines = $derived((controlled ? (lines as LogLine[]) : demoLines).slice(-maxLines))
 
   // --- toolbar state ---
   let activeLevels = $state<Set<LogLevel>>(new Set(LEVELS))
   let query = $state('')
   let wrapOn = $state(untrack(() => wrap))
-  $effect(() => { wrapOn = wrap })
+  $effect(() => {
+    wrapOn = wrap
+  })
 
   const visibleLines = $derived(
     allLines.filter((l) => {
@@ -119,7 +119,7 @@
         if (!hay.includes(q)) return false
       }
       return true
-    })
+    }),
   )
 
   function toggleLevel(lvl: LogLevel) {
@@ -202,8 +202,8 @@
               type="button"
               class="chip {lvl}"
               aria-pressed={activeLevels.has(lvl)}
-              onclick={() => toggleLevel(lvl)}
-            >{lvl.toUpperCase()}</button>
+              onclick={() => toggleLevel(lvl)}>{lvl.toUpperCase()}</button
+            >
           {/each}
         </div>
         <input
@@ -213,12 +213,9 @@
           aria-label="Filter log text"
           bind:value={query}
         />
-        <button
-          type="button"
-          class="chip"
-          aria-pressed={wrapOn}
-          onclick={() => (wrapOn = !wrapOn)}
-        >WRAP</button>
+        <button type="button" class="chip" aria-pressed={wrapOn} onclick={() => (wrapOn = !wrapOn)}
+          >WRAP</button
+        >
         <button type="button" class="chip" onclick={copyVisible}>COPY</button>
         {#if !controlled}
           <button type="button" class="chip" onclick={clear}>CLEAR</button>
@@ -250,7 +247,9 @@
         {:else}
           <EmptyState
             title="No log lines"
-            message={allLines.length ? 'No lines match the current filters.' : 'Waiting for output…'}
+            message={allLines.length
+              ? 'No lines match the current filters.'
+              : 'Waiting for output…'}
             {size}
           />
         {/if}
@@ -267,15 +266,36 @@
     </div>
 
     {#if !following}
-      <button type="button" class="jump" onclick={jumpToBottom}>
-        Jump to bottom
-      </button>
+      <button type="button" class="jump" onclick={jumpToBottom}> Jump to bottom </button>
     {/if}
   </div>
 </div>
 
 <style lang="scss">
   .ss-logs {
+    // --- local token fallbacks (DS-0068) --------------------------------------
+    // Canonical sm/md/lg values live in src/styles/components/_log-stream.scss;
+    // these md fallbacks (+ the per-size blocks below, which match a local
+    // `size` prop) keep the viewer self-contained and overridable
+    // (`--ss-log-*`) even when the global partial isn't compiled in.
+    --_min-h: var(--ss-log-min-h, 160px);
+    --_max-h: var(--ss-log-max-h, 240px);
+    --_t-w: var(--ss-log-t-w, 58px);
+    --_lvl-w: var(--ss-log-lvl-w, 38px);
+
+    &[data-size-variant='sm'] {
+      --_min-h: var(--ss-log-min-h, 120px);
+      --_max-h: var(--ss-log-max-h, 200px);
+      --_t-w: var(--ss-log-t-w, 52px);
+      --_lvl-w: var(--ss-log-lvl-w, 34px);
+    }
+    &[data-size-variant='lg'] {
+      --_min-h: var(--ss-log-min-h, 200px);
+      --_max-h: var(--ss-log-max-h, 320px);
+      --_t-w: var(--ss-log-t-w, 64px);
+      --_lvl-w: var(--ss-log-lvl-w, 42px);
+    }
+
     font-family: var(--ss-font-mono);
     background: var(--ss-code-bg);
     color: var(--ss-code-fg);
@@ -309,14 +329,28 @@
     cursor: pointer;
     transition: all var(--ss-dur-fast) var(--ss-ease);
 
-    &:hover { border-color: var(--ss-line-strong); }
-    &[aria-pressed='true'] { border-color: var(--ss-line-strong); }
-    &[aria-pressed='false'] { opacity: 0.45; }
+    &:hover {
+      border-color: var(--ss-line-strong);
+    }
+    &[aria-pressed='true'] {
+      border-color: var(--ss-line-strong);
+    }
+    &[aria-pressed='false'] {
+      opacity: 0.45;
+    }
 
-    &.info[aria-pressed='true'] { color: var(--ss-log-info); }
-    &.warn[aria-pressed='true'] { color: var(--ss-log-warn); }
-    &.err[aria-pressed='true']  { color: var(--ss-log-err); }
-    &.ok[aria-pressed='true']   { color: var(--ss-log-ok); }
+    &.info[aria-pressed='true'] {
+      color: var(--ss-log-info);
+    }
+    &.warn[aria-pressed='true'] {
+      color: var(--ss-log-warn);
+    }
+    &.err[aria-pressed='true'] {
+      color: var(--ss-log-err);
+    }
+    &.ok[aria-pressed='true'] {
+      color: var(--ss-log-ok);
+    }
   }
 
   .search {
@@ -329,17 +363,24 @@
     background: transparent;
     color: var(--ss-code-fg);
 
-    &:focus-visible { outline: 2px solid var(--ss-primary); outline-offset: 1px; }
-    &::placeholder { color: var(--ss-fg-faint); }
+    &:focus-visible {
+      outline: 2px solid var(--ss-primary);
+      outline-offset: 1px;
+    }
+    &::placeholder {
+      color: var(--ss-fg-faint);
+    }
   }
 
-  .viewport { position: relative; }
+  .viewport {
+    position: relative;
+  }
 
   .scroll {
     font-size: var(--ss-ui-md);
     padding: var(--ss-gap) var(--ss-panel-body-px);
-    min-height: 160px;
-    max-height: 240px;
+    min-height: var(--_min-h);
+    max-height: var(--_max-h);
     overflow: auto;
 
     .ln {
@@ -351,18 +392,35 @@
     &.nowrap .ln {
       white-space: pre;
     }
-    .msg { white-space: inherit; }
-
-    .t   { color: var(--ss-fg-faint); min-width: 58px; flex: none; }
-    .lvl {
-      min-width: 38px;
-      flex: none;
-      &.info { color: var(--ss-log-info); }
-      &.warn { color: var(--ss-log-warn); }
-      &.err  { color: var(--ss-log-err); }
-      &.ok   { color: var(--ss-log-ok); }
+    .msg {
+      white-space: inherit;
     }
-    .svc { color: var(--ss-code-keyword); flex: none; }
+
+    .t {
+      color: var(--ss-fg-faint);
+      min-width: var(--_t-w);
+      flex: none;
+    }
+    .lvl {
+      min-width: var(--_lvl-w);
+      flex: none;
+      &.info {
+        color: var(--ss-log-info);
+      }
+      &.warn {
+        color: var(--ss-log-warn);
+      }
+      &.err {
+        color: var(--ss-log-err);
+      }
+      &.ok {
+        color: var(--ss-log-ok);
+      }
+    }
+    .svc {
+      color: var(--ss-code-keyword);
+      flex: none;
+    }
   }
 
   .status {
@@ -382,8 +440,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 0.3; }
-    50%      { opacity: 1; }
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
   }
 
   .jump {
@@ -400,7 +463,12 @@
     cursor: pointer;
     box-shadow: var(--ss-shadow-2);
 
-    &:hover { border-color: var(--ss-primary); }
-    &:focus-visible { outline: 2px solid var(--ss-primary); outline-offset: 1px; }
+    &:hover {
+      border-color: var(--ss-primary);
+    }
+    &:focus-visible {
+      outline: 2px solid var(--ss-primary);
+      outline-offset: 1px;
+    }
   }
 </style>

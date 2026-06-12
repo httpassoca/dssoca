@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vitest/config'
 
 // Minimal, DOM-free unit tests for the docs app's pure logic (the docs config
 // invariants and the Prism highlighter). Component/render coverage lives in the
@@ -9,4 +9,4 @@ export default defineConfig({
     include: ['test/**/*.{test,spec}.{js,ts}'],
     exclude: ['node_modules/**', '.svelte-kit/**', 'build/**'],
   },
-});
+})

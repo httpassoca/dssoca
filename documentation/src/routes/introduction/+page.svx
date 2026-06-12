@@ -32,11 +32,15 @@ resolve to.
 
 ## What's here
 
-The library ships **14 components** — from primitives like
+The library ships **23 components** — from primitives like
 [Button](/components/button), [Badge](/components/badge), and [Input](/components/input) to
 app-shell pieces like [Topbar](/components/topbar), [Sidebar](/components/sidebar), and
 [LogStream](/components/log-stream). Browse them in the sidebar, or start with
 [Installation](/installation).
 
 > This site dogfoods dssoca for its own chrome and embeds the live
-> [Storybook](http://localhost:6006) stories on each component page.
+> [Storybook](http://localhost:6006) stories on each component page. That link is the
+> **local-dev default** (`http://localhost:6006` — run `pnpm storybook` alongside
+> `pnpm docs:dev`); a deployed docs site points the embeds at a deployed Storybook by
+> setting the `VITE_STORYBOOK_URL` env var (on Vercel: an env var on the docs project —
+> see the repo `README.md` → *Deployment* and `documentation/CLAUDE.md`).

@@ -73,9 +73,8 @@
 
   // error wins, then hint, then any caller-supplied describedby — order matters for AT.
   const describedBy = $derived(
-    [error ? errorId : null, hint ? hintId : null, describedby]
-      .filter(Boolean)
-      .join(' ') || undefined,
+    [error ? errorId : null, hint ? hintId : null, describedby].filter(Boolean).join(' ') ||
+      undefined,
   )
   const isInvalid = $derived(invalid || Boolean(error) || undefined)
   const resolvedSize = $derived(resolveComponentSize('Input', size))
@@ -131,64 +130,135 @@
 
 <style lang="scss">
   .ss-field {
-    display: flex; flex-direction: column; gap: 6px;
+    // 6px label↔control↔message gap reviewed for DS-0068: it sits between the
+    // spacing-scale steps (--ss-s-1: 4px / --ss-s-2: 8px) and no --ss-gap-*
+    // token matches at md, so it stays a deliberate fixed micro-gap rather
+    // than inventing a one-off token.
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 
     .lbl {
-      font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs); color: var(--ss-fg-muted);
-      text-transform: uppercase; letter-spacing: 0.08em;
-      .req { color: var(--ss-red); margin-left: 2px; }
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-xs);
+      color: var(--ss-fg-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      // 2px is below the spacing-scale floor (--ss-s-1: 4px) — a deliberate
+      // hair-space between label text and the required marker (DS-0068).
+      .req {
+        color: var(--ss-red);
+        margin-left: 2px;
+      }
     }
 
     // The border/focus ring lives on the wrapper so prefix/suffix sit inside the field.
     .control {
-      display: flex; align-items: center; gap: var(--ss-gap-sm);
-      background: transparent; color: var(--ss-fg);
+      display: flex;
+      align-items: center;
+      gap: var(--ss-gap-sm);
+      background: transparent;
+      color: var(--ss-fg);
       border: 1px solid var(--ss-line);
       padding: 0 var(--ss-input-px);
-      transition: border-color var(--ss-dur-fast) var(--ss-ease), box-shadow var(--ss-dur-fast) var(--ss-ease);
+      transition:
+        border-color var(--ss-dur-fast) var(--ss-ease),
+        box-shadow var(--ss-dur-fast) var(--ss-ease);
 
-      &:focus-within { border-color: var(--ss-primary); box-shadow: 0 0 0 3px var(--ss-primary-soft); }
+      // Focus style reviewed for DS-0068: diverges from _base.scss's
+      // outline+offset on purpose — the ring must hug the WRAPPER (so
+      // prefix/suffix/clear read as inside the focused field), and a border
+      // recolour + soft box-shadow does that without the offset gap.
+      &:focus-within {
+        border-color: var(--ss-primary);
+        box-shadow: 0 0 0 3px var(--ss-primary-soft);
+      }
     }
 
     &.invalid .control {
       border-color: var(--ss-red);
-      &:focus-within { border-color: var(--ss-red); box-shadow: 0 0 0 3px rgba(var(--ss-red-rgb), 0.22); }
+      &:focus-within {
+        border-color: var(--ss-red);
+        box-shadow: 0 0 0 3px rgba(var(--ss-red-rgb), 0.22);
+      }
     }
 
-    &.disabled .control { border-color: var(--ss-line); }
+    &.disabled .control {
+      border-color: var(--ss-line);
+    }
 
     .affix {
-      display: inline-flex; align-items: center; flex: none;
-      color: var(--ss-fg-faint); font-size: var(--ss-input-font);
+      display: inline-flex;
+      align-items: center;
+      flex: none;
+      color: var(--ss-fg-faint);
+      font-size: var(--ss-input-font);
     }
 
     .clear {
-      display: inline-flex; align-items: center; justify-content: center; flex: none;
-      font-family: var(--ss-font-body); font-size: var(--ss-input-font); line-height: 1;
-      background: transparent; border: none; color: var(--ss-fg-faint);
-      padding: 0; margin: 0; cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+      font-family: var(--ss-font-body);
+      font-size: var(--ss-input-font);
+      line-height: 1;
+      background: transparent;
+      border: none;
+      color: var(--ss-fg-faint);
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
       transition: color var(--ss-dur-fast) var(--ss-ease);
-      &:hover { color: var(--ss-fg); }
-      &:focus-visible { outline: none; color: var(--ss-fg); box-shadow: 0 0 0 2px var(--ss-primary-soft); }
+      &:hover {
+        color: var(--ss-fg);
+      }
+      &:focus-visible {
+        outline: none;
+        color: var(--ss-fg);
+        box-shadow: 0 0 0 2px var(--ss-primary-soft);
+      }
     }
 
     .msg {
-      font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs); letter-spacing: 0.02em;
-      &.hint { color: var(--ss-fg-faint); }
-      &.error { color: var(--ss-red); }
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-xs);
+      letter-spacing: 0.02em;
+      &.hint {
+        color: var(--ss-fg-faint);
+      }
+      &.error {
+        color: var(--ss-red);
+      }
     }
   }
 
   .ss-input {
-    font-family: var(--ss-font-body); font-size: var(--ss-input-font);
-    background: transparent; color: var(--ss-fg);
-    border: none; padding: var(--ss-input-py) 0;
-    width: 100%; min-width: 0;
+    font-family: var(--ss-font-body);
+    font-size: var(--ss-input-font);
+    background: transparent;
+    color: var(--ss-fg);
+    border: none;
+    padding: var(--ss-input-py) 0;
+    width: 100%;
+    min-width: 0;
     transition: color var(--ss-dur-fast) var(--ss-ease);
 
-    &:focus { outline: none; }
-    &::placeholder { font-style: italic; color: var(--ss-fg-faint); }
-    &[readonly] { color: var(--ss-fg-muted); cursor: default; }
-    &:disabled { color: var(--ss-fg-faint); cursor: not-allowed; -webkit-text-fill-color: var(--ss-fg-faint); }
+    &:focus {
+      outline: none;
+    }
+    &::placeholder {
+      font-style: italic;
+      color: var(--ss-fg-faint);
+    }
+    &[readonly] {
+      color: var(--ss-fg-muted);
+      cursor: default;
+    }
+    &:disabled {
+      color: var(--ss-fg-faint);
+      cursor: not-allowed;
+      -webkit-text-fill-color: var(--ss-fg-faint);
+    }
   }
 </style>

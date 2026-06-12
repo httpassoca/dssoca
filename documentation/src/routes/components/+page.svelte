@@ -1,72 +1,97 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
+  import { browser } from '$app/environment'
   import {
-    Button, Input, SegmentedControl, Sidebar, Topbar, BottomNav, Menu, Link,
-    Card, Accordion, Badge, MetricTile, ServiceCard, Sparkline, LogStream,
-    EmptyState, Icon, Image,
-  } from 'dssoca';
-  import { componentsByCategory } from '$lib/categories';
-  import { COMPONENTS } from '$lib/docs.config';
+    Button,
+    Input,
+    SegmentedControl,
+    Sidebar,
+    Topbar,
+    BottomNav,
+    Menu,
+    Link,
+    Card,
+    Accordion,
+    Badge,
+    MetricTile,
+    ServiceCard,
+    Sparkline,
+    LogStream,
+    EmptyState,
+    Icon,
+    Image,
+    Heading,
+    Container,
+    Textarea,
+    Spinner,
+  } from 'dssoca'
+  import { componentsByCategory } from '$lib/categories'
+  import { COMPONENTS } from '$lib/docs.config'
 
-  const groups = componentsByCategory();
+  const groups = componentsByCategory()
 
   // Previews are non-interactive (the whole card is a link) and render only in
   // the browser — they never run through SSR/prerender, so a component that
   // touches the DOM at render time can't break the static build.
   // Chrome/full-bleed components fill the stage; everything else is centered.
-  const BLEED = new Set(['sidebar', 'topbar', 'bottom-nav', 'log-stream']);
+  const BLEED = new Set(['sidebar', 'topbar', 'bottom-nav', 'log-stream'])
 
   // --- representative sample data for the previews ------------------------
-  const spark = [3, 7, 4, 9, 6, 11];
-  const demoDate = new Date();
+  const spark = [3, 7, 4, 9, 6, 11]
+  const demoDate = new Date()
   const sideGroups = [
-    { section: 'nav', items: [
-      { id: 'hub', label: 'Hub', icon: 'grid' as const, status: 'up' as const },
-      { id: 'logs', label: 'Logs', icon: 'logs' as const },
-      { id: 'auth', label: 'Auth', icon: 'user' as const, status: 'deg' as const },
-    ] },
-  ];
+    {
+      section: 'nav',
+      items: [
+        { id: 'hub', label: 'Hub', icon: 'grid' as const, status: 'up' as const },
+        { id: 'logs', label: 'Logs', icon: 'logs' as const },
+        { id: 'auth', label: 'Auth', icon: 'user' as const, status: 'deg' as const },
+      ],
+    },
+  ]
   const bnItems = [
     { id: 'home', label: 'Home', icon: 'grid' as const },
     { id: 'data', label: 'Data', icon: 'database' as const },
     { id: 'activity', label: 'Activity', icon: 'activity' as const, badge: 3 },
     { id: 'account', label: 'Account', icon: 'user' as const },
-  ];
+  ]
   const menuItems = [
     { id: 'edit', label: 'Edit', icon: 'note' as const },
     { id: 'dup', label: 'Duplicate', icon: 'grid' as const },
     { id: 'del', label: 'Delete', icon: 'logs' as const },
-  ];
+  ]
   const segOptions = [
     { value: 'list', label: 'List', icon: 'logs' as const },
     { value: 'grid', label: 'Grid', icon: 'grid' as const },
     { value: 'map', label: 'Map' },
-  ];
+  ]
   const accItems = [
     { id: 'overview', label: 'Overview' },
     { id: 'usage', label: 'Usage', hint: '1 min' },
-  ];
+  ]
   const logLines = [
     { t: '12:00:01', lvl: 'info' as const, svc: '[hub]', msg: 'session refresh — user=admin' },
     { t: '12:00:03', lvl: 'ok' as const, svc: '[movies-api]', msg: 'GET /movies — 3 rows · 4ms' },
     { t: '12:00:06', lvl: 'warn' as const, svc: '[caddy]', msg: 'tls renewing hub.home' },
     { t: '12:00:08', lvl: 'err' as const, svc: '[tasks-api]', msg: 'EADDRINUSE :3004' },
-  ];
+  ]
   // A real photograph (Lorem Picsum, fixed id) instead of a flat gradient —
   // mirrors the Image Storybook story; the fixed id keeps the preview stable.
-  const imgSrc = 'https://picsum.photos/id/1018/480/270';
+  const imgSrc = 'https://picsum.photos/id/1018/480/270'
 </script>
 
 <svelte:head>
   <title>Components — dssoca</title>
-  <meta name="description" content="Every dssoca component, grouped by category, with a live preview." />
+  <meta
+    name="description"
+    content="Every dssoca component, grouped by category, with a live preview."
+  />
 </svelte:head>
 
 <section class="intro">
   <h1>Components</h1>
   <p class="lede">
-    All {COMPONENTS.length} components, grouped by purpose. Each card previews the live component —
-    select one to open its full page (props, usage, demo).
+    All {COMPONENTS.length} components, grouped by purpose. Each card previews the live component — select
+    one to open its full page (props, usage, demo).
   </p>
 </section>
 
@@ -99,7 +124,9 @@
       <Button variant="secondary">cancel</Button>
     </div>
   {:else if slug === 'input'}
-    <div class="w-full"><Input label="email" value="admin@hub.home" hint="we never share it" /></div>
+    <div class="w-full">
+      <Input label="email" value="admin@hub.home" hint="we never share it" />
+    </div>
   {:else if slug === 'segmented-control'}
     <SegmentedControl label="View mode" options={segOptions} value="grid" />
   {:else if slug === 'sidebar'}
@@ -111,9 +138,10 @@
   {:else if slug === 'menu'}
     <Menu items={menuItems} label="Actions" open={false}>Actions</Menu>
   {:else if slug === 'link'}
+    <!-- real docs routes (the stage is inert, but keep hrefs honest) -->
     <div class="row">
-      <Link href="/about">about</Link>
-      <Link variant="button" href="/get-started">get started</Link>
+      <Link href="/introduction">introduction</Link>
+      <Link variant="button" href="/installation">get started</Link>
     </div>
   {:else if slug === 'card'}
     <div class="w-full">
@@ -141,10 +169,18 @@
     </div>
   {:else if slug === 'service-card'}
     <div class="w-full">
-      <ServiceCard name="movies-api" host="movies.home" status="up" latency="4ms" updatedAt={demoDate} />
+      <ServiceCard
+        name="movies-api"
+        host="movies.home"
+        status="up"
+        latency="4ms"
+        updatedAt={demoDate}
+      />
     </div>
   {:else if slug === 'sparkline'}
-    <div class="w-full"><Sparkline data={spark} label="req/min, last 6h" variant="area" fluid /></div>
+    <div class="w-full">
+      <Sparkline data={spark} label="req/min, last 6h" variant="area" fluid />
+    </div>
   {:else if slug === 'log-stream'}
     <LogStream lines={logLines} />
   {:else if slug === 'empty-state'}
@@ -155,7 +191,21 @@
       <Icon name="user" px={20} /><Icon name="grid" px={20} /><Icon name="logs" px={20} />
     </div>
   {:else if slug === 'image'}
-    <div class="img-preview"><Image src={imgSrc} alt="A mountain landscape at dawn" ratio={16 / 9} /></div>
+    <div class="img-preview">
+      <Image src={imgSrc} alt="A mountain landscape at dawn" ratio={16 / 9} />
+    </div>
+  {:else if slug === 'heading'}
+    <div class="heading-preview"><Heading level={2} size="sm">hub_dashboard</Heading></div>
+  {:else if slug === 'container'}
+    <Container>
+      <p class="card-body container-demo">Centered, max-width page content.</p>
+    </Container>
+  {:else if slug === 'textarea'}
+    <div class="w-full">
+      <Textarea label="message" value="Markdown is fine." rows={2} hint="we read every word" />
+    </div>
+  {:else if slug === 'spinner'}
+    <Spinner variant="squareCorners" label="Fetching services…" showLabel />
   {:else if slug === 'toaster'}
     <!-- Toaster reads the global toast store and is position:fixed, so a live
          instance would be empty / escape the card; show a faithful static stand-in. -->
@@ -210,10 +260,14 @@
     gap: var(--ss-gap);
   }
   @media (max-width: 880px) {
-    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
   @media (max-width: 560px) {
-    .grid { grid-template-columns: minmax(0, 1fr); }
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   .card {
@@ -224,8 +278,13 @@
     text-decoration: none;
     transition: border-color var(--ss-dur-fast) var(--ss-ease);
 
-    &:hover { border-color: var(--ss-primary); }
-    &:focus-visible { outline: 2px solid var(--ss-primary); outline-offset: 2px; }
+    &:hover {
+      border-color: var(--ss-primary);
+    }
+    &:focus-visible {
+      outline: 2px solid var(--ss-primary);
+      outline-offset: 2px;
+    }
   }
 
   .stage {
@@ -273,12 +332,31 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-    .icons { gap: var(--ss-s-3); color: var(--ss-fg-muted); }
-    .w-full { width: 100%; }
+    .icons {
+      gap: var(--ss-s-3);
+      color: var(--ss-fg-muted);
+    }
+    .w-full {
+      width: 100%;
+    }
     // Cap the Image preview so its 16/9 frame fits the stage (168px − 2×16px
     // padding = 136px tall → 136 × 16/9 ≈ 242px) instead of overflowing to full
     // height; the stage centers it, so it sits proportionally with breathing room.
-    .img-preview { width: 100%; max-width: 220px; }
+    .img-preview {
+      width: 100%;
+      max-width: 220px;
+    }
+    // Heading preview: kill the display margin so the oversized type centers
+    // in the fixed stage instead of pushing itself off-balance.
+    .heading-preview :global(.ss-heading) {
+      margin: 0;
+    }
+    // Container preview: dashed outline makes the (invisible) width wrapper legible.
+    .container-demo {
+      text-align: center;
+      border: 1px dashed var(--ss-line-strong);
+      padding: var(--ss-s-3);
+    }
     .card-body {
       margin: 0;
       font-family: var(--ss-font-body);
@@ -287,9 +365,16 @@
     }
 
     // static Toaster stand-in
-    .toasts { display: flex; flex-direction: column; gap: var(--ss-s-2); width: 100%; }
+    .toasts {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ss-s-2);
+      width: 100%;
+    }
     .ft {
-      display: inline-flex; align-items: center; gap: var(--ss-s-2);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--ss-s-2);
       padding: var(--ss-s-2) var(--ss-s-3);
       border: 1px solid var(--ss-line);
       background: var(--ss-bg-elev-hover);
@@ -298,12 +383,21 @@
       color: var(--ss-fg);
     }
     .ft-g {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 16px; height: 16px;
-      font-family: var(--ss-font-mono); font-size: var(--ss-ui-xs); font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-xs);
+      font-weight: 700;
     }
-    .ft-g.ok { color: var(--ss-primary); }
-    .ft-g.info { color: var(--ss-cyan); }
+    .ft-g.ok {
+      color: var(--ss-primary);
+    }
+    .ft-g.info {
+      color: var(--ss-cyan);
+    }
   }
 
   .meta {

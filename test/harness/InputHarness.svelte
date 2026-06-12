@@ -1,5 +1,6 @@
 <script lang="ts">
   import { untrack, type Snippet } from 'svelte'
+  import type { HTMLInputAttributes } from 'svelte/elements'
   import Input from '$lib/components/Input.svelte'
 
   interface Props {
@@ -17,8 +18,8 @@
     error?: string
     clearable?: boolean
     readonly?: boolean
-    autocomplete?: string
-    inputmode?: string
+    autocomplete?: Exclude<HTMLInputAttributes['autocomplete'], null>
+    inputmode?: HTMLInputAttributes['inputmode']
     maxlength?: number
     prefix?: Snippet
     suffix?: Snippet

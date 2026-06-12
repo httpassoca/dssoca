@@ -1,12 +1,33 @@
 <script module lang="ts">
+  import type { Snippet } from 'svelte'
   import type { IconName } from './Icon.svelte'
 
-  /** One selectable row in a {@link Menu}. */
+  /**
+   * One selectable row in a {@link Menu}.
+   *
+   * Leading visual (decorative; the `label` carries the semantics). When more
+   * than one is set, precedence is `leading` → `swatch` → `emoji` → `icon`.
+   */
   export interface MenuItem {
     id: string
     label: string
     /** Optional leading glyph. */
     icon?: IconName
+    /**
+     * Custom leading content as a Svelte 5 snippet — arbitrary markup rendered
+     * in the icon slot (aria-hidden; keep it decorative).
+     */
+    leading?: Snippet
+    /**
+     * Convenience leading visual: any CSS color, rendered as a token-sized
+     * square color chip (zero radius) — e.g. a theme-picker swatch.
+     */
+    swatch?: string
+    /**
+     * Convenience leading visual: a text glyph (e.g. an emoji flag for a
+     * language picker), rendered in the icon slot.
+     */
+    emoji?: string
     /** Disabled rows are skipped by keyboard navigation and not selectable. */
     disabled?: boolean
     /** Marks the active/checked row (renders a check marker, `aria-checked`). */
@@ -17,7 +38,6 @@
 </script>
 
 <script lang="ts">
-  import type { Snippet } from 'svelte'
   import Icon from './Icon.svelte'
   import { resolveComponentSize, type Size } from '../config.js'
 
@@ -172,12 +192,20 @@
   function onDocPointerDown(e: PointerEvent) {
     if (!open) return
     const t = e.target as Node
-    if (triggerEl?.contains(t) || panelEl?.contains(t)) return
+    // DS-0067 / DS-0078: triggerEl/panelEl may be unbound (pre-mount, SSR-ish
+    // eager evaluation) — null-check before .contains().
+    if (triggerEl && triggerEl.contains(t)) return
+    if (panelEl && panelEl.contains(t)) return
     closeMenu(false)
   }
 
+  // SSR safety (DS-0067): same guard pattern as toast.svelte.ts — effects
+  // normally don't run on the server, but the guard is the house convention
+  // and protects against eager evaluation.
+  const hasDocument = typeof document !== 'undefined'
+
   $effect(() => {
-    if (!open) return
+    if (!open || !hasDocument) return
     document.addEventListener('pointerdown', onDocPointerDown, true)
     return () => document.removeEventListener('pointerdown', onDocPointerDown, true)
   })
@@ -223,9 +251,19 @@
         tabindex={i === activeIndex ? 0 : -1}
         onclick={() => activate(item)}
       >
-        {#if item.icon}<Icon name={item.icon} />{/if}
+        {#if item.leading}
+          <span class="lead" aria-hidden="true">{@render item.leading()}</span>
+        {:else if item.swatch}
+          <span class="lead swatch" style="background:{item.swatch}" aria-hidden="true"></span>
+        {:else if item.emoji}
+          <span class="lead emoji" aria-hidden="true">{item.emoji}</span>
+        {:else if item.icon}
+          <Icon name={item.icon} />
+        {/if}
         <span class="label">{item.label}</span>
-        <span class="marker" aria-hidden="true">{#if item.selected}<Icon name="check" />{/if}</span>
+        <span class="marker" aria-hidden="true"
+          >{#if item.selected}<Icon name="check" />{/if}</span
+        >
       </button>
     {/each}
   </div>
@@ -354,6 +392,28 @@
         background: transparent;
         color: var(--ss-fg-faint);
       }
+    }
+
+    // Custom leading visual slot — same --ss-icon footprint as an <Icon>, so
+    // mixed menus (icon + swatch + emoji rows) keep their labels aligned.
+    .lead {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--ss-icon);
+      height: var(--ss-icon);
+    }
+
+    // Square color chip (zero radius — house rule). The hairline keeps
+    // low-contrast swatches visible against the panel background.
+    .lead.swatch {
+      border: 1px solid var(--ss-line);
+    }
+
+    .lead.emoji {
+      font-size: var(--ss-icon);
+      line-height: 1;
     }
 
     .label {

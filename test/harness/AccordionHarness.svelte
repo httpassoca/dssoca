@@ -1,5 +1,8 @@
 <script lang="ts">
-  import Accordion, { type AccordionItem, type AccordionValue } from '$lib/components/Accordion.svelte'
+  import Accordion, {
+    type AccordionItem,
+    type AccordionValue,
+  } from '$lib/components/Accordion.svelte'
 
   interface Props {
     items?: AccordionItem[]
