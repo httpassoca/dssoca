@@ -1,9 +1,10 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import Image from '$lib/components/Image.svelte';
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import Image from '$lib/components/Image.svelte'
+  import type { ComponentProps } from 'svelte'
 
   // A stable, deterministic remote image so the story renders in any embed.
-  const PHOTO = 'https://picsum.photos/id/1018/1200/675';
+  const PHOTO = 'https://picsum.photos/id/1018/1200/675'
 
   const { Story } = defineMeta({
     title: 'Components/Image',
@@ -39,12 +40,12 @@
       lightbox: false,
       eager: false,
     },
-  });
+  })
 </script>
 
 {#snippet template(args: Record<string, unknown>)}
   <div style="max-width: 560px;">
-    <Image {...args} />
+    <Image {...args as unknown as ComponentProps<typeof Image>} />
   </div>
 {/snippet}
 

@@ -1,20 +1,20 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import Accordion, { type AccordionItem } from '$lib/components/Accordion.svelte';
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import Accordion, { type AccordionItem } from '$lib/components/Accordion.svelte'
 
   const ITEMS: AccordionItem[] = [
     { id: 'shipping', label: 'Shipping & delivery' },
     { id: 'returns', label: 'Returns', hint: '30 days' },
     { id: 'warranty', label: 'Warranty' },
     { id: 'legacy', label: 'Discontinued models', disabled: true },
-  ];
+  ]
 
   const COPY: Record<string, string> = {
     shipping: 'Orders ship within 2 business days. Tracking is emailed on dispatch.',
     returns: 'Unused items can be returned within 30 days for a full refund.',
     warranty: 'All hardware carries a 2-year limited warranty against defects.',
     legacy: 'Support for discontinued models has ended.',
-  };
+  }
 
   const { Story } = defineMeta({
     title: 'Components/Accordion',
@@ -42,7 +42,7 @@
       headingLevel: 3,
       size: undefined,
     },
-  });
+  })
 </script>
 
 {#snippet template(args: Record<string, unknown>)}

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ComponentPage from '$lib/components/ComponentPage.svelte';
-  let { data } = $props();
+  import ComponentPage from '$lib/components/ComponentPage.svelte'
+  let { data } = $props()
 </script>
 
 <svelte:head>

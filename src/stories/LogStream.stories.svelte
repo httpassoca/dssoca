@@ -1,25 +1,40 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import LogStream from '$lib/components/LogStream.svelte';
-  import type { LogLine } from '$lib/components/LogStream.svelte';
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import LogStream from '$lib/components/LogStream.svelte'
+  import type { LogLine } from '$lib/components/LogStream.svelte'
 
   const multiLevelLines: LogLine[] = [
-    { t: '12:00:01', lvl: 'info', svc: '[hub]',        msg: 'session refresh — user=admin' },
-    { t: '12:00:03', lvl: 'ok',   svc: '[movies-api]', msg: 'GET /movies?status=to_watch — 3 rows · 4ms' },
-    { t: '12:00:06', lvl: 'warn', svc: '[caddy]',      msg: 'tls internal renewing hub.home' },
-    { t: '12:00:09', lvl: 'err',  svc: '[tasks-api]',  msg: 'EADDRINUSE :3004 — retrying in 2s' },
-    { t: '12:00:12', lvl: 'ok',   svc: '[meals-api]',  msg: 'POST /meals — created id=m_a4f1 · 6ms' },
-    { t: '12:00:15', lvl: 'info', svc: '[notes-api]',  msg: 'slow query · 182ms · SELECT * FROM notes' },
-    { t: '12:00:18', lvl: 'ok',   svc: '[hub]',        msg: 'GET /api/auth/session — 8ms' },
-    { t: '12:00:21', lvl: 'info', svc: '[movies-api]', msg: 'drizzle migrated 0002 · runtime 12ms' },
-  ];
+    { t: '12:00:01', lvl: 'info', svc: '[hub]', msg: 'session refresh — user=admin' },
+    {
+      t: '12:00:03',
+      lvl: 'ok',
+      svc: '[movies-api]',
+      msg: 'GET /movies?status=to_watch — 3 rows · 4ms',
+    },
+    { t: '12:00:06', lvl: 'warn', svc: '[caddy]', msg: 'tls internal renewing hub.home' },
+    { t: '12:00:09', lvl: 'err', svc: '[tasks-api]', msg: 'EADDRINUSE :3004 — retrying in 2s' },
+    { t: '12:00:12', lvl: 'ok', svc: '[meals-api]', msg: 'POST /meals — created id=m_a4f1 · 6ms' },
+    {
+      t: '12:00:15',
+      lvl: 'info',
+      svc: '[notes-api]',
+      msg: 'slow query · 182ms · SELECT * FROM notes',
+    },
+    { t: '12:00:18', lvl: 'ok', svc: '[hub]', msg: 'GET /api/auth/session — 8ms' },
+    {
+      t: '12:00:21',
+      lvl: 'info',
+      svc: '[movies-api]',
+      msg: 'drizzle migrated 0002 · runtime 12ms',
+    },
+  ]
 
   const infoOnlyLines: LogLine[] = [
-    { t: '09:14:01', lvl: 'info', svc: '[hub]',        msg: 'starting server on :3000' },
-    { t: '09:14:02', lvl: 'info', svc: '[hub]',        msg: 'connected to database · dsn=postgres://…' },
+    { t: '09:14:01', lvl: 'info', svc: '[hub]', msg: 'starting server on :3000' },
+    { t: '09:14:02', lvl: 'info', svc: '[hub]', msg: 'connected to database · dsn=postgres://…' },
     { t: '09:14:03', lvl: 'info', svc: '[movies-api]', msg: 'drizzle migrated 0001 · runtime 8ms' },
-    { t: '09:14:05', lvl: 'info', svc: '[meals-api]',  msg: 'listening on :3003' },
-  ];
+    { t: '09:14:05', lvl: 'info', svc: '[meals-api]', msg: 'listening on :3003' },
+  ]
 
   const { Story } = defineMeta({
     title: 'Components/LogStream',
@@ -43,11 +58,20 @@
         options: ['off', 'polite', 'assertive'],
         description: 'aria-live politeness.',
       },
+      ariaLabel: {
+        control: 'text',
+        description: 'Accessible label for the log region.',
+      },
+      size: {
+        control: { type: 'inline-radio' },
+        options: ['sm', 'md', 'lg'],
+        description: 'Token size override; inherits the ancestor data-size-variant when unset.',
+      },
     },
     args: {
       lines: multiLevelLines,
     },
-  });
+  })
 </script>
 
 <!-- Mixed log levels: info, ok, warn, err — controlled -->
@@ -64,3 +88,6 @@
 
 <!-- Live demo — random lines appended every 1.8 s from internal TEMPLATES -->
 <Story name="Live" args={{ lines: undefined, demo: true }} />
+
+<!-- Explicit token size override, independent of the global size axis -->
+<Story name="Compact (sm)" args={{ lines: multiLevelLines, size: 'sm' }} />

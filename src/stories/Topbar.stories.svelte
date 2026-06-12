@@ -1,6 +1,6 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import Topbar, { type TopbarTab, type TopbarServices } from '$lib/components/Topbar.svelte';
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import Topbar, { type TopbarTab, type TopbarServices } from '$lib/components/Topbar.svelte'
 
   const { Story } = defineMeta({
     title: 'Components/Topbar',
@@ -50,6 +50,15 @@
         control: 'boolean',
         description: 'When true, the header sticks to the top of the viewport.',
       },
+      size: {
+        control: { type: 'inline-radio' },
+        options: ['sm', 'md', 'lg'],
+        description: 'Token size override; inherits the ancestor data-size-variant when unset.',
+      },
+      ariaLabel: {
+        control: 'text',
+        description: 'Accessible name for the header landmark.',
+      },
     },
     args: {
       tabs: ['overview', 'services', 'logs', 'shell'],
@@ -62,7 +71,7 @@
       onCommand: () => {},
       onUser: () => {},
     },
-  });
+  })
 </script>
 
 {#snippet template(args: Record<string, unknown>)}
@@ -74,6 +83,8 @@
     clock={args.clock as boolean}
     stats={args.stats as { key: string; value: string; title?: string }[] | undefined}
     sticky={args.sticky as boolean}
+    size={args.size as 'sm' | 'md' | 'lg' | undefined}
+    ariaLabel={args.ariaLabel as string | undefined}
     onTab={args.onTab as (tab: string) => void}
     onCommand={args.onCommand as (() => void) | undefined}
     onUser={args.onUser as () => void}
@@ -87,6 +98,9 @@
 <Story name="Logs Active" args={{ active: 'logs' }} />
 
 <Story name="Non-sticky" args={{ active: 'overview', sticky: false }} />
+
+<!-- Explicit token size override, independent of the global size axis -->
+<Story name="Compact (sm)" args={{ active: 'overview', size: 'sm' }} />
 
 <!-- DS-0080: object tabs with href render as real <a href> links; the active
      tab is matched by id (label stays free to localize). -->
@@ -131,8 +145,16 @@
   args={{
     active: 'metrics',
     tabs: [
-      'overview', 'services', 'logs', 'shell', 'metrics',
-      'alerts', 'backups', 'network', 'storage', 'settings',
+      'overview',
+      'services',
+      'logs',
+      'shell',
+      'metrics',
+      'alerts',
+      'backups',
+      'network',
+      'storage',
+      'settings',
     ],
   }}
 />

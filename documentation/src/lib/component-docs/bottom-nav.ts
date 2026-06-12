@@ -1,4 +1,4 @@
-import { type ComponentDoc, SIZE_PROP } from './types';
+import { type ComponentDoc, SIZE_PROP } from './types'
 
 export const bottomNav: ComponentDoc = {
   name: 'BottomNav',
@@ -21,12 +21,29 @@ export const bottomNav: ComponentDoc = {
 
 <BottomNav {items} {active} onSelect={(id) => (active = id)} />`,
   props: [
-    { name: 'items', type: 'BottomNavItem[]', desc: 'Tabs ({ id, label, icon, href?, badge? }) rendered left → right in equal-width columns; has a built-in default.' },
-    { name: 'active', type: 'string', desc: 'Id of the active tab; highlighted and marked `aria-current="page"`.' },
-    { name: 'onSelect', type: '(id: string) => void', desc: 'Fired with the tab id on activation (also fires for `href` tabs as an SPA fallback).' },
-    { name: 'ariaLabel', type: 'string', default: "'Primary'", desc: 'Accessible name for the wrapping `<nav>` landmark.' },
+    {
+      name: 'items',
+      type: 'BottomNavItem[]',
+      desc: 'Tabs ({ id, label, icon, href?, badge?, disabled? }) rendered left → right in equal-width columns; has a built-in default. A `disabled` tab renders inert: no navigation/`onSelect`, `aria-disabled="true"`, skipped by the tab order.',
+    },
+    {
+      name: 'active',
+      type: 'string',
+      desc: 'Id of the active tab; highlighted and marked `aria-current="page"`.',
+    },
+    {
+      name: 'onSelect',
+      type: '(id: string) => void',
+      desc: 'Fired with the tab id on activation (also fires for `href` tabs as an SPA fallback).',
+    },
+    {
+      name: 'ariaLabel',
+      type: 'string',
+      default: "'Primary'",
+      desc: 'Accessible name for the wrapping `<nav>` landmark.',
+    },
     SIZE_PROP,
   ],
   notes:
-    'Exports the `BottomNavItem` type from `dssoca`. Fixed to the viewport bottom with a blurred/elevated background; the bar height derives from `--ss-bottom-nav-h` (tracks `--ss-shell-top-h`) so it rescales with the size axis. Each tab is a ≥44px hit target (WCAG 2.5.8) and reserves `env(safe-area-inset-bottom)`. A tab renders as `<a href>` when `href` is set, otherwise a `<button>`; count `badge`s fold into the tab\'s accessible name.',
-};
+    "Exports the `BottomNavItem` type from `dssoca`. Fixed to the viewport bottom with a blurred/elevated background; the bar height derives from `--ss-bottom-nav-h` (tracks `--ss-shell-top-h`) so it rescales with the size axis. Each tab is a ≥44px hit target (WCAG 2.5.8) and reserves `env(safe-area-inset-bottom)`. A tab renders as `<a href>` when `href` is set, otherwise a `<button>` (a `disabled` tab always renders as a natively disabled `<button>`, even with `href`); count `badge`s fold into the tab's accessible name. The count badge's position/box/type rescale with the size axis via the `--ss-bottom-nav-badge-*` tokens (top, dx, min-w, h, fs, px).",
+}

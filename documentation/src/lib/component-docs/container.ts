@@ -1,4 +1,4 @@
-import { type ComponentDoc, SIZE_PROP } from './types';
+import { type ComponentDoc, SIZE_PROP } from './types'
 
 export const container: ComponentDoc = {
   name: 'Container',
@@ -16,10 +16,15 @@ export const container: ComponentDoc = {
   <p>Centered, max-width page content.</p>
 </Container>`,
   props: [
-    { name: 'page', type: 'boolean', default: 'false', desc: 'Page mode — fills the viewport height (min-height: 100svh) and adds vertical page padding.' },
+    {
+      name: 'page',
+      type: 'boolean',
+      default: 'false',
+      desc: 'Page mode — fills the viewport height (min-height: 100svh) and adds vertical page padding.',
+    },
     SIZE_PROP,
     { name: 'children', type: 'Snippet', desc: 'Page content.' },
   ],
   notes:
     'A purely structural wrapper (a plain `<div>` — no landmark role is imposed, so nest it inside your `<main>` or wrap one around it as your document structure requires). Width and paddings read the `--ss-container-*` tokens and rescale across sm/md/lg; the md gutters alias the app-shell `--ss-main-px` so Container content aligns with `.ss-main` layouts.',
-};
+}

@@ -1,87 +1,106 @@
 {
-	"name": "dssoca",
-	"version": "0.9.0",
-	"description": "Svelte 5 design system — signal green on near-black, monospace-forward, zero border-radius; configured along two axes (color: dark/light, density: comfy/compact).",
-	"license": "MIT",
-	"author": "Rafael Passoca",
-	"packageManager": "pnpm@11.1.3",
-	"homepage": "https://github.com/httpassoca/dssoca#readme",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/httpassoca/dssoca.git"
-	},
-	"bugs": {
-		"url": "https://github.com/httpassoca/dssoca/issues"
-	},
-	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build && npm run prepack",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
-		"build:css": "sass src/styles/theme.scss dist/theme.css --no-source-map --no-charset --style=expanded && pnpm build:css:tokens",
-		"build:css:tokens": "sass src/styles/tokens.scss dist/tokens.css --no-source-map --no-charset --style=expanded",
-		"prepack": "svelte-kit sync && svelte-package && pnpm build:css && publint",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build",
-		"docs:dev": "pnpm --filter dssoca-docs dev",
-		"docs:build": "pnpm --filter dssoca-docs build",
-		"docs:preview": "pnpm --filter dssoca-docs preview",
-		"docs:test": "pnpm --filter dssoca-docs test"
-	},
-	"files": [
-		"dist",
-		"!dist/**/*.test.*",
-		"!dist/**/*.spec.*"
-	],
-	"sideEffects": [
-		"**/*.css"
-	],
-	"svelte": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"type": "module",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"svelte": "./dist/index.js"
-		},
-		"./theme.css": "./dist/theme.css",
-		"./tokens.css": "./dist/tokens.css"
-	},
-	"peerDependencies": {
-		"svelte": "^5.0.0"
-	},
-	"devDependencies": {
-		"@storybook/addon-a11y": "10.4.2",
-		"@storybook/addon-docs": "^10.4.2",
-		"@storybook/addon-svelte-csf": "^5.1.2",
-		"@storybook/sveltekit": "^10.4.2",
-		"@sveltejs/adapter-auto": "^7.0.1",
-		"@sveltejs/kit": "^2.57.0",
-		"@sveltejs/package": "^2.5.7",
-		"@sveltejs/vite-plugin-svelte": "^7.0.0",
-		"@testing-library/jest-dom": "^6.9.1",
-		"@testing-library/svelte": "^5.3.1",
-		"jsdom": "^29.1.1",
-		"publint": "^0.3.18",
-		"sass": "^1.100.0",
-		"storybook": "^10.4.2",
-		"svelte": "^5.55.2",
-		"svelte-check": "^4.4.6",
-		"typescript": "^6.0.2",
-		"vite": "^8.0.7",
-		"vitest": "^4.1.7",
-		"vitest-axe": "^0.1.0"
-	},
-	"keywords": [
-		"svelte",
-		"svelte5",
-		"design-system",
-		"components",
-		"ui",
-		"theme"
-	]
+  "name": "dssoca",
+  "version": "0.9.0",
+  "description": "Svelte 5 design system — signal green on near-black, monospace-forward, zero border-radius; configured along two axes (color: dark/light, density: comfy/compact).",
+  "license": "MIT",
+  "author": "Rafael Passoca",
+  "packageManager": "pnpm@11.1.3",
+  "engines": {
+    "node": ">=24"
+  },
+  "homepage": "https://github.com/httpassoca/dssoca#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/httpassoca/dssoca.git"
+  },
+  "bugs": {
+    "url": "https://github.com/httpassoca/dssoca/issues"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build && npm run prepack",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''",
+    "build:css": "sass src/styles/theme.scss dist/theme.css --no-source-map --no-charset --style=expanded && pnpm build:css:tokens",
+    "build:css:tokens": "sass src/styles/tokens.scss dist/tokens.css --no-source-map --no-charset --style=expanded",
+    "prepack": "svelte-kit sync && svelte-package && pnpm build:css && publint",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "release": "node scripts/release.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "docs:dev": "pnpm --filter dssoca-docs dev",
+    "docs:build": "pnpm --filter dssoca-docs build",
+    "docs:preview": "pnpm --filter dssoca-docs preview",
+    "docs:test": "pnpm --filter dssoca-docs test"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.test.*",
+    "!dist/**/*.spec.*"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "svelte": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./theme.css": "./dist/theme.css",
+    "./tokens.css": "./dist/tokens.css"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@storybook/addon-a11y": "10.4.2",
+    "@storybook/addon-docs": "^10.4.2",
+    "@storybook/addon-svelte-csf": "^5.1.2",
+    "@storybook/sveltekit": "^10.4.2",
+    "@sveltejs/adapter-auto": "^7.0.1",
+    "@sveltejs/kit": "^2.57.0",
+    "@sveltejs/package": "^2.5.7",
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/svelte": "^5.3.1",
+    "@types/node": "^25.9.2",
+    "@vitest/coverage-v8": "^4.1.8",
+    "eslint": "^10.4.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-svelte": "^3.19.0",
+    "globals": "^17.6.0",
+    "jsdom": "^29.1.1",
+    "prettier": "^3.8.4",
+    "prettier-plugin-svelte": "^4.1.0",
+    "publint": "^0.3.18",
+    "sass": "^1.100.0",
+    "storybook": "^10.4.2",
+    "svelte": "^5.55.2",
+    "svelte-check": "^4.4.6",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.61.0",
+    "vite": "^8.0.7",
+    "vitest": "^4.1.7",
+    "vitest-axe": "^0.1.0"
+  },
+  "keywords": [
+    "svelte",
+    "svelte5",
+    "design-system",
+    "components",
+    "ui",
+    "theme"
+  ]
 }

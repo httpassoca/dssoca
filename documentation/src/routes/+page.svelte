@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
-  import { Button } from 'dssoca';
-  import { COMPONENTS } from '$lib/docs.config';
-  import Hub from '$lib/components/Hub.svelte';
+  import { browser } from '$app/environment'
+  import { Button } from 'dssoca'
+  import { COMPONENTS } from '$lib/docs.config'
+  import Hub from '$lib/components/Hub.svelte'
 </script>
 
 <svelte:head>
@@ -119,7 +119,9 @@
       // clear separation between the description and the buttons
       margin: 0 0 var(--ss-s-8);
       // a dark halo so the text stays legible over a bright hovered tile
-      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.85);
+      text-shadow:
+        0 1px 12px rgba(0, 0, 0, 0.9),
+        0 0 4px rgba(0, 0, 0, 0.85);
 
       code {
         font-family: var(--ss-font-mono);

@@ -8,10 +8,10 @@ Extracted from the `hubssoca` homelab monorepo (was `@homelab/ui`). Read this be
 A token-driven component library. One `theme.css` + ~13 components. Configured along **two
 orthogonal axes**:
 
-| Axis        | Attribute      | Values              | Default |
-|-------------|----------------|---------------------|---------|
-| **Color**   | `data-theme`        | `dark` · `light`    | `dark`  |
-| **Size**    | `data-size-variant` | `sm` · `md` · `lg`  | `md`    |
+| Axis      | Attribute           | Values             | Default |
+| --------- | ------------------- | ------------------ | ------- |
+| **Color** | `data-theme`        | `dark` · `light`   | `dark`  |
+| **Size**  | `data-size-variant` | `sm` · `md` · `lg` | `md`    |
 
 Each component styles itself in a scoped `<style lang="scss">` block and consumes the global
 `--ss-*` tokens; flip an axis on any ancestor (usually `<html>`) and everything below
@@ -66,7 +66,7 @@ ships (`files` field); `src/`, `test/`, `docs/` do not.
 - **Docs are a RULE**: every user-facing change ships its docs. Update the component page in
   `documentation/src/lib/docs.config.ts` (`COMPONENTS` — `props`/`usage`/`description`/`notes`) for
   any API change, and `docs/tokens.md` (+ `docs/themes.md` when colors/theming change) for any token
-  add/rename/value change. Keep `pnpm docs:test` green. Content = *what exists today* — no
+  add/rename/value change. Keep `pnpm docs:test` green. Content = _what exists today_ — no
   speculative APIs.
 - **Agile is a RULE**: update `agile/` items on any change (move status, add stories/tasks, bump
   `updated`), then `node build.mjs` in `agile/` to rebuild the board.
@@ -78,23 +78,31 @@ pnpm install            # deps (postinstall runs svelte-kit sync)
 pnpm dev                # showcase app: live theme + size toggles
 pnpm test               # Vitest suite (run once)
 pnpm test:watch         # Vitest watch
+pnpm test:coverage      # Vitest + v8 coverage report (coverage/)
+pnpm lint               # ESLint (flat config, svelte + ts; severity baseline in eslint.config.js)
+pnpm format             # Prettier --write (no-semi, single quotes, 2-space, 100 cols)
+pnpm format:check       # Prettier --check (CI gate)
+pnpm check              # svelte-check (type-checks src + test under the SvelteKit tsconfig)
 pnpm pack               # build dist/ via prepack (sync → svelte-package → build:css → publint), make tarball
 pnpm build:css          # compile src/styles/theme.scss → dist/theme.css (Dart Sass)
 pnpm storybook          # Storybook dev server (port 6006): component pages + axis toolbar
 pnpm build-storybook    # static Storybook build → storybook-static/ (gitignored)
+pnpm release            # release helper: validates bump/branch, drafts changelog stub, prints git-flow steps
 ```
 
 Storybook config lives in `.storybook/` (`main.ts`, `preview.ts`); stories live in `src/stories/`
 (**never** `src/lib/` — `svelte-package` would publish them). Stories use Svelte CSF
 (`*.stories.svelte`); the preview exposes both design axes as toolbar globals applied to `<html>`.
-Not wired into CI. **Deploys to Vercel** as its own project alongside the docs site — the repo-root
+CI builds it (`pnpm build-storybook`) so a broken story can't merge. **Deploys to Vercel** as its own project alongside the docs site — the repo-root
 `vercel.json` branches its `buildCommand` on a `VERCEL_DEPLOY_TARGET=storybook` env var (agile
-`DS-0056`); see `documentation/CLAUDE.md` → *Storybook deployment* for the dashboard setup and the
+`DS-0056`); see `documentation/CLAUDE.md` → _Storybook deployment_ for the dashboard setup and the
 `VITE_STORYBOOK_URL` docs-embed wiring.
 
-Note: `pnpm check` (svelte-check) currently reports a known `$lib` alias error under its tsconfig
-context — pre-existing from the library template, not a real type bug. CI does **not** run it; it
-runs `pnpm test` + `pnpm pack`.
+Note: the old "known `$lib` alias error" in `pnpm check` is **fixed** (DS-0076) — the root
+`tsconfig.json` no longer overrides `module`/`moduleResolution` to `NodeNext` (it inherits
+`bundler` from `.svelte-kit/tsconfig.json`), and `test/types.d.ts` makes the `vitest-axe`
+matcher types visible. `pnpm check` is clean (0 errors)
+and CI enforces it as a blocking step.
 
 ## Adding / changing a component
 
@@ -120,15 +128,26 @@ Branching model: **git-flow**.
 - `hotfix/<x.y.z>` — branch off `main` for urgent fixes, merge into `main` (tagged) **and** `develop`.
 
 Rules:
+
 - **No direct pushes to `main` or `develop`** — both are protected; merge only via PR with green CI.
-- CI (`.github/workflows/ci.yml`) runs `pnpm test` + `pnpm pack` on every PR and on pushes to
-  `main`/`develop`. A PR cannot merge until the `test` check passes.
+- CI (`.github/workflows/ci.yml`) runs on every PR and on pushes to `main`/`develop`, as a single
+  `test` job (the required branch-protection check): `pnpm lint` → `pnpm format:check` → `pnpm check` → `pnpm test:coverage` (coverage artifact) → `pnpm docs:test` → `pnpm pack` (release
+  dry-run incl. publint) → `pnpm build-storybook`. Node 24 + pnpm pinned via
+  `packageManager`/corepack; concurrency cancels superseded runs. A PR cannot merge until the `test` check passes.
 - Conventional Commits for messages (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`…). End commit
   messages with the co-author trailer: `Co-Authored-By: Claude <noreply@anthropic.com>`.
 
 ## Releasing
 
-1. From `develop`: bump `version` in `package.json` (semver; the `--ss-` rename is breaking → ≥ `0.2.0`).
-2. `release/<x.y.z>` → PR into `main`; merge when green; tag `vX.Y.Z` + GitHub release.
-3. `pnpm publish --access public` (npm 2FA → pass `--otp <code>`). `prepack` rebuilds `dist/`.
-4. Merge `main` back into `develop`.
+1. From `develop`: bump `version` in `package.json` (semver; until `1.0.0` minors may break),
+   branch `release/<x.y.z>`.
+2. Run `pnpm release` — it validates the bump against the last tag and the branch name, and
+   drafts a CHANGELOG stub from conventional commits (`--write` inserts it under
+   `## [Unreleased]`; polish it by hand).
+3. PR `release/<x.y.z>` into `main`; merge when green (CI's `pnpm pack` is the release dry-run);
+   tag `vX.Y.Z` + GitHub release.
+4. `pnpm publish --access public --provenance --otp <code>` (npm 2FA; `--provenance` attaches a
+   supply-chain attestation — requires the repo to be the linked npm package origin). `prepack`
+   rebuilds `dist/`. Full trusted-publishing from CI (OIDC, no local token) is intentionally out
+   of scope for now — publishing stays a manual, provenance-attested step.
+5. Merge `main` back into `develop` (git-flow back-merge).

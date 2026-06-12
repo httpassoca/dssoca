@@ -1,8 +1,8 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import Card from '$lib/components/Card.svelte';
-  import Badge from '$lib/components/Badge.svelte';
-  import Button from '$lib/components/Button.svelte';
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import Card from '$lib/components/Card.svelte'
+  import Badge from '$lib/components/Badge.svelte'
+  import Button from '$lib/components/Button.svelte'
 
   // Card has a required `children` snippet and optional `title`, `meta`, and
   // `action` snippets, so every story is driven through the shared `template`
@@ -21,6 +21,20 @@
         control: 'text',
         description: 'Secondary label rendered to the right of the title.',
       },
+      description: {
+        control: 'text',
+        description: 'Muted description rendered under the heading.',
+      },
+      variant: {
+        control: { type: 'inline-radio' },
+        options: ['outlined', 'elevated'],
+        description: 'Surface style: outlined (default) or elevated (shadow tokens).',
+      },
+      size: {
+        control: { type: 'inline-radio' },
+        options: ['sm', 'md', 'lg'],
+        description: 'Token size override; inherits the ancestor data-size-variant when unset.',
+      },
       withAction: {
         control: 'boolean',
         description: 'Render a demo action button in the header.',
@@ -29,15 +43,20 @@
     args: {
       title: 'Card title',
       meta: '',
+      description: '',
+      variant: 'outlined',
       withAction: false,
     },
-  });
+  })
 </script>
 
 {#snippet template(args: Record<string, unknown>)}
   <Card
     title={args.title as string | undefined}
     meta={args.meta as string | undefined}
+    description={(args.description as string) || undefined}
+    variant={args.variant as 'outlined' | 'elevated'}
+    size={args.size as 'sm' | 'md' | 'lg' | undefined}
   >
     {#snippet action()}
       {#if args.withAction}
@@ -55,7 +74,10 @@
 <Story name="TitleOnly" args={{ title: 'Services', meta: '', withAction: false }} />
 
 <!-- Header with title + meta label -->
-<Story name="TitleAndMeta" args={{ title: 'Services', meta: '6 of 7 healthy', withAction: false }} />
+<Story
+  name="TitleAndMeta"
+  args={{ title: 'Services', meta: '6 of 7 healthy', withAction: false }}
+/>
 
 <!-- Header with title, meta, and an action button -->
 <Story name="WithAction" args={{ title: 'Log stream', meta: 'live', withAction: true }} />
@@ -88,7 +110,9 @@
   {#snippet children()}
     <Card title="Build #482" description="main · 2m ago">
       {#snippet media()}
-        <div style="height:80px;background:var(--ss-bg-inset);border-bottom:1px solid var(--ss-line)"></div>
+        <div
+          style="height:80px;background:var(--ss-bg-inset);border-bottom:1px solid var(--ss-line)"
+        ></div>
       {/snippet}
       <p style="margin:0;font-size:13px">Body content with a footer band below.</p>
       {#snippet footer()}
@@ -113,7 +137,9 @@
     <Card title="Queue" meta="4 items">
       <div style="display:flex;flex-direction:column;gap:4px">
         {#each ['Dune: Part Two', 'Oppenheimer', 'Past Lives', 'Poor Things'] as film}
-          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--ss-line);font-size:12px">
+          <div
+            style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--ss-line);font-size:12px"
+          >
             <span>{film}</span>
             <Badge tone="info">to_watch</Badge>
           </div>

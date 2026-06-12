@@ -14,12 +14,46 @@
 
 :root {
   // Bar height tracks the top-bar shell height so the chrome reads consistent.
-  --ss-bottom-nav-h:        var(--ss-shell-top-h, 48px);
+  --ss-bottom-nav-h: var(--ss-shell-top-h, 48px);
   // Horizontal/vertical padding inside each tab, from the spacing scale.
-  --ss-bottom-nav-px:       var(--ss-s-2, 8px);
-  --ss-bottom-nav-tab-py:   var(--ss-s-1, 4px);
+  --ss-bottom-nav-px: var(--ss-s-2, 8px);
+  --ss-bottom-nav-tab-py: var(--ss-s-1, 4px);
   // Gap between the glyph and its label.
-  --ss-bottom-nav-gap:      4px;
+  --ss-bottom-nav-gap: 4px;
   // Label type size — micro chrome label.
   --ss-bottom-nav-label-fs: var(--ss-ui-xs, 11px);
+}
+
+// ------------------------------------------------------------
+//  Count badge (DS-0068) — the badge pinned to the tab glyph was hardcoded
+//  px (top -6px / left 50%+6px / 14px box / 9px type / 3px pad), so it
+//  ignored the size axis. md mirrors those values exactly (visually
+//  unchanged); sm/lg step the offsets/box/type down/up with the chrome.
+// ------------------------------------------------------------
+:root,
+[data-size-variant='md'] {
+  --ss-bottom-nav-badge-top: -6px; // lift above the glyph
+  --ss-bottom-nav-badge-dx: 6px; // horizontal offset from the glyph centre
+  --ss-bottom-nav-badge-min-w: 14px;
+  --ss-bottom-nav-badge-h: 14px;
+  --ss-bottom-nav-badge-fs: 9px;
+  --ss-bottom-nav-badge-px: 3px;
+}
+
+[data-size-variant='sm'] {
+  --ss-bottom-nav-badge-top: -5px;
+  --ss-bottom-nav-badge-dx: 5px;
+  --ss-bottom-nav-badge-min-w: 12px;
+  --ss-bottom-nav-badge-h: 12px;
+  --ss-bottom-nav-badge-fs: 8px;
+  --ss-bottom-nav-badge-px: 2px;
+}
+
+[data-size-variant='lg'] {
+  --ss-bottom-nav-badge-top: -7px;
+  --ss-bottom-nav-badge-dx: 7px;
+  --ss-bottom-nav-badge-min-w: 16px;
+  --ss-bottom-nav-badge-h: 16px;
+  --ss-bottom-nav-badge-fs: 10px;
+  --ss-bottom-nav-badge-px: 4px;
 }

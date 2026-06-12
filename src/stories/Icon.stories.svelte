@@ -1,9 +1,9 @@
 <script module lang="ts">
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import Icon, { PATHS } from '$lib/components/Icon.svelte';
-  import type { IconName } from '$lib/components/Icon.svelte';
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import Icon, { PATHS } from '$lib/components/Icon.svelte'
+  import type { IconName } from '$lib/components/Icon.svelte'
 
-  const ALL_NAMES = Object.keys(PATHS) as IconName[];
+  const ALL_NAMES = Object.keys(PATHS) as IconName[]
 
   /** DS-0087: nav/social additions, shown in their own story. */
   const NAV_SOCIAL_NAMES: IconName[] = [
@@ -14,7 +14,7 @@
     'linkedin',
     'language',
     'color-swatch',
-  ];
+  ]
 
   const { Story } = defineMeta({
     title: 'Components/Icon',
@@ -60,7 +60,7 @@
       name: 'grid',
       px: 24,
     },
-  });
+  })
 </script>
 
 {#snippet template(args: Record<string, unknown>)}
@@ -101,6 +101,6 @@
   </div>
 {/snippet}
 
-<Story name="Nav & social glyphs" render={navSocial} args={{ px: 32 }} />
+<Story name="Nav & social glyphs" template={navSocial} args={{ px: 32 }} />
 
-<Story name="Gallery" render={gallery} args={{ px: 32 }} />
+<Story name="Gallery" template={gallery} args={{ px: 32 }} />

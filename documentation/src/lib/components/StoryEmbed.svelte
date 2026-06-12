@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { Icon } from 'dssoca';
-  import { storyUrl, storybookLink, STORYBOOK_URL } from '$lib/docs.config';
+  import { Icon } from 'dssoca'
+  import { storyUrl, storybookLink, STORYBOOK_URL } from '$lib/docs.config'
 
   interface Props {
-    storyId: string;
-    title: string;
+    storyId: string
+    title: string
     /** iframe height in px. */
-    height?: number;
+    height?: number
   }
-  let { storyId, title, height = 320 }: Props = $props();
+  let { storyId, title, height = 320 }: Props = $props()
 </script>
 
 <div class="embed">
@@ -25,8 +25,7 @@
     style="height: {height}px"
   ></iframe>
   <p class="hint">
-    Demo loads from <code>{STORYBOOK_URL}</code>. Run <code>pnpm storybook</code> for it to render
-    locally.
+    Demo loads from <code>{STORYBOOK_URL}</code>. Run <code>pnpm storybook</code> for it to render locally.
   </p>
 </div>
 

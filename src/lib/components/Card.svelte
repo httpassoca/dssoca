@@ -96,7 +96,13 @@
     <div class="foot">{@render footer()}</div>
   {/if}
   {#if href}
-    <a class="overlay" {href} {onclick} onkeydown={onKeydown} aria-labelledby={title ? titleId : undefined}>
+    <a
+      class="overlay"
+      {href}
+      {onclick}
+      onkeydown={onKeydown}
+      aria-labelledby={title ? titleId : undefined}
+    >
       <span class="sr-only">{typeof title === 'string' ? title : 'Open'}</span>
     </a>
   {/if}
@@ -116,12 +122,19 @@
 
     &.interactive {
       cursor: pointer;
-      transition: box-shadow var(--ss-dur-fast) var(--ss-ease),
+      transition:
+        box-shadow var(--ss-dur-fast) var(--ss-ease),
         border-color var(--ss-dur-fast) var(--ss-ease);
 
-      &:hover { border-color: var(--ss-line-strong); }
-      &.elevated:hover { box-shadow: var(--ss-shadow-2); }
-      &:focus-within { border-color: var(--ss-line-strong); }
+      &:hover {
+        border-color: var(--ss-line-strong);
+      }
+      &.elevated:hover {
+        box-shadow: var(--ss-shadow-2);
+      }
+      &:focus-within {
+        border-color: var(--ss-line-strong);
+      }
     }
   }
 
@@ -131,41 +144,72 @@
     line-height: 0;
     :global(img),
     :global(svg),
-    :global(video) { display: block; width: 100%; }
+    :global(video) {
+      display: block;
+      width: 100%;
+    }
   }
 
   .head {
     padding: var(--ss-panel-head-py) var(--ss-panel-head-px);
     border-bottom: 1px solid var(--ss-line);
-    display: flex; align-items: flex-start; justify-content: space-between;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
     gap: var(--ss-gap-sm);
-    font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm);
-    color: var(--ss-fg-faint); text-transform: uppercase; letter-spacing: 0.06em;
+    font-family: var(--ss-font-mono);
+    font-size: var(--ss-ui-sm);
+    color: var(--ss-fg-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 
-    .heading { display: flex; flex-direction: column; gap: var(--ss-s-1); min-width: 0; }
-    .title { color: var(--ss-fg); letter-spacing: 0.06em; }
+    .heading {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ss-s-1);
+      min-width: 0;
+    }
+    .title {
+      color: var(--ss-fg);
+      letter-spacing: 0.06em;
+    }
     .desc {
-      color: var(--ss-fg-muted); text-transform: none; letter-spacing: normal;
+      color: var(--ss-fg-muted);
+      text-transform: none;
+      letter-spacing: normal;
       font-family: var(--ss-font-body);
     }
-    .meta  { color: var(--ss-fg-faint); text-transform: lowercase; letter-spacing: 0.04em; }
+    .meta {
+      color: var(--ss-fg-faint);
+      text-transform: lowercase;
+      letter-spacing: 0.04em;
+    }
   }
 
   // Header controls sit above the link overlay so nested controls stay clickable.
   .actions {
-    position: relative; z-index: 1;
-    display: flex; gap: var(--ss-gap); align-items: center;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: var(--ss-gap);
+    align-items: center;
   }
 
-  .body { padding: var(--ss-panel-body-py) var(--ss-panel-body-px); }
+  .body {
+    padding: var(--ss-panel-body-py) var(--ss-panel-body-px);
+  }
 
   .foot {
-    position: relative; z-index: 1;
+    position: relative;
+    z-index: 1;
     padding: var(--ss-panel-head-py) var(--ss-panel-head-px);
     border-top: 1px solid var(--ss-line);
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: var(--ss-gap-sm);
-    font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm);
+    font-family: var(--ss-font-mono);
+    font-size: var(--ss-ui-sm);
     color: var(--ss-fg-faint);
   }
 
@@ -174,12 +218,21 @@
     position: static;
     &::after {
       content: '';
-      position: absolute; inset: 0; z-index: 0;
+      position: absolute;
+      inset: 0;
+      z-index: 0;
     }
   }
 
   .sr-only {
-    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

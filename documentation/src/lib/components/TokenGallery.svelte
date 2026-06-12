@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
+  import { onMount } from 'svelte'
+  import { browser } from '$app/environment'
 
   // Token groups rendered live from the real --ss-* custom properties. The
   // swatch/preview itself reads the var via CSS (so it recolours/rescales with
@@ -9,20 +9,37 @@
   const colorGroups: { title: string; tokens: string[] }[] = [
     {
       title: 'surfaces',
-      tokens: ['--ss-bg', '--ss-bg-elev', '--ss-bg-elev-hover', '--ss-line', '--ss-line-strong', '--ss-hover'],
+      tokens: [
+        '--ss-bg',
+        '--ss-bg-elev',
+        '--ss-bg-elev-hover',
+        '--ss-line',
+        '--ss-line-strong',
+        '--ss-hover',
+      ],
     },
     {
       title: 'foreground',
       tokens: ['--ss-fg', '--ss-fg-shine', '--ss-fg-muted', '--ss-fg-faint', '--ss-fg-on-primary'],
     },
-    { title: 'brand', tokens: ['--ss-primary', '--ss-primary-soft', '--ss-primary-hover', '--ss-lime'] },
+    {
+      title: 'brand',
+      tokens: ['--ss-primary', '--ss-primary-soft', '--ss-primary-hover', '--ss-lime'],
+    },
     {
       title: 'status',
       tokens: ['--ss-red', '--ss-yellow', '--ss-blue', '--ss-cyan', '--ss-purple'],
     },
     {
       title: 'sentiment',
-      tokens: ['--ss-success', '--ss-success-soft', '--ss-danger', '--ss-danger-hover', '--ss-danger-soft', '--ss-skeleton'],
+      tokens: [
+        '--ss-success',
+        '--ss-success-soft',
+        '--ss-danger',
+        '--ss-danger-hover',
+        '--ss-danger-soft',
+        '--ss-skeleton',
+      ],
     },
     {
       title: 'log levels',
@@ -41,9 +58,15 @@
     },
     {
       title: 'code',
-      tokens: ['--ss-code-bg', '--ss-code-fg', '--ss-code-string', '--ss-code-keyword', '--ss-code-func'],
+      tokens: [
+        '--ss-code-bg',
+        '--ss-code-fg',
+        '--ss-code-string',
+        '--ss-code-keyword',
+        '--ss-code-func',
+      ],
     },
-  ];
+  ]
 
   const typeScale = [
     '--ss-size-display',
@@ -53,7 +76,7 @@
     '--ss-size-body',
     '--ss-size-sm',
     '--ss-size-xs',
-  ];
+  ]
 
   const spacing = [
     '--ss-s-1',
@@ -66,7 +89,7 @@
     '--ss-s-10',
     '--ss-s-12',
     '--ss-s-16',
-  ];
+  ]
 
   // Size-axis tokens — these change when you flip data-size-variant.
   const sizeAxis = [
@@ -88,26 +111,26 @@
     '--ss-toast-swipe',
     '--ss-empty-glyph',
     '--ss-empty-max-w',
-  ];
+  ]
 
-  let version = $state(0);
+  let version = $state(0)
 
   function val(name: string): string {
-    if (!browser) return '';
+    if (!browser) return ''
     // `version` read makes resolved values recompute on axis change.
-    version;
-    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    version
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
   }
 
   onMount(() => {
-    const obs = new MutationObserver(() => (version += 1));
+    const obs = new MutationObserver(() => (version += 1))
     obs.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['data-theme', 'data-size-variant'],
-    });
-    version += 1; // initial read after hydration
-    return () => obs.disconnect();
-  });
+    })
+    version += 1 // initial read after hydration
+    return () => obs.disconnect()
+  })
 </script>
 
 <div class="gallery">

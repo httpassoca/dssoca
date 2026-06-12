@@ -14,11 +14,7 @@
     children?: Snippet
   }
 
-  let {
-    page = false,
-    size,
-    children,
-  }: Props = $props()
+  let { page = false, size, children }: Props = $props()
 </script>
 
 <!--
@@ -26,11 +22,7 @@
   the per-site "AppContent" wrappers. Full-bleed at narrow viewports (the
   max-width simply stops binding); gutters stay via the inline padding.
 -->
-<div
-  class="ss-container"
-  class:page
-  data-size-variant={resolveComponentSize('Container', size)}
->
+<div class="ss-container" class:page data-size-variant={resolveComponentSize('Container', size)}>
   {@render children?.()}
 </div>
 
@@ -40,18 +32,18 @@
   // property. Defaults mirror the `md` size; sm/lg rescale via the size axis.
   // Mirrored globally in src/styles/components/_container.scss.
   .ss-container {
-    --ss-container-max-w:   875px;
-    --ss-container-px:      var(--ss-main-px);
+    --ss-container-max-w: 875px;
+    --ss-container-px: var(--ss-main-px);
     --ss-container-page-py: var(--ss-s-10);
 
     &[data-size-variant='sm'] {
-      --ss-container-max-w:   760px;
-      --ss-container-px:      var(--ss-s-5);
+      --ss-container-max-w: 760px;
+      --ss-container-px: var(--ss-s-5);
       --ss-container-page-py: var(--ss-s-8);
     }
     &[data-size-variant='lg'] {
-      --ss-container-max-w:   1000px;
-      --ss-container-px:      var(--ss-s-12);
+      --ss-container-max-w: 1000px;
+      --ss-container-px: var(--ss-s-12);
       --ss-container-page-py: var(--ss-s-12);
     }
 

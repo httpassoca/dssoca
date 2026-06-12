@@ -1,27 +1,27 @@
 <script lang="ts">
-  import { highlight, langClass } from '$lib/highlight';
+  import { highlight, langClass } from '$lib/highlight'
 
   // A static, copy-able code block with Prism syntax highlighting. Token
   // colours come from the global `code.css` (the --ss-code-* tokens), so it
   // follows the theme axis.
   interface Props {
-    code: string;
-    lang?: string;
+    code: string
+    lang?: string
   }
-  let { code, lang = 'svelte' }: Props = $props();
+  let { code, lang = 'svelte' }: Props = $props()
 
-  const highlighted = $derived(highlight(code, lang));
-  const cls = $derived(langClass(lang));
+  const highlighted = $derived(highlight(code, lang))
+  const cls = $derived(langClass(lang))
 
-  let copied = $state(false);
-  let timer: ReturnType<typeof setTimeout> | undefined;
+  let copied = $state(false)
+  let timer: ReturnType<typeof setTimeout> | undefined
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(code);
-      copied = true;
-      clearTimeout(timer);
-      timer = setTimeout(() => (copied = false), 1500);
+      await navigator.clipboard.writeText(code)
+      copied = true
+      clearTimeout(timer)
+      timer = setTimeout(() => (copied = false), 1500)
     } catch {
       // clipboard unavailable (e.g. insecure context) — no-op
     }
@@ -68,7 +68,9 @@
     border: 1px solid var(--ss-line);
     padding: 2px 8px;
     cursor: pointer;
-    transition: color var(--ss-dur-fast) var(--ss-ease), border-color var(--ss-dur-fast) var(--ss-ease);
+    transition:
+      color var(--ss-dur-fast) var(--ss-ease),
+      border-color var(--ss-dur-fast) var(--ss-ease);
   }
   button:hover {
     color: var(--ss-primary);

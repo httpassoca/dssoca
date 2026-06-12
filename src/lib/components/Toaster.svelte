@@ -24,7 +24,24 @@
   const glyph: Record<ToastKind, string> = { success: '✓', error: '✕', info: 'i', loading: '' }
   // Honor prefers-reduced-motion: collapse the fly transition to an instant swap.
   const reduce = $derived(prefersReducedMotion.current)
-  const flyDuration = $derived(reduce ? 0 : 180)
+
+  // Fly duration reads the motion token (DS-0068) — the JS transition tracks
+  // `--ss-dur-fast` so theme/motion overrides apply, instead of a hardcoded
+  // 180ms. Falls back to 180ms (the previous value) when the stylesheet isn't
+  // present (e.g. jsdom, or the token entry not loaded).
+  let rootEl = $state<HTMLElement>()
+  function parseMs(raw: string): number | undefined {
+    const v = raw.trim()
+    if (!v) return undefined
+    const n = parseFloat(v)
+    if (!Number.isFinite(n) || n < 0) return undefined
+    return v.endsWith('ms') ? n : v.endsWith('s') ? n * 1000 : n
+  }
+  const tokenDuration = $derived.by(() => {
+    if (!rootEl || typeof getComputedStyle !== 'function') return 180
+    return parseMs(getComputedStyle(rootEl).getPropertyValue('--ss-dur-fast')) ?? 180
+  })
+  const flyDuration = $derived(reduce ? 0 : tokenDuration)
   // Bottom anchors slide in from below; centered ones come straight down/up.
   const flyX = $derived(position.endsWith('center') ? 0 : position.endsWith('left') ? -16 : 16)
   const flyY = $derived(position.endsWith('center') ? (position.startsWith('top') ? -16 : 16) : 0)
@@ -84,6 +101,7 @@
   aria-label="Notifications"
   data-position={position}
   data-size-variant={resolveComponentSize('Toaster', size)}
+  bind:this={rootEl}
 >
   {#each toasts.items as t (t.id)}
     <div
@@ -93,9 +111,7 @@
       aria-live={t.kind === 'error' ? 'assertive' : 'polite'}
       tabindex="-1"
       style:transform={dragId === t.id ? `translateX(${dragDx}px)` : undefined}
-      style:opacity={dragId === t.id
-        ? Math.max(0.3, 1 - Math.abs(dragDx) / 200)
-        : undefined}
+      style:opacity={dragId === t.id ? Math.max(0.3, 1 - Math.abs(dragDx) / 200) : undefined}
       transition:fly={{ x: flyX, y: flyY, duration: flyDuration }}
       onpointerenter={() => toasts.pause(t.id)}
       onpointerleave={() => dragId !== t.id && toasts.resume(t.id)}
@@ -187,16 +203,26 @@
 
     &:focus-visible {
       border-color: var(--ss-line-strong);
-      box-shadow: var(--ss-shadow-pop), 0 0 0 2px var(--ss-primary);
+      box-shadow:
+        var(--ss-shadow-pop),
+        0 0 0 2px var(--ss-primary);
     }
     &:not(.dragging) {
       transition: transform var(--ss-dur-fast) var(--ss-ease);
     }
 
-    &.success { border-left-color: var(--ss-primary); }
-    &.error   { border-left-color: var(--ss-red); }
-    &.info    { border-left-color: var(--ss-cyan); }
-    &.loading { border-left-color: var(--ss-fg-faint); }
+    &.success {
+      border-left-color: var(--ss-primary);
+    }
+    &.error {
+      border-left-color: var(--ss-red);
+    }
+    &.info {
+      border-left-color: var(--ss-cyan);
+    }
+    &.loading {
+      border-left-color: var(--ss-fg-faint);
+    }
 
     .ic {
       display: inline-flex;
@@ -208,9 +234,15 @@
       color: var(--ss-fg-on-primary);
       flex: none;
     }
-    &.success .ic { background: var(--ss-primary); }
-    &.error .ic   { background: var(--ss-red); }
-    &.info .ic    { background: var(--ss-cyan); }
+    &.success .ic {
+      background: var(--ss-primary);
+    }
+    &.error .ic {
+      background: var(--ss-red);
+    }
+    &.info .ic {
+      background: var(--ss-cyan);
+    }
 
     // Loading spinner — a square (zero-radius) ring that rotates; the
     // reduced-motion guard (.still) freezes it to a static accent box.
@@ -226,7 +258,10 @@
       border-color: var(--ss-cyan);
     }
 
-    .msg { flex: 1; line-height: 1.3; }
+    .msg {
+      flex: 1;
+      line-height: 1.3;
+    }
 
     .action {
       flex: none;
@@ -239,8 +274,14 @@
       line-height: 1;
       padding: var(--ss-s-1) var(--ss-s-2);
 
-      &:hover { background: var(--ss-hover); border-color: var(--ss-fg-faint); }
-      &:focus-visible { outline: 2px solid var(--ss-primary); outline-offset: 1px; }
+      &:hover {
+        background: var(--ss-hover);
+        border-color: var(--ss-fg-faint);
+      }
+      &:focus-visible {
+        outline: 2px solid var(--ss-primary);
+        outline-offset: 1px;
+      }
     }
 
     .x {
@@ -253,13 +294,20 @@
       line-height: 1;
       padding: 0;
 
-      &:hover { color: var(--ss-fg); }
-      &:focus-visible { outline: 2px solid var(--ss-primary); outline-offset: 1px; }
+      &:hover {
+        color: var(--ss-fg);
+      }
+      &:focus-visible {
+        outline: 2px solid var(--ss-primary);
+        outline-offset: 1px;
+      }
     }
   }
 
   @keyframes ss-toast-spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .ss-toast .spinner {

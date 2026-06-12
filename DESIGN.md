@@ -13,10 +13,10 @@ The system is configured along two independent axes. Each maps to a `data-*`
 attribute that any ancestor element can carry (usually `<html>`), and tokens
 cascade from there.
 
-| Axis       | Attribute             | Values               | Default |
-|------------|-----------------------|----------------------|---------|
-| **Color**  | `data-theme`          | `dark` · `light`     | `dark`  |
-| **Size**   | `data-size-variant`   | `sm` · `md` · `lg`   | `md`    |
+| Axis      | Attribute           | Values             | Default |
+| --------- | ------------------- | ------------------ | ------- |
+| **Color** | `data-theme`        | `dark` · `light`   | `dark`  |
+| **Size**  | `data-size-variant` | `sm` · `md` · `lg` | `md`    |
 
 The axes are orthogonal — any combination is valid (`dark/md`, `dark/sm`,
 `light/lg`, …).
@@ -61,9 +61,9 @@ root).
 import { applyDesignConfig } from 'dssoca'
 
 // flip axes; merges over current config; writes to <html>
-applyDesignConfig({ sizeVariant: 'sm' })                 // global: everything small
-applyDesignConfig({ theme: 'light' })                    // later, keeps size
-applyDesignConfig({ componentsSize: { Button: 'lg' } })  // all buttons large by default
+applyDesignConfig({ sizeVariant: 'sm' }) // global: everything small
+applyDesignConfig({ theme: 'light' }) // later, keeps size
+applyDesignConfig({ componentsSize: { Button: 'lg' } }) // all buttons large by default
 ```
 
 Per instance, set the component's `size` prop directly: `<Button size="lg">`.
@@ -90,7 +90,7 @@ Every size-sensitive value is a CSS variable that flips with
 ## Usage
 
 ```ts
-import 'dssoca/theme.css'   // global tokens, base styles + app-shell layout
+import 'dssoca/theme.css' // global tokens, base styles + app-shell layout
 import { Button, Card, applyDesignConfig } from 'dssoca'
 
 applyDesignConfig({ sizeVariant: 'md' }) // optional — md is already default
@@ -106,7 +106,7 @@ The `ss-` prefix is reserved for **component-identity / design-system** classes
 (`.ss-btn`, `.ss-panel`, `.ss-badge`, …); generic internal elements use plain,
 unprefixed scoped names (`.head`, `.title`, `.dot`, …).
 
-> **Breaking in 0.3.0:** the global `.ss-*` *component* rules were removed from
+> **Breaking in 0.3.0:** the global `.ss-*` _component_ rules were removed from
 > `theme.css` (they now live in the components). Use the exported components;
 > hand-rolling raw `<button class="ss-btn">` against `theme.css` no longer works.
 
@@ -115,6 +115,31 @@ unprefixed scoped names (`.head`, `.title`, `.dot`, …).
 > with `compact → sm`, `comfy → md` (+ new `lg`), `applyDesignConfig({ density })`
 > → `{ sizeVariant }`. Components gained a `size` prop; the icon-style numeric
 > `size` prop (e.g. `Icon`) was renamed to `px`.
+
+## Component API conventions
+
+Prop naming follows one convention across the library (DS-0078):
+
+- **`title`** — the _visible_ heading / primary text of a content block
+  (Card, EmptyState).
+- **`label`** — the _visible_ text that names a control or an item inside one
+  (Accordion items, Menu items, `SegmentOption`, Topbar tabs).
+- **`ariaLabel`** (camelCase) — the standard prop for a **non-visible
+  accessible name**: icon-only controls, landmarks, and live regions
+  (BottomNav, LogStream, Topbar's `<nav>`, EmptyState's status region). It
+  maps straight to the `aria-label` attribute.
+- _Grandfathered exceptions_ (kept for backwards compatibility; any rename is
+  batched for a semver-major): `Menu.label` and `SegmentedControl.label`
+  provide a non-visible accessible name and would be `ariaLabel` under this
+  convention.
+
+Disabled states: interactive components take **`disabled`** — per item on
+collection components (`MenuItem`, `AccordionItem`, `SegmentOption`,
+BottomNav items) and component-wide where it makes sense (Link,
+SegmentedControl). Disabled chrome is rendered **inert** (no activation, no
+navigation, out of or skipped by the keyboard model) _and_ communicated to
+assistive tech (native `disabled` or `aria-disabled="true"`); it is never
+just styled out.
 
 ## Preview both modes
 

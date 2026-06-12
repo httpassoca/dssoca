@@ -14,30 +14,30 @@
 //  lands. House rule: zero border-radius; size-sensitive values are tokens.
 // ============================================================
 
-[data-size-variant="md"],
+[data-size-variant='md'],
 :root {
   --ss-acc-head-py: var(--ss-row-py);
   --ss-acc-head-px: var(--ss-row-px);
   --ss-acc-body-py: var(--ss-s-3);
   --ss-acc-body-px: var(--ss-row-px);
   --ss-acc-chevron: 9px;
-  --ss-acc-gap:     var(--ss-s-3);
+  --ss-acc-gap: var(--ss-s-3);
 }
 
-[data-size-variant="sm"] {
+[data-size-variant='sm'] {
   --ss-acc-head-py: var(--ss-s-1);
   --ss-acc-head-px: var(--ss-s-2);
   --ss-acc-body-py: var(--ss-s-2);
   --ss-acc-body-px: var(--ss-s-2);
   --ss-acc-chevron: 7px;
-  --ss-acc-gap:     var(--ss-s-2);
+  --ss-acc-gap: var(--ss-s-2);
 }
 
-[data-size-variant="lg"] {
+[data-size-variant='lg'] {
   --ss-acc-head-py: var(--ss-s-3);
   --ss-acc-head-px: var(--ss-s-4);
   --ss-acc-body-py: var(--ss-s-4);
   --ss-acc-body-px: var(--ss-s-4);
   --ss-acc-chevron: 11px;
-  --ss-acc-gap:     var(--ss-s-4);
+  --ss-acc-gap: var(--ss-s-4);
 }

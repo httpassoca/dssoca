@@ -16,17 +16,20 @@ env:
   COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
 
 jobs:
+  # Single job (the branch-protection required check is named `test`); steps are
+  # ordered cheap-to-expensive so failures surface fast.
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 24
+          node-version: 24 # matches package.json#engines
 
-      # Activate pnpm from package.json#packageManager under Node 24.
+      # Activate pnpm from package.json#packageManager under Node 24 — this pins
+      # the exact pnpm version (11.1.3) consistently with local installs.
       # (pnpm/action-setup self-installs under the Actions runtime Node 20,
       # which pnpm@11 rejects — corepack runs pnpm under Node 24 instead.)
       - name: Enable pnpm via corepack
@@ -46,8 +49,36 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Test
-        run: pnpm test
+      - name: Lint
+        run: pnpm lint
 
-      - name: Build + validate package
+      - name: Format check (prettier)
+        run: pnpm format:check
+
+      # svelte-check (DS-0076).
+      - name: Type-check (svelte-check)
+        run: pnpm check
+
+      # Tests + v8 coverage in one pass; thresholds (if any) come from
+      # vitest.config.ts. Summary prints in the log; full report is an artifact.
+      - name: Test (with coverage)
+        run: pnpm test:coverage
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          if-no-files-found: ignore
+
+      - name: Docs tests
+        run: pnpm docs:test
+
+      # Release dry-run: prepack → svelte-package + theme/tokens CSS + publint,
+      # then a tarball — exactly what `pnpm publish` would ship (DS-0077).
+      - name: Build + validate package (release dry-run)
         run: pnpm pack
+
+      - name: Build Storybook
+        run: pnpm build-storybook

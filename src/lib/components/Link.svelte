@@ -16,6 +16,13 @@
     size?: Size
     /** Destination URL. */
     href?: string
+    /**
+     * Render the link inert (DS-0078): the `href` is dropped (no navigation,
+     * out of the tab order), link semantics are kept via `role="link"`, and
+     * the state is communicated to AT with `aria-disabled="true"`. Forwarded
+     * `onclick` handlers do not fire while disabled.
+     */
+    disabled?: boolean
     children?: Snippet
     /** Bound reference to the underlying <a>. */
     el?: HTMLAnchorElement
@@ -26,34 +33,50 @@
     external,
     size,
     href,
+    disabled = false,
     children,
     el = $bindable(),
     target,
     rel,
+    onclick,
     ...rest
   }: Props = $props()
 
   // Off-site detection: absolute http(s) URL, or a protocol-relative one.
   // Honoured only when `external` is left undefined (explicit wins).
-  const looksExternal = $derived(
-    typeof href === 'string' && /^(https?:)?\/\//i.test(href),
-  )
-  const isExternal = $derived(external ?? looksExternal)
+  const looksExternal = $derived(typeof href === 'string' && /^(https?:)?\/\//i.test(href))
+  // A disabled link gets no external affordances (it cannot navigate).
+  const isExternal = $derived(!disabled && (external ?? looksExternal))
 
   // External links open in a new tab and carry the security rel; callers can
   // still override target/rel explicitly via the forwarded attributes.
   const resolvedTarget = $derived(target ?? (isExternal ? '_blank' : undefined))
   const resolvedRel = $derived(rel ?? (isExternal ? 'noopener noreferrer' : undefined))
+
+  // Swallow activation while disabled; otherwise defer to a forwarded onclick.
+  function handleClick(e: MouseEvent) {
+    if (disabled) {
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
+    onclick?.(e as MouseEvent & { currentTarget: EventTarget & HTMLAnchorElement })
+  }
 </script>
 
 <a
   bind:this={el}
-  {href}
+  href={disabled ? undefined : href}
   class="ss-link {variant}"
   class:external={isExternal}
+  class:disabled
+  role={disabled ? 'link' : undefined}
+  aria-disabled={disabled ? 'true' : undefined}
+  tabindex={disabled ? -1 : undefined}
   data-size-variant={resolveComponentSize('Link', size)}
-  target={resolvedTarget}
-  rel={resolvedRel}
+  target={disabled ? undefined : resolvedTarget}
+  rel={disabled ? undefined : resolvedRel}
+  onclick={handleClick}
   {...rest}
 >
   {#if children}<span class="label">{@render children()}</span>{/if}
@@ -79,6 +102,12 @@
     &:focus-visible {
       outline: 2px solid var(--ss-primary);
       outline-offset: 2px;
+    }
+
+    // Disabled (DS-0078): inert — same dimming treatment as other controls.
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
     }
   }
 
@@ -114,6 +143,11 @@
       box-shadow: var(--ss-shadow-glow);
     }
 
+    // No underline reveal while disabled.
+    &.disabled .label::after {
+      display: none;
+    }
+
     &:visited {
       color: var(--ss-fg-muted);
     }
@@ -139,6 +173,12 @@
       background: var(--ss-primary-hover);
       border-color: var(--ss-primary-hover);
       box-shadow: var(--ss-shadow-glow);
+    }
+    // Disabled button-variant links keep the idle fill (no hover feedback).
+    &.disabled:hover {
+      background: var(--ss-primary);
+      border-color: var(--ss-primary);
+      box-shadow: none;
     }
     // No underline treatment for the button variant.
     .label::after {

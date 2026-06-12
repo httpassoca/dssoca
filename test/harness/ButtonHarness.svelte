@@ -47,5 +47,5 @@
   {onclick}
   {leading}
   {trailing}
-  {...rest}
->{text}</Button>
+  {...rest}>{text}</Button
+>

@@ -15,13 +15,7 @@
     children?: Snippet
   }
 
-  let {
-    level = 1,
-    accent = true,
-    centered = false,
-    size,
-    children,
-  }: Props = $props()
+  let { level = 1, accent = true, centered = false, size, children }: Props = $props()
 
   const tag = $derived(`h${level}`)
 </script>
@@ -48,18 +42,18 @@
   // Defaults mirror the `md` size; sm/lg rescale via the size axis. Mirrored
   // globally in src/styles/components/_heading.scss.
   .ss-heading {
-    --ss-heading-size:   var(--ss-size-display);
-    --ss-heading-mb:     var(--ss-s-4);
+    --ss-heading-size: var(--ss-size-display);
+    --ss-heading-mb: var(--ss-s-4);
     --ss-heading-shadow: 3px;
 
     &[data-size-variant='sm'] {
-      --ss-heading-size:   clamp(30px, 6.5vw, 44px);
-      --ss-heading-mb:     var(--ss-s-3);
+      --ss-heading-size: clamp(30px, 6.5vw, 44px);
+      --ss-heading-mb: var(--ss-s-3);
       --ss-heading-shadow: 2px;
     }
     &[data-size-variant='lg'] {
-      --ss-heading-size:   clamp(44px, 9vw, 64px);
-      --ss-heading-mb:     var(--ss-s-6);
+      --ss-heading-size: clamp(44px, 9vw, 64px);
+      --ss-heading-mb: var(--ss-s-6);
       --ss-heading-shadow: 4px;
     }
 
@@ -77,9 +71,13 @@
     position: relative;
     z-index: 0;
 
-    &.centered { text-align: center; }
+    &.centered {
+      text-align: center;
+    }
 
-    .txt { position: relative; }
+    .txt {
+      position: relative;
+    }
 
     // Accent underline — a primary bar behind the lower third of the text
     // (zero border-radius, house rule). Behind the glyphs via z-index: -1.
