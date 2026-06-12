@@ -50,7 +50,9 @@ export const COMPONENT_NAMES = [
   'BottomNav',
   'Button',
   'Card',
+  'Container',
   'EmptyState',
+  'Heading',
   'Icon',
   'Image',
   'Input',
@@ -62,6 +64,8 @@ export const COMPONENT_NAMES = [
   'ServiceCard',
   'Sidebar',
   'Sparkline',
+  'Spinner',
+  'Textarea',
   'Toaster',
   'Topbar',
 ] as const

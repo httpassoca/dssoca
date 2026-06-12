@@ -19,6 +19,13 @@
     wallet:   '<rect x="3" y="6" width="18" height="14"/><path d="M3 10h18M17 14h2"/>',
     target:   '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" class="ss-icon-dot"/>',
     spinner:  '<path d="M12 3a9 9 0 1 0 9 9" stroke-linecap="round"/>',
+    home:     '<path d="M4 11l8-8 8 8"/><path d="M6 9v12h12V9"/><path d="M10 21v-6h4v6"/>',
+    briefcase: '<rect x="3" y="7" width="18" height="13"/><path d="M9 7V4h6v3M3 12h18"/>',
+    folder:   '<path d="M3 5h7l2 3h9v13H3z"/><path d="M3 8h9"/>',
+    github:   '<path d="M7 3h10l2 2v6l-2 3h-4l1 2v5h-4v-5l1-2H7l-2-3V5l2-2z"/><path d="M9 8h1M14 8h1"/>',
+    linkedin: '<rect x="3" y="3" width="18" height="18"/><path d="M8 16v-5M8 8v.01M12 16v-5h2l2 2v3"/>',
+    language: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3L8 12l4 9M12 3l4 9-4 9"/>',
+    'color-swatch': '<rect x="3" y="3" width="8" height="18"/><path d="M7 17v.01"/><path d="M11 19l8-8 2 2-8 8"/><path d="M13 21h8"/>',
   } as const
 
   export type IconName = keyof typeof BUILTIN_PATHS

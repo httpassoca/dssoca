@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/svelte';
+import { createRawSnippet } from 'svelte';
 import { axe } from 'vitest-axe';
 import MenuHarness from '../harness/MenuHarness.svelte';
 import type { MenuItem } from '$lib/components/Menu.svelte';
@@ -199,6 +200,90 @@ describe('Menu', () => {
 		it('applies the explicit size as data-size-variant on the root', () => {
 			const { container } = render(MenuHarness, { items: ITEMS, size: 'lg' });
 			expect(container.querySelector('.ss-menu')).toHaveAttribute('data-size-variant', 'lg');
+		});
+	});
+
+	// ----------------------------------------------------------------
+	//  DS-0088 — custom leading visual per item (leading / swatch / emoji)
+	// ----------------------------------------------------------------
+
+	describe('leading visual', () => {
+		it('icon items keep rendering an <svg> glyph (unchanged)', () => {
+			const items: MenuItem[] = [{ id: 'a', label: 'A', icon: 'grid' }];
+			const { container } = render(MenuHarness, { items, open: true });
+			expect(itemEls(container)[0].querySelector('svg.ss-icon')).not.toBeNull();
+		});
+
+		it('swatch renders a decorative square color chip in the leading slot', () => {
+			const items: MenuItem[] = [{ id: 'lime', label: 'Lime', swatch: 'rgb(190, 242, 100)' }];
+			const { container } = render(MenuHarness, { items, open: true });
+			const chip = itemEls(container)[0].querySelector('.lead.swatch') as HTMLElement;
+			expect(chip).not.toBeNull();
+			expect(chip).toHaveAttribute('aria-hidden', 'true');
+			expect(chip.getAttribute('style')).toContain('background: rgb(190, 242, 100)');
+			expect(chip.textContent).toBe('');
+		});
+
+		it('emoji renders a decorative text glyph in the leading slot', () => {
+			const items: MenuItem[] = [{ id: 'pt', label: 'Português', emoji: '🇧🇷' }];
+			const { container } = render(MenuHarness, { items, open: true });
+			const lead = itemEls(container)[0].querySelector('.lead.emoji') as HTMLElement;
+			expect(lead).not.toBeNull();
+			expect(lead).toHaveAttribute('aria-hidden', 'true');
+			expect(lead.textContent).toBe('🇧🇷');
+		});
+
+		it('leading snippet renders arbitrary markup, aria-hidden', () => {
+			const star = createRawSnippet(() => ({
+				render: () => '<b class="custom-lead">★</b>'
+			}));
+			const items: MenuItem[] = [{ id: 'fav', label: 'Favourites', leading: star }];
+			const { container } = render(MenuHarness, { items, open: true });
+			const lead = itemEls(container)[0].querySelector('.lead') as HTMLElement;
+			expect(lead).not.toBeNull();
+			expect(lead).toHaveAttribute('aria-hidden', 'true');
+			expect(lead.querySelector('.custom-lead')).not.toBeNull();
+		});
+
+		it('precedence: leading > swatch > emoji > icon', () => {
+			const star = createRawSnippet(() => ({
+				render: () => '<b class="custom-lead">★</b>'
+			}));
+			const items: MenuItem[] = [
+				{ id: 'a', label: 'A', leading: star, swatch: 'red', emoji: 'x', icon: 'grid' },
+				{ id: 'b', label: 'B', swatch: 'red', emoji: 'x', icon: 'grid' },
+				{ id: 'c', label: 'C', emoji: 'x', icon: 'grid' }
+			];
+			const { container } = render(MenuHarness, { items, open: true });
+			const [a, b, c] = itemEls(container);
+			expect(a.querySelector('.custom-lead')).not.toBeNull();
+			expect(a.querySelector('.swatch')).toBeNull();
+			expect(b.querySelector('.swatch')).not.toBeNull();
+			expect(b.querySelector('.emoji')).toBeNull();
+			expect(c.querySelector('.emoji')).not.toBeNull();
+			// icon loses to every custom leading visual
+			[a, b, c].forEach((row) => expect(row.querySelector('svg.ss-icon')).toBeNull());
+		});
+
+		it('the label still names the row (leading visuals are decorative)', () => {
+			const items: MenuItem[] = [
+				{ id: 'dark', label: 'Dark', swatch: '#111', selected: true },
+				{ id: 'pt', label: 'Português', emoji: '🇧🇷', selected: false }
+			];
+			const { container } = render(MenuHarness, { items, open: true });
+			const rows = itemEls(container);
+			expect(rows[0]).toHaveAccessibleName('Dark');
+			expect(rows[1]).toHaveAccessibleName('Português');
+		});
+
+		it('mixed icon + swatch + emoji menu has no axe violations', async () => {
+			const items: MenuItem[] = [
+				{ id: 'i', label: 'Icon row', icon: 'grid' },
+				{ id: 's', label: 'Swatch row', swatch: '#bef264' },
+				{ id: 'e', label: 'Emoji row', emoji: '🌐' }
+			];
+			const { container } = render(MenuHarness, { items, open: true, label: 'Mixed' });
+			expect(await axe(container, axeOpts)).toHaveNoViolations();
 		});
 	});
 

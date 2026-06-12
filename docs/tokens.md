@@ -251,6 +251,37 @@ Image also defines size-invariant tokens under `:root` (theme-aware where noted)
 
 (**Link** added no new tokens — it reuses the brand, motion, and chrome tokens above.)
 
+### Component size tokens (`DS-0079`)
+
+Adoption-gap components from the passoca migration. Same per-component-partial
+pattern as `DS-0043` (`src/styles/components/`, joined by `_index.scss`).
+
+**Heading** (`--ss-heading-*`)
+
+| Token | `sm` | `md` | `lg` | Role |
+|---|---|---|---|---|
+| `--ss-heading-size` | `clamp(30px, 6.5vw, 44px)` | `--ss-size-display` | `clamp(44px, 9vw, 64px)` | Display heading font size |
+| `--ss-heading-mb` | `--ss-s-3` | `--ss-s-4` | `--ss-s-6` | Bottom margin |
+| `--ss-heading-shadow` | `2px` | `3px` | `4px` | Background-colored text-shadow offset |
+
+**Container** (`--ss-container-*`)
+
+| Token | `sm` | `md` | `lg` | Role |
+|---|---|---|---|---|
+| `--ss-container-max-w` | `760px` | `875px` | `1000px` | Content max width |
+| `--ss-container-px` | `--ss-s-5` | `--ss-main-px` | `--ss-s-12` | Side gutters below max width |
+| `--ss-container-page-py` | `--ss-s-8` | `--ss-s-10` | `--ss-s-12` | Vertical padding in `page` mode |
+
+**Spinner** (`--ss-spinner-*`)
+
+| Token | `sm` | `md` | `lg` | Role |
+|---|---|---|---|---|
+| `--ss-spinner-font` | `13px` | `16px` | `22px` | Frame glyph font size |
+
+`--ss-spinner-color` is static (`:root` only): `var(--ss-primary)` — glyph + visible label color.
+
+(**Textarea** added no new tokens — it reuses the `--ss-input-*` field tokens.)
+
 ## 3. Static tokens — not axis-controlled
 
 Defined once under `:root`. Same in every theme/size.

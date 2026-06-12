@@ -26,6 +26,7 @@ export { default as Sparkline }   from './components/Sparkline.svelte'
 export { default as ServiceCard } from './components/ServiceCard.svelte'
 export { default as MetricTile }  from './components/MetricTile.svelte'
 export { default as Topbar }      from './components/Topbar.svelte'
+export { type TopbarTab, type TopbarServices } from './components/Topbar.svelte'
 export { default as Sidebar }     from './components/Sidebar.svelte'
 export { type SideItem, type SideGroup, type SideStatus } from './components/Sidebar.svelte'
 export { default as LogStream, type LogLevel, type LogLine } from './components/LogStream.svelte'
@@ -41,6 +42,13 @@ export { default as Link } from './components/Link.svelte'
 export { default as SegmentedControl, type SegmentOption } from './components/SegmentedControl.svelte'
 export { default as BottomNav, type BottomNavItem } from './components/BottomNav.svelte'
 export { default as Image, type ImageSource } from './components/Image.svelte'
+
+// Adoption-gap components from the passoca migration (DS-0079).
+export { default as Heading }   from './components/Heading.svelte'
+export { default as Container } from './components/Container.svelte'
+export { default as Textarea }  from './components/Textarea.svelte'
+export { default as Spinner, SPINNER_VARIANTS, SPINNER_VARIANT_NAMES } from './components/Spinner.svelte'
+export type { SpinnerVariant, SpinnerFrames } from './components/Spinner.svelte'
 
 export {
   toast,

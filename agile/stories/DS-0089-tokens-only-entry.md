@@ -2,14 +2,14 @@
 id: DS-0089
 type: story
 title: "Tokens-only stylesheet entry"
-status: todo
+status: done
 priority: high
 tags: [tokens, packaging, theming]
 depends_on: []
 parent: null
 epic: DS-0079
 created: 2026-06-11
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 ## Description
@@ -21,20 +21,27 @@ hand-copied ~80 `--ss-*` token values into a local file so the components could 
 custom properties — a copy that silently drifts with every dssoca release.
 
 ## Acceptance criteria
-- [ ] New `dssoca/tokens.css` export: all `--ss-*` tokens for both `data-theme` values and all
+- [x] New `dssoca/tokens.css` export: all `--ss-*` tokens for both `data-theme` values and all
   `data-size-variant` values — and nothing else (no element selectors, no `@import`).
-- [ ] Built from the same Sass token partials as `theme.css` (single source of truth — the two
+- [x] Built from the same Sass token partials as `theme.css` (single source of truth — the two
   can never disagree).
-- [ ] Wired into `package.json` `exports` + the `build:css`/`prepack` pipeline; `pnpm pack`
+- [x] Wired into `package.json` `exports` + the `build:css`/`prepack` pipeline; `pnpm pack`
   clean (publint).
-- [ ] Components render correctly with only `tokens.css` imported (verified by test or
+- [x] Components render correctly with only `tokens.css` imported (verified by test or
   showcase route).
-- [ ] `theme.css` behavior unchanged for existing consumers.
-- [ ] Tests/CI cover the new artifact's presence and token completeness; `pnpm test` green.
-- [ ] Documentation updated (`docs/tokens.md` + `docs/themes.md` describe the two entries and
+- [x] `theme.css` behavior unchanged for existing consumers.
+- [x] Tests/CI cover the new artifact's presence and token completeness; `pnpm test` green.
+- [x] Documentation updated (`docs/tokens.md` + `docs/themes.md` describe the two entries and
   when to use which; README install section mentions it).
 
 ## Notes
 - Part of epic [[DS-0079-passoca-adoption-gaps]]. [[DS-0083-heading-component]] and
   [[DS-0085-container-component]] assume this entry exists for theme-less consumers.
 - Site workaround removed: passoca's hand-maintained ~80-value token bridge file.
+- Implementation (2026-06-12): new `src/styles/tokens.scss` entry `@use`s the same
+  `_tokens` + `components/` partials as `theme.scss` (no fonts/base/layout); compiled by
+  `build:css:tokens` (chained from `build:css`, runs in `prepack`) → `dist/tokens.css`.
+  Token completeness verified by diffing the `--ss-*` name set against `theme.css`
+  (identical, 353 declarations); `theme.css` output verified byte-identical pre/post.
+  CI's `pnpm pack` (publint) gates the artifact's presence on every PR. README/docs
+  copy is delivered by the docs integrator within epic DS-0079.

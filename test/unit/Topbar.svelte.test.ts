@@ -1,7 +1,19 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
+import { axe } from 'vitest-axe';
 import Topbar from '$lib/components/Topbar.svelte';
 import TopbarHarness from '../harness/TopbarHarness.svelte';
+
+// Same component-scope axe config as test/unit/a11y.test.ts (jsdom has no
+// layout, fragment renders lack page landmarks).
+const axeOpts = {
+	rules: {
+		region: { enabled: false },
+		'landmark-one-main': { enabled: false },
+		'page-has-heading-one': { enabled: false },
+		'color-contrast': { enabled: false }
+	}
+};
 
 describe('Topbar', () => {
 	it('renders the brand name and logo mark', () => {
@@ -130,7 +142,8 @@ describe('Topbar', () => {
 	// --- command menu (DS-0038) ---
 
 	it('renders a labelled command button with keyboard-shortcut hints', () => {
-		render(Topbar, {});
+		// DS-0081: the chip only exists when an onCommand handler is provided.
+		render(Topbar, { onCommand: () => {} });
 		const btn = screen.getByRole('button', { name: /open command menu/i });
 		expect(btn).toHaveAttribute('aria-keyshortcuts', 'Meta+K Control+K');
 		// the visible ⌘K glyph stays decorative
@@ -198,5 +211,199 @@ describe('Topbar', () => {
 		expect(a.querySelector('header.ss-topbar')).toHaveClass('sticky');
 		const { container: b } = render(Topbar, { sticky: false });
 		expect(b.querySelector('header.ss-topbar')).not.toHaveClass('sticky');
+	});
+
+	// --- link tabs (DS-0080) ---
+
+	it('renders object tabs with href as real <a href> links', () => {
+		const { container } = render(Topbar, {
+			tabs: [
+				{ id: 'work', label: 'Work', href: '/work' },
+				{ id: 'about', label: 'About', href: '/about' }
+			]
+		});
+		const links = Array.from(container.querySelectorAll('.ws a.tab'));
+		expect(links).toHaveLength(2);
+		expect(links[0]).toHaveAttribute('href', '/work');
+		expect(links[1]).toHaveAttribute('href', '/about');
+		expect(container.querySelectorAll('.ws button.tab')).toHaveLength(0);
+	});
+
+	it('defaults an object tab label to its id', () => {
+		const { container } = render(Topbar, { tabs: [{ id: 'work' }] });
+		expect(container.querySelector('.ws .tab')).toHaveTextContent('work');
+	});
+
+	it('matches the active tab by id, not by the rendered label', () => {
+		const { container } = render(Topbar, {
+			active: 'work',
+			tabs: [
+				{ id: 'work', label: 'Trabalho', href: '/work' },
+				{ id: 'about', label: 'Sobre', href: '/about' }
+			]
+		});
+		const active = container.querySelector('.ws .tab.active');
+		expect(active).not.toBeNull();
+		expect(active).toHaveTextContent('Trabalho');
+		expect(active).toHaveAttribute('aria-current', 'page');
+		expect(container.querySelector('.ws .tab:not(.active)')).not.toHaveAttribute('aria-current');
+	});
+
+	it('mixes string and object tabs (strings normalize to id = label)', () => {
+		const { container } = render(Topbar, {
+			active: 'logs',
+			tabs: ['logs', { id: 'docs', label: 'Docs', href: '/docs' }]
+		});
+		expect(container.querySelector('.ws button.tab.active')).toHaveTextContent('logs');
+		expect(container.querySelector('.ws a.tab')).toHaveAttribute('href', '/docs');
+	});
+
+	it('fires onTab with the tab id when a link tab is clicked', async () => {
+		const onTab = vi.fn();
+		const { container } = render(Topbar, {
+			onTab,
+			tabs: [{ id: 'work', label: 'Work', href: '/work' }]
+		});
+		const a = container.querySelector<HTMLElement>('a.tab')!;
+		a.addEventListener('click', (e) => e.preventDefault()); // jsdom can't navigate
+		await fireEvent.click(a);
+		expect(onTab).toHaveBeenCalledWith('work');
+	});
+
+	it('keeps link tabs in the natural tab order (no roving tabindex, SSR-safe)', () => {
+		const { container } = render(Topbar, {
+			active: 'work',
+			tabs: [
+				{ id: 'work', href: '/work' },
+				{ id: 'about', href: '/about' }
+			]
+		});
+		for (const a of container.querySelectorAll('a.tab')) {
+			expect(a).not.toHaveAttribute('tabindex');
+		}
+	});
+
+	it('moves focus across link tabs with arrow keys', async () => {
+		const { container } = render(Topbar, {
+			tabs: [
+				{ id: 'a', href: '/a' },
+				{ id: 'b', href: '/b' }
+			]
+		});
+		const links = Array.from(container.querySelectorAll('a.tab')) as HTMLElement[];
+		links[0].focus();
+		await fireEvent.keyDown(links[0], { key: 'ArrowRight' });
+		expect(document.activeElement).toBe(links[1]);
+		await fireEvent.keyDown(links[1], { key: 'Home' });
+		expect(document.activeElement).toBe(links[0]);
+	});
+
+	it('link tabs have no axe violations', async () => {
+		const { container } = render(Topbar, {
+			active: 'work',
+			tabs: [
+				{ id: 'work', label: 'Work', href: '/work' },
+				{ id: 'about', label: 'About', href: '/about' }
+			]
+		});
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	// --- optional chrome (DS-0081) ---
+
+	it('renders the built-in services summary by default (6/7 up)', () => {
+		const { container } = render(Topbar, {});
+		const seg = container.querySelector('.seg[title="services"]')!;
+		expect(seg).not.toBeNull();
+		expect(seg.querySelector('.dot')).not.toBeNull();
+		expect(seg.querySelector('.v')).toHaveTextContent('6');
+		expect(seg.querySelector('.k')).toHaveTextContent('/7 up');
+	});
+
+	it('hides the services segment when services=false', () => {
+		const { container } = render(Topbar, { services: false });
+		expect(container.querySelector('.seg[title="services"]')).toBeNull();
+		expect(container.querySelector('.dot')).toBeNull();
+	});
+
+	it('renders custom services data from services={ up, total }', () => {
+		const { container } = render(Topbar, { services: { up: 2, total: 3 } });
+		const seg = container.querySelector('.seg[title="services"]')!;
+		expect(seg.querySelector('.v')).toHaveTextContent('2');
+		expect(seg.querySelector('.k')).toHaveTextContent('/3 up');
+	});
+
+	it('hides the clock when clock=false', () => {
+		const { container } = render(Topbar, { clock: false });
+		expect(container.querySelector('.clock')).toBeNull();
+	});
+
+	it('omits the command chip when no onCommand handler is provided', () => {
+		const { container } = render(Topbar, {});
+		expect(container.querySelector('.cmd')).toBeNull();
+		expect(screen.queryByRole('button', { name: /open command menu/i })).toBeNull();
+	});
+
+	it('ignores Cmd/Ctrl+K when no onCommand handler is provided', async () => {
+		render(Topbar, {});
+		const evt = new KeyboardEvent('keydown', { key: 'k', metaKey: true, cancelable: true });
+		window.dispatchEvent(evt);
+		expect(evt.defaultPrevented).toBe(false); // browser default left alone
+	});
+
+	it('removes each chrome piece independently and degrades to brand + tabs + user', () => {
+		const { container } = render(Topbar, {
+			services: false,
+			clock: false,
+			stats: []
+		});
+		// nothing dead renders…
+		expect(container.querySelector('.seg[title="services"]')).toBeNull();
+		expect(container.querySelector('.clock')).toBeNull();
+		expect(container.querySelector('.cmd')).toBeNull();
+		expect(container.querySelectorAll('.seg.stat.collapsible')).toHaveLength(0);
+		// …while brand, tabs and the user control survive
+		expect(container.querySelector('.logo')).not.toBeNull();
+		expect(container.querySelectorAll('.ws .tab').length).toBeGreaterThan(0);
+		expect(container.querySelector('.user-btn')).not.toBeNull();
+	});
+
+	it('minimal Topbar has no axe violations', async () => {
+		const { container } = render(Topbar, { services: false, clock: false, stats: [] });
+		expect(await axe(container, axeOpts)).toHaveNoViolations();
+	});
+
+	// --- responsive tab strip (DS-0082) ---
+	// jsdom computes no layout/media queries; the visual collapse (stats at
+	// ≤720px, strip at ≤520px) and the horizontal scroll are exercised in
+	// Storybook. These tests pin the structural hooks the breakpoint CSS
+	// relies on.
+
+	it('renders every tab inside the single nav.ws scroll container', () => {
+		const many = Array.from({ length: 12 }, (_, i) => `tab-${i}`);
+		const { container } = render(Topbar, { tabs: many });
+		expect(container.querySelectorAll('nav.ws')).toHaveLength(1);
+		expect(container.querySelectorAll('nav.ws > .tab')).toHaveLength(12);
+		// no tab escapes the strip — the bar itself never gains extra tab nodes
+		expect(container.querySelectorAll('.ss-topbar > .tab')).toHaveLength(0);
+	});
+
+	it('marks only the optional stat segments with the collapsible hook', () => {
+		const { container } = render(Topbar, {});
+		const collapsibles = Array.from(container.querySelectorAll('.collapsible'));
+		expect(collapsibles.length).toBeGreaterThan(0);
+		for (const el of collapsibles) {
+			expect(el).toHaveClass('stat'); // only stats hide at the first breakpoint
+		}
+		expect(container.querySelector('nav.ws')).not.toHaveClass('collapsible');
+	});
+
+	it('keeps overflowed tabs keyboard-reachable (End jumps to the last tab)', async () => {
+		const many = Array.from({ length: 12 }, (_, i) => `tab-${i}`);
+		const { container } = render(Topbar, { active: 'tab-0', tabs: many });
+		const tabEls = Array.from(container.querySelectorAll('.ws .tab')) as HTMLElement[];
+		tabEls[0].focus();
+		await fireEvent.keyDown(tabEls[0], { key: 'End' });
+		expect(document.activeElement).toBe(tabEls[11]);
 	});
 });

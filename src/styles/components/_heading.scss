@@ -1,0 +1,32 @@
+// ============================================================
+//  Heading — size tokens (--ss-heading-*) for the size axis (DS-0083).
+//
+//  NOTE: these are the canonical Heading size tokens. They are *also*
+//  declared inside Heading.svelte's scoped <style> (on `.ss-heading`,
+//  in [data-size-variant] blocks) so the component ships self-contained —
+//  custom properties cascade through Svelte's scoped boundary, so the
+//  component works whether or not this partial is compiled into theme.css.
+//  The md tier aliases the existing display tokens; sm/lg rescale the clamp.
+//
+//  This partial mirrors those values for any consumer that wants the tokens
+//  globally. House rule: zero border-radius; size-sensitive values are tokens.
+// ============================================================
+
+[data-size-variant="md"],
+:root {
+  --ss-heading-size:   var(--ss-size-display);
+  --ss-heading-mb:     var(--ss-s-4);
+  --ss-heading-shadow: 3px;
+}
+
+[data-size-variant="sm"] {
+  --ss-heading-size:   clamp(30px, 6.5vw, 44px);
+  --ss-heading-mb:     var(--ss-s-3);
+  --ss-heading-shadow: 2px;
+}
+
+[data-size-variant="lg"] {
+  --ss-heading-size:   clamp(44px, 9vw, 64px);
+  --ss-heading-mb:     var(--ss-s-6);
+  --ss-heading-shadow: 4px;
+}

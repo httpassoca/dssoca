@@ -1,0 +1,25 @@
+// --- spinner tokens (DS-0086) ------------------------------------------------
+// Component-scoped --ss-* tokens for the Spinner. The glyph is a mono text
+// frame (cli-spinners data), so sizing is a font-size that tracks the size
+// axis; colour defaults to the accent and is size-invariant. Zero radius.
+// NOTE: wire this partial into components/_index.scss (`@use 'spinner';`) at
+// integration time — the component carries fallbacks until then.
+
+:root {
+  // Glyph + (visible) label colour; override to recolour a spinner in place.
+  --ss-spinner-color: var(--ss-primary);
+}
+
+// ── size axis — glyph font size ─────────────────────────────────────────────
+:root,
+[data-size-variant='md'] {
+  --ss-spinner-font: 16px;
+}
+
+[data-size-variant='sm'] {
+  --ss-spinner-font: 13px;
+}
+
+[data-size-variant='lg'] {
+  --ss-spinner-font: 22px;
+}
