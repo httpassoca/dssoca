@@ -2,14 +2,14 @@
 id: DS-0082
 type: story
 title: "Topbar: responsive tab strip"
-status: todo
+status: done
 priority: high
 tags: [ui, topbar, responsive]
 depends_on: []
 parent: null
 epic: DS-0079
 created: 2026-06-11
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 ## Description
@@ -21,15 +21,21 @@ should own a strategy: collapse the strip below a breakpoint, or keep priority t
 move the rest into an overflow menu (the shipped `Menu` component is a natural fit).
 
 ## Acceptance criteria
-- [ ] At narrow viewports tabs no longer overflow: either the strip collapses (documented
-  breakpoint, consumers pair with `BottomNav`) or a priority+overflow-menu pattern keeps the
-  bar intact.
-- [ ] Behavior is driven by `--ss-*` tokens / documented breakpoints, not hardcoded px.
-- [ ] Overflowed tabs (if the menu pattern is chosen) remain keyboard-reachable and announce
-  the active tab; WCAG 2.2 AA upheld.
-- [ ] No consumer needs to target `.ss-topbar` internals from global CSS.
-- [ ] Tests cover the narrow-viewport rendering path; `pnpm test` green.
-- [ ] Documentation updated (docs.config.ts Topbar page describes the responsive behavior).
+- [x] At narrow viewports tabs no longer overflow: the strip shrinks (`min-width: 0`) and
+  scrolls horizontally instead of pushing the right-side chrome off-canvas; stat segments
+  collapse at the documented 720px breakpoint and the strip collapses at 520px (consumers
+  pair with `BottomNav`).
+- [x] Behavior is driven by documented breakpoints (named Sass constants in the component +
+  the Topbar docs page; media queries cannot read CSS custom properties, so these are the
+  documented-breakpoint path the criterion allows).
+- [x] Overflowed tabs remain keyboard-reachable (focus scrolls them into view natively) and
+  the active tab announces via `aria-current="page"`; WCAG 2.2 AA upheld (axe green).
+- [x] No consumer needs to target `.ss-topbar` internals from global CSS (use `tabs={[]}` to
+  drop the strip entirely).
+- [x] Tests cover the narrow-viewport rendering path's structural hooks (single `nav.ws`
+  scroll container, `collapsible` stat hooks, keyboard reach of overflowed tabs); the visual
+  collapse is exercised in Storybook ("Many Tabs" story). `pnpm test` green.
+- [x] Documentation updated (component-docs Topbar page describes the responsive behavior).
 
 ## Notes
 - Part of epic [[DS-0079-passoca-adoption-gaps]]; sibling Topbar stories

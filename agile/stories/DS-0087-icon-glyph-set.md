@@ -2,14 +2,14 @@
 id: DS-0087
 type: story
 title: "Icon: extend built-in glyph set"
-status: todo
+status: done
 priority: high
 tags: [ui, icon, components]
 depends_on: []
 parent: null
 epic: DS-0079
 created: 2026-06-11
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 ## Description
@@ -21,15 +21,15 @@ social links. Shipping them removes per-consumer path drawing and keeps glyph st
 with the existing set.
 
 ## Acceptance criteria
-- [ ] New glyphs added to the built-in set: `home`, `briefcase`, `folder`, `github`,
+- [x] New glyphs added to the built-in set: `home`, `briefcase`, `folder`, `github`,
   `linkedin`, `language` (globe), `color-swatch` — drawn in the existing set's stroke/grid
   style.
-- [ ] Each is available by name via the `IconName` type (type union updated) and renders
+- [x] Each is available by name via the `IconName` type (type union updated) and renders
   through `Icon` like any built-in.
-- [ ] Additive: `registerIcon` and existing names untouched.
-- [ ] Tests assert each new name renders and the type union matches the registry;
+- [x] Additive: `registerIcon` and existing names untouched.
+- [x] Tests assert each new name renders and the type union matches the registry;
   `pnpm test` green, `pnpm pack` clean.
-- [ ] Documentation updated (docs.config.ts Icon page lists the new glyphs, e.g. in its
+- [x] Documentation updated (docs.config.ts Icon page lists the new glyphs, e.g. in its
   gallery/names table).
 
 ## Notes

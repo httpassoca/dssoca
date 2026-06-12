@@ -2,14 +2,14 @@
 id: DS-0080
 type: story
 title: "Topbar: link tabs"
-status: todo
+status: done
 priority: high
 tags: [ui, topbar, a11y, routing]
 depends_on: []
 parent: null
 epic: DS-0079
 created: 2026-06-11
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 ## Description
@@ -22,14 +22,14 @@ currently round-trips label strings to identify the active tab and calls `goto()
 click handler; this story removes that workaround.
 
 ## Acceptance criteria
-- [ ] `tabs` accepts `Array<{ id: string; label: string; href: string }>` (the existing
+- [x] `tabs` accepts `Array<{ id: string; label: string; href: string }>` (the existing
   `string[]` form keeps working — additive, no breaking change).
-- [ ] Object tabs render `<a href>`; the active tab carries `aria-current` (`"page"` for links).
-- [ ] Active-tab matching uses `id`, not the rendered label, so localized labels don't break it.
-- [ ] Works without JS (SSR): links navigate natively; `onTabChange`/click callbacks still fire
-  for consumers who want them.
-- [ ] Tests cover both tab shapes, `aria-current`, and id-based active matching; `pnpm test` green.
-- [ ] Documentation updated (docs.config.ts Topbar page + usage example with `href` tabs).
+- [x] Object tabs render `<a href>`; the active tab carries `aria-current` (`"page"` for links).
+- [x] Active-tab matching uses `id`, not the rendered label, so localized labels don't break it.
+- [x] Works without JS (SSR): links navigate natively (link tabs keep the natural tab order, no
+  roving `tabindex="-1"`); `onTab`/click callbacks still fire for consumers who want them.
+- [x] Tests cover both tab shapes, `aria-current`, and id-based active matching; `pnpm test` green.
+- [x] Documentation updated (component-docs Topbar page + usage example with `href` tabs).
 
 ## Notes
 - Part of epic [[DS-0079-passoca-adoption-gaps]]; sibling Topbar stories

@@ -2,14 +2,14 @@
 id: DS-0083
 type: story
 title: "Heading component"
-status: todo
+status: done
 priority: high
 tags: [ui, components, typography]
 depends_on: []
 parent: null
 epic: DS-0079
 created: 2026-06-11
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 ## Description
@@ -21,15 +21,15 @@ can't import `theme.css`, see [[DS-0089-tokens-only-entry]]) must copy by hand â
 recreated the whole thing inside its `AppTitle` component, which will drift from the DS.
 
 ## Acceptance criteria
-- [ ] `Heading` component with `.ss-heading` identity root: accent-underline span treatment,
+- [x] `Heading` component with `.ss-heading` identity root: accent-underline span treatment,
   `centered` and `accent` boolean options, and a `level` prop rendering the matching `h1`â€“`h6`.
-- [ ] Styled in scoped SCSS from `--ss-*` tokens (rescales across sm/md/lg); zero border-radius.
-- [ ] Usable without importing `theme.css` (component carries its own recipe; pairs with
+- [x] Styled in scoped SCSS from `--ss-*` tokens (rescales across sm/md/lg); zero border-radius.
+- [x] Usable without importing `theme.css` (component carries its own recipe; pairs with
   [[DS-0089-tokens-only-entry]]).
-- [ ] Additive: new file + barrel export; existing `theme.css` classes untouched (or aliased to
+- [x] Additive: new file + barrel export; existing `theme.css` classes untouched (or aliased to
   the same tokens).
-- [ ] Tests cover level rendering and option combinations; `pnpm test` green, `pnpm pack` clean.
-- [ ] Documentation updated (new docs.config.ts component page; `docs/tokens.md` for any new tokens).
+- [x] Tests cover level rendering and option combinations; `pnpm test` green, `pnpm pack` clean.
+- [x] Documentation updated (new docs.config.ts component page; `docs/tokens.md` for any new tokens).
 
 ## Notes
 - Part of epic [[DS-0079-passoca-adoption-gaps]].

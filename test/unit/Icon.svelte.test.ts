@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render } from '@testing-library/svelte';
-import Icon, { PATHS, registerIcon } from '$lib/components/Icon.svelte';
+import Icon, { PATHS, registerIcon, type IconName } from '$lib/components/Icon.svelte';
 
 describe('Icon', () => {
 	it('renders an svg with a 0 0 24 24 viewBox and currentColor stroke', () => {
@@ -55,6 +55,48 @@ describe('Icon', () => {
 			expect(svg.innerHTML).toBe(normalise(PATHS[name]));
 		}
 	);
+
+	// ----------------------------------------------------------------
+	//  DS-0087 — extended built-in glyph set (nav/social)
+	// ----------------------------------------------------------------
+
+	const NEW_GLYPHS = [
+		'home',
+		'briefcase',
+		'folder',
+		'github',
+		'linkedin',
+		'language',
+		'color-swatch'
+	] as const;
+
+	// Compile-time: each new name is part of the IconName union.
+	const _newNamesAreIconNames: IconName[] = [...NEW_GLYPHS];
+	void _newNamesAreIconNames;
+
+	it.each(NEW_GLYPHS)('renders the %s glyph path inside the svg', (name) => {
+		const { container } = render(Icon, { name });
+		const svg = container.querySelector('svg')!;
+		expect(svg.innerHTML).toBe(normalise(PATHS[name]));
+	});
+
+	it('new glyphs are registered built-ins (resolvable, non-empty, distinct)', () => {
+		const markups = NEW_GLYPHS.map((n) => PATHS[n]);
+		markups.forEach((m) => {
+			expect(m).toBeTruthy();
+			expect(m).toContain('<'); // raw SVG inner markup
+		});
+		expect(new Set(markups).size).toBe(NEW_GLYPHS.length);
+	});
+
+	it('new glyphs do not warn (known names) and stay decorative by default', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		for (const name of NEW_GLYPHS) {
+			const { container } = render(Icon, { name });
+			expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+		}
+		expect(warn).not.toHaveBeenCalled();
+	});
 
 	it('book glyph differs from film and note glyphs', () => {
 		expect(PATHS.book).not.toBe(PATHS.film);

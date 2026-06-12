@@ -20,6 +20,11 @@ import { link } from './link';
 import { segmentedControl } from './segmented-control';
 import { bottomNav } from './bottom-nav';
 import { image } from './image';
+// DS-0079 — adoption-gap components.
+import { heading } from './heading';
+import { container } from './container';
+import { textarea } from './textarea';
+import { spinner } from './spinner';
 
 export type { PropDoc, ComponentDoc } from './types';
 
@@ -44,4 +49,9 @@ export const COMPONENTS: ComponentDoc[] = [
   segmentedControl,
   bottomNav,
   image,
+  // DS-0079 — adoption-gap components.
+  heading,
+  container,
+  textarea,
+  spinner,
 ];

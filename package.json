@@ -18,7 +18,8 @@
 		"build": "vite build && npm run prepack",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
-		"build:css": "sass src/styles/theme.scss dist/theme.css --no-source-map --no-charset --style=expanded",
+		"build:css": "sass src/styles/theme.scss dist/theme.css --no-source-map --no-charset --style=expanded && pnpm build:css:tokens",
+		"build:css:tokens": "sass src/styles/tokens.scss dist/tokens.css --no-source-map --no-charset --style=expanded",
 		"prepack": "svelte-kit sync && svelte-package && pnpm build:css && publint",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -47,7 +48,8 @@
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
 		},
-		"./theme.css": "./dist/theme.css"
+		"./theme.css": "./dist/theme.css",
+		"./tokens.css": "./dist/tokens.css"
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"

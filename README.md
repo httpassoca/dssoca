@@ -44,6 +44,14 @@ Import the stylesheet once (global tokens + base styles), then use components:
 </Card>
 ```
 
+Apps that own their global styles can import **tokens only** — every `--ss-*`
+custom property (both themes, all size tiers, reduced-motion zeroing) with no
+element styles and no webfont loading:
+
+```js
+import 'dssoca/tokens.css'
+```
+
 ### Configure the axes from code
 
 ```ts

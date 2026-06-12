@@ -1,3 +1,24 @@
+<script module lang="ts">
+  /**
+   * One tab in the Topbar strip (DS-0080). The shorthand `string` form is
+   * equivalent to `{ id: s, label: s }`.
+   */
+  export interface TopbarTab {
+    /** Stable id — matched against `active` and passed to `onTab`. */
+    id: string
+    /** Visible label; defaults to `id` (decouple for localized labels). */
+    label?: string
+    /** Optional URL — when set the tab renders as a real `<a href>`. */
+    href?: string
+  }
+
+  /** Services status summary shown in the right-side dot segment. */
+  export interface TopbarServices {
+    up: number
+    total: number
+  }
+</script>
+
 <script lang="ts">
   import type { Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
@@ -7,9 +28,12 @@
   interface Props {
     active?: string
     user?: string
-    tabs?: string[]
+    /** Tab strip: plain strings (id = label) or `{ id, label?, href? }` objects. */
+    tabs?: Array<string | TopbarTab>
+    /** Fired with the tab id when a tab is activated (also for `href` tabs). */
     onTab?: (tab: string) => void
-    /** Fired when the command menu is opened (chip click or Cmd/Ctrl+K). */
+    /** Fired when the command menu is opened (chip click or Cmd/Ctrl+K).
+     *  The ⌘K chip and the shortcut only exist when this handler is provided. */
     onCommand?: () => void
     /** Fired when the user chip is activated (when no `userMenu` snippet given). */
     onUser?: () => void
@@ -17,8 +41,13 @@
     userMenu?: Snippet
     /** Custom brand mark + name; defaults to the built-in logo. */
     brand?: Snippet
-    /** Right-aligned stat segments; defaults to the built-in homelab stats. */
+    /** Right-aligned stat segments; defaults to the built-in homelab stats. Pass `[]` to remove. */
     stats?: Stat[]
+    /** Services status segment: `true` keeps the built-in 6/7 demo summary,
+     *  `{ up, total }` renders real numbers, `false` removes the segment. */
+    services?: boolean | TopbarServices
+    /** Live clock segment; `false` removes it (and skips the interval). */
+    clock?: boolean
     /** Anchor the skip link jumps to. */
     skipTarget?: string
     /** When true, the header sticks to the top of the viewport. */
@@ -33,6 +62,8 @@
     { key: 'net', value: '↓1.2 ↑0.3', title: 'network' },
   ]
 
+  const DEFAULT_SERVICES: TopbarServices = { up: 6, total: 7 }
+
   let {
     active = 'overview',
     user = 'admin@hub.home',
@@ -43,10 +74,25 @@
     userMenu,
     brand,
     stats = DEFAULT_STATS,
+    services = true,
+    clock = true,
     skipTarget = '#main',
     sticky = true,
     size,
   }: Props = $props()
+
+  // DS-0080: normalize both tab shapes to one internal form. `string` tabs
+  // keep id === label; object tabs default `label` to `id`.
+  const items = $derived(
+    tabs.map((t): { id: string; label: string; href?: string } =>
+      typeof t === 'string' ? { id: t, label: t } : { id: t.id, label: t.label ?? t.id, href: t.href }
+    )
+  )
+
+  // DS-0081: resolve the services prop to data-or-nothing.
+  const svc = $derived(
+    services === true ? DEFAULT_SERVICES : services === false ? null : services
+  )
 
   function pad(n: number) { return String(n).padStart(2, '0') }
   function nowStr() {
@@ -54,30 +100,34 @@
     return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
   }
 
-  let clock = $state(nowStr())
+  let time = $state(nowStr())
 
   $effect(() => {
-    const t = setInterval(() => { clock = nowStr() }, 1000)
+    const t = clock ? setInterval(() => { time = nowStr() }, 1000) : undefined
     const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+      // Only claim the Cmd/Ctrl+K shortcut when a command handler exists
+      // (DS-0081) — otherwise leave the browser's default alone.
+      if (onCommand && (e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault()
-        onCommand?.()
+        onCommand()
       }
     }
     window.addEventListener('keydown', onKey)
     return () => {
-      clearInterval(t)
+      if (t) clearInterval(t)
       window.removeEventListener('keydown', onKey)
     }
   })
 
-  const [h, m, s] = $derived(clock.split(':'))
+  const [h, m, s] = $derived(time.split(':'))
 
   // Roving tabindex: arrow keys move focus across the tab strip (wrapping),
-  // Home/End jump to the ends. The active tab is the single tab stop.
-  let tabEls: HTMLButtonElement[] = $state([])
+  // Home/End jump to the ends. Button tabs keep the active tab as the single
+  // tab stop; link tabs stay in the natural tab order so they remain
+  // keyboard-reachable without JS (SSR, DS-0080).
+  let tabEls: (HTMLAnchorElement | HTMLButtonElement)[] = $state([])
   function focusTab(i: number) {
-    const n = tabs.length
+    const n = items.length
     if (!n) return
     const idx = ((i % n) + n) % n
     tabEls[idx]?.focus()
@@ -87,7 +137,7 @@
       case 'ArrowRight': case 'ArrowDown': e.preventDefault(); focusTab(i + 1); break
       case 'ArrowLeft':  case 'ArrowUp':   e.preventDefault(); focusTab(i - 1); break
       case 'Home':                         e.preventDefault(); focusTab(0); break
-      case 'End':                          e.preventDefault(); focusTab(tabs.length - 1); break
+      case 'End':                          e.preventDefault(); focusTab(items.length - 1); break
     }
   }
 </script>
@@ -111,26 +161,43 @@
   </div>
 
   <nav class="ws" aria-label="Primary">
-    {#each tabs as tab, i (tab)}
-      <button
-        bind:this={tabEls[i]}
-        class="tab {tab === active ? 'active' : ''}"
-        aria-current={tab === active ? 'page' : undefined}
-        tabindex={tab === active ? 0 : -1}
-        onclick={() => onTab?.(tab)}
-        onkeydown={(e) => onTabKeydown(e, i)}
-      >
-        <span class="n" aria-hidden="true">{i + 1}</span>{tab}
-      </button>
+    {#each items as tab, i (tab.id)}
+      {@const current = tab.id === active}
+      {#if tab.href}
+        <a
+          bind:this={tabEls[i]}
+          class="tab {current ? 'active' : ''}"
+          href={tab.href}
+          aria-current={current ? 'page' : undefined}
+          onclick={() => onTab?.(tab.id)}
+          onkeydown={(e) => onTabKeydown(e, i)}
+        >
+          <span class="n" aria-hidden="true">{i + 1}</span>{tab.label}
+        </a>
+      {:else}
+        <button
+          bind:this={tabEls[i]}
+          type="button"
+          class="tab {current ? 'active' : ''}"
+          aria-current={current ? 'page' : undefined}
+          tabindex={current ? 0 : -1}
+          onclick={() => onTab?.(tab.id)}
+          onkeydown={(e) => onTabKeydown(e, i)}
+        >
+          <span class="n" aria-hidden="true">{i + 1}</span>{tab.label}
+        </button>
+      {/if}
     {/each}
   </nav>
 
   <div class="grow"></div>
 
-  <div class="seg right" title="services">
-    <span class="dot" aria-hidden="true"></span>
-    <span class="stat"><span class="v">6</span><span class="k">/7 up</span></span>
-  </div>
+  {#if svc}
+    <div class="seg right" title="services">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="stat"><span class="v">{svc.up}</span><span class="k">/{svc.total} up</span></span>
+    </div>
+  {/if}
 
   {#each stats as st (st.key)}
     <div class="seg right stat collapsible" title={st.title ?? st.key}>
@@ -138,14 +205,16 @@
     </div>
   {/each}
 
-  <button
-    class="seg right click cmd"
-    aria-keyshortcuts="Meta+K Control+K"
-    aria-label="Open command menu"
-    onclick={() => onCommand?.()}
-  >
-    <span class="kbd" aria-hidden="true">⌘K</span>
-  </button>
+  {#if onCommand}
+    <button
+      class="seg right click cmd"
+      aria-keyshortcuts="Meta+K Control+K"
+      aria-label="Open command menu"
+      onclick={() => onCommand?.()}
+    >
+      <span class="kbd" aria-hidden="true">⌘K</span>
+    </button>
+  {/if}
 
   {#if userMenu}
     <div class="seg right user-slot">{@render userMenu()}</div>
@@ -153,12 +222,20 @@
     <button class="seg right click user-btn" onclick={() => onUser?.()}>{user}</button>
   {/if}
 
-  <div class="seg right clock">
-    <span>{h}</span><span class="sep">:</span><span>{m}</span><span class="sep">:</span><span>{s}</span>
-  </div>
+  {#if clock}
+    <div class="seg right clock">
+      <span>{h}</span><span class="sep">:</span><span>{m}</span><span class="sep">:</span><span>{s}</span>
+    </div>
+  {/if}
 </header>
 
 <style lang="scss">
+  // DS-0082 — documented responsive breakpoints. Media queries cannot read
+  // CSS custom properties, so these are Sass constants; they are part of the
+  // Topbar's documented API (see the Topbar docs page).
+  $bp-stats-collapse: 720px; // optional stat segments hide below this
+  $bp-tabs-collapse: 520px;  // tab strip hides below this (pair with BottomNav)
+
   .ss-topbar {
     grid-column: 1 / -1;
     display: flex; align-items: stretch;
@@ -190,6 +267,7 @@
       padding: 0 var(--ss-panel-head-px);
       border-right: 1px solid var(--ss-line);
       cursor: default;
+      flex: none;
 
       &.right { border-right: none; border-left: 1px solid var(--ss-line); }
       &.click { cursor: pointer; }
@@ -210,8 +288,16 @@
     }
     .ws {
       display: flex; align-items: stretch;
+      // DS-0082: the strip shrinks (min-width: 0) and scrolls horizontally
+      // instead of pushing the right-side chrome off-canvas when the tabs
+      // outgrow the available width. Tabs stay keyboard-reachable: focusing
+      // an off-screen tab scrolls it into view natively.
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: thin;
       .tab {
         display: flex; align-items: center;
+        flex: none; white-space: nowrap;
         padding: 0 var(--ss-row-px);
         min-height: var(--ss-s-6); // ≥24px hit target at sm
         color: var(--ss-fg-faint);
@@ -219,6 +305,7 @@
         cursor: pointer;
         font: 500 var(--ss-ui-md) var(--ss-font-mono);
         background: transparent; border-top: 0; border-bottom: 0; border-left: 0;
+        text-decoration: none;
         transition: all var(--ss-dur-fast) var(--ss-ease);
 
         &:hover { color: var(--ss-fg); background: var(--ss-hover); }
@@ -240,12 +327,15 @@
     }
     .kbd { font-family: var(--ss-font-mono); font-size: var(--ss-ui-sm); color: var(--ss-fg-muted); border: 1px solid var(--ss-line); padding: 2px 5px; line-height: 1; }
 
-    // Responsive collapse: drop the optional stat segments first, then the nav,
-    // at narrow widths so the brand/clock/command/user controls stay reachable.
-    @media (max-width: 720px) {
+    // Responsive collapse (DS-0082, documented breakpoints above): drop the
+    // optional stat segments first, then the tab strip, at narrow widths so
+    // the brand/clock/command/user controls stay reachable. Consumers wanting
+    // tabs on small screens pair the Topbar with `BottomNav`; the strip itself
+    // never overflows the bar (it scrolls — see `.ws`).
+    @media (max-width: $bp-stats-collapse) {
       .collapsible { display: none; }
     }
-    @media (max-width: 520px) {
+    @media (max-width: $bp-tabs-collapse) {
       .ws { display: none; }
     }
   }

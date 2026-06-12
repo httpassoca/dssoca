@@ -16,7 +16,9 @@ export const icon: ComponentDoc = {
 <Icon name="activity" />
 <Icon name="settings" title="Settings" />
 <Icon name="spinner" spin />
-<Icon name="check" variant="solid" />`,
+<Icon name="check" variant="solid" />
+<Icon name="github" title="GitHub" />
+<Icon name="language" />`,
     props: [
       { name: 'name', type: 'IconName', desc: 'Required. Which glyph to render (e.g. grid, activity, terminal). Falls back to `paths` when unknown.' },
       SIZE_PROP,
@@ -34,5 +36,5 @@ export const icon: ComponentDoc = {
       { name: 'class', type: 'string', default: "''", desc: 'Extra class on the root svg.' },
     ],
     notes:
-      'Module exports `registerIcon(name, paths)` (re-exported from `dssoca`) to register or override a glyph globally at runtime, and the `IconName` type for the built-in set.',
+      'Built-in glyphs: `grid`, `activity`, `database`, `logs`, `terminal`, `settings`, `user`, `arrow`, `external`, `film`, `note`, `book`, `check`, `cup`, `wallet`, `target`, `spinner`, `home`, `briefcase`, `folder`, `github`, `linkedin`, `language`, `color-swatch` (see the Gallery story). Module exports `registerIcon(name, paths)` (re-exported from `dssoca`) to register or override a glyph globally at runtime, and the `IconName` type for the built-in set.',
   };

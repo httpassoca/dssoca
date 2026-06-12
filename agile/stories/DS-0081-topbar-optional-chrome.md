@@ -2,14 +2,14 @@
 id: DS-0081
 type: story
 title: "Topbar: optional built-in chrome"
-status: todo
+status: done
 priority: high
 tags: [ui, topbar, api]
 depends_on: []
 parent: null
 epic: DS-0079
 created: 2026-06-11
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 ## Description
@@ -21,14 +21,15 @@ a meaningless "6/7 up" badge and a dead ⌘K chip today. Each piece should be hi
 `onCommand` handler is passed) so the Topbar degrades gracefully to a plain brand + tabs bar.
 
 ## Acceptance criteria
-- [ ] Services status dot/summary hideable (e.g. `services: false` or absent data ⇒ not rendered).
-- [ ] Stats segments hideable the same way.
-- [ ] Live clock hideable (`clock: false`).
-- [ ] ⌘K command chip renders only when an `onCommand` handler is provided.
-- [ ] Defaults preserve today's rendering for existing dashboard consumers (no breaking change).
-- [ ] Tests assert each piece can be removed independently and that nothing dead renders;
+- [x] Services status dot/summary hideable (`services: false`; `{ up, total }` renders real data).
+- [x] Stats segments hideable the same way (`stats={[]}`).
+- [x] Live clock hideable (`clock: false`; the 1s interval is also skipped).
+- [x] ⌘K command chip renders only when an `onCommand` handler is provided (the Cmd/Ctrl+K
+  shortcut is likewise only claimed when the handler exists).
+- [x] Defaults preserve today's rendering for existing dashboard consumers (no breaking change).
+- [x] Tests assert each piece can be removed independently and that nothing dead renders;
   `pnpm test` green.
-- [ ] Documentation updated (docs.config.ts Topbar prop table + a "minimal Topbar" usage example).
+- [x] Documentation updated (component-docs Topbar prop table + a "minimal Topbar" usage example).
 
 ## Notes
 - Part of epic [[DS-0079-passoca-adoption-gaps]]; sibling Topbar stories

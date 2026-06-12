@@ -2,14 +2,14 @@
 id: DS-0088
 type: story
 title: "Menu: custom leading visual per item"
-status: todo
+status: done
 priority: high
 tags: [ui, menu, api]
 depends_on: []
 parent: null
 epic: DS-0079
 created: 2026-06-11
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 ## Description
@@ -21,18 +21,22 @@ theme/language menus to `Menu`, passoca had to fold emoji flags into the label t
 its theme color swatches entirely.
 
 ## Acceptance criteria
-- [ ] MenuItem accepts custom leading content — a Svelte 5 snippet for arbitrary markup and/or
+- [x] MenuItem accepts custom leading content — a Svelte 5 snippet for arbitrary markup and/or
   a `swatch: <color>` convenience that renders a token-sized color dot.
-- [ ] Leading visual is sized/spaced from `--ss-*` tokens identically to the `icon` case, so
+- [x] Leading visual is sized/spaced from `--ss-*` tokens identically to the `icon` case, so
   mixed menus (icon items + swatch items) align; zero border-radius.
-- [ ] Custom leading content is decorative by default (label carries the semantics) — WCAG
+- [x] Custom leading content is decorative by default (label carries the semantics) — WCAG
   2.2 AA upheld.
-- [ ] Additive: `icon: IconName` keeps working unchanged.
-- [ ] Tests cover snippet and swatch rendering alongside icon items; `pnpm test` green.
-- [ ] Documentation updated (docs.config.ts Menu page: new prop/snippet + a swatch usage example).
+- [x] Additive: `icon: IconName` keeps working unchanged.
+- [x] Tests cover snippet and swatch rendering alongside icon items; `pnpm test` green.
+- [x] Documentation updated (docs.config.ts Menu page: new prop/snippet + a swatch usage example).
 
 ## Notes
 - Part of epic [[DS-0079-passoca-adoption-gaps]]; the swatch glyph need also touches
   [[DS-0087-icon-glyph-set]].
 - Site workaround removed: passoca folding emoji flags into MenuItem labels and dropping its
   theme color dots.
+- Shipped API (2026-06-12): `MenuItem.leading?: Snippet` (arbitrary markup),
+  `MenuItem.swatch?: string` (square color chip, `--ss-icon` sized, zero radius),
+  `MenuItem.emoji?: string` (text glyph). Precedence: leading → swatch → emoji → icon.
+  All leading visuals render aria-hidden; the `label` names the row.
