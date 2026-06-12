@@ -27,6 +27,9 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 24 # matches package.json#engines
+          # v5 defaults to package-manager-cache, which probes pnpm BEFORE
+          # corepack has enabled it — the manual store cache below covers us.
+          package-manager-cache: false
 
       # Activate pnpm from package.json#packageManager under Node 24 — this pins
       # the exact pnpm version (11.1.3) consistently with local installs.
