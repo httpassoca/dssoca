@@ -198,8 +198,30 @@ export const V: Record<string, Variant[]> = {
 }
 
 /**
- * Every component slug shown in the field. (The `image` component is deliberately
- * excluded from the landing — see DS-0065.)
+ * Components deliberately kept off the decorative landing field. `image` needs a
+ * real asset (DS-0065); the DS-0090 components are either overlays (`modal`,
+ * `tooltip`), data views needing real datasets (`chart`, `table`), or form
+ * controls whose always-on tiles don't read as decorative — they live on their
+ * docs pages only, not the landing showcase.
+ */
+export const LANDING_EXCLUDED = new Set<string>([
+  'image',
+  'chart',
+  'table',
+  'select',
+  'modal',
+  'date-field',
+  'file-drop',
+  'number-field',
+  'tooltip',
+  'avatar',
+  'pagination',
+  'switch',
+])
+
+/**
+ * Every component slug shown in the field — every component except the
+ * `LANDING_EXCLUDED` set above.
  */
 export const ALL_SLUGS: string[] = [
   'button',
