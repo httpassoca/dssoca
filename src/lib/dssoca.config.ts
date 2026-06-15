@@ -66,6 +66,7 @@ export const COMPONENT_NAMES = [
   'MetricTile',
   'Modal',
   'NumberField',
+  'Pagination',
   'SegmentedControl',
   'Select',
   'ServiceCard',
