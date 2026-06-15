@@ -28,6 +28,7 @@ import { spinner } from './spinner'
 // geossoca component gaps (DS-0090).
 import { chart } from './chart'
 import { table } from './table'
+import { select } from './select'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -60,4 +61,5 @@ export const COMPONENTS: ComponentDoc[] = [
   // DS-0090 — geossoca component gaps.
   chart,
   table,
+  select,
 ]
