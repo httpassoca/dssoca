@@ -54,6 +54,7 @@ export const COMPONENT_NAMES = [
   'Container',
   'DateField',
   'EmptyState',
+  'FileDrop',
   'Heading',
   'Icon',
   'Image',
