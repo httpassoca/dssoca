@@ -63,6 +63,7 @@ export { default as Table, type TableColumn, type TableSort } from './components
 export { default as Select } from './components/Select.svelte'
 export type { SelectOption, SelectOptGroup } from './components/Select.svelte'
 export { default as Modal } from './components/Modal.svelte'
+export { default as DateField } from './components/DateField.svelte'
 
 export {
   toast,
