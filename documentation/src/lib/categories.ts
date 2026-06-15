@@ -17,21 +17,35 @@ export const CATEGORIES: Category[] = [
   {
     id: 'forms',
     label: 'Forms & controls',
-    slugs: ['button', 'input', 'textarea', 'segmented-control'],
+    slugs: [
+      'button',
+      'input',
+      'textarea',
+      'segmented-control',
+      'select',
+      'date-field',
+      'number-field',
+      'file-drop',
+      'switch',
+    ],
   },
   {
     id: 'navigation',
     label: 'Navigation',
-    slugs: ['sidebar', 'topbar', 'bottom-nav', 'menu', 'link'],
+    slugs: ['sidebar', 'topbar', 'bottom-nav', 'menu', 'link', 'pagination'],
   },
   { id: 'layout', label: 'Layout', slugs: ['card', 'accordion', 'container', 'heading'] },
   {
     id: 'data',
     label: 'Data display',
-    slugs: ['badge', 'metric-tile', 'service-card', 'sparkline', 'log-stream'],
+    slugs: ['badge', 'metric-tile', 'service-card', 'sparkline', 'log-stream', 'table', 'chart'],
   },
-  { id: 'feedback', label: 'Feedback', slugs: ['toaster', 'empty-state', 'spinner'] },
-  { id: 'media', label: 'Media', slugs: ['icon', 'image'] },
+  {
+    id: 'feedback',
+    label: 'Feedback',
+    slugs: ['toaster', 'empty-state', 'spinner', 'modal', 'tooltip'],
+  },
+  { id: 'media', label: 'Media', slugs: ['icon', 'image', 'avatar'] },
 ]
 
 export interface CategorizedComponents {
