@@ -31,6 +31,7 @@ import { table } from './table'
 import { select } from './select'
 import { modal } from './modal'
 import { dateField } from './date-field'
+import { fileDrop } from './file-drop'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -66,4 +67,5 @@ export const COMPONENTS: ComponentDoc[] = [
   select,
   modal,
   dateField,
+  fileDrop,
 ]
