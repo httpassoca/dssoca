@@ -37,6 +37,11 @@ import { tooltip } from './tooltip'
 import { avatar } from './avatar'
 import { pagination } from './pagination'
 import { switchDoc } from './switch'
+// geossoca stats-dashboard charts (DS-0102).
+import { scatterPlot } from './scatter-plot'
+import { boxPlot } from './box-plot'
+import { bumpChart } from './bump-chart'
+import { heatmap } from './heatmap'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -78,4 +83,9 @@ export const COMPONENTS: ComponentDoc[] = [
   avatar,
   pagination,
   switchDoc,
+  // DS-0102 — geossoca stats-dashboard charts.
+  scatterPlot,
+  boxPlot,
+  bumpChart,
+  heatmap,
 ]
