@@ -70,6 +70,11 @@ export { default as Tooltip } from './components/Tooltip.svelte'
 export { default as Avatar } from './components/Avatar.svelte'
 export { default as Pagination } from './components/Pagination.svelte'
 export { default as Switch } from './components/Switch.svelte'
+export {
+  default as ColorPicker,
+  DEFAULT_PRESETS,
+  normalizeHex,
+} from './components/ColorPicker.svelte'
 
 // geossoca stats-dashboard charts (DS-0102).
 export { default as ScatterPlot, type ScatterPoint } from './components/ScatterPlot.svelte'
