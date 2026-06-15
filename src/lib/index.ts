@@ -68,6 +68,7 @@ export { default as FileDrop } from './components/FileDrop.svelte'
 export { default as NumberField } from './components/NumberField.svelte'
 export { default as Tooltip } from './components/Tooltip.svelte'
 export { default as Avatar } from './components/Avatar.svelte'
+export { default as Pagination } from './components/Pagination.svelte'
 
 export {
   toast,
