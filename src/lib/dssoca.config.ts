@@ -74,6 +74,7 @@ export const COMPONENT_NAMES = [
   'Table',
   'Textarea',
   'Toaster',
+  'Tooltip',
   'Topbar',
 ] as const
 

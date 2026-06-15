@@ -66,6 +66,7 @@ export { default as Modal } from './components/Modal.svelte'
 export { default as DateField } from './components/DateField.svelte'
 export { default as FileDrop } from './components/FileDrop.svelte'
 export { default as NumberField } from './components/NumberField.svelte'
+export { default as Tooltip } from './components/Tooltip.svelte'
 
 export {
   toast,
