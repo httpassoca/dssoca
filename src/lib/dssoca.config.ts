@@ -62,6 +62,7 @@ export const COMPONENT_NAMES = [
   'Menu',
   'MetricTile',
   'SegmentedControl',
+  'Select',
   'ServiceCard',
   'Sidebar',
   'Sparkline',
