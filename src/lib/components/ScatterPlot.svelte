@@ -84,7 +84,9 @@
 
   const M = { top: 12, right: 16, bottom: 36, left: 48 }
 
-  const clean = $derived((points ?? []).filter((p) => p && Number.isFinite(p.x) && Number.isFinite(p.y)))
+  const clean = $derived(
+    (points ?? []).filter((p) => p && Number.isFinite(p.x) && Number.isFinite(p.y)),
+  )
   const isEmpty = $derived(clean.length === 0)
 
   function colorFor(p: ScatterPoint, i: number): string {
@@ -142,10 +144,14 @@
     if (!quadrantLabels) return [] as { x: number; y: number; anchor: string; text: string }[]
     const pad = 4
     const out: { x: number; y: number; anchor: string; text: string }[] = []
-    if (quadrantLabels.tl) out.push({ x: pad, y: pad + 8, anchor: 'start', text: quadrantLabels.tl })
-    if (quadrantLabels.tr) out.push({ x: innerW - pad, y: pad + 8, anchor: 'end', text: quadrantLabels.tr })
-    if (quadrantLabels.bl) out.push({ x: pad, y: innerH - pad, anchor: 'start', text: quadrantLabels.bl })
-    if (quadrantLabels.br) out.push({ x: innerW - pad, y: innerH - pad, anchor: 'end', text: quadrantLabels.br })
+    if (quadrantLabels.tl)
+      out.push({ x: pad, y: pad + 8, anchor: 'start', text: quadrantLabels.tl })
+    if (quadrantLabels.tr)
+      out.push({ x: innerW - pad, y: pad + 8, anchor: 'end', text: quadrantLabels.tr })
+    if (quadrantLabels.bl)
+      out.push({ x: pad, y: innerH - pad, anchor: 'start', text: quadrantLabels.bl })
+    if (quadrantLabels.br)
+      out.push({ x: innerW - pad, y: innerH - pad, anchor: 'end', text: quadrantLabels.br })
     return out
   })
 
@@ -194,10 +200,14 @@
           <!-- gridlines + y axis -->
           {#each yTicks as t}
             <line class="grid" x1="0" x2={innerW} y1={yScaleObj(t)} y2={yScaleObj(t)} />
-            <text class="tick y" x="-6" y={yScaleObj(t)} dy="0.32em" text-anchor="end">{fmtY(t)}</text>
+            <text class="tick y" x="-6" y={yScaleObj(t)} dy="0.32em" text-anchor="end"
+              >{fmtY(t)}</text
+            >
           {/each}
           {#each xTicks as t}
-            <text class="tick x" x={xScaleObj(t)} y={innerH + 16} text-anchor="middle">{fmtX(t)}</text>
+            <text class="tick x" x={xScaleObj(t)} y={innerH + 16} text-anchor="middle"
+              >{fmtX(t)}</text
+            >
           {/each}
           <line class="axis" x1="0" x2="0" y1="0" y2={innerH} />
           <line class="axis" x1="0" x2={innerW} y1={innerH} y2={innerH} />
@@ -238,7 +248,9 @@
 
           <!-- axis captions -->
           {#if xLabel}
-            <text class="axis-label x" x={innerW / 2} y={innerH + 32} text-anchor="middle">{xLabel}</text>
+            <text class="axis-label x" x={innerW / 2} y={innerH + 32} text-anchor="middle"
+              >{xLabel}</text
+            >
           {/if}
           {#if yLabel}
             <text

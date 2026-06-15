@@ -38,14 +38,23 @@ export const bumpChart: ComponentDoc = {
     },
     { name: 'height', type: 'number', default: '280', desc: 'Intrinsic drawing height in px.' },
     { name: 'width', type: 'number', default: '480', desc: 'Intrinsic drawing width in px.' },
-    { name: 'fluid', type: 'boolean', default: 'false', desc: 'Stretch to the container width via the viewBox.' },
+    {
+      name: 'fluid',
+      type: 'boolean',
+      default: 'false',
+      desc: 'Stretch to the container width via the viewBox.',
+    },
     {
       name: 'tooltip',
       type: 'boolean',
       default: 'true',
       desc: 'Reveal a tooltip on hover/focus of a node. Each node is keyboard-focusable.',
     },
-    { name: 'summary', type: 'string', desc: 'Screen-reader summary + accessible name; auto-generated when absent.' },
+    {
+      name: 'summary',
+      type: 'string',
+      desc: 'Screen-reader summary + accessible name; auto-generated when absent.',
+    },
     SIZE_PROP,
   ],
 }

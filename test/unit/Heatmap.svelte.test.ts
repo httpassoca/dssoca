@@ -46,7 +46,9 @@ describe('Heatmap — cells', () => {
 describe('Heatmap — headers', () => {
   it('renders row and column header texts', () => {
     const { container } = render(Heatmap, { rows: players, columns: players, values })
-    const cols = [...container.querySelectorAll('.ss-heatmap .header.col')].map((n) => n.textContent)
+    const cols = [...container.querySelectorAll('.ss-heatmap .header.col')].map(
+      (n) => n.textContent,
+    )
     const rowsTxt = [...container.querySelectorAll('.ss-heatmap .header.row')].map(
       (n) => n.textContent,
     )
@@ -93,7 +95,10 @@ describe('Heatmap — accessibility', () => {
       values,
       summary: 'Head-to-head wins',
     })
-    expect(container.querySelector('.ss-heatmap')).toHaveAttribute('aria-label', 'Head-to-head wins')
+    expect(container.querySelector('.ss-heatmap')).toHaveAttribute(
+      'aria-label',
+      'Head-to-head wins',
+    )
   })
 
   it('has no axe violations', async () => {

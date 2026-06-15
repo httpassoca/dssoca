@@ -99,7 +99,10 @@ describe('ScatterPlot — accessibility', () => {
 
   it('lets an explicit summary override the auto text', () => {
     const { container } = render(ScatterPlot, { points, summary: 'Skill vs consistency' })
-    expect(container.querySelector('.ss-scatter')).toHaveAttribute('aria-label', 'Skill vs consistency')
+    expect(container.querySelector('.ss-scatter')).toHaveAttribute(
+      'aria-label',
+      'Skill vs consistency',
+    )
   })
 
   it('has no axe violations', async () => {

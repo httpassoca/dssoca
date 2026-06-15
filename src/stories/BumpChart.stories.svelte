@@ -16,7 +16,10 @@
     component: BumpChart,
     tags: ['autodocs'],
     argTypes: {
-      series: { control: 'object', description: 'One series per competitor: { label, ranks, color? }.' },
+      series: {
+        control: 'object',
+        description: 'One series per competitor: { label, ranks, color? }.',
+      },
       stages: { control: 'object', description: 'Ordered x-axis category labels.' },
       showLabels: { control: 'boolean', description: 'Draw each series label at its last node.' },
       height: { control: 'number', description: 'Intrinsic drawing height in px.' },

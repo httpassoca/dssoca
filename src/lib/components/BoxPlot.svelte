@@ -111,7 +111,7 @@
   /** Deterministic horizontal offset for dot i within a band (no Math.random → SSR-safe). */
   function jitter(i: number, bandW: number): number {
     // Cheap integer hash → [0,1), mapped into the inner 70% of the band.
-    const h = ((Math.sin(i * 127.1) * 43758.5453) % 1 + 1) % 1
+    const h = (((Math.sin(i * 127.1) * 43758.5453) % 1) + 1) % 1
     return (h - 0.5) * bandW * 0.7
   }
 
@@ -218,7 +218,9 @@
           <!-- gridlines + y axis -->
           {#each yTicks as t}
             <line class="grid" x1="0" x2={innerW} y1={yScaleObj(t)} y2={yScaleObj(t)} />
-            <text class="tick y" x="-6" y={yScaleObj(t)} dy="0.32em" text-anchor="end">{fmtY(t)}</text>
+            <text class="tick y" x="-6" y={yScaleObj(t)} dy="0.32em" text-anchor="end"
+              >{fmtY(t)}</text
+            >
           {/each}
           <line class="axis" x1="0" x2="0" y1="0" y2={innerH} />
           <line class="axis" x1="0" x2={innerW} y1={innerH} y2={innerH} />
@@ -248,12 +250,26 @@
             />
 
             <!-- median -->
-            <line class="median" x1={b.x} x2={b.x + b.w} y1={b.yMedian} y2={b.yMedian} style="stroke:{b.color}" />
+            <line
+              class="median"
+              x1={b.x}
+              x2={b.x + b.w}
+              y1={b.yMedian}
+              y2={b.yMedian}
+              style="stroke:{b.color}"
+            />
 
             <!-- point overlay (decorative) -->
             {#if showPoints}
               {#each b.points as p}
-                <circle class="point" cx={p.cx} cy={p.cy} r="2.5" style="fill:{b.color}" aria-hidden="true" />
+                <circle
+                  class="point"
+                  cx={p.cx}
+                  cy={p.cy}
+                  r="2.5"
+                  style="fill:{b.color}"
+                  aria-hidden="true"
+                />
               {/each}
             {/if}
           {/each}

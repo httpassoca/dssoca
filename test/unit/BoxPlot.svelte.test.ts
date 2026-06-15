@@ -80,7 +80,10 @@ describe('BoxPlot — accessibility', () => {
 
   it('lets an explicit summary override the auto text', () => {
     const { container } = render(BoxPlot, { groups, summary: 'Score spread per player' })
-    expect(container.querySelector('.ss-boxplot')).toHaveAttribute('aria-label', 'Score spread per player')
+    expect(container.querySelector('.ss-boxplot')).toHaveAttribute(
+      'aria-label',
+      'Score spread per player',
+    )
   })
 
   it('has no axe violations', async () => {

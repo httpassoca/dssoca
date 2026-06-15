@@ -46,7 +46,10 @@
   }}
 />
 
-<Story name="Without values" args={{ rows: players, columns: players, values: wins, showValues: false }} />
+<Story
+  name="Without values"
+  args={{ rows: players, columns: players, values: wins, showValues: false }}
+/>
 
 <Story name="Empty" args={{ rows: [], columns: [], values: [] }} />
 
