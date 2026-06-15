@@ -57,6 +57,9 @@ export {
 } from './components/Spinner.svelte'
 export type { SpinnerVariant, SpinnerFrames } from './components/Spinner.svelte'
 
+// geossoca component gaps (DS-0090).
+export { default as Chart, type ChartSeries, type ChartPoint } from './components/Chart.svelte'
+
 export {
   toast,
   toasts,

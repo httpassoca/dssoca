@@ -50,6 +50,7 @@ export const COMPONENT_NAMES = [
   'BottomNav',
   'Button',
   'Card',
+  'Chart',
   'Container',
   'EmptyState',
   'Heading',
