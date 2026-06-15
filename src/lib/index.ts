@@ -69,6 +69,7 @@ export { default as NumberField } from './components/NumberField.svelte'
 export { default as Tooltip } from './components/Tooltip.svelte'
 export { default as Avatar } from './components/Avatar.svelte'
 export { default as Pagination } from './components/Pagination.svelte'
+export { default as Switch } from './components/Switch.svelte'
 
 export {
   toast,
