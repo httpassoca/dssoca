@@ -23,6 +23,16 @@
     Container,
     Textarea,
     Spinner,
+    Chart,
+    Table,
+    Select,
+    DateField,
+    FileDrop,
+    NumberField,
+    Tooltip,
+    Avatar,
+    Pagination,
+    Switch,
   } from 'dssoca'
   import { componentsByCategory } from '$lib/categories'
   import { COMPONENTS } from '$lib/docs.config'
@@ -77,6 +87,42 @@
   // A real photograph (Lorem Picsum, fixed id) instead of a flat gradient —
   // mirrors the Image Storybook story; the fixed id keeps the preview stable.
   const imgSrc = 'https://picsum.photos/id/1018/480/270'
+
+  // --- sample data for the DS-0090 component previews ---------------------
+  const chartSeries = [
+    {
+      label: 'Ada',
+      data: [
+        { x: 1, y: 3 },
+        { x: 2, y: 5 },
+        { x: 3, y: 4 },
+        { x: 4, y: 7 },
+      ],
+    },
+    {
+      label: 'Grace',
+      data: [
+        { x: 1, y: 5 },
+        { x: 2, y: 3 },
+        { x: 3, y: 6 },
+        { x: 4, y: 5 },
+      ],
+    },
+  ]
+  const tableCols = [
+    { key: 'player', label: 'Player' },
+    { key: 'pts', label: 'Points', numeric: true, align: 'right' as const },
+  ]
+  const tableRows = [
+    { player: 'Ada', pts: 42 },
+    { player: 'Grace', pts: 38 },
+    { player: 'Alan', pts: 31 },
+  ]
+  const selectOptions = [
+    { value: 'world', label: 'World' },
+    { value: 'europe', label: 'Europe' },
+    { value: 'us', label: 'USA' },
+  ]
 </script>
 
 <svelte:head>
@@ -212,6 +258,55 @@
     <div class="toasts">
       <div class="ft"><span class="ft-g ok">✓</span><span>saved!</span></div>
       <div class="ft"><span class="ft-g info">i</span><span>3 services syncing…</span></div>
+    </div>
+  {:else if slug === 'chart'}
+    <div class="w-full">
+      <Chart series={chartSeries} variant="line" height={150} fluid />
+    </div>
+  {:else if slug === 'table'}
+    <div class="w-full">
+      <Table columns={tableCols} rows={tableRows} />
+    </div>
+  {:else if slug === 'select'}
+    <div class="w-full">
+      <Select label="Map" options={selectOptions} value="world" />
+    </div>
+  {:else if slug === 'date-field'}
+    <div class="w-full">
+      <DateField label="Game date" value="2026-06-15" />
+    </div>
+  {:else if slug === 'file-drop'}
+    <div class="w-full">
+      <FileDrop label="Import data" accept="application/json" hint="drag a .json file or click" />
+    </div>
+  {:else if slug === 'number-field'}
+    <div class="w-full">
+      <NumberField label="Score" value={11000} step={100} />
+    </div>
+  {:else if slug === 'avatar'}
+    <div class="row">
+      <Avatar name="Ada Lovelace" />
+      <Avatar name="Grace Hopper" />
+      <Avatar name="Alan Turing" />
+    </div>
+  {:else if slug === 'pagination'}
+    <Pagination page={2} total={50} pageSize={10} />
+  {:else if slug === 'switch'}
+    <Switch checked label="Dark theme" />
+  {:else if slug === 'tooltip'}
+    <Tooltip text="Lower position sum wins">
+      <Button variant="secondary">What's this?</Button>
+    </Tooltip>
+  {:else if slug === 'modal'}
+    <!-- A live <dialog> is position:fixed and would escape the inert card, so
+         show a faithful static stand-in of the modal surface (like Toaster). -->
+    <div class="w-full">
+      <Card title="Confirm delete" description="This game will be removed. This can't be undone.">
+        <div class="row">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="danger">Delete</Button>
+        </div>
+      </Card>
     </div>
   {/if}
 {/snippet}
