@@ -66,6 +66,7 @@ export const COMPONENT_NAMES = [
   'Sidebar',
   'Sparkline',
   'Spinner',
+  'Table',
   'Textarea',
   'Toaster',
   'Topbar',
