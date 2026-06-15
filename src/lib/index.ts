@@ -62,6 +62,7 @@ export { default as Chart, type ChartSeries, type ChartPoint } from './component
 export { default as Table, type TableColumn, type TableSort } from './components/Table.svelte'
 export { default as Select } from './components/Select.svelte'
 export type { SelectOption, SelectOptGroup } from './components/Select.svelte'
+export { default as Modal } from './components/Modal.svelte'
 
 export {
   toast,

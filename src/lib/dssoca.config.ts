@@ -61,6 +61,7 @@ export const COMPONENT_NAMES = [
   'LogStream',
   'Menu',
   'MetricTile',
+  'Modal',
   'SegmentedControl',
   'Select',
   'ServiceCard',
