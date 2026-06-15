@@ -30,6 +30,7 @@ import { chart } from './chart'
 import { table } from './table'
 import { select } from './select'
 import { modal } from './modal'
+import { dateField } from './date-field'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -64,4 +65,5 @@ export const COMPONENTS: ComponentDoc[] = [
   table,
   select,
   modal,
+  dateField,
 ]
