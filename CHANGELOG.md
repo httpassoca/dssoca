@@ -8,6 +8,47 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+## [0.10.0] — geossoca component gaps — 2026-06-15
+
+Eleven new components (`DS-0090` epic), built to fill the gaps a new consumer — the _geossoca_
+score-tracker app — needs. Each ships with a Storybook story, Vitest + axe tests, and a docs page,
+and reads the `size` axis via `resolveComponentSize`.
+
+### Added
+
+- **`Chart`** (`DS-0091`): D3-backed multi-series chart — `line` / `area` / grouped `bar`, with
+  axes, a legend, and keyboard-accessible hover/focus tooltips. Accepts `number | string | Date`
+  x-values (band / linear / time scales).
+- **`Table`** (`DS-0092`): typed column defs (align, numeric, `format`, cell snippet), client-side
+  sortable headers (`aria-sort`), and an empty-state slot.
+- **`Select`** (`DS-0093`): styled native `<select>` reusing the Input field chrome; flat options
+  or `<optgroup>`s, label / hint / error wiring.
+- **`Modal`** (`DS-0094`): native `<dialog>` — focus trap, `Esc` / backdrop close, title + footer
+  snippets, and a `danger` styling hint.
+- **`DateField`** (`DS-0095`): styled native `<input type="date">` with `min` / `max`, on the
+  shared field chrome.
+- **`FileDrop`** (`DS-0096`): drag-and-drop file picker with click-to-browse, `accept` filtering,
+  and selected-file display; keyboard operable.
+- **`NumberField`** (`DS-0097`): numeric input with stepper buttons, `min` / `max` / `step`
+  clamping, and a monospace value.
+- **`Tooltip`** (`DS-0098`): hover / focus tooltip (`role="tooltip"`, `aria-describedby`),
+  reduced-motion safe.
+- **`Avatar`** (`DS-0099`): square initials-or-image avatar with a deterministic palette colour
+  hashed from the name.
+- **`Pagination`** (`DS-0100`): windowed page controls (prev / next, ellipses, `aria-current`).
+- **`Switch`** (`DS-0101`): accessible toggle (`role="switch"`) with a square track + thumb and
+  keyboard support.
+
+### Dependencies
+
+- **First runtime dependencies.** `Chart` adds the modular `d3-scale`, `d3-shape`, and `d3-array`
+  packages (tree-shakeable). Every other component remains dependency-free.
+
+### Docs
+
+- Per-component pages, the `/components` overview live previews, the category map, the nav, and the
+  landing-field curation all updated for the eleven new components.
+
 ## [0.9.0] — adoption gaps & tooling hardening — 2026-06-12
 
 Everything the passoca migration revealed as missing (`DS-0079` epic), plus the quality-scan
