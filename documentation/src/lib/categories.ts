@@ -38,7 +38,19 @@ export const CATEGORIES: Category[] = [
   {
     id: 'data',
     label: 'Data display',
-    slugs: ['badge', 'metric-tile', 'service-card', 'sparkline', 'log-stream', 'table', 'chart'],
+    slugs: [
+      'badge',
+      'metric-tile',
+      'service-card',
+      'sparkline',
+      'log-stream',
+      'table',
+      'chart',
+      'scatter-plot',
+      'box-plot',
+      'bump-chart',
+      'heatmap',
+    ],
   },
   {
     id: 'feedback',

@@ -71,6 +71,12 @@ export { default as Avatar } from './components/Avatar.svelte'
 export { default as Pagination } from './components/Pagination.svelte'
 export { default as Switch } from './components/Switch.svelte'
 
+// geossoca stats-dashboard charts (DS-0102).
+export { default as ScatterPlot, type ScatterPoint } from './components/ScatterPlot.svelte'
+export { default as BoxPlot, type BoxGroup } from './components/BoxPlot.svelte'
+export { default as BumpChart, type BumpSeries } from './components/BumpChart.svelte'
+export { default as Heatmap } from './components/Heatmap.svelte'
+
 export {
   toast,
   toasts,
