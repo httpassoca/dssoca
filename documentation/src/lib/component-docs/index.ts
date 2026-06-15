@@ -34,6 +34,7 @@ import { dateField } from './date-field'
 import { fileDrop } from './file-drop'
 import { numberField } from './number-field'
 import { tooltip } from './tooltip'
+import { avatar } from './avatar'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -72,4 +73,5 @@ export const COMPONENTS: ComponentDoc[] = [
   fileDrop,
   numberField,
   tooltip,
+  avatar,
 ]
