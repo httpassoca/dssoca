@@ -33,6 +33,7 @@ import { modal } from './modal'
 import { dateField } from './date-field'
 import { fileDrop } from './file-drop'
 import { numberField } from './number-field'
+import { tooltip } from './tooltip'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -70,4 +71,5 @@ export const COMPONENTS: ComponentDoc[] = [
   dateField,
   fileDrop,
   numberField,
+  tooltip,
 ]
