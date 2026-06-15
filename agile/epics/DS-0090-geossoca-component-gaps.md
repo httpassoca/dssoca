@@ -2,7 +2,7 @@
 id: DS-0090
 type: epic
 title: "geossoca component gaps — components the score-tracker app needs"
-status: in-progress
+status: done
 priority: high
 tags: [ui, epic, components, adoption]
 depends_on: []
@@ -27,11 +27,11 @@ Each component honours the house rules: **zero border-radius**, `--ss-*` tokens,
 prefix, scoped SCSS, Svelte 5 runes, WCAG 2.2 AA, and the tests/docs/agile RULEs.
 
 ## Acceptance criteria
-- [ ] All child tasks (DS-0091 … DS-0101) are done.
-- [ ] Each component ships source + Storybook story + Vitest/axe test + docs page, wired into the
+- [x] All child tasks (DS-0091 … DS-0101) are done.
+- [x] Each component ships source + Storybook story + Vitest/axe test + docs page, wired into the
       barrel, `COMPONENT_NAMES`, and the docs index.
-- [ ] `pnpm test`, `pnpm check`, and `pnpm pack` stay green.
-- [ ] Board rebuilt (`node build.mjs`) as items move.
+- [x] `pnpm test`, `pnpm check`, and `pnpm pack` stay green.
+- [x] Board rebuilt (`node build.mjs`) as items move.
 
 ## Notes
 - Consumer: the `geossoca` app (`/home/passoca/dev/geossoca`) — score tracking with JSON
