@@ -37,7 +37,10 @@
       },
       showPoints: { control: 'boolean', description: 'Overlay every value as a jittered dot.' },
       yLabel: { control: 'text', description: 'Y axis caption.' },
-      yDomain: { control: 'object', description: 'Force the y domain; defaults to the padded data extent.' },
+      yDomain: {
+        control: 'object',
+        description: 'Force the y domain; defaults to the padded data extent.',
+      },
       height: { control: 'number', description: 'Intrinsic drawing height in px.' },
       width: { control: 'number', description: 'Intrinsic drawing width in px.' },
       fluid: { control: 'boolean', description: 'Stretch to the container width via the viewBox.' },

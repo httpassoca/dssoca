@@ -128,12 +128,7 @@
   }
 </script>
 
-<div
-  class="ss-heatmap"
-  data-size-variant={resolvedSize}
-  role="group"
-  aria-label={srText}
->
+<div class="ss-heatmap" data-size-variant={resolvedSize} role="group" aria-label={srText}>
   {#if isEmpty}
     <span class="empty" aria-hidden="true">—</span>
     <span class="sr-only">No data</span>
@@ -142,8 +137,8 @@
       <svg
         class="canvas"
         viewBox="0 0 {width} {height}"
-        width={width}
-        height={height}
+        {width}
+        {height}
         preserveAspectRatio="xMidYMid meet"
         role="presentation"
       >
@@ -211,11 +206,8 @@
 
         <!-- axis captions -->
         {#if xLabel}
-          <text
-            class="axis-label x"
-            x={headLeft + gridW / 2}
-            y={height - 6}
-            text-anchor="middle">{xLabel}</text
+          <text class="axis-label x" x={headLeft + gridW / 2} y={height - 6} text-anchor="middle"
+            >{xLabel}</text
           >
         {/if}
         {#if yLabel}
@@ -231,7 +223,7 @@
         <div
           class="tooltip"
           role="status"
-          style="left:{((active.cx) / width) * 100}%;top:{((active.cy) / height) * 100}%"
+          style="left:{(active.cx / width) * 100}%;top:{(active.cy / height) * 100}%"
         >
           <span class="t-label">{active.row} · {active.col}</span>
           <span class="t-val">{fmt(active.value)}</span>

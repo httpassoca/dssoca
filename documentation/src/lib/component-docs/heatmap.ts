@@ -5,7 +5,7 @@ export const heatmap: ComponentDoc = {
   slug: 'heatmap',
   tagline: 'Token-driven matrix where cell colour intensity encodes value.',
   description:
-    'A token-driven matrix/grid where each cell\'s colour intensity encodes its value, with row and column headers. Every cell is filled with `--ss-primary` and varies its opacity across a linear scale over the value domain, so the brightest cells are the strongest. `null` values render a blank cell that is excluded from the scale — ideal for a head-to-head win matrix where the diagonal (self) is empty. Every value cell is keyboard-focusable with an accessible tooltip, and empty input shows an em-dash placeholder.',
+    "A token-driven matrix/grid where each cell's colour intensity encodes its value, with row and column headers. Every cell is filled with `--ss-primary` and varies its opacity across a linear scale over the value domain, so the brightest cells are the strongest. `null` values render a blank cell that is excluded from the scale — ideal for a head-to-head win matrix where the diagonal (self) is empty. Every value cell is keyboard-focusable with an accessible tooltip, and empty input shows an em-dash placeholder.",
   storyId: 'components-heatmap--default',
   usage: `<script>
   import { Heatmap } from 'dssoca';
@@ -39,10 +39,23 @@ export const heatmap: ComponentDoc = {
       type: '[number, number]',
       desc: 'Value range mapped to colour intensity; defaults to the [min, max] of all non-null values.',
     },
-    { name: 'valueFormat', type: '(v: number) => string', desc: 'Format a cell value for its text + tooltip.' },
-    { name: 'showValues', type: 'boolean', default: 'true', desc: 'Render the value text inside each cell.' },
+    {
+      name: 'valueFormat',
+      type: '(v: number) => string',
+      desc: 'Format a cell value for its text + tooltip.',
+    },
+    {
+      name: 'showValues',
+      type: 'boolean',
+      default: 'true',
+      desc: 'Render the value text inside each cell.',
+    },
     { name: 'xLabel', type: 'string', desc: 'X axis caption drawn under the column headers.' },
-    { name: 'yLabel', type: 'string', desc: 'Y axis caption drawn rotated beside the row headers.' },
+    {
+      name: 'yLabel',
+      type: 'string',
+      desc: 'Y axis caption drawn rotated beside the row headers.',
+    },
     { name: 'cellSize', type: 'number', default: '48', desc: 'Square cell size in px.' },
     {
       name: 'tooltip',
@@ -50,7 +63,11 @@ export const heatmap: ComponentDoc = {
       default: 'true',
       desc: 'Reveal a tooltip on hover/focus of a cell. Each value cell is keyboard-focusable.',
     },
-    { name: 'summary', type: 'string', desc: 'Screen-reader summary + accessible name; auto-generated when absent.' },
+    {
+      name: 'summary',
+      type: 'string',
+      desc: 'Screen-reader summary + accessible name; auto-generated when absent.',
+    },
     SIZE_PROP,
   ],
 }

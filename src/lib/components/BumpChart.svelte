@@ -77,7 +77,9 @@
   )
 
   // x over stages; y maps rank 1 → top (0) and maxRank → bottom (innerH).
-  const xScaleObj = $derived(scalePoint<string>().domain(cleanStages).range([0, innerW]).padding(0.5))
+  const xScaleObj = $derived(
+    scalePoint<string>().domain(cleanStages).range([0, innerW]).padding(0.5),
+  )
   const yScaleObj = $derived(scaleLinear().domain([1, maxRank]).range([0, innerH]))
 
   // Integer rank ticks 1..maxRank.
@@ -141,9 +143,13 @@
 
   const resolvedSize = $derived(resolveComponentSize('Chart', size))
 
-  let active = $state<{ label: string; stage: string; rank: number; cx: number; cy: number } | null>(
-    null,
-  )
+  let active = $state<{
+    label: string
+    stage: string
+    rank: number
+    cx: number
+    cy: number
+  } | null>(null)
   function show(label: string, stage: string, rank: number, cx: number, cy: number) {
     if (tooltip) active = { label, stage, rank, cx, cy }
   }
@@ -155,13 +161,7 @@
   }
 </script>
 
-<div
-  class="ss-bump"
-  class:fluid
-  data-size-variant={resolvedSize}
-  role="group"
-  aria-label={srText}
->
+<div class="ss-bump" class:fluid data-size-variant={resolvedSize} role="group" aria-label={srText}>
   {#if isEmpty}
     <span class="empty" aria-hidden="true">—</span>
     <span class="sr-only">No data</span>
@@ -186,7 +186,9 @@
 
           <!-- x axis (stage labels) -->
           {#each cleanStages as stage}
-            <text class="tick x" x={xScaleObj(stage)} y={innerH + 16} text-anchor="middle">{stage}</text>
+            <text class="tick x" x={xScaleObj(stage)} y={innerH + 16} text-anchor="middle"
+              >{stage}</text
+            >
           {/each}
 
           <!-- connecting lines -->
@@ -216,7 +218,9 @@
 
           <!-- direct series labels -->
           {#each endLabels as l}
-            <text class="series-label" x={l.x} y={l.y} dy="0.32em" style="fill:{l.color}">{l.label}</text>
+            <text class="series-label" x={l.x} y={l.y} dy="0.32em" style="fill:{l.color}"
+              >{l.label}</text
+            >
           {/each}
         </g>
       </svg>

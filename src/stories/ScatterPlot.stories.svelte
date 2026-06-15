@@ -23,7 +23,10 @@
     component: ScatterPlot,
     tags: ['autodocs'],
     argTypes: {
-      points: { control: 'object', description: 'One dot per datum: { label, x, y, size?, color? }.' },
+      points: {
+        control: 'object',
+        description: 'One dot per datum: { label, x, y, size?, color? }.',
+      },
       xLabel: { control: 'text', description: 'X axis caption.' },
       yLabel: { control: 'text', description: 'Y axis caption.' },
       xRef: { control: 'number', description: 'Dashed vertical reference line (quadrants).' },
@@ -55,7 +58,10 @@
   }}
 />
 
-<Story name="Bubble size" args={{ points: players, xLabel: 'Consistency', yLabel: 'Power rating' }} />
+<Story
+  name="Bubble size"
+  args={{ points: players, xLabel: 'Consistency', yLabel: 'Power rating' }}
+/>
 
 <Story name="Plain" args={{ points: plain, showLabels: false }} />
 
