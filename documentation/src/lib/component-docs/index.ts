@@ -25,6 +25,8 @@ import { heading } from './heading'
 import { container } from './container'
 import { textarea } from './textarea'
 import { spinner } from './spinner'
+// geossoca component gaps (DS-0090).
+import { chart } from './chart'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -54,4 +56,6 @@ export const COMPONENTS: ComponentDoc[] = [
   container,
   textarea,
   spinner,
+  // DS-0090 — geossoca component gaps.
+  chart,
 ]
