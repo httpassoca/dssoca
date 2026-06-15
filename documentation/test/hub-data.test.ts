@@ -1,7 +1,15 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { ALL_SLUGS, buildTilePool, V, BLEED, CYCLE_MIN, CYCLE_MAX } from '../src/lib/hub-data'
+import {
+  ALL_SLUGS,
+  LANDING_EXCLUDED,
+  buildTilePool,
+  V,
+  BLEED,
+  CYCLE_MIN,
+  CYCLE_MAX,
+} from '../src/lib/hub-data'
 import { COMPONENTS } from '../src/lib/docs.config'
 
 const slugs = new Set(COMPONENTS.map((c) => c.slug))
@@ -49,10 +57,10 @@ describe('HubTile.svelte — cycling + entrance + a11y contract', () => {
 })
 
 describe('hub-data (landing field)', () => {
-  it('ALL_SLUGS is every real component except image', () => {
-    const expected = [...slugs].filter((s) => s !== 'image').sort()
+  it('ALL_SLUGS is every real component except the landing exclusions', () => {
+    const expected = [...slugs].filter((s) => !LANDING_EXCLUDED.has(s)).sort()
     expect([...ALL_SLUGS].sort()).toEqual(expected)
-    expect(ALL_SLUGS).not.toContain('image')
+    for (const s of LANDING_EXCLUDED) expect(ALL_SLUGS, s).not.toContain(s)
     expect(new Set(ALL_SLUGS).size).toBe(ALL_SLUGS.length) // no dupes
   })
 

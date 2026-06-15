@@ -57,6 +57,20 @@ export {
 } from './components/Spinner.svelte'
 export type { SpinnerVariant, SpinnerFrames } from './components/Spinner.svelte'
 
+// geossoca component gaps (DS-0090).
+export { default as Chart, type ChartSeries, type ChartPoint } from './components/Chart.svelte'
+export { default as Table, type TableColumn, type TableSort } from './components/Table.svelte'
+export { default as Select } from './components/Select.svelte'
+export type { SelectOption, SelectOptGroup } from './components/Select.svelte'
+export { default as Modal } from './components/Modal.svelte'
+export { default as DateField } from './components/DateField.svelte'
+export { default as FileDrop } from './components/FileDrop.svelte'
+export { default as NumberField } from './components/NumberField.svelte'
+export { default as Tooltip } from './components/Tooltip.svelte'
+export { default as Avatar } from './components/Avatar.svelte'
+export { default as Pagination } from './components/Pagination.svelte'
+export { default as Switch } from './components/Switch.svelte'
+
 export {
   toast,
   toasts,

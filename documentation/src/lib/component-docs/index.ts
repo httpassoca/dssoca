@@ -25,6 +25,18 @@ import { heading } from './heading'
 import { container } from './container'
 import { textarea } from './textarea'
 import { spinner } from './spinner'
+// geossoca component gaps (DS-0090).
+import { chart } from './chart'
+import { table } from './table'
+import { select } from './select'
+import { modal } from './modal'
+import { dateField } from './date-field'
+import { fileDrop } from './file-drop'
+import { numberField } from './number-field'
+import { tooltip } from './tooltip'
+import { avatar } from './avatar'
+import { pagination } from './pagination'
+import { switchDoc } from './switch'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -54,4 +66,16 @@ export const COMPONENTS: ComponentDoc[] = [
   container,
   textarea,
   spinner,
+  // DS-0090 — geossoca component gaps.
+  chart,
+  table,
+  select,
+  modal,
+  dateField,
+  fileDrop,
+  numberField,
+  tooltip,
+  avatar,
+  pagination,
+  switchDoc,
 ]
