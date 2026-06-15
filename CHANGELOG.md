@@ -8,6 +8,31 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+## [0.11.0] — geossoca stats-dashboard charts — 2026-06-15
+
+Four data-viz primitives (`DS-0102` epic) the _geossoca_ performance dashboard needs, built in the
+design system so any consumer benefits. Each is token-driven, keyboard-accessible (focusable data,
+hover/focus tooltip, screen-reader summary, em-dash empty state), and reuses the existing `Chart`
+runtime dependencies (`d3-scale` / `d3-shape` / `d3-array`) — no new dependencies. All read the
+`size` axis via `resolveComponentSize`, and ship with a Storybook story, Vitest + axe tests, and a
+docs page.
+
+### Added
+
+- **`ScatterPlot`** (`DS-0103`): two-axis scatter with optional quadrant reference lines
+  (`xRef` / `yRef` + `quadrantLabels`) and sqrt-scaled bubble sizing. Axes use the padded data
+  extent (not forced to zero); points carry direct labels. Drives the "skill vs consistency" and
+  "win-rate vs avg-score" comparisons.
+- **`BoxPlot`** (`DS-0104`): box-and-whisker distribution (Tukey whiskers) with an optional
+  beeswarm overlay of every value (deterministic jitter, SSR-stable). Compares each player's score
+  spread — a short box reads as a steady player.
+- **`BumpChart`** (`DS-0105`): ranking-over-stages chart — finishing rank (1 at the top) across an
+  ordered sequence, with direct series labels at the line ends. Shows who led across a session's
+  games.
+- **`Heatmap`** (`DS-0106`): value-intensity matrix with row/column headers; cell opacity encodes
+  value over `var(--ss-primary)`, `null` cells stay blank (e.g. the diagonal). Renders the 4×4
+  head-to-head win grid.
+
 ## [0.10.0] — geossoca component gaps — 2026-06-15
 
 Eleven new components (`DS-0090` epic), built to fill the gaps a new consumer — the _geossoca_
