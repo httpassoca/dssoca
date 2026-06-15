@@ -27,6 +27,7 @@ export const CATEGORIES: Category[] = [
       'number-field',
       'file-drop',
       'switch',
+      'color-picker',
     ],
   },
   {

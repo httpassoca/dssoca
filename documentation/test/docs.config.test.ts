@@ -66,6 +66,7 @@ describe('docs.config — nav', () => {
       'Button',
       'Card',
       'Chart',
+      'ColorPicker',
       'Container',
       'DateField',
       'EmptyState',

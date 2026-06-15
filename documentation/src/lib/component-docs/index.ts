@@ -37,6 +37,7 @@ import { tooltip } from './tooltip'
 import { avatar } from './avatar'
 import { pagination } from './pagination'
 import { switchDoc } from './switch'
+import { colorPicker } from './color-picker'
 // geossoca stats-dashboard charts (DS-0102).
 import { scatterPlot } from './scatter-plot'
 import { boxPlot } from './box-plot'
@@ -83,6 +84,7 @@ export const COMPONENTS: ComponentDoc[] = [
   avatar,
   pagination,
   switchDoc,
+  colorPicker,
   // DS-0102 — geossoca stats-dashboard charts.
   scatterPlot,
   boxPlot,

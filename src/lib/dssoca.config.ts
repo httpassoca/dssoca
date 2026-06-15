@@ -52,6 +52,7 @@ export const COMPONENT_NAMES = [
   'Button',
   'Card',
   'Chart',
+  'ColorPicker',
   'Container',
   'DateField',
   'EmptyState',
