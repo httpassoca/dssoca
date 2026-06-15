@@ -36,6 +36,7 @@ import { numberField } from './number-field'
 import { tooltip } from './tooltip'
 import { avatar } from './avatar'
 import { pagination } from './pagination'
+import { switchDoc } from './switch'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -76,4 +77,5 @@ export const COMPONENTS: ComponentDoc[] = [
   tooltip,
   avatar,
   pagination,
+  switchDoc,
 ]

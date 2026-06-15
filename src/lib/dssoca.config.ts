@@ -73,6 +73,7 @@ export const COMPONENT_NAMES = [
   'Sidebar',
   'Sparkline',
   'Spinner',
+  'Switch',
   'Table',
   'Textarea',
   'Toaster',
