@@ -29,6 +29,7 @@ import { spinner } from './spinner'
 import { chart } from './chart'
 import { table } from './table'
 import { select } from './select'
+import { modal } from './modal'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -62,4 +63,5 @@ export const COMPONENTS: ComponentDoc[] = [
   chart,
   table,
   select,
+  modal,
 ]
