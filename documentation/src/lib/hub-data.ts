@@ -202,7 +202,8 @@ export const V: Record<string, Variant[]> = {
  * real asset (DS-0065); the DS-0090 components are either overlays (`modal`,
  * `tooltip`), data views needing real datasets (`chart`, `table`), or form
  * controls whose always-on tiles don't read as decorative — they live on their
- * docs pages only, not the landing showcase.
+ * docs pages only, not the landing showcase. The DS-0102 charts (`scatter-plot`,
+ * …) are data views needing real datasets too, so they join the exclusions.
  */
 export const LANDING_EXCLUDED = new Set<string>([
   'image',
@@ -217,6 +218,10 @@ export const LANDING_EXCLUDED = new Set<string>([
   'avatar',
   'pagination',
   'switch',
+  'scatter-plot',
+  'box-plot',
+  'bump-chart',
+  'heatmap',
 ])
 
 /**
