@@ -11,6 +11,7 @@
       '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
     user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>',
     arrow: '<path d="M5 12h14M13 5l7 7-7 7"/>',
+    chevron: '<path d="M8 10l4 4 4-4"/>',
     external: '<path d="M7 17L17 7M9 7h8v8"/>',
     film: '<rect x="3" y="4" width="18" height="16"/><path d="M3 8h4M3 16h4M17 8h4M17 16h4M3 12h18"/>',
     note: '<rect x="4" y="3" width="16" height="18"/><path d="M8 8h8M8 12h8M8 16h6"/>',
@@ -62,14 +63,26 @@
 <script lang="ts">
   import { resolveComponentSize, type Size } from '../config.js'
 
-  /** Resolved px for each token size — used to keep absolute stroke optically constant. */
-  const SIZE_PX: Record<Size, number> = { sm: 14, md: 16, lg: 20 }
+  /**
+   * Icon-local size scale (DS-0109). Distinct from the global `Size` axis
+   * (`sm | md | lg`): Icon adds an `xs` (12px) dense step that has *no* global
+   * `data-size-variant` counterpart — it pins directly via {@link SIZE_PX}. The
+   * named scale is fixed at xs 12 / sm 16 / md 20 / lg 24 px.
+   */
+  export type IconSize = 'xs' | Size
+
+  /** Fixed px for each named Icon size — used to keep absolute stroke optically constant. */
+  const SIZE_PX: Record<IconSize, number> = { xs: 12, sm: 16, md: 20, lg: 24 }
   const DEFAULT_PX = SIZE_PX.md
 
   interface Props {
     name: IconName
-    /** Token-driven size (sm|md|lg); inherits the active size when unset. */
-    size?: Size
+    /**
+     * Icon-local size (`xs | sm | md | lg`, a fixed px scale); inherits the
+     * active `--ss-icon` token when unset. `xs` (12px) is Icon-only and has no
+     * global size-variant equivalent.
+     */
+    size?: IconSize
     /** Explicit pixel size — overrides the token sizing. */
     px?: number
     /**
@@ -118,7 +131,12 @@
     class: cls = '',
   }: Props = $props()
 
-  const dim = $derived(px != null ? `${px}px` : 'var(--ss-icon)')
+  // Box size: an explicit `px` wins; a named `size` pins to the fixed scale
+  // (incl. the Icon-only `xs` = 12px, which has no global token); when both are
+  // unset the icon inherits the active `--ss-icon` token through the cascade.
+  const dim = $derived(
+    px != null ? `${px}px` : size != null ? `${SIZE_PX[size]}px` : 'var(--ss-icon)',
+  )
 
   // Resolve the glyph: explicit `paths` escape hatch → registered/built-in → warn.
   const markup = $derived.by(() => {
@@ -134,11 +152,15 @@
   })
 
   // Optically-constant stroke: recompute weight from the resolved px so a
-  // 2u stroke at the canonical 24-unit viewBox looks the same at 14/16/20px.
+  // 2u stroke at the canonical 24-unit viewBox looks the same at 12/16/20/24px.
   const resolvedPx = $derived(px != null ? px : (SIZE_PX[size ?? 'md'] ?? DEFAULT_PX))
   const stroke = $derived(absoluteStroke ? (strokeWidth * 24) / resolvedPx : strokeWidth)
 
   const isSolid = $derived(variant === 'solid')
+
+  // The global `data-size-variant` axis is sm|md|lg only; the Icon-local `xs`
+  // step has no axis equivalent (it pins via `dim` above), so it is omitted.
+  const axisSize = $derived<Size | undefined>(size === 'xs' ? undefined : size)
 
   // Decorative unless an explicit title (or explicit decorative=false) opts in.
   const isDecorative = $derived(decorative ?? title == null)
@@ -174,7 +196,7 @@
   class:spin
   class:flip-h={flip === 'horizontal'}
   class:flip-v={flip === 'vertical'}
-  data-size-variant={resolveComponentSize('Icon', size)}
+  data-size-variant={resolveComponentSize('Icon', axisSize)}
   data-rotate={rotate || undefined}
   style="width:{dim};height:{dim}"
   role={labelled ? 'img' : undefined}

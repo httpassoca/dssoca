@@ -7,17 +7,25 @@ export {
   designAttributes,
   applyDesignConfig,
   resolveComponentSize,
+  resolveSpinnerVariant,
 } from './config.js'
 
 export {
   dssocaConfig,
+  SPINNER_VARIANT_NAMES,
   type DssocaConfig,
   type DesignAxis,
   type ComponentName,
   type ComponentsSize,
+  type SpinnerVariant,
 } from './dssoca.config.js'
 
-export { default as Icon, registerIcon, type IconName } from './components/Icon.svelte'
+export {
+  default as Icon,
+  registerIcon,
+  type IconName,
+  type IconSize,
+} from './components/Icon.svelte'
 export { default as Badge } from './components/Badge.svelte'
 export { default as Button } from './components/Button.svelte'
 export { default as Input } from './components/Input.svelte'
@@ -50,12 +58,8 @@ export { default as Image, type ImageSource } from './components/Image.svelte'
 export { default as Heading } from './components/Heading.svelte'
 export { default as Container } from './components/Container.svelte'
 export { default as Textarea } from './components/Textarea.svelte'
-export {
-  default as Spinner,
-  SPINNER_VARIANTS,
-  SPINNER_VARIANT_NAMES,
-} from './components/Spinner.svelte'
-export type { SpinnerVariant, SpinnerFrames } from './components/Spinner.svelte'
+export { default as Spinner, SPINNER_VARIANTS } from './components/Spinner.svelte'
+export type { SpinnerFrames } from './components/Spinner.svelte'
 
 // geossoca component gaps (DS-0090).
 export { default as Chart, type ChartSeries, type ChartPoint } from './components/Chart.svelte'

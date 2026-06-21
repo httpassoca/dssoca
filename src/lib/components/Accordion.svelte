@@ -18,6 +18,7 @@
 <script lang="ts">
   import { untrack, type Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import Icon from './Icon.svelte'
 
   interface Props {
     /** The collapsible sections, top to bottom. */
@@ -145,9 +146,15 @@
 
   const headerId = (item: AccordionItem) => `${idBase}-h-${item.id}`
   const panelId = (item: AccordionItem) => `${idBase}-p-${item.id}`
+
+  // DS-0111: resolve size ONCE at the root, then hand it explicitly to the
+  // nested chevron Icon so a sm/md/lg Accordion gets a matching chevron rather
+  // than relying on the cascade. `undefined` → Icon inherits the active
+  // --ss-icon token (still coordinated, since the root carries no override).
+  const resolvedSize = $derived(resolveComponentSize('Accordion', size))
 </script>
 
-<div class="ss-accordion" data-size-variant={resolveComponentSize('Accordion', size)}>
+<div class="ss-accordion" data-size-variant={resolvedSize}>
   {#each items as item, i (item.id)}
     {@const expanded = isOpen(item)}
     <div class="item" class:open={expanded} class:disabled={item.disabled}>
@@ -169,7 +176,9 @@
             <span class="title">{item.label}</span>
             {#if item.hint}<span class="hint">{item.hint}</span>{/if}
           {/if}
-          <span class="chevron" aria-hidden="true"></span>
+          <span class="chevron" aria-hidden="true">
+            <Icon name="chevron" size={resolvedSize} />
+          </span>
         </button>
       </div>
       <div
@@ -196,7 +205,6 @@
     --ss-acc-head-px: var(--ss-row-px);
     --ss-acc-body-py: var(--ss-s-3);
     --ss-acc-body-px: var(--ss-row-px);
-    --ss-acc-chevron: 9px;
     --ss-acc-gap: var(--ss-s-3);
 
     &[data-size-variant='sm'] {
@@ -204,7 +212,6 @@
       --ss-acc-head-px: var(--ss-s-2);
       --ss-acc-body-py: var(--ss-s-2);
       --ss-acc-body-px: var(--ss-s-2);
-      --ss-acc-chevron: 7px;
       --ss-acc-gap: var(--ss-s-2);
     }
     &[data-size-variant='lg'] {
@@ -212,7 +219,6 @@
       --ss-acc-head-px: var(--ss-s-4);
       --ss-acc-body-py: var(--ss-s-4);
       --ss-acc-body-px: var(--ss-s-4);
-      --ss-acc-chevron: 11px;
       --ss-acc-gap: var(--ss-s-4);
     }
 
@@ -272,14 +278,13 @@
         font-size: var(--ss-ui-sm);
       }
 
-      // Chevron — a rotating caret built from borders; turns 180° on open.
+      // Chevron — now the shared Icon `chevron` glyph (DS-0110), rendered
+      // through `ss-icon` so it follows the icon scale + stroke. The wrapper
+      // owns the open/closed rotation so the glyph itself stays a plain Icon.
       .chevron {
         flex: 0 0 auto;
-        width: var(--ss-acc-chevron);
-        height: var(--ss-acc-chevron);
-        border-right: 1.5px solid currentColor;
-        border-bottom: 1.5px solid currentColor;
-        transform: rotate(45deg); // points down (collapsed)
+        display: inline-flex;
+        transform: rotate(0deg); // glyph points down (collapsed)
         transform-origin: center;
         transition: transform var(--ss-dur) var(--ss-ease);
         color: var(--ss-fg-muted);
@@ -287,8 +292,8 @@
     }
 
     .item.open .head .chevron {
-      // 45° (down) + 180° → points up when expanded.
-      transform: rotate(225deg);
+      // Flip the down-pointing chevron up when expanded.
+      transform: rotate(180deg);
     }
 
     // Animated reveal — grid-rows trick gives a height transition without a

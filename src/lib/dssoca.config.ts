@@ -22,11 +22,40 @@ export interface DesignAxis<Values extends readonly string[] = readonly string[]
   readonly default: Values[number]
 }
 
-/** Shape of the manifest — one entry per axis the design system understands. */
+/**
+ * Shape of the manifest — one entry per axis the design system understands.
+ *
+ * Note the asymmetry: `theme` and `size` are *CSS axes* (painted as
+ * `data-theme` / `data-size-variant`); `spinner` is a plain default-prop axis
+ * (the chosen Spinner glyph) with no `data-*` attribute — it threads through the
+ * config to `resolveSpinnerVariant`, not the cascade (DS-0108).
+ */
 export interface DssocaConfig {
   readonly theme: DesignAxis
   readonly size: DesignAxis
+  readonly spinner: DesignAxis
 }
+
+/**
+ * Single source of truth for the Spinner *variant names* (DS-0108). The frame
+ * data lives in `Spinner.svelte`'s `SPINNER_VARIANTS`, but its keys are pinned
+ * to this list (`satisfies Record<SpinnerVariant, …>`) so the two cannot drift.
+ */
+export const SPINNER_VARIANT_NAMES = [
+  'boxBounce2',
+  'boxBounce',
+  'squareCorners',
+  'toggle2',
+  'toggle3',
+  'toggle4',
+  'pipe',
+  'line',
+  'growVertical',
+  'growHorizontal',
+] as const
+
+/** Spinner variant names — derived from the manifest's `spinner` axis. */
+export type SpinnerVariant = (typeof dssocaConfig)['spinner']['values'][number]
 
 /**
  * The manifest. `as const` preserves the value/default literals so the unions
@@ -35,6 +64,7 @@ export interface DssocaConfig {
 export const dssocaConfig = {
   theme: { values: ['dark', 'light'], default: 'dark' },
   size: { values: ['sm', 'md', 'lg'], default: 'md' },
+  spinner: { values: SPINNER_VARIANT_NAMES, default: 'boxBounce2' },
 } as const satisfies DssocaConfig
 
 /** Color axis values — derived from the manifest (`'dark' | 'light'`). */

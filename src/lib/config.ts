@@ -19,11 +19,12 @@ import {
   type Size,
   type ComponentName,
   type ComponentsSize,
+  type SpinnerVariant,
 } from './dssoca.config.js'
 
 // Re-exported so the `dssoca` / `./config` import paths expose the config vocab.
 export { dssocaConfig }
-export type { ColorTheme, Size, ComponentName, ComponentsSize }
+export type { ColorTheme, Size, ComponentName, ComponentsSize, SpinnerVariant }
 export type { DssocaConfig, DesignAxis } from './dssoca.config.js'
 
 export interface DesignConfig {
@@ -32,6 +33,13 @@ export interface DesignConfig {
   sizeVariant: Size
   /** Per-component default sizes; components not listed inherit `sizeVariant`. */
   componentsSize: ComponentsSize
+  /**
+   * Global default Spinner glyph (DS-0108). Unlike `theme`/`sizeVariant` this is
+   * NOT a CSS axis — it is never painted as a `data-*` attribute (see
+   * `designAttributes`, which intentionally omits it). It threads to the Spinner
+   * component through `resolveSpinnerVariant`; a per-usage `variant` prop wins.
+   */
+  spinnerVariant: SpinnerVariant
 }
 
 /** Defaults derived from the manifest — change them in `dssoca.config.ts`. */
@@ -39,6 +47,7 @@ export const defaultDesignConfig: DesignConfig = {
   theme: dssocaConfig.theme.default,
   sizeVariant: dssocaConfig.size.default,
   componentsSize: {},
+  spinnerVariant: dssocaConfig.spinner.default,
 }
 
 let current: DesignConfig = {
@@ -56,6 +65,10 @@ export function getDesignConfig(): DesignConfig {
  * correct theme + size paint on the first frame with no flash.
  *
  *   <html {...designAttributes({ sizeVariant: 'sm' })}> … </html>
+ *
+ * Only the CSS axes (`theme`, `sizeVariant`) appear here. `spinnerVariant` is a
+ * default-prop axis, not a CSS one, so it is deliberately omitted (DS-0108) — it
+ * is consumed via `resolveSpinnerVariant`, never as a `data-*` attribute.
  */
 export function designAttributes(config: Partial<DesignConfig> = {}): {
   'data-theme': ColorTheme
@@ -95,4 +108,15 @@ export function applyDesignConfig(
  */
 export function resolveComponentSize(name: ComponentName, size?: Size): Size | undefined {
   return size ?? current.componentsSize[name]
+}
+
+/**
+ * Resolve the Spinner glyph a component should render: an explicit `variant`
+ * wins, else the configured global `spinnerVariant` (DS-0108). Mirrors
+ * `resolveComponentSize`, but ALWAYS returns a concrete variant (never
+ * `undefined`) — there is no CSS cascade for the glyph, so the component needs a
+ * definite value to pick frames.
+ */
+export function resolveSpinnerVariant(variant?: SpinnerVariant): SpinnerVariant {
+  return variant ?? current.spinnerVariant
 }

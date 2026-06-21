@@ -72,5 +72,5 @@ export const accordion: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Each header is a real `<button>` with `aria-expanded` + `aria-controls`; the panel is a `role="region"` labelled by its header (`aria-labelledby`). Enter/Space toggle; ArrowUp/ArrowDown move between headers (wrapping), Home/End jump to the first/last. Disabled sections use `aria-disabled` so they stay reachable by keyboard but do not toggle. Zero border-radius; padding/typography scale with the size axis. WCAG 2.2 AA.',
+    'Each header is a real `<button>` with `aria-expanded` + `aria-controls`; the panel is a `role="region"` labelled by its header (`aria-labelledby`). Enter/Space toggle; ArrowUp/ArrowDown move between headers (wrapping), Home/End jump to the first/last. Disabled sections use `aria-disabled` so they stay reachable by keyboard but do not toggle. The toggle chevron is the shared `Icon` `chevron` glyph (DS-0110) — `aria-hidden`, inside the header button — rotating 180° on open; the Accordion resolves its size once and passes it explicitly to that Icon (DS-0111), so a sm/md/lg Accordion gets a matching chevron, text, and spacing. Zero border-radius; padding/typography scale with the size axis. WCAG 2.2 AA.',
 }

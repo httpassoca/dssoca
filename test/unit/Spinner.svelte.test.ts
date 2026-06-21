@@ -3,6 +3,7 @@ import { render } from '@testing-library/svelte'
 import { tick } from 'svelte'
 import { axe } from 'vitest-axe'
 import Spinner, { SPINNER_VARIANTS, SPINNER_VARIANT_NAMES } from '$lib/components/Spinner.svelte'
+import { applyDesignConfig, defaultDesignConfig } from '$lib/config'
 
 const axeOpts = {
   rules: {
@@ -66,6 +67,28 @@ describe('Spinner', () => {
   it.each(SPINNER_VARIANT_NAMES)('renders the first frame of the %s variant', (variant) => {
     const { container } = render(Spinner, { variant })
     expect(container.querySelector('.frame')!.textContent).toBe(SPINNER_VARIANTS[variant].frames[0])
+  })
+
+  // --- configured global default (DS-0108) -----------------------------
+
+  describe('configured default variant (DS-0108)', () => {
+    afterEach(() => {
+      applyDesignConfig({ ...defaultDesignConfig })
+    })
+
+    it('uses the configured global spinnerVariant when variant prop is unset', () => {
+      applyDesignConfig({ spinnerVariant: 'squareCorners' })
+      const { container } = render(Spinner, {})
+      expect(container.querySelector('.frame')!.textContent).toBe(
+        SPINNER_VARIANTS.squareCorners.frames[0],
+      )
+    })
+
+    it('a per-usage variant prop overrides the configured global default', () => {
+      applyDesignConfig({ spinnerVariant: 'squareCorners' })
+      const { container } = render(Spinner, { variant: 'line' })
+      expect(container.querySelector('.frame')!.textContent).toBe(SPINNER_VARIANTS.line.frames[0])
+    })
   })
 
   it('applies the size prop as data-size-variant on the root', () => {

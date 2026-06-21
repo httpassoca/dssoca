@@ -1,4 +1,4 @@
-import { type ComponentDoc, SIZE_PROP } from './types'
+import { type ComponentDoc } from './types'
 
 export const icon: ComponentDoc = {
   name: 'Icon',
@@ -25,8 +25,12 @@ export const icon: ComponentDoc = {
       type: 'IconName',
       desc: 'Required. Which glyph to render (e.g. grid, activity, terminal). Falls back to `paths` when unknown.',
     },
-    SIZE_PROP,
-    { name: 'px', type: 'number', desc: 'Explicit pixel size; overrides the size token.' },
+    {
+      name: 'size',
+      type: "'xs' | 'sm' | 'md' | 'lg'",
+      desc: 'Icon-local fixed size scale — xs 12px / sm 16px / md 20px / lg 24px. `xs` is Icon-only (no global size-variant equivalent). When unset, inherits the active `--ss-icon` token (16/20/24 across sm/md/lg).',
+    },
+    { name: 'px', type: 'number', desc: 'Explicit pixel size; overrides the size scale.' },
     {
       name: 'paths',
       type: 'string',
@@ -71,5 +75,5 @@ export const icon: ComponentDoc = {
     { name: 'class', type: 'string', default: "''", desc: 'Extra class on the root svg.' },
   ],
   notes:
-    'Built-in glyphs: `grid`, `activity`, `database`, `logs`, `terminal`, `settings`, `user`, `arrow`, `external`, `film`, `note`, `book`, `check`, `cup`, `wallet`, `target`, `spinner`, `home`, `briefcase`, `folder`, `github`, `linkedin`, `language`, `color-swatch` (see the Gallery story). Module exports `registerIcon(name, paths)` (re-exported from `dssoca`) to register or override a glyph globally at runtime, and the `IconName` type for the built-in set.',
+    'Built-in glyphs: `grid`, `activity`, `database`, `logs`, `terminal`, `settings`, `user`, `arrow`, `chevron`, `external`, `film`, `note`, `book`, `check`, `cup`, `wallet`, `target`, `spinner`, `home`, `briefcase`, `folder`, `github`, `linkedin`, `language`, `color-swatch` (see the Gallery story). The `chevron` glyph has a bounding box centred (horizontally and vertically) on the 24×24 viewBox so a 180° rotation pivots about its visual centre without shifting (used by Accordion). Module exports `registerIcon(name, paths)` (re-exported from `dssoca`) to register or override a glyph globally at runtime, and the `IconName` / `IconSize` types. **House rule:** every component-drawn icon renders through this shared `Icon` component — no bespoke CSS-border shapes or ad-hoc inline `<svg>`; an *interactive* icon must sit inside a real control (a native `<button>` preferred) with the accessible name on the control and the icon marked `aria-hidden`. (Two deliberate non-icons: the Button loading indicator is a `Spinner`, and the Badge status dot is a styled span.)',
 }
