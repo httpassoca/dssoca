@@ -8,6 +8,26 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+## [0.12.0] — DS-0107 component polish & API corrections — 2026-06-21
+
+### Added
+
+- **Configurable default `Spinner` variant** (`DS-0108`). `dssocaConfig` gains a `spinner` axis and
+  `resolveSpinnerVariant()`; `<Spinner>` (and `Button` `loading`) use the configured default when no
+  `variant` is set, overridable per usage.
+- **`Icon` fixed size scale + `chevron` glyph** (`DS-0109`, `DS-0110`). The Icon `size` prop is a
+  fixed scale `xs 12 / sm 16 / md 20 / lg 24` (adds `xs`); a new centered `chevron` glyph was added
+  to the icon set.
+- **`Accordion` `overflow` prop** (`DS-0117`) — `'truncate' | 'wrap'` (default `wrap`) controlling
+  how the header label behaves when it exceeds the available width.
+- **`--ss-gap-xs` spacing token** (`DS-0124`) — md 6 / sm 4 / lg 8 (below `--ss-gap-sm`); the
+  `FileDrop` files list now uses it.
+- **Coordinated inner sizes** (`DS-0111`) — a documented convention (see `DESIGN.md`) where a
+  component passes its resolved size to nested `Icon`/`Spinner`, so a `sm` component renders `sm`
+  internals and spacing in lockstep.
+- **Storybook** — the full `Icon` control surface is now wired so every control drives the icon
+  (`DS-0118`), and Card/Modal footer-action examples were added (`DS-0123`).
+
 ### Changed
 
 - **BREAKING — `Button` `loading` widened to `boolean | SpinnerVariant`** (`DS-0113`). The button's
@@ -41,6 +61,22 @@ may include breaking changes (flagged **BREAKING**).
   `line-height`, so badges sit compactly inline with adjacent text. Internal chip-like paddings in
   `Topbar` / `LogStream` / `ServiceCard` that previously read `--ss-badge-py` now read the new
   `--ss-chip-py` (same sm 3 / md 5 / lg 7 values), so their rendering is unchanged.
+- **Global `--ss-icon` scale increased** (`DS-0109`) to sm 16 / md 20 / lg 24 (was 14 / 16 / 20), so
+  icons auto-sized inside controls grow one step.
+- **`Accordion` chevron** now renders via the shared `<Icon>` glyph (`DS-0110`) instead of a
+  CSS-border caret, centered so its open/close rotation pivots without vertical drift.
+- **`BottomNav` top separator** is drawn with `box-shadow: 0 -1px 0 var(--ss-line)` instead of a
+  layout `border-top` (`DS-0122`), so it no longer affects the bar's height.
+
+### Fixed
+
+- **`Button` height is invariant to leading/trailing icons** (`DS-0112`) — an icon affix is clamped
+  to the text line-box and no longer grows the control.
+- **`Button` loading state is centered** (`DS-0114`) — no stray empty label span.
+- **`Accordion` panel padding is present from the first reveal frame** (`DS-0115`) — content animates
+  as a stable, already-padded block instead of snapping in.
+- **`Accordion` chevron alignment** (`DS-0116`) — the disclosure indicator stays centered with no
+  vertical drift between open and closed states.
 
 ## [0.11.0] — geossoca stats-dashboard charts — 2026-06-15
 
