@@ -322,7 +322,7 @@
     font-family: var(--ss-font-mono);
     font-size: var(--ss-ui-sm);
     line-height: 1;
-    padding: var(--ss-badge-py) var(--ss-badge-px);
+    padding: var(--ss-chip-py) var(--ss-badge-px);
     border: 1px solid var(--ss-line);
     background: transparent;
     color: var(--ss-code-fg);
@@ -358,7 +358,7 @@
     min-width: 8ch;
     font-family: var(--ss-font-mono);
     font-size: var(--ss-ui-sm);
-    padding: var(--ss-badge-py) var(--ss-gap-sm);
+    padding: var(--ss-chip-py) var(--ss-gap-sm);
     border: 1px solid var(--ss-line);
     background: transparent;
     color: var(--ss-code-fg);
@@ -456,7 +456,7 @@
     font-family: var(--ss-font-mono);
     font-size: var(--ss-ui-sm);
     line-height: 1;
-    padding: var(--ss-badge-py) var(--ss-badge-px);
+    padding: var(--ss-chip-py) var(--ss-badge-px);
     border: 1px solid var(--ss-line-strong);
     background: var(--ss-bg-elev);
     color: var(--ss-fg);

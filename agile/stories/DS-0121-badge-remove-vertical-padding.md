@@ -2,7 +2,7 @@
 id: DS-0121
 type: story
 title: "Remove Badge vertical padding (height from line-height)"
-status: backlog
+status: done
 priority: low
 tags: [badge, layout]
 depends_on: [DS-0111]
@@ -20,13 +20,13 @@ Set the vertical padding to `0` (drop `--ss-badge-py` from the padding shorthand
 This change is scoped to be consistent with the coordinated inner-sizing work in [[DS-0111]] (so the line-height-derived sizing matches how the other inner elements are coordinated), hence `depends_on: [DS-0111]`.
 
 ## Acceptance criteria
-- [ ] No vertical padding is applied to `.ss-badge`: the `padding` shorthand uses `0 var(--ss-badge-px)` (or equivalent), and the `--ss-badge-py` token is removed (all sm/md/lg blocks) since it no longer feeds the badge.
-- [ ] Badge height is determined by content + line-height; an explicit, sensible `line-height` is set so height is predictable and stable across sm/md/lg.
-- [ ] Dot, count, and label remain vertically centred (flex `align-items: center` retained); verified visually at sm, md, and lg.
-- [ ] A badge placed inline with running text aligns cleanly (no vertical jump / misalignment) at all three sizes.
-- [ ] Horizontal padding (`--ss-badge-px`) and `--ss-badge-gap` / `--ss-badge-dot` behaviour are unchanged.
-- [ ] `pnpm test` green; Badge unit test covers the alignment-relevant structure and `vitest-axe` stays clean.
-- [ ] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md / docs/themes.md as needed) — reflect the removed `--ss-badge-py` token in `docs/tokens.md`.
+- [x] No vertical padding is applied to `.ss-badge`: the `padding` shorthand uses `0 var(--ss-badge-px)` (or equivalent), and the `--ss-badge-py` token is removed (all sm/md/lg blocks) since it no longer feeds the badge.
+- [x] Badge height is determined by content + line-height; an explicit, sensible `line-height` is set so height is predictable and stable across sm/md/lg.
+- [x] Dot, count, and label remain vertically centred (flex `align-items: center` retained); verified visually at sm, md, and lg.
+- [x] A badge placed inline with running text aligns cleanly (no vertical jump / misalignment) at all three sizes.
+- [x] Horizontal padding (`--ss-badge-px`) and `--ss-badge-gap` / `--ss-badge-dot` behaviour are unchanged.
+- [x] `pnpm test` green; Badge unit test covers the alignment-relevant structure and `vitest-axe` stays clean.
+- [x] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md / docs/themes.md as needed) — reflect the removed `--ss-badge-py` token in `docs/tokens.md`.
 
 ## Notes
 - Part of epic [[DS-0107]] (Badge refinement). Depends on [[DS-0111]] (coordinated inner sizes) so line-height-driven height is consistent with the wider inner-sizing approach.

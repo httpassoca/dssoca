@@ -146,8 +146,9 @@ putting it on a wrapper:
 - **Theme-tracked colors.** `data-theme` controls the _full_ color surface, not
   just bg/fg: the sentiment tokens (`--ss-success`/`-soft`,
   `--ss-danger`/`-hover`/`-soft`, `--ss-fg-on-danger`), the log-level accents
-  (`--ss-log-info`/`-warn`/`-err`/`-ok`), and the per-tone badge fills/borders
-  (`--ss-badge-<tone>-bg`/`-border` for `up`/`deg`/`down`/`maint`/`info`/`neutral`)
+  (`--ss-log-info`/`-warn`/`-err`/`-ok`), and the per-tone badge
+  fills/borders/foregrounds (`--ss-badge-<tone>-bg`/`-border`/`-fg` for
+  `brand`/`neutral`/`positive`/`caution`/`critical`/`info`)
   all carry light-mode overrides so they hold AA contrast in both themes. Read
   these tokens (never raw hexes) so a theme flip recolors your component too. The
   full per-theme value table lives in `docs/tokens.md`.

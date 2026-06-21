@@ -48,12 +48,12 @@
     {
       title: 'badge tones',
       tokens: [
-        '--ss-badge-up-bg',
-        '--ss-badge-deg-bg',
-        '--ss-badge-down-bg',
-        '--ss-badge-maint-bg',
-        '--ss-badge-info-bg',
+        '--ss-badge-brand-bg',
         '--ss-badge-neutral-bg',
+        '--ss-badge-positive-bg',
+        '--ss-badge-caution-bg',
+        '--ss-badge-critical-bg',
+        '--ss-badge-info-bg',
       ],
     },
     {

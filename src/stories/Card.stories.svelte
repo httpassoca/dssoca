@@ -87,10 +87,10 @@
   {#snippet children()}
     <Card title="Environments" meta="3 active">
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <Badge tone="up">production</Badge>
+        <Badge tone="positive">production</Badge>
         <Badge tone="info">staging</Badge>
-        <Badge tone="deg">preview</Badge>
-        <Badge tone="down">local</Badge>
+        <Badge tone="caution">preview</Badge>
+        <Badge tone="critical">local</Badge>
       </div>
     </Card>
   {/snippet}
@@ -116,7 +116,7 @@
       {/snippet}
       <p style="margin:0;font-size:13px">Body content with a footer band below.</p>
       {#snippet footer()}
-        <Badge tone="up">passed</Badge>
+        <Badge tone="positive">passed</Badge>
       {/snippet}
     </Card>
   {/snippet}

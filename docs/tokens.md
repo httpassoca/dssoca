@@ -135,24 +135,32 @@ Theme-correct on the code surface (`DS-0040`).
 
 ### Badge tones
 
-Theme-tracked fills/borders per tone so the washes read in both themes
-(`DS-0031`). The text colour tracks the matching status token. Tones:
-`up`, `deg`, `down`, `maint`, `info`, `neutral`.
+Six semantic tones (`DS-0119`): `brand`, `neutral`, `positive`, `caution`,
+`critical`, `info` (renamed from the old `up`/`deg`/`down`/`maint`/`info`/`neutral`
+set). Theme-tracked fills/borders per tone so the washes read in both themes
+(`DS-0031`); each tone also carries an explicit `-fg` verified to meet WCAG 2.2
+AA (≥4.5:1) on its washed background in both themes.
 
-| Token                       | Dark                    | Light                  |
-| --------------------------- | ----------------------- | ---------------------- |
-| `--ss-badge-up-bg`          | `rgba(102,239,115,.12)` | `rgba(20,124,58,.10)`  |
-| `--ss-badge-up-border`      | `rgba(102,239,115,.40)` | `rgba(20,124,58,.35)`  |
-| `--ss-badge-deg-bg`         | `rgba(224,195,106,.12)` | `rgba(138,109,26,.10)` |
-| `--ss-badge-deg-border`     | `rgba(224,195,106,.40)` | `rgba(138,109,26,.35)` |
-| `--ss-badge-down-bg`        | `rgba(255,92,92,.12)`   | `rgba(198,40,40,.10)`  |
-| `--ss-badge-down-border`    | `rgba(255,92,92,.40)`   | `rgba(198,40,40,.35)`  |
-| `--ss-badge-maint-bg`       | `rgba(154,164,255,.12)` | `rgba(47,59,214,.10)`  |
-| `--ss-badge-maint-border`   | `rgba(154,164,255,.40)` | `rgba(47,59,214,.35)`  |
-| `--ss-badge-info-bg`        | `rgba(102,217,239,.12)` | `rgba(11,110,125,.10)` |
-| `--ss-badge-info-border`    | `rgba(102,217,239,.40)` | `rgba(11,110,125,.35)` |
-| `--ss-badge-neutral-bg`     | `rgba(255,255,255,.06)` | `rgba(0,0,0,.05)`      |
-| `--ss-badge-neutral-border` | `var(--ss-line)`        | `var(--ss-line)`       |
+| Token                        | Dark                    | Light                  |
+| ---------------------------- | ----------------------- | ---------------------- |
+| `--ss-badge-brand-bg`        | `rgba(154,164,255,.12)` | `rgba(47,59,214,.10)`  |
+| `--ss-badge-brand-border`    | `rgba(154,164,255,.40)` | `rgba(47,59,214,.35)`  |
+| `--ss-badge-brand-fg`        | `var(--ss-blue)`        | `var(--ss-blue)`       |
+| `--ss-badge-neutral-bg`      | `rgba(255,255,255,.06)` | `rgba(0,0,0,.05)`      |
+| `--ss-badge-neutral-border`  | `var(--ss-line)`        | `var(--ss-line)`       |
+| `--ss-badge-neutral-fg`      | `var(--ss-fg-muted)`    | `#4a4a4a`              |
+| `--ss-badge-positive-bg`     | `rgba(102,239,115,.12)` | `rgba(20,124,58,.10)`  |
+| `--ss-badge-positive-border` | `rgba(102,239,115,.40)` | `rgba(20,124,58,.35)`  |
+| `--ss-badge-positive-fg`     | `var(--ss-primary)`     | `#0f6e31`              |
+| `--ss-badge-caution-bg`      | `rgba(224,195,106,.12)` | `rgba(138,109,26,.10)` |
+| `--ss-badge-caution-border`  | `rgba(224,195,106,.40)` | `rgba(138,109,26,.35)` |
+| `--ss-badge-caution-fg`      | `var(--ss-yellow)`      | `#6f5715`              |
+| `--ss-badge-critical-bg`     | `rgba(255,92,92,.12)`   | `rgba(198,40,40,.10)`  |
+| `--ss-badge-critical-border` | `rgba(255,92,92,.40)`   | `rgba(198,40,40,.35)`  |
+| `--ss-badge-critical-fg`     | `var(--ss-red)`         | `#b21f1f`              |
+| `--ss-badge-info-bg`         | `rgba(102,217,239,.12)` | `rgba(11,110,125,.10)` |
+| `--ss-badge-info-border`     | `rgba(102,217,239,.40)` | `rgba(11,110,125,.35)` |
+| `--ss-badge-info-fg`         | `var(--ss-cyan)`        | `var(--ss-cyan)`       |
 
 ## 2. Size tokens — controlled by `data-size-variant`
 
@@ -160,52 +168,52 @@ Defined under `:root, [data-size-variant="md"]` (the default); `[data-size-varia
 and `[data-size-variant="lg"]` override them. These rescale the entire chrome.
 (Renamed from the density axis in 0.4.0: `sm` ← compact, `md` ← comfy, `lg` new.)
 
-| Token                      | sm       | md (default) | lg       | Drives                                                |
-| -------------------------- | -------- | ------------ | -------- | ----------------------------------------------------- |
-| `--ss-leading`             | `1.3`    | `1.5`        | `1.6`    | html / body line-height                               |
-| `--ss-ui-xs`               | `9.5px`  | `11px`       | `12.5px` | micro uppercase labels                                |
-| `--ss-ui-sm`               | `10.5px` | `12px`       | `13.5px` | secondary chrome text                                 |
-| `--ss-ui-md`               | `11.5px` | `13px`       | `15px`   | primary chrome text                                   |
-| `--ss-ui-lg`               | `13px`   | `15px`       | `17px`   | names, logo                                           |
-| `--ss-icon`                | `16px`   | `20px`       | `24px`   | Icon box (DS-0109 scale; `xs` 12px is Icon-prop-only) |
-| `--ss-control-font`        | `12px`   | `14px`       | `16px`   | buttons                                               |
-| `--ss-control-py`          | `5px`    | `9px`        | `12px`   | button padding-y                                      |
-| `--ss-control-px`          | `9px`    | `16px`       | `22px`   | button padding-x                                      |
-| `--ss-input-font`          | `14px`   | `15px`       | `17px`   | inputs                                                |
-| `--ss-input-py`            | `10px`   | `13px`       | `17px`   | input padding-y                                       |
-| `--ss-input-px`            | `12px`   | `16px`       | `20px`   | input padding-x                                       |
-| `--ss-panel-head-py`       | `7px`    | `12px`       | `16px`   | panel header padding-y                                |
-| `--ss-panel-head-px`       | `12px`   | `18px`       | `24px`   | panel header padding-x                                |
-| `--ss-panel-body-py`       | `10px`   | `18px`       | `24px`   | panel body padding-y                                  |
-| `--ss-panel-body-px`       | `12px`   | `18px`       | `24px`   | panel body padding-x                                  |
-| `--ss-card-py`             | `10px`   | `16px`       | `22px`   | metric / service card padding-y                       |
-| `--ss-card-px`             | `12px`   | `18px`       | `24px`   | metric / service card padding-x                       |
-| `--ss-metric-val`          | `26px`   | `32px`       | `40px`   | metric tile value size                                |
-| `--ss-row-py`              | `5px`    | `9px`        | `12px`   | nav rows, table cells padding-y                       |
-| `--ss-row-px`              | `10px`   | `14px`       | `18px`   | nav rows, table cells padding-x                       |
-| `--ss-badge-py`            | `3px`    | `5px`        | `7px`    | badge padding-y                                       |
-| `--ss-badge-px`            | `8px`    | `12px`       | `16px`   | badge padding-x                                       |
-| `--ss-badge-dot`           | `4px`    | `5px`        | `6px`    | badge status-dot size                                 |
-| `--ss-badge-gap`           | `5px`    | `6px`        | `7px`    | badge inner gap                                       |
-| `--ss-gap`                 | `8px`    | `14px`       | `18px`   | default grid/flex gap                                 |
-| `--ss-gap-sm`              | `6px`    | `10px`       | `13px`   | tight gap                                             |
-| `--ss-block-gap`           | `16px`   | `28px`       | `36px`   | spacing between major blocks                          |
-| `--ss-shell-side-w`        | `180px`  | `220px`      | `260px`  | app-shell sidebar width (layout)                      |
-| `--ss-shell-top-h`         | `36px`   | `48px`       | `56px`   | topbar height                                         |
-| `--ss-main-py`             | `16px`   | `28px`       | `36px`   | main content padding-y                                |
-| `--ss-main-px`             | `20px`   | `36px`       | `48px`   | main content padding-x                                |
-| `--ss-side-w`              | `180px`  | `220px`      | `260px`  | Sidebar expanded width                                |
-| `--ss-side-w-rail`         | `44px`   | `56px`       | `64px`   | Sidebar collapsed rail width                          |
-| `--ss-side-badge-py`       | `1px`    | `2px`        | `3px`    | Sidebar item badge padding-y                          |
-| `--ss-side-badge-px`       | `5px`    | `6px`        | `8px`    | Sidebar item badge padding-x                          |
-| `--ss-toast-ic`            | `15px`   | `18px`       | `22px`   | Toast icon box                                        |
-| `--ss-toast-swipe`         | `60px`   | `72px`       | `88px`   | Toast swipe-dismiss threshold                         |
-| `--ss-empty-glyph`         | `32px`   | `40px`       | `52px`   | EmptyState visual glyph                               |
-| `--ss-empty-glyph-compact` | `22px`   | `28px`       | `36px`   | EmptyState glyph (compact)                            |
-| `--ss-empty-max-w`         | `360px`  | `420px`      | `480px`  | EmptyState content max-width                          |
-| `--ss-spark-h`             | `14px`   | `18px`       | `26px`   | Sparkline height                                      |
-| `--ss-spark-bar-w`         | `2px`    | `3px`        | `4px`    | Sparkline bar width                                   |
-| `--ss-spark-gap`           | `1px`    | `1px`        | `2px`    | Sparkline bar gap                                     |
+| Token                      | sm       | md (default) | lg       | Drives                                                                          |
+| -------------------------- | -------- | ------------ | -------- | ------------------------------------------------------------------------------- |
+| `--ss-leading`             | `1.3`    | `1.5`        | `1.6`    | html / body line-height                                                         |
+| `--ss-ui-xs`               | `9.5px`  | `11px`       | `12.5px` | micro uppercase labels                                                          |
+| `--ss-ui-sm`               | `10.5px` | `12px`       | `13.5px` | secondary chrome text                                                           |
+| `--ss-ui-md`               | `11.5px` | `13px`       | `15px`   | primary chrome text                                                             |
+| `--ss-ui-lg`               | `13px`   | `15px`       | `17px`   | names, logo                                                                     |
+| `--ss-icon`                | `16px`   | `20px`       | `24px`   | Icon box (DS-0109 scale; `xs` 12px is Icon-prop-only)                           |
+| `--ss-control-font`        | `12px`   | `14px`       | `16px`   | buttons                                                                         |
+| `--ss-control-py`          | `5px`    | `9px`        | `12px`   | button padding-y                                                                |
+| `--ss-control-px`          | `9px`    | `16px`       | `22px`   | button padding-x                                                                |
+| `--ss-input-font`          | `14px`   | `15px`       | `17px`   | inputs                                                                          |
+| `--ss-input-py`            | `10px`   | `13px`       | `17px`   | input padding-y                                                                 |
+| `--ss-input-px`            | `12px`   | `16px`       | `20px`   | input padding-x                                                                 |
+| `--ss-panel-head-py`       | `7px`    | `12px`       | `16px`   | panel header padding-y                                                          |
+| `--ss-panel-head-px`       | `12px`   | `18px`       | `24px`   | panel header padding-x                                                          |
+| `--ss-panel-body-py`       | `10px`   | `18px`       | `24px`   | panel body padding-y                                                            |
+| `--ss-panel-body-px`       | `12px`   | `18px`       | `24px`   | panel body padding-x                                                            |
+| `--ss-card-py`             | `10px`   | `16px`       | `22px`   | metric / service card padding-y                                                 |
+| `--ss-card-px`             | `12px`   | `18px`       | `24px`   | metric / service card padding-x                                                 |
+| `--ss-metric-val`          | `26px`   | `32px`       | `40px`   | metric tile value size                                                          |
+| `--ss-row-py`              | `5px`    | `9px`        | `12px`   | nav rows, table cells padding-y                                                 |
+| `--ss-row-px`              | `10px`   | `14px`       | `18px`   | nav rows, table cells padding-x                                                 |
+| `--ss-badge-px`            | `8px`    | `12px`       | `16px`   | badge padding-x (no padding-y; height from line-height, DS-0121)                |
+| `--ss-chip-py`             | `3px`    | `5px`        | `7px`    | chip-like padding-y (Topbar skip-link / LogStream chips / ServiceCard skeleton) |
+| `--ss-badge-dot`           | `4px`    | `5px`        | `6px`    | badge status-dot size                                                           |
+| `--ss-badge-gap`           | `5px`    | `6px`        | `7px`    | badge inner gap                                                                 |
+| `--ss-gap`                 | `8px`    | `14px`       | `18px`   | default grid/flex gap                                                           |
+| `--ss-gap-sm`              | `6px`    | `10px`       | `13px`   | tight gap                                                                       |
+| `--ss-block-gap`           | `16px`   | `28px`       | `36px`   | spacing between major blocks                                                    |
+| `--ss-shell-side-w`        | `180px`  | `220px`      | `260px`  | app-shell sidebar width (layout)                                                |
+| `--ss-shell-top-h`         | `36px`   | `48px`       | `56px`   | topbar height                                                                   |
+| `--ss-main-py`             | `16px`   | `28px`       | `36px`   | main content padding-y                                                          |
+| `--ss-main-px`             | `20px`   | `36px`       | `48px`   | main content padding-x                                                          |
+| `--ss-side-w`              | `180px`  | `220px`      | `260px`  | Sidebar expanded width                                                          |
+| `--ss-side-w-rail`         | `44px`   | `56px`       | `64px`   | Sidebar collapsed rail width                                                    |
+| `--ss-side-badge-py`       | `1px`    | `2px`        | `3px`    | Sidebar item badge padding-y                                                    |
+| `--ss-side-badge-px`       | `5px`    | `6px`        | `8px`    | Sidebar item badge padding-x                                                    |
+| `--ss-toast-ic`            | `15px`   | `18px`       | `22px`   | Toast icon box                                                                  |
+| `--ss-toast-swipe`         | `60px`   | `72px`       | `88px`   | Toast swipe-dismiss threshold                                                   |
+| `--ss-empty-glyph`         | `32px`   | `40px`       | `52px`   | EmptyState visual glyph                                                         |
+| `--ss-empty-glyph-compact` | `22px`   | `28px`       | `36px`   | EmptyState glyph (compact)                                                      |
+| `--ss-empty-max-w`         | `360px`  | `420px`      | `480px`  | EmptyState content max-width                                                    |
+| `--ss-spark-h`             | `14px`   | `18px`       | `26px`   | Sparkline height                                                                |
+| `--ss-spark-bar-w`         | `2px`    | `3px`        | `4px`    | Sparkline bar width                                                             |
+| `--ss-spark-gap`           | `1px`    | `1px`        | `2px`    | Sparkline bar gap                                                               |
 
 `md` reproduces the original comfy values; `sm` the original compact dashboard;
 `lg` is a new larger step. Global default is `md`; set it via `sizeVariant`, or per

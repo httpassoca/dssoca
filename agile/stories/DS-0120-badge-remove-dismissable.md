@@ -2,7 +2,7 @@
 id: DS-0120
 type: story
 title: "Remove Badge dismissable behaviour"
-status: backlog
+status: done
 priority: high
 tags: [badge, api, breaking, a11y]
 depends_on: []
@@ -20,13 +20,13 @@ Currently, when `ondismiss` is set, `Badge` renders a keyboard-focusable dismiss
 This is a **BREAKING** change: it removes public API (`ondismiss`) and the rendered button. Consumers who need a removable, interactive chip should not use `Badge` — that is out of scope for this component and would be served by a dedicated Tag/Chip primitive.
 
 ## Acceptance criteria
-- [ ] `ondismiss` prop removed from `Badge`'s `Props` interface and from the destructured `$props()`.
-- [ ] The trailing `<button class="x">` dismiss control and its `.x` scoped SCSS rule are removed; `Badge` renders **no interactive element** (no `<button>`, no focusable node) in any prop combination.
-- [ ] The `label`-names-the-dismiss-button coupling is removed; `label` is retained purely for the accessible name of non-text / dot-only / count-only badges so status isn't conveyed by colour alone (WCAG 1.4.1).
-- [ ] `label` / `role` / `aria-label` semantics for label-less badges (`role="img"`) and live badges (`role="status"`, `aria-live="polite"`) are unchanged.
-- [ ] CHANGELOG note flags the removed `ondismiss` API and directs consumers needing removable chips to a Tag/Chip component (not `Badge`), drafted under `## [Unreleased]`.
-- [ ] `pnpm test` green; Badge unit test drops the dismiss-button assertions and adds a regression check that no interactive/focusable element is rendered; `vitest-axe` clean for dot-only, count-only, and labelled badges.
-- [ ] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md / docs/themes.md as needed).
+- [x] `ondismiss` prop removed from `Badge`'s `Props` interface and from the destructured `$props()`.
+- [x] The trailing `<button class="x">` dismiss control and its `.x` scoped SCSS rule are removed; `Badge` renders **no interactive element** (no `<button>`, no focusable node) in any prop combination.
+- [x] The `label`-names-the-dismiss-button coupling is removed; `label` is retained purely for the accessible name of non-text / dot-only / count-only badges so status isn't conveyed by colour alone (WCAG 1.4.1).
+- [x] `label` / `role` / `aria-label` semantics for label-less badges (`role="img"`) and live badges (`role="status"`, `aria-live="polite"`) are unchanged.
+- [x] CHANGELOG note flags the removed `ondismiss` API and directs consumers needing removable chips to a Tag/Chip component (not `Badge`), drafted under `## [Unreleased]`.
+- [x] `pnpm test` green; Badge unit test drops the dismiss-button assertions and adds a regression check that no interactive/focusable element is rendered; `vitest-axe` clean for dot-only, count-only, and labelled badges.
+- [x] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md / docs/themes.md as needed).
 
 ## Notes
 - Part of epic [[DS-0107]] (Badge refinement).

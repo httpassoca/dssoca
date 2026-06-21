@@ -56,6 +56,17 @@
     status === 'deg' ? 'degraded' : status === 'maint' ? 'maintenance' : status,
   )
 
+  // Map the service status onto a Badge semantic tone (DS-0119).
+  const badgeTone = $derived(
+    status === 'deg'
+      ? 'caution'
+      : status === 'down'
+        ? 'critical'
+        : status === 'maint'
+          ? 'brand'
+          : 'positive',
+  )
+
   // Status is decorative on the dot/badge, but meaningful — fold it into the label.
   const cardLabel = $derived(`${name}, ${statusLabel}`)
 
@@ -99,7 +110,7 @@
     {#if loading}
       <div class="sk sk-badge" aria-hidden="true"></div>
     {:else}
-      <Badge tone={status}>{statusLabel}</Badge>
+      <Badge tone={badgeTone}>{statusLabel}</Badge>
       <div class="latency">{latency}</div>
     {/if}
   </div>
@@ -287,7 +298,7 @@
   }
   .sk-badge {
     width: 64px;
-    height: calc(var(--ss-ui-xs) + (var(--ss-badge-py) * 2));
+    height: calc(var(--ss-ui-xs) + (var(--ss-chip-py) * 2));
   }
   .sk-spark {
     width: 100%;

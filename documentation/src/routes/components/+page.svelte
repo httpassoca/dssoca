@@ -203,8 +203,8 @@
     </div>
   {:else if slug === 'badge'}
     <div class="row">
-      <Badge tone="up" dot>up</Badge>
-      <Badge tone="down">down</Badge>
+      <Badge tone="positive" dot>up</Badge>
+      <Badge tone="critical">down</Badge>
       <Badge tone="info">to_watch</Badge>
     </div>
   {:else if slug === 'metric-tile'}
