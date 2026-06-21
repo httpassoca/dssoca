@@ -271,7 +271,7 @@
   --ss-ui-md: 13px; /* primary chrome text    */
   --ss-ui-lg: 15px; /* names / logo           */
 
-  --ss-icon: 16px;
+  --ss-icon: 20px; /* md icon box (DS-0109 scale: sm 16 / md 20 / lg 24) */
 
   --ss-control-font: 14px;
   --ss-control-py: 9px;
@@ -334,7 +334,7 @@
   --ss-ui-md: 11.5px;
   --ss-ui-lg: 13px;
 
-  --ss-icon: 14px;
+  --ss-icon: 16px; /* sm icon box (DS-0109) */
 
   --ss-control-font: 12px;
   --ss-control-py: 5px;
@@ -397,7 +397,7 @@
   --ss-ui-md: 15px;
   --ss-ui-lg: 17px;
 
-  --ss-icon: 20px;
+  --ss-icon: 24px; /* lg icon box (DS-0109) */
 
   --ss-control-font: 16px;
   --ss-control-py: 12px;

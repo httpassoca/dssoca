@@ -47,7 +47,7 @@ describe('Icon', () => {
     return tmp.innerHTML
   }
 
-  it.each(['book', 'film', 'note', 'grid', 'user', 'check'] as const)(
+  it.each(['book', 'film', 'note', 'grid', 'user', 'check', 'chevron'] as const)(
     'renders the %s glyph path inside the svg',
     (name) => {
       const { container } = render(Icon, { name })
@@ -55,6 +55,25 @@ describe('Icon', () => {
       expect(svg.innerHTML).toBe(normalise(PATHS[name]))
     },
   )
+
+  it('chevron glyph exists, is distinct from arrow, and is vertically centred (DS-0110)', () => {
+    expect(PATHS.chevron).toBeTruthy()
+    expect(PATHS.chevron).not.toBe(PATHS.arrow)
+    const { container } = render(Icon, { name: 'chevron' })
+    expect(container.querySelector('svg')!.innerHTML).toBe(normalise(PATHS.chevron))
+    // The glyph's bounding box must be vertically centred on the 24-unit viewBox
+    // (y-extents symmetric about 12) so a 180deg rotation pivots about its visual
+    // middle and the open/closed states don't shift (fixes the Accordion root cause).
+    // The chevron is `M{x} {y} l{dx} {dy} {dx} {dy}`: an absolute moveto then a
+    // relative polyline; walk the points and assert min/max y centre on 12.
+    const m = PATHS.chevron.match(
+      /M(-?[\d.]+)\s+(-?[\d.]+)l(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)(-?[\d.]+)/,
+    )
+    expect(m).not.toBeNull()
+    const [, , y0, , dy1, , dy2] = m!.map(Number)
+    const ys = [y0, y0 + dy1, y0 + dy1 + dy2]
+    expect((Math.min(...ys) + Math.max(...ys)) / 2).toBe(12)
+  })
 
   // ----------------------------------------------------------------
   //  DS-0087 — extended built-in glyph set (nav/social)
@@ -224,14 +243,54 @@ describe('Icon', () => {
       expect(container.querySelector('svg')).toHaveAttribute('stroke-width', '1')
     })
 
-    it('absoluteStroke uses the token px for a size variant (lg=20 → 2*24/20=2.4)', () => {
+    it('absoluteStroke uses the fixed-scale px for a size variant (lg=24 → 2*24/24=2)', () => {
       const { container } = render(Icon, {
         name: 'grid',
         size: 'lg',
         strokeWidth: 2,
         absoluteStroke: true,
       })
-      expect(container.querySelector('svg')).toHaveAttribute('stroke-width', '2.4')
+      expect(container.querySelector('svg')).toHaveAttribute('stroke-width', '2')
+    })
+  })
+
+  // ----------------------------------------------------------------
+  //  DS-0109 — fixed named size scale (xs 12 / sm 16 / md 20 / lg 24)
+  // ----------------------------------------------------------------
+
+  describe('named size scale (DS-0109)', () => {
+    it.each([
+      ['xs', '12px'],
+      ['sm', '16px'],
+      ['md', '20px'],
+      ['lg', '24px'],
+    ] as const)('size=%s pins width/height to the fixed scale (%s)', (size, px) => {
+      const { container } = render(Icon, { name: 'grid', size })
+      const svg = container.querySelector('svg')!
+      expect(svg.getAttribute('style')).toContain(`width: ${px}`)
+      expect(svg.getAttribute('style')).toContain(`height: ${px}`)
+    })
+
+    it('xs is Icon-local: pins 12px but stamps no global data-size-variant', () => {
+      const { container } = render(Icon, { name: 'grid', size: 'xs' })
+      const svg = container.querySelector('svg')!
+      expect(svg.getAttribute('style')).toContain('width: 12px')
+      expect(svg).not.toHaveAttribute('data-size-variant')
+    })
+
+    it.each([
+      ['xs', 12, '4'],
+      ['sm', 16, '3'],
+      ['md', 20, '2.4'],
+      ['lg', 24, '2'],
+    ] as const)('absoluteStroke at size=%s (px=%i) → 2*24/px', (size, _px, expected) => {
+      const { container } = render(Icon, {
+        name: 'grid',
+        size,
+        strokeWidth: 2,
+        absoluteStroke: true,
+      })
+      expect(container.querySelector('svg')).toHaveAttribute('stroke-width', expected)
     })
   })
 

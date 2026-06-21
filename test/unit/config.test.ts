@@ -5,6 +5,7 @@ import {
   designAttributes,
   applyDesignConfig,
   resolveComponentSize,
+  resolveSpinnerVariant,
 } from '$lib/config'
 
 describe('config — defaults', () => {
@@ -16,14 +17,24 @@ describe('config — defaults', () => {
     document.documentElement.removeAttribute('data-size-variant')
   })
 
-  it('defaultDesignConfig is dark + md + empty componentsSize', () => {
-    expect(defaultDesignConfig).toEqual({ theme: 'dark', sizeVariant: 'md', componentsSize: {} })
+  it('defaultDesignConfig is dark + md + empty componentsSize + boxBounce2 spinner', () => {
+    expect(defaultDesignConfig).toEqual({
+      theme: 'dark',
+      sizeVariant: 'md',
+      componentsSize: {},
+      spinnerVariant: 'boxBounce2',
+    })
   })
 
   it('getDesignConfig returns a copy, not the internal reference', () => {
     const a = getDesignConfig()
     const b = getDesignConfig()
-    expect(a).toEqual({ theme: 'dark', sizeVariant: 'md', componentsSize: {} })
+    expect(a).toEqual({
+      theme: 'dark',
+      sizeVariant: 'md',
+      componentsSize: {},
+      spinnerVariant: 'boxBounce2',
+    })
     expect(a).not.toBe(b)
     expect(a.componentsSize).not.toBe(b.componentsSize)
   })
@@ -77,8 +88,18 @@ describe('applyDesignConfig', () => {
 
   it('updates current and returns the new resolved config', () => {
     const result = applyDesignConfig({ theme: 'light' }, document.documentElement)
-    expect(result).toEqual({ theme: 'light', sizeVariant: 'md', componentsSize: {} })
-    expect(getDesignConfig()).toEqual({ theme: 'light', sizeVariant: 'md', componentsSize: {} })
+    expect(result).toEqual({
+      theme: 'light',
+      sizeVariant: 'md',
+      componentsSize: {},
+      spinnerVariant: 'boxBounce2',
+    })
+    expect(getDesignConfig()).toEqual({
+      theme: 'light',
+      sizeVariant: 'md',
+      componentsSize: {},
+      spinnerVariant: 'boxBounce2',
+    })
   })
 
   it('sets data-theme and data-size-variant on the given target element', () => {
@@ -131,5 +152,49 @@ describe('resolveComponentSize', () => {
 
   it('returns undefined (inherit global) when neither prop nor componentsSize set', () => {
     expect(resolveComponentSize('Card')).toBeUndefined()
+  })
+})
+
+describe('spinnerVariant (DS-0108)', () => {
+  beforeEach(() => {
+    applyDesignConfig({ ...defaultDesignConfig }, document.documentElement)
+  })
+
+  it('defaults to boxBounce2 from the manifest', () => {
+    expect(defaultDesignConfig.spinnerVariant).toBe('boxBounce2')
+    expect(getDesignConfig().spinnerVariant).toBe('boxBounce2')
+  })
+
+  it('applyDesignConfig({ spinnerVariant }) round-trips through getDesignConfig', () => {
+    applyDesignConfig({ spinnerVariant: 'pipe' }, document.documentElement)
+    expect(getDesignConfig().spinnerVariant).toBe('pipe')
+  })
+
+  it('does not paint spinnerVariant as a data-* attribute', () => {
+    const el = document.createElement('div')
+    applyDesignConfig({ spinnerVariant: 'line' }, el)
+    expect(el).not.toHaveAttribute('data-spinner-variant')
+    expect(el).not.toHaveAttribute('data-spinner')
+    // designAttributes never carries it either.
+    expect(designAttributes({ spinnerVariant: 'line' })).toEqual({
+      'data-theme': 'dark',
+      'data-size-variant': 'md',
+    })
+  })
+
+  describe('resolveSpinnerVariant', () => {
+    it('returns the explicit variant when given (prop wins)', () => {
+      applyDesignConfig({ spinnerVariant: 'pipe' }, document.documentElement)
+      expect(resolveSpinnerVariant('line')).toBe('line')
+    })
+
+    it('falls back to the configured global default when unset', () => {
+      applyDesignConfig({ spinnerVariant: 'squareCorners' }, document.documentElement)
+      expect(resolveSpinnerVariant()).toBe('squareCorners')
+    })
+
+    it('always returns a concrete variant (never undefined)', () => {
+      expect(resolveSpinnerVariant()).toBe('boxBounce2')
+    })
   })
 })

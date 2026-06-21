@@ -160,52 +160,52 @@ Defined under `:root, [data-size-variant="md"]` (the default); `[data-size-varia
 and `[data-size-variant="lg"]` override them. These rescale the entire chrome.
 (Renamed from the density axis in 0.4.0: `sm` ← compact, `md` ← comfy, `lg` new.)
 
-| Token                      | sm       | md (default) | lg       | Drives                           |
-| -------------------------- | -------- | ------------ | -------- | -------------------------------- |
-| `--ss-leading`             | `1.3`    | `1.5`        | `1.6`    | html / body line-height          |
-| `--ss-ui-xs`               | `9.5px`  | `11px`       | `12.5px` | micro uppercase labels           |
-| `--ss-ui-sm`               | `10.5px` | `12px`       | `13.5px` | secondary chrome text            |
-| `--ss-ui-md`               | `11.5px` | `13px`       | `15px`   | primary chrome text              |
-| `--ss-ui-lg`               | `13px`   | `15px`       | `17px`   | names, logo                      |
-| `--ss-icon`                | `14px`   | `16px`       | `20px`   | Icon default size                |
-| `--ss-control-font`        | `12px`   | `14px`       | `16px`   | buttons                          |
-| `--ss-control-py`          | `5px`    | `9px`        | `12px`   | button padding-y                 |
-| `--ss-control-px`          | `9px`    | `16px`       | `22px`   | button padding-x                 |
-| `--ss-input-font`          | `14px`   | `15px`       | `17px`   | inputs                           |
-| `--ss-input-py`            | `10px`   | `13px`       | `17px`   | input padding-y                  |
-| `--ss-input-px`            | `12px`   | `16px`       | `20px`   | input padding-x                  |
-| `--ss-panel-head-py`       | `7px`    | `12px`       | `16px`   | panel header padding-y           |
-| `--ss-panel-head-px`       | `12px`   | `18px`       | `24px`   | panel header padding-x           |
-| `--ss-panel-body-py`       | `10px`   | `18px`       | `24px`   | panel body padding-y             |
-| `--ss-panel-body-px`       | `12px`   | `18px`       | `24px`   | panel body padding-x             |
-| `--ss-card-py`             | `10px`   | `16px`       | `22px`   | metric / service card padding-y  |
-| `--ss-card-px`             | `12px`   | `18px`       | `24px`   | metric / service card padding-x  |
-| `--ss-metric-val`          | `26px`   | `32px`       | `40px`   | metric tile value size           |
-| `--ss-row-py`              | `5px`    | `9px`        | `12px`   | nav rows, table cells padding-y  |
-| `--ss-row-px`              | `10px`   | `14px`       | `18px`   | nav rows, table cells padding-x  |
-| `--ss-badge-py`            | `3px`    | `5px`        | `7px`    | badge padding-y                  |
-| `--ss-badge-px`            | `8px`    | `12px`       | `16px`   | badge padding-x                  |
-| `--ss-badge-dot`           | `4px`    | `5px`        | `6px`    | badge status-dot size            |
-| `--ss-badge-gap`           | `5px`    | `6px`        | `7px`    | badge inner gap                  |
-| `--ss-gap`                 | `8px`    | `14px`       | `18px`   | default grid/flex gap            |
-| `--ss-gap-sm`              | `6px`    | `10px`       | `13px`   | tight gap                        |
-| `--ss-block-gap`           | `16px`   | `28px`       | `36px`   | spacing between major blocks     |
-| `--ss-shell-side-w`        | `180px`  | `220px`      | `260px`  | app-shell sidebar width (layout) |
-| `--ss-shell-top-h`         | `36px`   | `48px`       | `56px`   | topbar height                    |
-| `--ss-main-py`             | `16px`   | `28px`       | `36px`   | main content padding-y           |
-| `--ss-main-px`             | `20px`   | `36px`       | `48px`   | main content padding-x           |
-| `--ss-side-w`              | `180px`  | `220px`      | `260px`  | Sidebar expanded width           |
-| `--ss-side-w-rail`         | `44px`   | `56px`       | `64px`   | Sidebar collapsed rail width     |
-| `--ss-side-badge-py`       | `1px`    | `2px`        | `3px`    | Sidebar item badge padding-y     |
-| `--ss-side-badge-px`       | `5px`    | `6px`        | `8px`    | Sidebar item badge padding-x     |
-| `--ss-toast-ic`            | `15px`   | `18px`       | `22px`   | Toast icon box                   |
-| `--ss-toast-swipe`         | `60px`   | `72px`       | `88px`   | Toast swipe-dismiss threshold    |
-| `--ss-empty-glyph`         | `32px`   | `40px`       | `52px`   | EmptyState visual glyph          |
-| `--ss-empty-glyph-compact` | `22px`   | `28px`       | `36px`   | EmptyState glyph (compact)       |
-| `--ss-empty-max-w`         | `360px`  | `420px`      | `480px`  | EmptyState content max-width     |
-| `--ss-spark-h`             | `14px`   | `18px`       | `26px`   | Sparkline height                 |
-| `--ss-spark-bar-w`         | `2px`    | `3px`        | `4px`    | Sparkline bar width              |
-| `--ss-spark-gap`           | `1px`    | `1px`        | `2px`    | Sparkline bar gap                |
+| Token                      | sm       | md (default) | lg       | Drives                                                |
+| -------------------------- | -------- | ------------ | -------- | ----------------------------------------------------- |
+| `--ss-leading`             | `1.3`    | `1.5`        | `1.6`    | html / body line-height                               |
+| `--ss-ui-xs`               | `9.5px`  | `11px`       | `12.5px` | micro uppercase labels                                |
+| `--ss-ui-sm`               | `10.5px` | `12px`       | `13.5px` | secondary chrome text                                 |
+| `--ss-ui-md`               | `11.5px` | `13px`       | `15px`   | primary chrome text                                   |
+| `--ss-ui-lg`               | `13px`   | `15px`       | `17px`   | names, logo                                           |
+| `--ss-icon`                | `16px`   | `20px`       | `24px`   | Icon box (DS-0109 scale; `xs` 12px is Icon-prop-only) |
+| `--ss-control-font`        | `12px`   | `14px`       | `16px`   | buttons                                               |
+| `--ss-control-py`          | `5px`    | `9px`        | `12px`   | button padding-y                                      |
+| `--ss-control-px`          | `9px`    | `16px`       | `22px`   | button padding-x                                      |
+| `--ss-input-font`          | `14px`   | `15px`       | `17px`   | inputs                                                |
+| `--ss-input-py`            | `10px`   | `13px`       | `17px`   | input padding-y                                       |
+| `--ss-input-px`            | `12px`   | `16px`       | `20px`   | input padding-x                                       |
+| `--ss-panel-head-py`       | `7px`    | `12px`       | `16px`   | panel header padding-y                                |
+| `--ss-panel-head-px`       | `12px`   | `18px`       | `24px`   | panel header padding-x                                |
+| `--ss-panel-body-py`       | `10px`   | `18px`       | `24px`   | panel body padding-y                                  |
+| `--ss-panel-body-px`       | `12px`   | `18px`       | `24px`   | panel body padding-x                                  |
+| `--ss-card-py`             | `10px`   | `16px`       | `22px`   | metric / service card padding-y                       |
+| `--ss-card-px`             | `12px`   | `18px`       | `24px`   | metric / service card padding-x                       |
+| `--ss-metric-val`          | `26px`   | `32px`       | `40px`   | metric tile value size                                |
+| `--ss-row-py`              | `5px`    | `9px`        | `12px`   | nav rows, table cells padding-y                       |
+| `--ss-row-px`              | `10px`   | `14px`       | `18px`   | nav rows, table cells padding-x                       |
+| `--ss-badge-py`            | `3px`    | `5px`        | `7px`    | badge padding-y                                       |
+| `--ss-badge-px`            | `8px`    | `12px`       | `16px`   | badge padding-x                                       |
+| `--ss-badge-dot`           | `4px`    | `5px`        | `6px`    | badge status-dot size                                 |
+| `--ss-badge-gap`           | `5px`    | `6px`        | `7px`    | badge inner gap                                       |
+| `--ss-gap`                 | `8px`    | `14px`       | `18px`   | default grid/flex gap                                 |
+| `--ss-gap-sm`              | `6px`    | `10px`       | `13px`   | tight gap                                             |
+| `--ss-block-gap`           | `16px`   | `28px`       | `36px`   | spacing between major blocks                          |
+| `--ss-shell-side-w`        | `180px`  | `220px`      | `260px`  | app-shell sidebar width (layout)                      |
+| `--ss-shell-top-h`         | `36px`   | `48px`       | `56px`   | topbar height                                         |
+| `--ss-main-py`             | `16px`   | `28px`       | `36px`   | main content padding-y                                |
+| `--ss-main-px`             | `20px`   | `36px`       | `48px`   | main content padding-x                                |
+| `--ss-side-w`              | `180px`  | `220px`      | `260px`  | Sidebar expanded width                                |
+| `--ss-side-w-rail`         | `44px`   | `56px`       | `64px`   | Sidebar collapsed rail width                          |
+| `--ss-side-badge-py`       | `1px`    | `2px`        | `3px`    | Sidebar item badge padding-y                          |
+| `--ss-side-badge-px`       | `5px`    | `6px`        | `8px`    | Sidebar item badge padding-x                          |
+| `--ss-toast-ic`            | `15px`   | `18px`       | `22px`   | Toast icon box                                        |
+| `--ss-toast-swipe`         | `60px`   | `72px`       | `88px`   | Toast swipe-dismiss threshold                         |
+| `--ss-empty-glyph`         | `32px`   | `40px`       | `52px`   | EmptyState visual glyph                               |
+| `--ss-empty-glyph-compact` | `22px`   | `28px`       | `36px`   | EmptyState glyph (compact)                            |
+| `--ss-empty-max-w`         | `360px`  | `420px`      | `480px`  | EmptyState content max-width                          |
+| `--ss-spark-h`             | `14px`   | `18px`       | `26px`   | Sparkline height                                      |
+| `--ss-spark-bar-w`         | `2px`    | `3px`        | `4px`    | Sparkline bar width                                   |
+| `--ss-spark-gap`           | `1px`    | `1px`        | `2px`    | Sparkline bar gap                                     |
 
 `md` reproduces the original comfy values; `sm` the original compact dashboard;
 `lg` is a new larger step. Global default is `md`; set it via `sizeVariant`, or per
@@ -217,6 +217,14 @@ The components ported from the source website (`DS-0043`) keep their size-sensit
 metrics in per-component partials under `src/styles/components/` (joined by
 `_index.scss`, the source of truth for the values below). Each rescales with the size
 axis; reuse a shared token from the table above before adding a component-specific one.
+
+**Micro-token naming convention (DS-0111).** A component that needs its own
+size-stepped spacing names those tokens **`--ss-<name>-*`** and defines them per
+`[data-size-variant]` on its root (Accordion's `--ss-acc-*` is the reference
+shape). Inner padding/gap must read these tokens — never hardcoded px — so spacing
+tightens/loosens in lockstep with the size axis. Pair this with passing the
+resolved size explicitly into nested `Icon`/`Spinner` (see DESIGN.md → _Coordinated
+inner sizes_).
 
 **Menu** (`--ss-menu-*`)
 
@@ -246,8 +254,11 @@ axis; reuse a shared token from the table above before adding a component-specif
 | `--ss-acc-head-px` | `--ss-s-2` | `--ss-row-px` | `--ss-s-4` | Header horizontal padding |
 | `--ss-acc-body-py` | `--ss-s-2` | `--ss-s-3`    | `--ss-s-4` | Panel vertical padding    |
 | `--ss-acc-body-px` | `--ss-s-2` | `--ss-row-px` | `--ss-s-4` | Panel horizontal padding  |
-| `--ss-acc-chevron` | `7px`      | `9px`         | `11px`     | Disclosure chevron size   |
 | `--ss-acc-gap`     | `--ss-s-2` | `--ss-s-3`    | `--ss-s-4` | Header label/hint gap     |
+
+The disclosure chevron is now the shared `Icon` `chevron` glyph (DS-0110), sized
+to the resolved icon scale the Accordion passes it (DS-0111) — so it has no
+dedicated size token; it follows `--ss-icon`.
 
 **BottomNav** (`--ss-bottom-nav-*`) — derived from the shell/spacing scale (single tier):
 `--ss-bottom-nav-h` (= `--ss-shell-top-h`, bar height), `--ss-bottom-nav-px` (= `--ss-s-2`,

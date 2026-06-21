@@ -18,8 +18,8 @@ export const spinner: ComponentDoc = {
     {
       name: 'variant',
       type: "'boxBounce2' | 'boxBounce' | 'squareCorners' | 'toggle2' | 'toggle3' | 'toggle4' | 'pipe' | 'line' | 'growVertical' | 'growHorizontal'",
-      default: "'boxBounce2'",
-      desc: 'Which cli-spinners frame set to animate.',
+      default: "config 'spinnerVariant' (boxBounce2)",
+      desc: 'Which cli-spinners frame set to animate. When unset, falls back to the configured global `spinnerVariant` (precedence: prop > config > default); an explicit value always wins.',
     },
     {
       name: 'label',
@@ -42,5 +42,5 @@ export const spinner: ComponentDoc = {
     },
   ],
   notes:
-    'Frames and intervals come from sindresorhus/cli-spinners (MIT), embedded at build time — no runtime fetch or dependency. The glyph renders in `--ss-font-mono` at `--ss-spinner-font` (rescales across sm/md/lg) and is colored by `--ss-spinner-color`, which defaults to `--ss-primary`; the frame box reserves `1ch` so swaps never shift layout. `SPINNER_VARIANTS` / `SPINNER_VARIANT_NAMES` are exported for tooling.',
+    "Frames and intervals come from sindresorhus/cli-spinners (MIT), embedded at build time — no runtime fetch or dependency. The glyph renders in `--ss-font-mono` at `--ss-spinner-font` (rescales across sm/md/lg) and is colored by `--ss-spinner-color`, which defaults to `--ss-primary`; the frame box reserves `1ch` so swaps never shift layout. `SPINNER_VARIANTS` / `SPINNER_VARIANT_NAMES` are exported for tooling. **Global default (DS-0108):** set the house spinner once via `applyDesignConfig({ spinnerVariant: 'pipe' })` (or the `spinner` axis in `dssocaConfig`); every Spinner with no `variant` prop then uses it. Unlike `theme`/`size`, `spinnerVariant` is a default-prop axis — not a CSS `data-*` attribute — and resolves through `resolveSpinnerVariant`.",
 }

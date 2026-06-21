@@ -1,9 +1,22 @@
 <script module lang="ts">
+  import { type SpinnerVariant as SpinnerVariantName } from '../dssoca.config.js'
+
+  // Surfaced for backward compatibility (consumers importing from this component
+  // path); the source of truth is `dssoca.config.ts` (DS-0108). The const is a
+  // plain re-export; the type is aliased so it doesn't collide with the import.
+  export { SPINNER_VARIANT_NAMES } from '../dssoca.config.js'
+  export type SpinnerVariant = SpinnerVariantName
+
   /**
    * Text-frame spinner variants. Frames + intervals are embedded verbatim from
    * sindresorhus/cli-spinners (MIT — https://github.com/sindresorhus/cli-spinners),
    * curated for the squared/blocky glyphs that fit the DS's zero-radius look.
    * No runtime fetch, no dependency — just data.
+   *
+   * The *variant names* are owned by `dssoca.config.ts` (`SpinnerVariant`,
+   * derived from the `spinner` manifest axis — DS-0108); this object holds the
+   * frame data and is pinned to that union via `satisfies Record<SpinnerVariant,
+   * …>`, so the two cannot drift.
    */
   export interface SpinnerFrames {
     /** Milliseconds between frames (cli-spinners' recommended cadence). */
@@ -26,19 +39,19 @@
       interval: 120,
       frames: ['▏', '▎', '▍', '▌', '▋', '▊', '▉', '▊', '▋', '▌', '▍', '▎'],
     },
-  } as const satisfies Record<string, SpinnerFrames>
-
-  export type SpinnerVariant = keyof typeof SPINNER_VARIANTS
-
-  export const SPINNER_VARIANT_NAMES = Object.keys(SPINNER_VARIANTS) as SpinnerVariant[]
+  } as const satisfies Record<SpinnerVariantName, SpinnerFrames>
 </script>
 
 <script lang="ts">
-  import { resolveComponentSize, type Size } from '../config.js'
+  import { resolveComponentSize, resolveSpinnerVariant, type Size } from '../config.js'
 
   interface Props {
-    /** Which frame set to animate (curated from cli-spinners, MIT). */
-    variant?: SpinnerVariant
+    /**
+     * Which frame set to animate (curated from cli-spinners, MIT). When unset,
+     * falls back to the configured global default (`spinnerVariant`, default
+     * `boxBounce2`); an explicit value here always wins (DS-0108).
+     */
+    variant?: SpinnerVariantName
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
     /** Accessible name announced via role="status". */
@@ -50,19 +63,13 @@
     /** Any remaining native attributes are forwarded to the root span. */
     [key: string]: unknown
   }
-  let {
-    variant = 'boxBounce2',
-    size,
-    label = 'Loading',
-    showLabel = false,
-    speed,
-    ...rest
-  }: Props = $props()
+  let { variant, size, label = 'Loading', showLabel = false, speed, ...rest }: Props = $props()
 
-  const spinner = $derived(SPINNER_VARIANTS[variant])
+  // An explicit `variant` prop wins; otherwise fall back to the configured
+  // house default (`spinnerVariant`, from the manifest) — DS-0108.
+  const resolvedVariant = $derived(resolveSpinnerVariant(variant))
+  const spinner = $derived(SPINNER_VARIANTS[resolvedVariant])
   const interval = $derived(speed ?? spinner.interval)
-  // 'Spinner' is not in the ComponentName union yet (manifest is owned by the
-  // integration step) — cast until dssoca.config.ts registers it.
   const resolvedSize = $derived(resolveComponentSize('Spinner', size))
 
   // Under prefers-reduced-motion the first frame renders statically — no cycling.

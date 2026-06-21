@@ -215,6 +215,31 @@ describe('Accordion', () => {
     expect(container.querySelector('.ss-accordion')).not.toHaveAttribute('data-size-variant')
   })
 
+  // --- chevron via Icon (DS-0110 / DS-0111) ----------------------------
+
+  it('renders the chevron through the shared Icon component (not a CSS shape)', () => {
+    const { container } = setup()
+    const chevron = container.querySelector('.head .chevron')!
+    const icon = chevron.querySelector('svg.ss-icon')
+    expect(icon).not.toBeNull()
+    expect(icon).toHaveAttribute('viewBox', '0 0 24 24')
+  })
+
+  it('the chevron Icon is decorative (aria-hidden), inside the header button', () => {
+    const { container } = setup()
+    const head = heads(container)[0]
+    const icon = head.querySelector('.chevron svg.ss-icon')!
+    expect(icon).toHaveAttribute('aria-hidden', 'true')
+    expect(icon).not.toHaveAttribute('role')
+  })
+
+  it('passes the resolved size down to the chevron Icon (DS-0111)', () => {
+    const { container } = setup({ size: 'sm' })
+    const icon = container.querySelector('.chevron svg.ss-icon')!
+    // Icon pins its box to the named scale; sm → 16px.
+    expect(icon.getAttribute('style')).toContain('width: 16px')
+  })
+
   // --- a11y ------------------------------------------------------------
 
   it('has no axe violations (collapsed + an open section)', async () => {
