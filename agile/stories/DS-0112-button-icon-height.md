@@ -2,7 +2,7 @@
 id: DS-0112
 type: story
 title: "Button — leading/trailing icons must not increase button height"
-status: backlog
+status: done
 priority: high
 tags: [button, layout]
 depends_on: [DS-0109]
@@ -32,18 +32,18 @@ vertically centred within that fixed line-box (clamped so a slightly-too-tall ic
 control taller), matching the icon-only square button's height as well.
 
 ## Acceptance criteria
-- [ ] At each size tier (sm/md/lg), a button with a `leading` and/or `trailing` icon has the **same
+- [x] At each size tier (sm/md/lg), a button with a `leading` and/or `trailing` icon has the **same
       offsetHeight** as an otherwise-identical text-only button (measurable invariant).
-- [ ] The icon-only square button (`iconOnly`) keeps the same height as the equivalent text button
+- [x] The icon-only square button (`iconOnly`) keeps the same height as the equivalent text button
       at the same size tier.
-- [ ] The icon is vertically centred within the control; clamping the icon box does not crop or
+- [x] The icon is vertically centred within the control; clamping the icon box does not crop or
       distort the glyph at any size.
-- [ ] Fix is scoped SCSS in `Button.svelte` using `--ss-*` tokens only (no hardcoded px, no
+- [x] Fix is scoped SCSS in `Button.svelte` using `--ss-*` tokens only (no hardcoded px, no
       border-radius override); `.affix`/internal names stay plain and unprefixed.
-- [ ] Regression test added: render text-only vs leading vs trailing vs both at sm/md/lg and assert
+- [x] Regression test added: render text-only vs leading vs trailing vs both at sm/md/lg and assert
       equal heights (a height-invariance harness).
-- [ ] Tests added/updated; `pnpm test` green (vitest-axe where UI changes).
-- [ ] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md /
+- [x] Tests added/updated; `pnpm test` green (vitest-axe where UI changes).
+- [x] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md /
       docs/themes.md as needed).
 
 ## Notes

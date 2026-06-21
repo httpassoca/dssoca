@@ -2,7 +2,7 @@
 id: DS-0113
 type: story
 title: "Button — reuse the shared Spinner and let loading pick its variant"
-status: backlog
+status: done
 priority: high
 tags: [button, api, breaking]
 depends_on: [DS-0108]
@@ -47,22 +47,33 @@ Accessibility must be preserved: button stays focusable while loading, `aria-bus
 avoid a double live-region).
 
 ## Acceptance criteria
-- [ ] Button renders the shared `Spinner` component (no bespoke `.spinner` markup, no `ss-btn-spin`
+- [x] Button renders the shared `Spinner` component (no bespoke `.spinner` markup, no `ss-btn-spin`
       keyframe) for its loading state.
-- [ ] `loading` accepts `boolean | SpinnerVariant`; `true` resolves to the configurable default from
+- [x] `loading` accepts `boolean | SpinnerVariant`; `true` resolves to the configurable default from
       [[DS-0108-config-default-spinner-variant]]; a `SpinnerVariant` string overrides it; `false`
       renders nothing.
-- [ ] The spinner inherits the button's size tier (sm/md/lg) and reduced-motion behaviour from
+- [x] The spinner inherits the button's size tier (sm/md/lg) and reduced-motion behaviour from
       `Spinner`.
-- [ ] Loading preserves a11y: focusable, `aria-busy`, accessible name via `loadingLabel`, no
+- [x] Loading preserves a11y: focusable, `aria-busy`, accessible name via `loadingLabel`, no
       duplicate live-region announcement; clicks/submit still blocked while loading.
-- [ ] Button height stays stable between idle and loading (coordinate with
+- [x] Button height stays stable between idle and loading (coordinate with
       [[DS-0112-button-icon-height]]).
-- [ ] BREAKING change is flagged in the changelog with a migration note; the bespoke spinner removal
+- [x] BREAKING change is flagged in the changelog with a migration note; the bespoke spinner removal
       is called out.
-- [ ] Tests added/updated; `pnpm test` green (vitest-axe where UI changes).
-- [ ] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md /
+- [x] Tests added/updated; `pnpm test` green (vitest-axe where UI changes).
+- [x] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md /
       docs/themes.md as needed).
+
+## Changelog note (BREAKING)
+> **BREAKING — Button `loading` widened to `boolean | SpinnerVariant`.** The button's loading
+> affordance now renders the shared `<Spinner>` instead of the bespoke inline ring (the
+> `ss-btn-spin` keyframe and `.spinner` ring CSS were removed). `loading={true}` resolves to the
+> configured default Spinner variant (`resolveSpinnerVariant()`, default `boxBounce2`); pass a
+> `SpinnerVariant` string (e.g. `loading="pipe"`) to override it for one button. **Migration:**
+> existing `loading` / `loading={true}` / `loading={false}` call sites keep working unchanged — only
+> the prop's TS type and the rendered glyph (spinning ring → cli-spinners glyph) change. The spinner
+> inherits the button's size tier and reduced-motion handling from `Spinner`; its `role="status"` is
+> suppressed so the button stays the single live-region.
 
 ## Notes
 - Refinement research:

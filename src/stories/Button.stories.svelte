@@ -37,8 +37,23 @@
         description: 'Renders the button non-interactive.',
       },
       loading: {
-        control: 'boolean',
-        description: 'Shows a spinner, blocks clicks, sets aria-busy; stays focusable.',
+        control: { type: 'select' },
+        options: [
+          false,
+          true,
+          'boxBounce2',
+          'boxBounce',
+          'squareCorners',
+          'toggle2',
+          'toggle3',
+          'toggle4',
+          'pipe',
+          'line',
+          'growVertical',
+          'growHorizontal',
+        ],
+        description:
+          'Loading state: `true` uses the configured default Spinner variant, a SpinnerVariant string picks a glyph, `false` is off. Blocks clicks, sets aria-busy; stays focusable.',
       },
       loadingLabel: {
         control: 'text',
@@ -101,7 +116,7 @@
     type={args.type as 'button' | 'submit' | 'reset'}
     size={args.size as 'sm' | 'md' | 'lg' | undefined}
     disabled={args.disabled as boolean}
-    loading={args.loading as boolean}
+    loading={args.loading as boolean | import('$lib/components/Spinner.svelte').SpinnerVariant}
     loadingLabel={(args.loadingLabel as string) || undefined}
     fullWidth={args.fullWidth as boolean}
     iconOnly={args.iconOnly as boolean}
@@ -110,11 +125,14 @@
     trailing={args.withTrailing ? trailingIcon : undefined}
     onclick={args.onclick as (e: MouseEvent) => void}
   >
-    {#if !args.iconOnly}
-      {args.label}
-    {:else}
+    {#if args.iconOnly}
       <Icon name="settings" />
+    {:else if args.label}
+      {args.label}
     {/if}
+    <!-- When iconOnly is false and `label` is empty we render no child at all,
+         so the Button leaves out the `.label` span entirely (DS-0114) — a
+         loading button with no text shows a single, perfectly centred spinner. -->
   </Button>
 {/snippet}
 
@@ -126,10 +144,18 @@
 
 <Story name="Disabled" args={{ variant: 'primary', label: 'Deploy', disabled: true }} />
 
-<!-- Loading: spinner + aria-busy; the accessible name stays "Deploying…" -->
+<!-- Loading: shared Spinner (default variant) + aria-busy; the accessible name
+     stays "Deploying…". No label child, so the spinner is the single centred
+     element (DS-0113 / DS-0114). -->
 <Story
   name="Loading"
-  args={{ variant: 'primary', label: 'Deploy', loading: true, loadingLabel: 'Deploying…' }}
+  args={{ variant: 'primary', label: '', loading: true, loadingLabel: 'Deploying…' }}
+/>
+
+<!-- Loading with an explicit Spinner variant overriding the house default. -->
+<Story
+  name="LoadingVariant"
+  args={{ variant: 'primary', label: '', loading: 'pipe', loadingLabel: 'Deploying…' }}
 />
 
 <!-- Explicit token size override, independent of the global size axis -->

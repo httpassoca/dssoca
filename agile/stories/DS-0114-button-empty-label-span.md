@@ -2,7 +2,7 @@
 id: DS-0114
 type: story
 title: "Button — no empty label span should render when there are no children"
-status: backlog
+status: done
 priority: low
 tags: [button, layout, a11y]
 depends_on: []
@@ -39,17 +39,17 @@ and the label case — the spinner is the visual centre when there is no text. A
 showcase reflects the real centred behaviour.
 
 ## Acceptance criteria
-- [ ] When `Button` is rendered with no `children`, **no** `.label` element exists in the DOM
+- [x] When `Button` is rendered with no `children`, **no** `.label` element exists in the DOM
       (assert absence, not just emptiness).
-- [ ] Loading spinner is centred in the button for both the no-children/icon-only case and the
+- [x] Loading spinner is centred in the button for both the no-children/icon-only case and the
       with-label case (no stray 0×0 box offsetting it).
-- [ ] Root cause is identified in writing as living in Button.svelte and/or the Storybook template;
+- [x] Root cause is identified in writing as living in Button.svelte and/or the Storybook template;
       the actual offender is fixed (no speculative change to the innocent file).
-- [ ] No border-radius override; internals stay plain unprefixed scoped names; `--ss-*` tokens only
+- [x] No border-radius override; internals stay plain unprefixed scoped names; `--ss-*` tokens only
       for any spacing.
-- [ ] Tests added/updated; `pnpm test` green (vitest-axe where UI changes) — including a test that
+- [x] Tests added/updated; `pnpm test` green (vitest-axe where UI changes) — including a test that
       asserts no `.label` node when `children` is absent.
-- [ ] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md /
+- [x] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md /
       docs/themes.md as needed).
 
 ## Notes
