@@ -10,32 +10,32 @@ describe('ServiceCard', () => {
     expect(container.querySelector('.host')).toHaveTextContent('movies.home')
   })
 
-  it('renders a status badge (default up)', () => {
+  it('renders a status badge (default up → positive tone)', () => {
     const { container } = render(ServiceCard, { name: 'x', host: 'x.home' })
     const badge = container.querySelector('.ss-badge')
-    expect(badge).toHaveClass('up')
+    expect(badge).toHaveClass('positive')
     expect(badge).toHaveTextContent('up')
   })
 
-  it('reflects a down status into the badge', () => {
+  it('reflects a down status into the badge (critical tone)', () => {
     const { container } = render(ServiceCard, { name: 'x', host: 'x.home', status: 'down' })
     const badge = container.querySelector('.ss-badge')
-    expect(badge).toHaveClass('down')
+    expect(badge).toHaveClass('critical')
     expect(badge).toHaveTextContent('down')
   })
 
-  it('spells "deg" out as "degraded" in the badge', () => {
+  it('spells "deg" out as "degraded" in the badge (caution tone)', () => {
     const { container } = render(ServiceCard, { name: 'x', host: 'x.home', status: 'deg' })
     const badge = container.querySelector('.ss-badge')
-    expect(badge).toHaveClass('deg')
+    expect(badge).toHaveClass('caution')
     expect(badge).toHaveTextContent('degraded')
   })
 
   it('supports a maintenance status (distinct tone + spelled-out label)', () => {
     const { container } = render(ServiceCard, { name: 'x', host: 'x.home', status: 'maint' })
     const badge = container.querySelector('.ss-badge')
-    expect(badge).toHaveClass('maint')
-    expect(badge).not.toHaveClass('down')
+    expect(badge).toHaveClass('brand')
+    expect(badge).not.toHaveClass('critical')
     expect(badge).toHaveTextContent('maintenance')
   })
 

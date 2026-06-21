@@ -19,6 +19,28 @@ may include breaking changes (flagged **BREAKING**).
   the prop's TS type and the rendered glyph (spinning ring → cli-spinners glyph) change. The spinner
   inherits the button's size tier and reduced-motion handling from `Spinner`; its `role="status"` is
   suppressed so the button stays the single live-region.
+- **BREAKING — `Badge` redefined to six semantic tones** (`DS-0119`). The `tone` union changes from
+  the homelab-flavoured `up`/`deg`/`down`/`maint`/`info`/`neutral` to `brand` / `neutral` /
+  `positive` / `caution` / `critical` / `info`, and the **default tone moves from `info` to
+  `neutral`**. Each tone now renders a theme-aware background, border, **and an explicit foreground**
+  that meets WCAG 2.2 AA (≥4.5:1 on the page background) in both `data-theme` values. **Migration —
+  value names:** `up`→`positive`, `deg`→`caution`, `down`→`critical`, `info`→`info`,
+  `neutral`→`neutral`; `maint` is dropped (no successor) and its accent slot becomes the new
+  `brand` tone. **Migration — token names:** `--ss-badge-up-*`→`--ss-badge-positive-*`,
+  `--ss-badge-deg-*`→`--ss-badge-caution-*`, `--ss-badge-down-*`→`--ss-badge-critical-*`,
+  `--ss-badge-maint-*`→`--ss-badge-brand-*`; `--ss-badge-info-*` / `--ss-badge-neutral-*` are
+  retained; every tone gains a new `--ss-badge-<tone>-fg` token.
+- **BREAKING — `Badge` dismiss removed** (`DS-0120`). The `ondismiss` prop and the trailing
+  `<button class="x">×</button>` dismiss control are gone; `Badge` now renders **no interactive or
+  focusable element** in any prop combination — it is strictly a presentational status/category
+  indicator. The `label`-names-the-dismiss-button coupling is removed; `label` is retained purely as
+  the accessible name for dot-/count-/label-less badges (WCAG 1.4.1). **Migration:** a removable,
+  interactive chip is a separate concern — use a dedicated Tag/Chip primitive, not `Badge`.
+- **`Badge` vertical padding removed** (`DS-0121`). `--ss-badge-py` is dropped from all size tiers;
+  the badge now pads `0 var(--ss-badge-px)` and derives its height from content + an explicit
+  `line-height`, so badges sit compactly inline with adjacent text. Internal chip-like paddings in
+  `Topbar` / `LogStream` / `ServiceCard` that previously read `--ss-badge-py` now read the new
+  `--ss-chip-py` (same sm 3 / md 5 / lg 7 values), so their rendering is unchanged.
 
 ## [0.11.0] — geossoca stats-dashboard charts — 2026-06-15
 

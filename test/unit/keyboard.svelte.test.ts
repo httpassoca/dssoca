@@ -39,24 +39,17 @@ function tabbables(container: HTMLElement): HTMLElement[] {
   )
 }
 
-describe('keyboard — Badge dismiss (DS-0071)', () => {
-  it('exposes a labelled native dismiss button', () => {
-    render(BadgeHarness, { text: 'build', label: 'build', ondismiss: () => {} })
-    const x = screen.getByRole('button', { name: 'Remove build' })
-    expect(x.tagName).toBe('BUTTON')
-    expect(x).toHaveAttribute('type', 'button')
-  })
-
-  it.each(['Enter', ' '] as const)('dismisses on %j', async (key) => {
-    const ondismiss = vi.fn()
-    render(BadgeHarness, { text: 'build', label: 'build', ondismiss })
-    await pressActivate(screen.getByRole('button', { name: 'Remove build' }), key)
-    expect(ondismiss).toHaveBeenCalledOnce()
-  })
-
-  it('falls back to a generic "Remove" name when no label is given', () => {
-    render(BadgeHarness, { text: 'build', ondismiss: () => {} })
-    expect(screen.getByRole('button', { name: 'Remove' })).toBeInTheDocument()
+describe('keyboard — Badge is non-interactive (DS-0120)', () => {
+  it('exposes no tabbable / interactive element in any prop combination', () => {
+    const { container } = render(BadgeHarness, {
+      text: 'build',
+      label: 'build',
+      dot: true,
+      count: 4,
+      live: true,
+    })
+    expect(tabbables(container)).toHaveLength(0)
+    expect(container.querySelector('button')).toBeNull()
   })
 })
 

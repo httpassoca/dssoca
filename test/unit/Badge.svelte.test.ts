@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, fireEvent } from '@testing-library/svelte'
+import { describe, it, expect } from 'vitest'
+import { render } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
 import BadgeHarness from '../harness/BadgeHarness.svelte'
 
@@ -12,6 +12,8 @@ const axeOpts = {
   },
 }
 
+const TONES = ['brand', 'neutral', 'positive', 'caution', 'critical', 'info'] as const
+
 describe('Badge', () => {
   it('renders its children text inside a .ss-badge', () => {
     const { container } = render(BadgeHarness, { text: 'online' })
@@ -20,27 +22,39 @@ describe('Badge', () => {
     expect(badge).toHaveTextContent('online')
   })
 
-  it('defaults to the info tone', () => {
+  it('defaults to the neutral tone', () => {
     const { container } = render(BadgeHarness, { text: 'x' })
-    expect(container.querySelector('.ss-badge')).toHaveClass('info')
+    expect(container.querySelector('.ss-badge')).toHaveClass('neutral')
   })
 
-  it.each(['up', 'deg', 'down', 'info', 'neutral'] as const)(
-    'applies the %s tone class',
-    (tone) => {
-      const { container } = render(BadgeHarness, { tone, text: tone })
-      expect(container.querySelector('.ss-badge')).toHaveClass(tone)
-    },
-  )
+  it.each(TONES)('applies the %s tone class', (tone) => {
+    const { container } = render(BadgeHarness, { tone, text: tone })
+    expect(container.querySelector('.ss-badge')).toHaveClass(tone)
+  })
+
+  describe('non-interactive (DS-0120)', () => {
+    it('renders no interactive / focusable element in any prop combination', () => {
+      const { container } = render(BadgeHarness, {
+        text: 'tag',
+        label: 'tag',
+        dot: true,
+        count: 3,
+        live: true,
+      })
+      expect(container.querySelector('button')).toBeNull()
+      expect(container.querySelector('a')).toBeNull()
+      expect(container.querySelector('[tabindex]')).toBeNull()
+    })
+  })
 
   describe('dot', () => {
     it('renders no dot by default', () => {
-      const { container } = render(BadgeHarness, { tone: 'up', text: 'up' })
+      const { container } = render(BadgeHarness, { tone: 'positive', text: 'up' })
       expect(container.querySelector('.ss-badge .dot')).toBeNull()
     })
 
     it('renders a decorative dot when dot=true', () => {
-      const { container } = render(BadgeHarness, { tone: 'up', text: 'up', dot: true })
+      const { container } = render(BadgeHarness, { tone: 'positive', text: 'up', dot: true })
       const dot = container.querySelector('.ss-badge .dot')
       expect(dot).not.toBeNull()
       expect(dot).toHaveAttribute('aria-hidden', 'true')
@@ -57,7 +71,7 @@ describe('Badge', () => {
       const { container } = render(BadgeHarness, {
         noLabel: true,
         dot: true,
-        tone: 'down',
+        tone: 'critical',
         label: 'down',
       })
       const badge = container.querySelector('.ss-badge')!
@@ -70,10 +84,20 @@ describe('Badge', () => {
       const { container } = render(BadgeHarness, {
         noLabel: true,
         dot: true,
-        tone: 'up',
+        tone: 'positive',
         label: 'operational',
       })
       expect(container.querySelector('.ss-badge')).toHaveAttribute('aria-label', 'operational')
+    })
+
+    it('uses role="img" so the aria-label is valid', () => {
+      const { container } = render(BadgeHarness, {
+        noLabel: true,
+        dot: true,
+        tone: 'positive',
+        label: 'operational',
+      })
+      expect(container.querySelector('.ss-badge')).toHaveAttribute('role', 'img')
     })
 
     it('does not set an aria-label when a label snippet is present', () => {
@@ -132,52 +156,28 @@ describe('Badge', () => {
     })
   })
 
-  describe('dismissible', () => {
-    it('renders no dismiss button without ondismiss', () => {
-      const { container } = render(BadgeHarness, { text: 'tag' })
-      expect(container.querySelector('.ss-badge button.x')).toBeNull()
-    })
-
-    it('renders a focusable button named from the label', () => {
-      const ondismiss = vi.fn()
-      const { container } = render(BadgeHarness, { text: 'tag', label: 'tag', ondismiss })
-      const btn = container.querySelector('.ss-badge button.x') as HTMLButtonElement
-      expect(btn).not.toBeNull()
-      expect(btn).toHaveAttribute('type', 'button')
-      expect(btn).toHaveAttribute('aria-label', 'Remove tag')
-      btn.focus()
-      expect(document.activeElement).toBe(btn)
-    })
-
-    it('falls back to "Remove" when no label is given', () => {
-      const { container } = render(BadgeHarness, { text: 'tag', ondismiss: vi.fn() })
-      expect(container.querySelector('.ss-badge button.x')).toHaveAttribute('aria-label', 'Remove')
-    })
-
-    it('invokes ondismiss on click', async () => {
-      const ondismiss = vi.fn()
-      const { container } = render(BadgeHarness, { text: 'tag', label: 'tag', ondismiss })
-      await fireEvent.click(container.querySelector('.ss-badge button.x')!)
-      expect(ondismiss).toHaveBeenCalledOnce()
-    })
-  })
-
   describe('a11y (axe)', () => {
+    it.each(TONES)('labelled %s badge has no violations', async (tone) => {
+      const { container } = render(BadgeHarness, { tone, text: tone })
+      expect(await axe(container, axeOpts)).toHaveNoViolations()
+    })
+
     it('dot-only badge has no violations', async () => {
       const { container } = render(BadgeHarness, {
         noLabel: true,
         dot: true,
-        tone: 'down',
+        tone: 'critical',
         label: 'down',
       })
       expect(await axe(container, axeOpts)).toHaveNoViolations()
     })
 
-    it('dismissible badge has no violations', async () => {
+    it('count-only badge has no violations', async () => {
       const { container } = render(BadgeHarness, {
-        text: 'production',
-        label: 'production',
-        ondismiss: vi.fn(),
+        noLabel: true,
+        count: 7,
+        tone: 'info',
+        label: 'unread',
       })
       expect(await axe(container, axeOpts)).toHaveNoViolations()
     })

@@ -2,7 +2,7 @@
   import type { Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
 
-  type Tone = 'up' | 'deg' | 'down' | 'maint' | 'info' | 'neutral'
+  type Tone = 'brand' | 'neutral' | 'positive' | 'caution' | 'critical' | 'info'
 
   interface Props {
     /** Semantic tone; `neutral` is the safe baseline for non-status labels. */
@@ -26,25 +26,21 @@
     live?: boolean
     /**
      * Accessible label. Required for dot-only / label-less badges so the
-     * status isn't conveyed by colour alone (WCAG 1.4.1). Also names the
-     * dismiss button's target.
+     * status isn't conveyed by colour alone (WCAG 1.4.1).
      */
     label?: string
-    /** When provided, renders a trailing, keyboard-focusable dismiss button. */
-    ondismiss?: () => void
     /** Badge text. Optional: omit for a dot-only or count-only badge. */
     children?: Snippet
   }
 
   let {
-    tone = 'info',
+    tone = 'neutral',
     size,
     dot = false,
     count,
     max = 99,
     live = false,
     label,
-    ondismiss,
     children,
   }: Props = $props()
 
@@ -73,21 +69,15 @@
   {#if dot}<span class="dot" aria-hidden="true"></span>{/if}
   {#if hasLabel}{@render children?.()}{/if}
   {#if showCount}<span class="count">{countText}</span>{/if}
-  {#if ondismiss}
-    <button
-      class="x"
-      type="button"
-      aria-label={label ? `Remove ${label}` : 'Remove'}
-      onclick={ondismiss}>×</button
-    >
-  {/if}
 </span>
 
 <style lang="scss">
   .ss-badge {
     font-family: var(--ss-font-mono);
     font-size: var(--ss-ui-xs);
-    padding: var(--ss-badge-py) var(--ss-badge-px);
+    // No vertical padding (DS-0121): height derives from content + line-height.
+    padding: 0 var(--ss-badge-px);
+    line-height: 1.6;
     letter-spacing: 0.05em;
     display: inline-flex;
     align-items: center;
@@ -95,35 +85,35 @@
     text-transform: lowercase;
     border: 1px solid var(--ss-line);
 
-    &.up {
-      background: var(--ss-badge-up-bg);
-      color: var(--ss-primary);
-      border-color: var(--ss-badge-up-border);
-    }
-    &.deg {
-      background: var(--ss-badge-deg-bg);
-      color: var(--ss-yellow);
-      border-color: var(--ss-badge-deg-border);
-    }
-    &.down {
-      background: var(--ss-badge-down-bg);
-      color: var(--ss-red);
-      border-color: var(--ss-badge-down-border);
-    }
-    &.maint {
-      background: var(--ss-badge-maint-bg);
-      color: var(--ss-blue);
-      border-color: var(--ss-badge-maint-border);
-    }
-    &.info {
-      background: var(--ss-badge-info-bg);
-      color: var(--ss-cyan);
-      border-color: var(--ss-badge-info-border);
+    &.brand {
+      background: var(--ss-badge-brand-bg);
+      color: var(--ss-badge-brand-fg);
+      border-color: var(--ss-badge-brand-border);
     }
     &.neutral {
       background: var(--ss-badge-neutral-bg);
-      color: var(--ss-fg-muted);
+      color: var(--ss-badge-neutral-fg);
       border-color: var(--ss-badge-neutral-border);
+    }
+    &.positive {
+      background: var(--ss-badge-positive-bg);
+      color: var(--ss-badge-positive-fg);
+      border-color: var(--ss-badge-positive-border);
+    }
+    &.caution {
+      background: var(--ss-badge-caution-bg);
+      color: var(--ss-badge-caution-fg);
+      border-color: var(--ss-badge-caution-border);
+    }
+    &.critical {
+      background: var(--ss-badge-critical-bg);
+      color: var(--ss-badge-critical-fg);
+      border-color: var(--ss-badge-critical-border);
+    }
+    &.info {
+      background: var(--ss-badge-info-bg);
+      color: var(--ss-badge-info-fg);
+      border-color: var(--ss-badge-info-border);
     }
 
     .dot {
@@ -137,24 +127,6 @@
     .count {
       text-transform: none;
       font-variant-numeric: tabular-nums;
-    }
-
-    .x {
-      flex: none;
-      background: none;
-      border: none;
-      color: currentColor;
-      cursor: pointer;
-      font-size: var(--ss-size-sm);
-      line-height: 1;
-      padding: 0;
-      margin-inline-start: calc(var(--ss-badge-gap) * -0.25);
-      opacity: 0.8;
-
-      &:hover,
-      &:focus-visible {
-        opacity: 1;
-      }
     }
   }
 </style>

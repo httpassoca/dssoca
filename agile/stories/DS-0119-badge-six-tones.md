@@ -2,7 +2,7 @@
 id: DS-0119
 type: story
 title: "Redefine Badge to six semantic tones"
-status: backlog
+status: done
 priority: high
 tags: [badge, api, breaking, theming]
 depends_on: []
@@ -31,14 +31,14 @@ This is a **BREAKING** change: both the public `tone` value union and the per-to
 Recommend changing the default `tone` from `info` to **`neutral`**: a tone-less badge is most often a plain category label, and `neutral` is the safest non-status baseline (it asserts no status meaning by colour alone).
 
 ## Acceptance criteria
-- [ ] `Badge` `tone` prop accepts exactly: `brand` | `neutral` | `positive` | `caution` | `critical` | `info` (TypeScript union updated; default is `neutral`).
-- [ ] Each tone renders theme-aware background, border, and foreground via `--ss-badge-<tone>-bg` / `--ss-badge-<tone>-border` and an explicit foreground colour, in both `data-theme="dark"` and `data-theme="light"`.
-- [ ] Old token names (`--ss-badge-up-*`, `--ss-badge-deg-*`, `--ss-badge-down-*`, `--ss-badge-maint-*`) are renamed to the new tones; no orphaned old tokens remain in `src/styles/_tokens.scss` (both theme blocks).
-- [ ] Foreground-on-fill colour contrast meets WCAG 2.2 AA (>= 4.5:1 for the badge text against its tone background) for all six tones in both themes; verify and record the measured ratios.
-- [ ] Scoped SCSS in `Badge.svelte` keys off the new tone class names (`.brand`, `.neutral`, `.positive`, `.caution`, `.critical`, `.info`); zero border-radius preserved.
-- [ ] CHANGELOG note describing the breaking tone rename + migration map (old → new value names and old → new token names) is drafted under `## [Unreleased]`.
-- [ ] `pnpm test` green; Badge unit test updated to assert the six new tone class names + default, with `vitest-axe` covering each tone for a clean a11y tree.
-- [ ] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md / docs/themes.md as needed).
+- [x] `Badge` `tone` prop accepts exactly: `brand` | `neutral` | `positive` | `caution` | `critical` | `info` (TypeScript union updated; default is `neutral`).
+- [x] Each tone renders theme-aware background, border, and foreground via `--ss-badge-<tone>-bg` / `--ss-badge-<tone>-border` and an explicit foreground colour, in both `data-theme="dark"` and `data-theme="light"`.
+- [x] Old token names (`--ss-badge-up-*`, `--ss-badge-deg-*`, `--ss-badge-down-*`, `--ss-badge-maint-*`) are renamed to the new tones; no orphaned old tokens remain in `src/styles/_tokens.scss` (both theme blocks).
+- [x] Foreground-on-fill colour contrast meets WCAG 2.2 AA (>= 4.5:1 for the badge text against its tone background) for all six tones in both themes; verify and record the measured ratios.
+- [x] Scoped SCSS in `Badge.svelte` keys off the new tone class names (`.brand`, `.neutral`, `.positive`, `.caution`, `.critical`, `.info`); zero border-radius preserved.
+- [x] CHANGELOG note describing the breaking tone rename + migration map (old → new value names and old → new token names) is drafted under `## [Unreleased]`.
+- [x] `pnpm test` green; Badge unit test updated to assert the six new tone class names + default, with `vitest-axe` covering each tone for a clean a11y tree.
+- [x] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md / docs/themes.md as needed).
 
 ## Notes
 - Part of epic [[DS-0107]] (Badge refinement).

@@ -3,7 +3,7 @@
   import type { Size } from '$lib/config.js'
 
   interface Props {
-    tone?: 'up' | 'deg' | 'down' | 'maint' | 'info' | 'neutral'
+    tone?: 'brand' | 'neutral' | 'positive' | 'caution' | 'critical' | 'info'
     size?: Size
     text?: string
     /** Omit the child snippet to render a dot-only / count-only badge. */
@@ -13,10 +13,9 @@
     max?: number
     live?: boolean
     label?: string
-    ondismiss?: () => void
   }
   let {
-    tone = 'info',
+    tone = 'neutral',
     size,
     text = 'label',
     noLabel = false,
@@ -25,12 +24,11 @@
     max,
     live,
     label,
-    ondismiss,
   }: Props = $props()
 </script>
 
 {#if noLabel}
-  <Badge {tone} {size} {dot} {count} {max} {live} {label} {ondismiss} />
+  <Badge {tone} {size} {dot} {count} {max} {live} {label} />
 {:else}
-  <Badge {tone} {size} {dot} {count} {max} {live} {label} {ondismiss}>{text}</Badge>
+  <Badge {tone} {size} {dot} {count} {max} {live} {label}>{text}</Badge>
 {/if}

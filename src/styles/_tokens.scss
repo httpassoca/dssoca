@@ -83,21 +83,30 @@
   --ss-selection-bg: var(--ss-primary);
   --ss-selection-fg: var(--ss-fg-on-primary);
 
-  /* badge tones — theme-tracked fills/borders so light mode is correct
-     (DS-0031). fg uses the matching status token; bg/border are translucent
-     washes tuned for the dark surfaces. */
-  --ss-badge-up-bg: rgba(102, 239, 115, 0.12);
-  --ss-badge-up-border: rgba(102, 239, 115, 0.4);
-  --ss-badge-deg-bg: rgba(224, 195, 106, 0.12);
-  --ss-badge-deg-border: rgba(224, 195, 106, 0.4);
-  --ss-badge-down-bg: rgba(255, 92, 92, 0.12);
-  --ss-badge-down-border: rgba(255, 92, 92, 0.4);
-  --ss-badge-maint-bg: rgba(154, 164, 255, 0.12);
-  --ss-badge-maint-border: rgba(154, 164, 255, 0.4);
-  --ss-badge-info-bg: rgba(102, 217, 239, 0.12);
-  --ss-badge-info-border: rgba(102, 217, 239, 0.4);
+  /* badge tones — six semantic tones (DS-0119): brand/neutral/positive/
+     caution/critical/info. Theme-tracked fills/borders so light mode is
+     correct (DS-0031); each tone carries an explicit -fg that meets WCAG 2.2
+     AA (>=4.5:1) on the page background (--ss-bg). bg/border are translucent
+     washes tuned for the dark surfaces; on a darker hovered elevated surface
+     (--ss-bg-elev-hover) the composited critical -fg dips slightly to ~4.3:1. */
+  --ss-badge-brand-bg: rgba(154, 164, 255, 0.12);
+  --ss-badge-brand-border: rgba(154, 164, 255, 0.4);
+  --ss-badge-brand-fg: var(--ss-blue);
   --ss-badge-neutral-bg: rgba(255, 255, 255, 0.06);
   --ss-badge-neutral-border: var(--ss-line);
+  --ss-badge-neutral-fg: var(--ss-fg-muted);
+  --ss-badge-positive-bg: rgba(102, 239, 115, 0.12);
+  --ss-badge-positive-border: rgba(102, 239, 115, 0.4);
+  --ss-badge-positive-fg: var(--ss-primary);
+  --ss-badge-caution-bg: rgba(224, 195, 106, 0.12);
+  --ss-badge-caution-border: rgba(224, 195, 106, 0.4);
+  --ss-badge-caution-fg: var(--ss-yellow);
+  --ss-badge-critical-bg: rgba(255, 92, 92, 0.12);
+  --ss-badge-critical-border: rgba(255, 92, 92, 0.4);
+  --ss-badge-critical-fg: var(--ss-red);
+  --ss-badge-info-bg: rgba(102, 217, 239, 0.12);
+  --ss-badge-info-border: rgba(102, 217, 239, 0.4);
+  --ss-badge-info-fg: var(--ss-cyan);
 }
 
 [data-theme='light'] {
@@ -176,21 +185,29 @@
   --ss-code-func: #6639ba;
   --ss-code-comment: #6a737d;
 
-  /* badge tones — deeper washes/borders so the fills read on the light page
-     (the dark-mode neon washes wash out on #f0f0f0). fg tracks the darkened
-     light-mode status tokens already defined above. */
-  --ss-badge-up-bg: rgba(20, 124, 58, 0.1);
-  --ss-badge-up-border: rgba(20, 124, 58, 0.35);
-  --ss-badge-deg-bg: rgba(138, 109, 26, 0.1);
-  --ss-badge-deg-border: rgba(138, 109, 26, 0.35);
-  --ss-badge-down-bg: rgba(198, 40, 40, 0.1);
-  --ss-badge-down-border: rgba(198, 40, 40, 0.35);
-  --ss-badge-maint-bg: rgba(47, 59, 214, 0.1);
-  --ss-badge-maint-border: rgba(47, 59, 214, 0.35);
-  --ss-badge-info-bg: rgba(11, 110, 125, 0.1);
-  --ss-badge-info-border: rgba(11, 110, 125, 0.35);
+  /* badge tones — six semantic tones (DS-0119). Deeper washes/borders so the
+     fills read on the light page (the dark-mode neon washes wash out on
+     #f0f0f0). The translucent wash lightens the effective background, so each
+     -fg is a dedicated darkened value verified to clear WCAG 2.2 AA (>=4.5:1)
+     on its washed surface (the bare status tokens dip just under). */
+  --ss-badge-brand-bg: rgba(47, 59, 214, 0.1);
+  --ss-badge-brand-border: rgba(47, 59, 214, 0.35);
+  --ss-badge-brand-fg: var(--ss-blue);
   --ss-badge-neutral-bg: rgba(0, 0, 0, 0.05);
   --ss-badge-neutral-border: var(--ss-line);
+  --ss-badge-neutral-fg: #4a4a4a;
+  --ss-badge-positive-bg: rgba(20, 124, 58, 0.1);
+  --ss-badge-positive-border: rgba(20, 124, 58, 0.35);
+  --ss-badge-positive-fg: #0f6e31;
+  --ss-badge-caution-bg: rgba(138, 109, 26, 0.1);
+  --ss-badge-caution-border: rgba(138, 109, 26, 0.35);
+  --ss-badge-caution-fg: #6f5715;
+  --ss-badge-critical-bg: rgba(198, 40, 40, 0.1);
+  --ss-badge-critical-border: rgba(198, 40, 40, 0.35);
+  --ss-badge-critical-fg: #b21f1f;
+  --ss-badge-info-bg: rgba(11, 110, 125, 0.1);
+  --ss-badge-info-border: rgba(11, 110, 125, 0.35);
+  --ss-badge-info-fg: var(--ss-cyan);
 
   /* log-level accents — darkened code/status values for AA on the light code surface */
   --ss-log-info: var(--ss-code-func);
@@ -293,10 +310,12 @@
   --ss-row-py: 9px;
   --ss-row-px: 14px;
 
-  --ss-badge-py: 5px;
   --ss-badge-px: 12px;
   --ss-badge-dot: 5px;
   --ss-badge-gap: 6px;
+  /* chip padding-y — used by chip-like paddings in Topbar/LogStream/ServiceCard
+     (formerly read --ss-badge-py, which DS-0121 dropped from the Badge). */
+  --ss-chip-py: 5px;
 
   --ss-gap: 14px;
   --ss-gap-sm: 10px;
@@ -356,10 +375,10 @@
   --ss-row-py: 5px;
   --ss-row-px: 10px;
 
-  --ss-badge-py: 3px;
   --ss-badge-px: 8px;
   --ss-badge-dot: 4px;
   --ss-badge-gap: 5px;
+  --ss-chip-py: 3px;
 
   --ss-gap: 8px;
   --ss-gap-sm: 6px;
@@ -419,10 +438,10 @@
   --ss-row-py: 12px;
   --ss-row-px: 18px;
 
-  --ss-badge-py: 7px;
   --ss-badge-px: 16px;
   --ss-badge-dot: 6px;
   --ss-badge-gap: 7px;
+  --ss-chip-py: 7px;
 
   --ss-gap: 18px;
   --ss-gap-sm: 13px;
