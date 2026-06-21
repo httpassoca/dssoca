@@ -197,6 +197,7 @@ and `[data-size-variant="lg"]` override them. These rescale the entire chrome.
 | `--ss-badge-gap`           | `5px`    | `6px`        | `7px`    | badge inner gap                                                                 |
 | `--ss-gap`                 | `8px`    | `14px`       | `18px`   | default grid/flex gap                                                           |
 | `--ss-gap-sm`              | `6px`    | `10px`       | `13px`   | tight gap                                                                       |
+| `--ss-gap-xs`              | `4px`    | `6px`        | `8px`    | extra-small gap for dense intra-component lists (e.g. FileDrop files list)      |
 | `--ss-block-gap`           | `16px`   | `28px`       | `36px`   | spacing between major blocks                                                    |
 | `--ss-shell-side-w`        | `180px`  | `220px`      | `260px`  | app-shell sidebar width (layout)                                                |
 | `--ss-shell-top-h`         | `36px`   | `48px`       | `56px`   | topbar height                                                                   |

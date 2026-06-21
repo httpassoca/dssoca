@@ -1,4 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, fireEvent } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
 import FileDrop from '$lib/components/FileDrop.svelte'
@@ -160,6 +162,32 @@ describe('FileDrop — error', () => {
     const msg = container.querySelector('.ss-filedrop .msg.error')!
     expect(msg).toHaveAttribute('role', 'alert')
     expect(msg).toHaveTextContent('File too large')
+  })
+})
+
+// jsdom does not apply Svelte's scoped <style> cascade, so the gap technique
+// can't be read off the DOM — these are pure CSS/token contracts asserted at
+// the source (mirrors the Button hover test). DS-0124.
+describe('FileDrop — files-list gap token (DS-0124)', () => {
+  const tokens = readFileSync(resolve(process.cwd(), 'src/styles/_tokens.scss'), 'utf8')
+  const filedrop = readFileSync(
+    resolve(process.cwd(), 'src/lib/components/FileDrop.svelte'),
+    'utf8',
+  )
+
+  it('defines --ss-gap-xs in all three size tiers', () => {
+    expect(tokens).toMatch(/--ss-gap-xs:\s*6px/) // md (default block)
+    expect(tokens).toMatch(/--ss-gap-xs:\s*4px/) // sm
+    expect(tokens).toMatch(/--ss-gap-xs:\s*8px/) // lg
+    expect((tokens.match(/--ss-gap-xs:/g) ?? []).length).toBe(3)
+  })
+
+  it('ul.files uses gap: var(--ss-gap-xs)', () => {
+    expect(filedrop).toMatch(/\.files\s*\{[^}]*gap:\s*var\(--ss-gap-xs\)/)
+  })
+
+  it('keeps the per-file inner row (.file) on --ss-gap-sm', () => {
+    expect(filedrop).toMatch(/\.file\s*\{[^}]*gap:\s*var\(--ss-gap-sm/)
   })
 })
 
