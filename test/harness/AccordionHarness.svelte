@@ -11,6 +11,7 @@
     defaultValue?: AccordionValue
     onChange?: (v: AccordionValue) => void
     size?: 'sm' | 'md' | 'lg'
+    overflow?: 'truncate' | 'wrap'
     headingLevel?: 1 | 2 | 3 | 4 | 5 | 6
     idBase?: string
   }
@@ -28,12 +29,23 @@
     defaultValue,
     onChange,
     size,
+    overflow,
     headingLevel,
     idBase,
   }: Props = $props()
 </script>
 
-<Accordion {items} {multiple} {value} {defaultValue} {onChange} {size} {headingLevel} {idBase}>
+<Accordion
+  {items}
+  {multiple}
+  {value}
+  {defaultValue}
+  {onChange}
+  {size}
+  {overflow}
+  {headingLevel}
+  {idBase}
+>
   {#snippet panel(item)}
     <p class="panel-body" data-for={item.id}>Body for {item.label}</p>
   {/snippet}

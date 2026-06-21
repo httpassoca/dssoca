@@ -1,8 +1,16 @@
 import { describe, it, expect, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, fireEvent } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
 import { type AccordionItem } from '$lib/components/Accordion.svelte'
 import AccordionHarness from '../harness/AccordionHarness.svelte'
+
+// jsdom's getComputedStyle does not apply Svelte's scoped <style> cascade, so
+// the truncation / clip / padding CSS contracts can't be read off the rendered
+// DOM. They are pure CSS — assert them at the source so a regression that
+// removes/breaks the rule fails the suite (same pattern as Button.svelte.test).
+const source = readFileSync(resolve(process.cwd(), 'src/lib/components/Accordion.svelte'), 'utf8')
 
 const ITEMS: AccordionItem[] = [
   { id: 'one', label: 'Section one' },
@@ -238,6 +246,109 @@ describe('Accordion', () => {
     const icon = container.querySelector('.chevron svg.ss-icon')!
     // Icon pins its box to the named scale; sm → 16px.
     expect(icon.getAttribute('style')).toContain('width: 16px')
+  })
+
+  // DS-0116: the chevron is the Icon `chevron` glyph, decorative, and its
+  // open-state rotation is applied via the .item.open modifier (no CSS-border).
+  it('the chevron is the Icon `chevron` glyph (no CSS-border caret)', () => {
+    const { container } = setup()
+    const chevron = container.querySelector('.head .chevron')!
+    // The glyph is the shared chevron path, rendered as an Icon <svg>.
+    const path = chevron.querySelector('svg.ss-icon path')!
+    expect(path).toHaveAttribute('d', 'M8 10l4 4 4-4')
+    // No bespoke border-caret span remains.
+    expect(chevron.querySelector('span')).toBeNull()
+  })
+
+  it('applies the open-state rotation marker to the chevron when expanded', async () => {
+    const { container } = setup({ defaultValue: 'one' })
+    // The rotation is driven by the `.item.open` class on the open item; the
+    // collapsed items carry no `.open` marker.
+    const items = Array.from(container.querySelectorAll<HTMLElement>('.item'))
+    expect(items[0]).toHaveClass('open')
+    expect(items[1]).not.toHaveClass('open')
+    // toggling closed removes the rotation marker
+    await fireEvent.click(heads(container)[0])
+    expect(items[0]).not.toHaveClass('open')
+  })
+
+  // --- panel padding from the first reveal frame (DS-0115) --------------
+
+  it('keeps an always-present padded inner wrapper inside the grid clip', () => {
+    const { container } = setup()
+    // Each panel nests .panel > .panel-clip > .panel-inner; the inner block is
+    // present (and carries the padding rule) regardless of open/closed state.
+    for (const panel of panels(container)) {
+      const clip = panel.querySelector('.panel-clip')!
+      expect(clip).not.toBeNull()
+      const inner = clip.querySelector('.panel-inner')!
+      expect(inner).not.toBeNull()
+    }
+  })
+
+  it('renders the padded inner wrapper whether the panel is open or closed', async () => {
+    const { container } = setup({ defaultValue: 'one' })
+    const [openPanel, closedPanel] = panels(container)
+    expect(openPanel).not.toHaveAttribute('hidden')
+    expect(closedPanel).toHaveAttribute('hidden')
+    // Both states keep the inner wrapper mounted (padding is unconditional).
+    expect(openPanel.querySelector('.panel-clip > .panel-inner')).not.toBeNull()
+    expect(closedPanel.querySelector('.panel-clip > .panel-inner')).not.toBeNull()
+    // Opening the closed one keeps the same structure (no padding toggle).
+    await fireEvent.click(heads(container)[1])
+    expect(closedPanel.querySelector('.panel-clip > .panel-inner')).not.toBeNull()
+  })
+
+  it('clips the grid track with overflow:hidden + min-height:0 (CSS contract)', () => {
+    // The 0fr→1fr grid-rows reveal only collapses to exactly 0 height if the
+    // clip carries these two rules. jsdom can't read scoped CSS, so assert the
+    // source: dropping either would silently break the collapse (DS-0115).
+    const clip = source.match(/\.panel-clip\s*\{[\s\S]*?\}/)?.[0] ?? ''
+    expect(clip).toMatch(/overflow:\s*hidden/)
+    expect(clip).toMatch(/min-height:\s*0/)
+  })
+
+  it('pads .panel-inner unconditionally, not behind an open-state gate (CSS contract)', () => {
+    // DS-0115's fix is that the padding lives on .panel-inner unconditionally,
+    // not re-gated behind `.panel:not([hidden])`. Reintroducing that toggle is
+    // the exact regression — guard it at the source.
+    const inner = source.match(/\.panel-inner\s*\{[\s\S]*?\}/)?.[0] ?? ''
+    expect(inner).toMatch(/padding:\s*var\(--ss-acc-body-py\)\s+var\(--ss-acc-body-px\)/)
+    // No open-state gate selector pads .panel-inner (the reverted DS-0115 bug):
+    // i.e. no `…:not([hidden]) … .panel-inner {` compound selector. Match only
+    // within a single selector (no `{`/`}` between the gate and .panel-inner).
+    expect(source).not.toMatch(/:not\(\[hidden\]\)[^{}]*\.panel-inner\s*\{/)
+  })
+
+  // --- header label overflow (DS-0117) ---------------------------------
+
+  it("defaults overflow to 'wrap' (no truncate marker on the root)", () => {
+    const { container } = setup()
+    expect(container.querySelector('.ss-accordion')).toHaveAttribute('data-overflow', 'wrap')
+  })
+
+  it("overflow='wrap' renders the label and keeps the wrap marker", () => {
+    const { container } = setup({ overflow: 'wrap' })
+    expect(container.querySelector('.ss-accordion')).toHaveAttribute('data-overflow', 'wrap')
+    expect(container.querySelector('.head .title')).toHaveTextContent('Section one')
+  })
+
+  it("overflow='truncate' sets the truncate marker on the root", () => {
+    const { container } = setup({ overflow: 'truncate' })
+    expect(container.querySelector('.ss-accordion')).toHaveAttribute('data-overflow', 'truncate')
+    // still renders the label text (single-line ellipsis is CSS-only)
+    expect(container.querySelector('.head .title')).toHaveTextContent('Section one')
+  })
+
+  it("overflow='truncate' applies the single-line ellipsis trio to .title (CSS contract)", () => {
+    // The DOM marker above is necessary but not sufficient: the actual
+    // acceptance criterion is the ellipsis rule on .title under the truncate
+    // selector. Assert it at the source so dropping/breaking the rule fails.
+    const truncate = source.match(/\[data-overflow='truncate'\][\s\S]*?\}/)?.[0] ?? ''
+    expect(truncate).toMatch(/\.head\s+\.title/)
+    expect(truncate).toMatch(/white-space:\s*nowrap/)
+    expect(truncate).toMatch(/overflow:\s*hidden/)
+    expect(truncate).toMatch(/text-overflow:\s*ellipsis/)
   })
 
   // --- a11y ------------------------------------------------------------

@@ -44,6 +44,13 @@
     onChange?: (value: AccordionValue) => void
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
+    /**
+     * How a long header label behaves when it exceeds the available width.
+     * `wrap` (default) lets the label flow onto multiple lines; `truncate`
+     * keeps it on a single line with an ellipsis. Applies to the default
+     * header markup only — a custom `header` snippet owns its own overflow.
+     */
+    overflow?: 'truncate' | 'wrap'
     /** Heading level wrapping each header button (for the document outline). */
     headingLevel?: 1 | 2 | 3 | 4 | 5 | 6
     /**
@@ -67,6 +74,7 @@
     defaultValue,
     onChange,
     size,
+    overflow = 'wrap',
     headingLevel = 3,
     idBase = `ss-acc-${uid}`,
   }: Props = $props()
@@ -154,7 +162,7 @@
   const resolvedSize = $derived(resolveComponentSize('Accordion', size))
 </script>
 
-<div class="ss-accordion" data-size-variant={resolvedSize}>
+<div class="ss-accordion" data-size-variant={resolvedSize} data-overflow={overflow}>
   {#each items as item, i (item.id)}
     {@const expanded = isOpen(item)}
     <div class="item" class:open={expanded} class:disabled={item.disabled}>
@@ -188,8 +196,10 @@
         aria-labelledby={headerId(item)}
         hidden={!expanded}
       >
-        <div class="panel-inner">
-          {@render panel(item)}
+        <div class="panel-clip">
+          <div class="panel-inner">
+            {@render panel(item)}
+          </div>
         </div>
       </div>
     </div>
@@ -284,11 +294,23 @@
       .chevron {
         flex: 0 0 auto;
         display: inline-flex;
+        // Centre the glyph in a fixed square box so the rotation pivots about
+        // the visual centre with no vertical drift between states (DS-0116).
+        align-items: center;
+        justify-content: center;
         transform: rotate(0deg); // glyph points down (collapsed)
         transform-origin: center;
         transition: transform var(--ss-dur) var(--ss-ease);
         color: var(--ss-fg-muted);
       }
+    }
+
+    // overflow='truncate' — single-line label with an ellipsis. min-width:0 is
+    // already set on .title so the flex item can shrink below its content width.
+    &[data-overflow='truncate'] .head .title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .item.open .head .chevron {
@@ -313,12 +335,18 @@
       }
     }
 
-    .panel-inner {
+    // The clip: overflow:hidden + min-height:0 lets the 0fr grid track shrink
+    // the inner content to exactly 0 height when collapsed (no padding bleed).
+    .panel-clip {
       overflow: hidden;
       min-height: 0;
     }
 
-    .panel:not([hidden]) .panel-inner {
+    // Always-padded content block. The padding lives here (not toggled on open)
+    // so the content lays out as a stable, already-padded block from the first
+    // reveal frame — no mid-animation reflow/snap (DS-0115). While collapsed the
+    // grid clip above hides it entirely, so the closed height is still exactly 0.
+    .panel-inner {
       padding: var(--ss-acc-body-py) var(--ss-acc-body-px);
       color: var(--ss-fg-muted);
       font-size: var(--ss-ui-md);
