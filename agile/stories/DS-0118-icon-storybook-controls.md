@@ -2,7 +2,7 @@
 id: DS-0118
 type: story
 title: "Icon — Storybook controls drive the full prop surface"
-status: backlog
+status: done
 priority: low
 tags: [icon, storybook, dx]
 depends_on: []
@@ -39,20 +39,20 @@ matching props through the `template` snippet:
 The gallery/named stories stay as they are; this is about the interactive Default/autodocs controls.
 
 ## Acceptance criteria
-- [ ] `Icon.stories.svelte` declares `argTypes` for `name`, `px`, `size`, `variant`, `spin`, `rotate`,
+- [x] `Icon.stories.svelte` declares `argTypes` for `name`, `px`, `size`, `variant`, `spin`, `rotate`,
       `flip`, `strokeWidth`, `absoluteStroke`, `title`, `decorative` with sensible control kinds
       (select/radio/boolean/number/text) and option lists matching the component's prop unions.
-- [ ] The `template` render snippet forwards all of the above to `<Icon ... />`, so each control visibly
+- [x] The `template` render snippet forwards all of the above to `<Icon ... />`, so each control visibly
       changes the rendered output (size/px resize, variant toggles fill vs stroke, spin animates, rotate &
       flip transform, strokeWidth/absoluteStroke change stroke, title/decorative change the a11y wiring).
-- [ ] `size` options reflect the [[DS-0109-icon-size-scale]] scale (`xs | sm | md | lg`) once that lands;
+- [x] `size` options reflect the [[DS-0109-icon-size-scale]] scale (`xs | sm | md | lg`) once that lands;
       until then mirror the component's current union — no speculative values.
-- [ ] Story stays a11y-clean under `@storybook/addon-a11y` (the default render is decorative/aria-hidden
+- [x] Story stays a11y-clean under `@storybook/addon-a11y` (the default render is decorative/aria-hidden
       unless a `title` is supplied via the control), targeting WCAG 2.2 AA.
-- [ ] `pnpm build-storybook` succeeds (CI gate); existing named stories (Default/Activity/Settings/Terminal/
+- [x] `pnpm build-storybook` succeeds (CI gate); existing named stories (Default/Activity/Settings/Terminal/
       Large/Small/Nav & social/Gallery) still render.
-- [ ] Tests added/updated as applicable; `pnpm test` green.
-- [ ] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md /
+- [x] Tests added/updated as applicable; `pnpm test` green.
+- [x] Documentation updated (documentation/src/lib/docs.config.ts component page + docs/tokens.md /
       docs/themes.md as needed) — the Icon docs page should list the same prop surface the story now drives.
 
 ## Notes
