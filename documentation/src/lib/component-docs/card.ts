@@ -37,7 +37,7 @@ export const card: ComponentDoc = {
     {
       name: 'footer',
       type: 'Snippet',
-      desc: 'Footer band mirroring the head, rendered only when provided.',
+      desc: 'Footer band mirroring the head, rendered only when provided. Typically holds an action row (e.g. a secondary `ghost` + primary `Button`); the band is a `space-between` flex row, so wrap multiple actions in a single element to group (and left-align) them.',
     },
     { name: 'href', type: 'string', desc: 'Makes the whole card a primary link to this href.' },
     {

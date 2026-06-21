@@ -122,6 +122,24 @@
   {/snippet}
 </Story>
 
+<!-- Footer snippet holding an action row (secondary + primary Button). Cards
+     conventionally left-align footer actions (Polaris default) — see DS-0123. -->
+<Story name="FooterActions" args={{ title: 'Deploy', meta: '', withAction: false }}>
+  {#snippet children()}
+    <Card title="Deploy to production" description="release/0.11.0 · awaiting approval">
+      <p style="margin:0;font-size:13px">
+        Review the changes, then approve or discard this deploy.
+      </p>
+      {#snippet footer()}
+        <div style="display:flex;gap:var(--ss-gap-sm)">
+          <Button variant="ghost" onclick={() => {}}>Discard</Button>
+          <Button onclick={() => {}}>Approve</Button>
+        </div>
+      {/snippet}
+    </Card>
+  {/snippet}
+</Story>
+
 <!-- Linkable card: whole surface is a primary link -->
 <Story name="Linkable" args={{ title: 'Docs', meta: '', withAction: false }}>
   {#snippet children()}

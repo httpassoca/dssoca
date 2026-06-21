@@ -319,6 +319,7 @@
 
   --ss-gap: 14px;
   --ss-gap-sm: 10px;
+  --ss-gap-xs: 6px; /* extra-small gap for dense intra-component lists (DS-0124) */
   --ss-block-gap: 28px;
 
   --ss-shell-side-w: 220px;
@@ -382,6 +383,7 @@
 
   --ss-gap: 8px;
   --ss-gap-sm: 6px;
+  --ss-gap-xs: 4px; /* extra-small gap for dense intra-component lists (DS-0124) */
   --ss-block-gap: 16px;
 
   --ss-shell-side-w: 180px;
@@ -445,6 +447,7 @@
 
   --ss-gap: 18px;
   --ss-gap-sm: 13px;
+  --ss-gap-xs: 8px; /* extra-small gap for dense intra-component lists (DS-0124) */
   --ss-block-gap: 36px;
 
   --ss-shell-side-w: 260px;
