@@ -109,14 +109,52 @@ describe('Button', () => {
       expect(btn).not.toHaveAttribute('aria-disabled')
     })
 
-    it('renders a spinner while loading', () => {
+    it('renders the shared Spinner while loading (no bespoke .spinner markup)', () => {
       const { container } = render(ButtonHarness, { loading: true, text: 'Save' })
-      expect(container.querySelector('.spinner')).toBeInTheDocument()
+      // The shared Spinner root is `.ss-spinner`; the old bespoke `.spinner`
+      // ring (and its ss-btn-spin keyframe) are gone (DS-0113).
+      expect(container.querySelector('.ss-spinner')).toBeInTheDocument()
+      expect(container.querySelector('.spinner')).not.toBeInTheDocument()
+    })
+
+    it('loading=true renders the configured default Spinner variant (boxBounce2)', () => {
+      const { container } = render(ButtonHarness, { loading: true, text: 'Save' })
+      const frame = container.querySelector('.ss-spinner .frame')!.textContent!
+      // boxBounce2 frames: ▌ ▀ ▐ ▄ — the default house variant.
+      expect(['▌', '▀', '▐', '▄']).toContain(frame)
+    })
+
+    it("loading='pipe' renders the pipe Spinner variant (explicit override)", () => {
+      const { container } = render(ButtonHarness, { loading: 'pipe', text: 'Save' })
+      const frame = container.querySelector('.ss-spinner .frame')!.textContent!
+      expect(['┤', '┘', '┴', '└', '├', '┌', '┬', '┐']).toContain(frame)
+    })
+
+    it('loading=false renders no spinner and is not aria-busy', () => {
+      const { container } = render(ButtonHarness, { loading: false, text: 'Save' })
+      expect(container.querySelector('.ss-spinner')).not.toBeInTheDocument()
+      expect(container.querySelector('button')).not.toHaveAttribute('aria-busy')
+    })
+
+    it('suppresses the Spinner role so the button is the single live-region', () => {
+      const { container } = render(ButtonHarness, { loading: true, text: 'Save' })
+      const spinner = container.querySelector('.ss-spinner')!
+      // role="status" is suppressed + aria-hidden so we don't get a double
+      // announcement alongside the button's aria-busy name (DS-0113).
+      expect(spinner).not.toHaveAttribute('role')
+      expect(spinner).toHaveAttribute('aria-hidden', 'true')
     })
 
     it('guards onclick while loading (handler does not fire)', async () => {
       const onclick = vi.fn()
       render(ButtonHarness, { onclick, loading: true, text: 'Tap' })
+      await fireEvent.click(screen.getByRole('button', { name: 'Tap' }))
+      expect(onclick).not.toHaveBeenCalled()
+    })
+
+    it("guards onclick while loading via an explicit variant ('pipe')", async () => {
+      const onclick = vi.fn()
+      render(ButtonHarness, { onclick, loading: 'pipe', text: 'Tap' })
       await fireEvent.click(screen.getByRole('button', { name: 'Tap' }))
       expect(onclick).not.toHaveBeenCalled()
     })
@@ -129,6 +167,71 @@ describe('Button', () => {
     it('keeps a stable accessible name via loadingLabel', () => {
       render(ButtonHarness, { loading: true, loadingLabel: 'Saving…', text: 'Save' })
       expect(screen.getByRole('button', { name: 'Saving…' })).toBeInTheDocument()
+    })
+
+    it('passes the resolved size down to the Spinner (coordinated sizes)', () => {
+      const { container } = render(ButtonHarness, { loading: true, size: 'lg', text: 'Save' })
+      expect(container.querySelector('.ss-spinner')).toHaveAttribute('data-size-variant', 'lg')
+    })
+
+    it('loading with no children shows the spinner as the only flex child', () => {
+      // Icon-only / no-text loading: the spinner affix is the single visible
+      // child — no `.label` competing with it (DS-0114).
+      const { container } = render(ButtonHarness, {
+        loading: true,
+        text: false,
+        label: 'Saving',
+      })
+      expect(container.querySelector('.label')).not.toBeInTheDocument()
+      const affixes = container.querySelectorAll('.affix')
+      expect(affixes).toHaveLength(1)
+      expect(affixes[0].querySelector('.ss-spinner')).toBeInTheDocument()
+    })
+  })
+
+  describe('empty label span (DS-0114)', () => {
+    it('renders no .label element when there are no children', () => {
+      const { container } = render(ButtonHarness, { text: false, label: 'Settings' })
+      expect(container.querySelector('.label')).not.toBeInTheDocument()
+    })
+
+    it('renders a .label only when children are present', () => {
+      const { container } = render(ButtonHarness, { text: 'Hi' })
+      expect(container.querySelector('.label')?.textContent).toBe('Hi')
+    })
+  })
+
+  describe('icon height invariance (DS-0112)', () => {
+    // jsdom has no layout engine (offsetHeight is always 0), so the px-equal
+    // assertion the story describes can't be measured here. Instead assert the
+    // structural/style invariants that GUARANTEE the equal height: the control
+    // owns a deterministic min-height from control tokens, and `.affix` clamps
+    // its icon to the text line-box so a taller glyph can't grow the control.
+    const source = readFileSync(resolve(process.cwd(), 'src/lib/components/Button.svelte'), 'utf8')
+
+    it('pins a deterministic control height from control tokens (not the icon)', () => {
+      expect(source).toMatch(
+        /min-height:\s*calc\(var\(--ss-control-font\)\s*\+\s*var\(--ss-control-py\)\s*\*\s*2\)/,
+      )
+    })
+
+    it('clamps the .affix to the text line-box so the icon never grows the control', () => {
+      expect(source).toMatch(/\.affix\s*\{[^}]*height:\s*1em/)
+    })
+
+    it('defangs the flex auto-min-size on .affix so an oversized icon cannot grow the control', () => {
+      // As a flex item of `.ss-btn`, `.affix` would otherwise take a content-based
+      // automatic minimum from the (taller) --ss-icon glyph, overriding `height: 1em`.
+      expect(source).toMatch(/\.affix\s*\{[^}]*min-height:\s*0/)
+    })
+
+    it('renders leading/trailing icons inside a clamped .affix', () => {
+      const { container } = render(ButtonHarness, {
+        text: 'Next',
+        leading: createRawSnippet(() => ({ render: () => '<svg></svg>' })),
+        trailing: createRawSnippet(() => ({ render: () => '<svg></svg>' })),
+      })
+      expect(container.querySelectorAll('.affix')).toHaveLength(2)
     })
   })
 

@@ -1,14 +1,21 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
   import type { HTMLButtonAttributes } from 'svelte/elements'
-  import { resolveComponentSize, type Size } from '../config.js'
+  import { resolveComponentSize, resolveSpinnerVariant, type Size } from '../config.js'
+  import type { SpinnerVariant } from '../config.js'
+  import Spinner from './Spinner.svelte'
 
   interface Props extends HTMLButtonAttributes {
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
     type?: 'button' | 'submit' | 'reset'
     disabled?: boolean
-    /** Loading state: shows a spinner, blocks clicks, sets aria-busy; stays focusable. */
-    loading?: boolean
+    /**
+     * Loading state: shows a {@link Spinner}, blocks clicks, sets aria-busy;
+     * stays focusable. `true` uses the configured default spinner variant; pass
+     * a {@link SpinnerVariant} string to pick a specific glyph; `false`/omitted
+     * is not loading.
+     */
+    loading?: boolean | SpinnerVariant
     /** Accessible name while loading (keeps the name stable when the label is hidden). */
     loadingLabel?: string
     onclick?: (e: MouseEvent) => void
@@ -46,14 +53,25 @@
     ...rest
   }: Props = $props()
 
+  // `loading` is a discriminated union: `true` → configured default variant; a
+  // SpinnerVariant string → that variant; `false`/undefined → not loading.
+  let isLoading = $derived(loading !== false && loading != null)
+  // The size Button paints on its root, threaded down to nested Icon/Spinner so
+  // the loading glyph tracks the button's tier (coordinated inner sizes).
+  let resolvedSize = $derived(resolveComponentSize('Button', size))
+  // An explicit variant string wins; `true` falls back to the house default.
+  let spinnerVariant = $derived(
+    typeof loading === 'string' ? loading : resolveSpinnerVariant(undefined),
+  )
+
   // Soft-disable: keep the control focusable/announceable via aria-disabled while
   // loading, but still emit native `disabled` so forms don't submit it.
-  let busy = $derived(loading)
+  let busy = $derived(isLoading)
   let ariaLabel = $derived(iconOnly ? label : rest['aria-label'])
-  let accessibleName = $derived(loading ? (loadingLabel ?? ariaLabel) : ariaLabel)
+  let accessibleName = $derived(isLoading ? (loadingLabel ?? ariaLabel) : ariaLabel)
 
   function handleClick(e: MouseEvent) {
-    if (loading || disabled) {
+    if (isLoading || disabled) {
       e.preventDefault()
       e.stopImmediatePropagation()
       return
@@ -67,18 +85,23 @@
   class="ss-btn {variant}"
   class:icon-only={iconOnly}
   class:full-width={fullWidth}
-  class:loading
+  class:loading={isLoading}
   {type}
   {disabled}
   aria-busy={busy ? 'true' : undefined}
-  aria-disabled={loading ? 'true' : undefined}
+  aria-disabled={isLoading ? 'true' : undefined}
   aria-label={accessibleName}
-  data-size-variant={resolveComponentSize('Button', size)}
+  data-size-variant={resolvedSize}
   {...rest}
   onclick={handleClick}
 >
-  {#if loading}
-    <span class="spinner" aria-hidden="true"></span>
+  {#if isLoading}
+    <!-- Shared Spinner, sized to the button's tier. Its own role="status" is
+         suppressed (role/aria-hidden) so the button's name is the single
+         announcement — no double live-region. -->
+    <span class="affix" aria-hidden="true">
+      <Spinner variant={spinnerVariant} size={resolvedSize} role={undefined} aria-hidden="true" />
+    </span>
   {/if}
   {#if leading}<span class="affix" aria-hidden="true">{@render leading()}</span>{/if}
   {#if children}<span class="label">{@render children()}</span>{/if}
@@ -89,7 +112,17 @@
   .ss-btn {
     font-family: var(--ss-font-body);
     font-size: var(--ss-control-font);
+    // Own the line-box: the control height is padding + this line-box only, so it
+    // stays invariant to the presence of icons (DS-0112). The text line-box is
+    // 1em of the control font; pin it explicitly so the deterministic
+    // min-height below matches the text-only case exactly.
     line-height: 1;
+    // Deterministic control height = top+bottom padding + the text line-box.
+    // A leading/trailing icon (sized to --ss-icon, which exceeds 1em of the
+    // control font) is clamped to this line-box by `.affix` below, so it can
+    // never make align-items:center grow the control taller than this.
+    min-height: calc(var(--ss-control-font) + var(--ss-control-py) * 2);
+    box-sizing: border-box;
     font-weight: 500;
     padding: var(--ss-control-py) var(--ss-control-px);
     border: 1px solid var(--ss-line);
@@ -171,33 +204,22 @@
     align-items: center;
   }
 
+  /* Clamp the icon/spinner to the text line-box (1em of the control font) and
+     centre it, so a glyph sized to --ss-icon (taller than 1em) never enlarges
+     the line-box and grows the control (DS-0112). The icon stays visually
+     centred; overflow stays visible so a slightly-taller glyph is not cropped,
+     while the box's own height — what align-items:center measures — is the
+     line-box. `min-height: 0` / `min-width: 0` defang the flex auto-min-size: as
+     a flex ITEM of `.ss-btn`, `.affix` would otherwise take a content-based
+     automatic minimum from the (taller) icon, which could override the explicit
+     `height: 1em` and grow the control past its `min-height` floor. */
   .affix {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    line-height: 0;
-  }
-
-  /* em-sized spinner so it tracks the button font; reduced-motion safe. */
-  .spinner {
-    display: inline-block;
-    width: 1em;
     height: 1em;
-    border: 2px solid currentColor;
-    border-top-color: transparent;
-    box-sizing: border-box;
-    animation: ss-btn-spin var(--ss-dur-xslow) linear infinite;
-  }
-
-  @keyframes ss-btn-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .spinner {
-      animation: none;
-    }
+    min-height: 0;
+    min-width: 0;
+    line-height: 0;
   }
 </style>

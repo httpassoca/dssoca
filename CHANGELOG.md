@@ -8,6 +8,18 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING — `Button` `loading` widened to `boolean | SpinnerVariant`** (`DS-0113`). The button's
+  loading affordance now renders the shared `<Spinner>` instead of the bespoke inline ring (the
+  `ss-btn-spin` keyframe and `.spinner` ring CSS were removed). `loading={true}` resolves to the
+  configured default Spinner variant (`resolveSpinnerVariant()`, default `boxBounce2`); pass a
+  `SpinnerVariant` string (e.g. `loading="pipe"`) to override it for one button. **Migration:**
+  existing `loading` / `loading={true}` / `loading={false}` call sites keep working unchanged — only
+  the prop's TS type and the rendered glyph (spinning ring → cli-spinners glyph) change. The spinner
+  inherits the button's size tier and reduced-motion handling from `Spinner`; its `role="status"` is
+  suppressed so the button stays the single live-region.
+
 ## [0.11.0] — geossoca stats-dashboard charts — 2026-06-15
 
 Four data-viz primitives (`DS-0102` epic) the _geossoca_ performance dashboard needs, built in the
