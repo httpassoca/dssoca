@@ -5,74 +5,126 @@
 // ============================================================
 
 // ------------------------------------------------------------
-//  AXIS 1 — COLOR THEME
+//  AXIS 1 — COLOR THEME  (monochromatic 16-slot terminal palette)
+//
+//  Layer A — ROOT SLOTS (generated): the 16 ANSI colors + bg/fg + the one
+//  vivid --ss-accent, per theme, authored in OKLCH. Neutrals carry the
+//  accent's hue at low chroma (mono rule: bg strongest, whites faintest);
+//  the 6 hue slots keep ANSI anchor hues leaned toward the accent, with
+//  red↔green held ≥45° apart (git-diff legibility). Values come from
+//  scripts/generate-palette.mjs — tune the recipe there, never edit here.
+//
+//  Layer B — SEMANTIC LAYER (hand-maintained): every consumer-facing token
+//  derives from the root slots via var()/color-mix(), declared inside the
+//  same [data-theme] blocks. Overriding the 19 slots (applyDesignConfig
+//  palette, or a CSS override block) therefore recolors the whole system.
 // ------------------------------------------------------------
+
+// >>> generated:palette — seed #66ef73. Regenerate with `pnpm gen:palette`; do not edit by hand.
 :root,
 [data-theme='dark'] {
-  /* Native form controls + scrollbars follow the theme (DS-0069). Lives here
-     (not _base.scss) so the planned tokens-only entry ships it too. */
+  /* Native form controls + scrollbars follow the theme (DS-0069). */
   color-scheme: dark;
 
-  /* surfaces */
-  --ss-bg: #100f10;
-  --ss-bg-elev: #1e1e1e;
-  --ss-bg-elev-hover: #262626; /* slightly raised surface for hovered cards/rows */
+  --ss-bg: oklch(17.1% 0.0204 144.62); /* #0a120a */
+  --ss-fg: oklch(90.04% 0.0103 145.49); /* #dae0da */
+  --ss-accent: oklch(84.89% 0.2044 145.21); /* #66ef73 */
+  --ss-black: oklch(21.98% 0.0194 144.88); /* #151d15 */
+  --ss-red: oklch(72.13% 0.1099 67.14); /* #d39755 */
+  --ss-green: oklch(71.89% 0.1091 143.25); /* #7ab677 */
+  --ss-yellow: oklch(72.04% 0.1106 117.61); /* #9fae5a */
+  --ss-blue: oklch(72.1% 0.1096 222.03); /* #46b4d6 */
+  --ss-magenta: oklch(71.98% 0.1095 12.93); /* #e08791 */
+  --ss-cyan: oklch(72% 0.11 177.59); /* #46bba4 */
+  --ss-white: oklch(92.98% 0.0068 145.52); /* #e5e9e5 */
+  --ss-bright-black: oklch(64.11% 0.0206 145.33); /* #859085 */
+  --ss-bright-red: oklch(80% 0.1267 67.15); /* #f4ad5e */
+  --ss-bright-green: oklch(80.04% 0.1274 143.09); /* #8bd387 */
+  --ss-bright-yellow: oklch(80.09% 0.1274 117.8); /* #b7c965 */
+  --ss-bright-blue: oklch(79.9% 0.1266 222.5); /* #4acff8 */
+  --ss-bright-magenta: oklch(80.02% 0.116 13.34); /* #ff9ea8 */
+  --ss-bright-cyan: oklch(79.96% 0.1268 177.65); /* #4ad8bd */
+  --ss-bright-white: oklch(99.1% 0.005 145.54); /* #fafdfa */
+}
+
+[data-theme='light'] {
+  /* Native form controls + scrollbars follow the theme (DS-0069). */
+  color-scheme: light;
+
+  --ss-bg: oklch(95.39% 0.0119 145.48); /* #ebf2eb */
+  --ss-fg: oklch(25.05% 0.0095 145.29); /* #1f231f */
+  --ss-accent: oklch(51.99% 0.1328 145.23); /* #2b7c34 */
+  --ss-black: oklch(20.11% 0.0221 144.7); /* #101910 */
+  --ss-red: oklch(54.01% 0.1106 66.66); /* #996017 */
+  --ss-green: oklch(52.45% 0.1094 143.17); /* #407a3e */
+  --ss-yellow: oklch(50.07% 0.1099 117.4); /* #5f6b0f */
+  --ss-blue: oklch(52.5% 0.0976 222.77); /* #007693 */
+  --ss-magenta: oklch(54.94% 0.1093 13.01); /* #a7545f */
+  --ss-cyan: oklch(52.45% 0.0966 177.84); /* #007c6a */
+  --ss-white: oklch(88% 0.0087 145.5); /* #d4d9d4 */
+  --ss-bright-black: oklch(44.95% 0.0184 145.26); /* #4f584f */
+  --ss-bright-red: oklch(48% 0.1056 67.68); /* #845000 */
+  --ss-bright-green: oklch(48.04% 0.1268 143.28); /* #286f28 */
+  --ss-bright-yellow: oklch(42.93% 0.0992 117.23); /* #4c5600 */
+  --ss-bright-blue: oklch(48% 0.0893 222.84); /* #006882 */
+  --ss-bright-magenta: oklch(47.99% 0.1264 12.92); /* #973949 */
+  --ss-bright-cyan: oklch(48.12% 0.0892 177.06); /* #006e5d */
+  --ss-bright-white: oklch(99.1% 0.005 145.54); /* #fafdfa */
+}
+// <<< generated:palette
+
+// Layer B — semantic layer. Aliases identical in both themes live only in the
+// :root/dark block (var() resolves at use-time against the cascade); tokens
+// whose *recipe* differs per theme are overridden in the light block.
+:root,
+[data-theme='dark'] {
+  /* surfaces — elevation = mixing the bg toward bright-white */
+  --ss-bg-elev: color-mix(in oklab, var(--ss-bg) 88%, var(--ss-bright-white));
+  --ss-bg-elev-hover: color-mix(in oklab, var(--ss-bg) 83%, var(--ss-bright-white));
   --ss-bg-inset: rgba(7, 6, 7, 0);
-  --ss-line: rgba(255, 255, 255, 0.12);
-  --ss-line-strong: rgba(255, 255, 255, 0.22);
+  --ss-line: color-mix(in srgb, var(--ss-bright-white) 12%, transparent);
+  --ss-line-strong: color-mix(in srgb, var(--ss-bright-white) 22%, transparent);
 
   /* foreground */
-  --ss-fg: #e0e0e0;
-  --ss-fg-shine: #ffffff;
-  --ss-fg-muted: #aaaaaa;
-  --ss-fg-faint: #8a8a8a; /* WCAG AA ≥4.5:1 on bg + bg-elev (DS-0013) */
-  --ss-fg-on-primary: #100f10;
+  --ss-fg-shine: var(--ss-bright-white);
+  --ss-fg-muted: color-mix(in oklab, var(--ss-fg) 72%, var(--ss-bg));
+  --ss-fg-faint: var(--ss-bright-black); /* AA ≥4.5:1 solved by the generator (DS-0013) */
+  --ss-fg-on-primary: var(--ss-bg);
 
-  /* brand */
-  --ss-primary: #66ef73;
-  --ss-primary-soft: rgba(102, 239, 115, 0.18);
-  --ss-primary-rgb: 102, 239, 115;
-  --ss-primary-hover: #7df089;
+  /* brand — --ss-primary is the accent's semantic name; components keep reading it */
+  --ss-primary: var(--ss-accent);
+  --ss-primary-soft: color-mix(in srgb, var(--ss-accent) 18%, transparent);
+  --ss-primary-hover: color-mix(in oklab, var(--ss-accent) 82%, white);
 
-  /* lime — softer green accent for monospace/code text (not the loud primary) */
-  --ss-lime: #a6e22e;
+  /* deprecated aliases (0.12.0) — removal next minor. purple → magenta (ANSI
+     naming); lime → green (the softer code accent is now the green slot). */
+  --ss-purple: var(--ss-magenta);
+  --ss-lime: var(--ss-green);
 
-  /* neutral hover wash — theme-aware so it stays visible in light mode */
-  --ss-hover: rgba(255, 255, 255, 0.05);
+  /* neutral washes — theme-aware overlays derived from the extreme slots */
+  --ss-hover: color-mix(in srgb, var(--ss-bright-white) 5%, transparent);
+  --ss-code-overlay: color-mix(in srgb, var(--ss-bright-white) 6%, transparent);
+  --ss-skeleton: color-mix(in srgb, var(--ss-bright-white) 10%, transparent);
 
-  /* inline code/kbd wash — light overlay on the dark surfaces (DS-0069) */
-  --ss-code-overlay: rgba(255, 255, 255, 0.06);
-
-  /* status */
-  --ss-red: #ff5c5c;
-  --ss-yellow: #e0c36a;
-  --ss-blue: #9aa4ff;
-  --ss-cyan: #66d9ef;
-  --ss-purple: #b98cff;
-  --ss-red-rgb: 255, 92, 92; /* soft invalid focus ring (DS-0033) */
-
-  /* destructive + sentiment — danger/success alias the status red / brand green;
-     hover deepens danger, -soft washes back the opt-in emphasis chip, on-danger is
-     the readable label on the bright red. Used by Button (DS-0032), Sparkline trend
-     (DS-0035) and MetricTile sentiment (DS-0037). */
+  /* destructive + sentiment — danger/success alias the red slot / accent;
+     hover deepens, -soft washes back, on-danger is the readable label.
+     Used by Button (DS-0032), Sparkline trend (DS-0035), MetricTile (DS-0037). */
   --ss-danger: var(--ss-red);
-  --ss-danger-hover: #ff7a7a;
-  --ss-danger-soft: rgba(255, 92, 92, 0.18);
-  --ss-fg-on-danger: #100f10;
-  --ss-success: var(--ss-primary);
+  --ss-danger-hover: color-mix(in oklab, var(--ss-red) 80%, white);
+  --ss-danger-soft: color-mix(in srgb, var(--ss-red) 18%, transparent);
+  --ss-fg-on-danger: var(--ss-bg);
+  --ss-success: var(--ss-accent);
   --ss-success-soft: var(--ss-primary-soft);
 
-  /* skeleton — neutral wash for loading bars (DS-0037) */
-  --ss-skeleton: rgba(255, 255, 255, 0.1);
-
-  /* code */
-  --ss-code-bg: #011627;
-  --ss-code-fg: #d6deeb;
-  --ss-code-string: #addb67;
-  --ss-code-number: #f78c6c;
-  --ss-code-keyword: #c792ea;
-  --ss-code-func: #82aaff;
-  --ss-code-comment: #637777;
+  /* code — the console surface sits just off the page bg; syntax roles map
+     straight onto the terminal slots (string=green, keyword=magenta, …) */
+  --ss-code-bg: color-mix(in oklab, var(--ss-bg) 65%, var(--ss-black));
+  --ss-code-fg: var(--ss-fg);
+  --ss-code-string: var(--ss-green);
+  --ss-code-number: var(--ss-yellow);
+  --ss-code-keyword: var(--ss-magenta);
+  --ss-code-func: var(--ss-blue);
+  --ss-code-comment: var(--ss-bright-black);
 
   /* log-level accents — theme-correct on the code surface */
   --ss-log-info: var(--ss-code-func);
@@ -80,140 +132,78 @@
   --ss-log-err: var(--ss-red);
   --ss-log-ok: var(--ss-code-string);
 
-  --ss-selection-bg: var(--ss-primary);
+  --ss-selection-bg: var(--ss-accent);
   --ss-selection-fg: var(--ss-fg-on-primary);
 
-  /* badge tones — six semantic tones (DS-0119): brand/neutral/positive/
-     caution/critical/info. Theme-tracked fills/borders so light mode is
-     correct (DS-0031); each tone carries an explicit -fg that meets WCAG 2.2
-     AA (>=4.5:1) on the page background (--ss-bg). bg/border are translucent
-     washes tuned for the dark surfaces; on a darker hovered elevated surface
-     (--ss-bg-elev-hover) the composited critical -fg dips slightly to ~4.3:1. */
-  --ss-badge-brand-bg: rgba(154, 164, 255, 0.12);
-  --ss-badge-brand-border: rgba(154, 164, 255, 0.4);
+  /* badge tones — six semantic tones (DS-0119) as translucent slot washes;
+     positive tracks the accent (matching --ss-success), the rest track their
+     slots. Every -fg is a text slot the generator AA-solved on bg + bg-elev. */
+  --ss-badge-brand-bg: color-mix(in srgb, var(--ss-blue) 12%, transparent);
+  --ss-badge-brand-border: color-mix(in srgb, var(--ss-blue) 40%, transparent);
   --ss-badge-brand-fg: var(--ss-blue);
-  --ss-badge-neutral-bg: rgba(255, 255, 255, 0.06);
+  --ss-badge-neutral-bg: color-mix(in srgb, var(--ss-bright-white) 6%, transparent);
   --ss-badge-neutral-border: var(--ss-line);
   --ss-badge-neutral-fg: var(--ss-fg-muted);
-  --ss-badge-positive-bg: rgba(102, 239, 115, 0.12);
-  --ss-badge-positive-border: rgba(102, 239, 115, 0.4);
-  --ss-badge-positive-fg: var(--ss-primary);
-  --ss-badge-caution-bg: rgba(224, 195, 106, 0.12);
-  --ss-badge-caution-border: rgba(224, 195, 106, 0.4);
+  --ss-badge-positive-bg: color-mix(in srgb, var(--ss-accent) 12%, transparent);
+  --ss-badge-positive-border: color-mix(in srgb, var(--ss-accent) 40%, transparent);
+  --ss-badge-positive-fg: var(--ss-accent);
+  --ss-badge-caution-bg: color-mix(in srgb, var(--ss-yellow) 12%, transparent);
+  --ss-badge-caution-border: color-mix(in srgb, var(--ss-yellow) 40%, transparent);
   --ss-badge-caution-fg: var(--ss-yellow);
-  --ss-badge-critical-bg: rgba(255, 92, 92, 0.12);
-  --ss-badge-critical-border: rgba(255, 92, 92, 0.4);
+  --ss-badge-critical-bg: color-mix(in srgb, var(--ss-red) 12%, transparent);
+  --ss-badge-critical-border: color-mix(in srgb, var(--ss-red) 40%, transparent);
   --ss-badge-critical-fg: var(--ss-red);
-  --ss-badge-info-bg: rgba(102, 217, 239, 0.12);
-  --ss-badge-info-border: rgba(102, 217, 239, 0.4);
+  --ss-badge-info-bg: color-mix(in srgb, var(--ss-cyan) 12%, transparent);
+  --ss-badge-info-border: color-mix(in srgb, var(--ss-cyan) 40%, transparent);
   --ss-badge-info-fg: var(--ss-cyan);
 }
 
 [data-theme='light'] {
-  /* Native form controls + scrollbars follow the theme (DS-0069). */
-  color-scheme: light;
-
-  /* surfaces — a soft off-white page (#f0f0f0), white panels to read as elevated.
-     Not blinding-bright; lines are stronger so square borders stay legible. */
-  --ss-bg: #f0f0f0;
-  --ss-bg-elev: #ffffff;
-  --ss-bg-elev-hover: #f4f4f4; /* slightly raised surface for hovered cards/rows */
+  /* surfaces — panels read as elevated by going all the way to bright-white;
+     lines are stronger so square borders stay legible */
+  --ss-bg-elev: var(--ss-bright-white);
+  --ss-bg-elev-hover: color-mix(in oklab, var(--ss-bright-white) 96%, var(--ss-black));
   --ss-bg-inset: rgba(0, 0, 0, 0);
-  --ss-line: rgba(0, 0, 0, 0.16);
-  --ss-line-strong: rgba(0, 0, 0, 0.3);
+  --ss-line: color-mix(in srgb, var(--ss-black) 16%, transparent);
+  --ss-line-strong: color-mix(in srgb, var(--ss-black) 30%, transparent);
 
-  /* foreground — all AA (≥4.5:1) on both #f0f0f0 and #ffffff */
-  --ss-fg: #1a1a1a;
-  --ss-fg-shine: #000000;
-  --ss-fg-muted: #525252;
-  --ss-fg-faint: #5d5d5d; /* WCAG AA ≥4.5:1 on the light surfaces (DS-0013) */
-  --ss-fg-on-primary: #ffffff; /* the light-mode primary is dark → white label */
+  /* foreground — overlays flip to dark washes on the light page */
+  --ss-fg-shine: var(--ss-black);
+  --ss-fg-muted: color-mix(in oklab, var(--ss-fg) 72%, var(--ss-bg));
+  --ss-fg-on-primary: var(--ss-bright-white); /* light accent is deep → light label */
 
-  /* brand — the dark-mode greens are far too bright on a light page, so light
-     mode uses deeper, saturated values that hold AA contrast both as accent
-     TEXT on the surfaces and as the Button background (with white label).
-     DS-0069 contrast audit: was #157f3b (4.46:1 on --ss-bg — a hair under AA
-     for normal-size accent text); darkened to #147c3a → 4.64:1 on #f0f0f0,
-     5.28:1 white-label. */
-  --ss-primary: #147c3a;
-  --ss-primary-soft: rgba(20, 124, 58, 0.12);
-  --ss-primary-rgb: 20, 124, 58;
-  --ss-primary-hover: #0f6e31;
+  --ss-primary-soft: color-mix(in srgb, var(--ss-accent) 12%, transparent);
+  --ss-primary-hover: color-mix(in oklab, var(--ss-accent) 85%, black);
 
-  /* lime — darkened so monospace/code accents stay readable on light */
-  --ss-lime: #2f7a14;
+  --ss-hover: color-mix(in srgb, var(--ss-black) 5%, transparent);
+  --ss-code-overlay: color-mix(in srgb, var(--ss-black) 6%, transparent);
+  --ss-skeleton: color-mix(in srgb, var(--ss-black) 10%, transparent);
 
-  /* neutral hover wash — a dark tint reads on the light surfaces */
-  --ss-hover: rgba(0, 0, 0, 0.05);
+  --ss-danger-hover: color-mix(in oklab, var(--ss-red) 82%, black);
+  --ss-danger-soft: color-mix(in srgb, var(--ss-red) 12%, transparent);
+  --ss-fg-on-danger: var(--ss-bright-white);
 
-  /* inline code/kbd wash — flipped to a dark overlay on the light page (DS-0069) */
-  --ss-code-overlay: rgba(0, 0, 0, 0.06);
+  /* code — barely off the page bg (a dark console block is too loud inline
+     on a light page; LogStream still reads as a distinct surface) */
+  --ss-code-bg: color-mix(in oklab, var(--ss-bg) 92%, var(--ss-black));
 
-  /* selection — redeclared explicitly (DS-0069). The :root declarations would
-     resolve correctly anyway (var() chases the element's own --ss-primary /
-     --ss-fg-on-primary), but the override documents the light pairing:
-     white text on the deep light-mode green (5.28:1, AA). */
-  --ss-selection-bg: var(--ss-primary);
-  --ss-selection-fg: var(--ss-fg-on-primary);
-
-  /* status — darkened from the neon dark-mode set for AA on light */
-  --ss-red: #c62828;
-  --ss-yellow: #8a6d1a;
-  --ss-blue: #2f3bd6;
-  --ss-cyan: #0b6e7d;
-  --ss-purple: #6a35c9;
-  --ss-red-rgb: 198, 40, 40; /* soft invalid focus ring (DS-0033) */
-
-  /* destructive + sentiment — the deep light-mode red carries a white label at AA;
-     success/-soft track the light brand green (DS-0032/0035/0037) */
-  --ss-danger: var(--ss-red);
-  --ss-danger-hover: #a91f1f;
-  --ss-danger-soft: rgba(198, 40, 40, 0.12);
-  --ss-fg-on-danger: #ffffff;
-  --ss-success: var(--ss-primary);
-  --ss-success-soft: var(--ss-primary-soft);
-
-  /* skeleton — neutral wash for loading bars (DS-0037) */
-  --ss-skeleton: rgba(0, 0, 0, 0.1);
-
-  /* code — a light syntax palette (the dark Night-Owl set is unreadable here) */
-  --ss-code-bg: #f5f5f5;
-  --ss-code-fg: #24292e;
-  --ss-code-string: #1f7a33;
-  --ss-code-number: #b35309;
-  --ss-code-keyword: #c5221f;
-  --ss-code-func: #6639ba;
-  --ss-code-comment: #6a737d;
-
-  /* badge tones — six semantic tones (DS-0119). Deeper washes/borders so the
-     fills read on the light page (the dark-mode neon washes wash out on
-     #f0f0f0). The translucent wash lightens the effective background, so each
-     -fg is a dedicated darkened value verified to clear WCAG 2.2 AA (>=4.5:1)
-     on its washed surface (the bare status tokens dip just under). */
-  --ss-badge-brand-bg: rgba(47, 59, 214, 0.1);
-  --ss-badge-brand-border: rgba(47, 59, 214, 0.35);
-  --ss-badge-brand-fg: var(--ss-blue);
-  --ss-badge-neutral-bg: rgba(0, 0, 0, 0.05);
-  --ss-badge-neutral-border: var(--ss-line);
-  --ss-badge-neutral-fg: #4a4a4a;
-  --ss-badge-positive-bg: rgba(20, 124, 58, 0.1);
-  --ss-badge-positive-border: rgba(20, 124, 58, 0.35);
-  --ss-badge-positive-fg: #0f6e31;
-  --ss-badge-caution-bg: rgba(138, 109, 26, 0.1);
-  --ss-badge-caution-border: rgba(138, 109, 26, 0.35);
-  --ss-badge-caution-fg: #6f5715;
-  --ss-badge-critical-bg: rgba(198, 40, 40, 0.1);
-  --ss-badge-critical-border: rgba(198, 40, 40, 0.35);
-  --ss-badge-critical-fg: #b21f1f;
-  --ss-badge-info-bg: rgba(11, 110, 125, 0.1);
-  --ss-badge-info-border: rgba(11, 110, 125, 0.35);
-  --ss-badge-info-fg: var(--ss-cyan);
-
-  /* log-level accents — darkened code/status values for AA on the light code surface */
-  --ss-log-info: var(--ss-code-func);
-  --ss-log-warn: var(--ss-yellow);
-  --ss-log-err: var(--ss-red);
-  --ss-log-ok: var(--ss-code-string);
+  /* badge tones — deeper washes so the fills read on the light page; the
+     washed surface sits between bg and bg-elev, both of which every -fg slot
+     was AA-solved against. positive/critical use the -hover deepenings the
+     old dedicated light -fg literals approximated. */
+  --ss-badge-brand-bg: color-mix(in srgb, var(--ss-blue) 10%, transparent);
+  --ss-badge-brand-border: color-mix(in srgb, var(--ss-blue) 35%, transparent);
+  --ss-badge-neutral-bg: color-mix(in srgb, var(--ss-black) 5%, transparent);
+  --ss-badge-positive-bg: color-mix(in srgb, var(--ss-accent) 10%, transparent);
+  --ss-badge-positive-border: color-mix(in srgb, var(--ss-accent) 35%, transparent);
+  --ss-badge-positive-fg: var(--ss-primary-hover);
+  --ss-badge-caution-bg: color-mix(in srgb, var(--ss-yellow) 10%, transparent);
+  --ss-badge-caution-border: color-mix(in srgb, var(--ss-yellow) 35%, transparent);
+  --ss-badge-critical-bg: color-mix(in srgb, var(--ss-red) 10%, transparent);
+  --ss-badge-critical-border: color-mix(in srgb, var(--ss-red) 35%, transparent);
+  --ss-badge-critical-fg: var(--ss-danger-hover);
+  --ss-badge-info-bg: color-mix(in srgb, var(--ss-cyan) 10%, transparent);
+  --ss-badge-info-border: color-mix(in srgb, var(--ss-cyan) 35%, transparent);
 }
 
 // ------------------------------------------------------------
@@ -257,7 +247,7 @@
   --ss-shadow-1: 0 0 0 1px var(--ss-line);
   --ss-shadow-2: 0 1px 0 0 rgba(0, 0, 0, 0.4), 0 0 0 1px var(--ss-line);
   --ss-shadow-pop: 0 12px 40px rgba(0, 0, 0, 0.35);
-  --ss-shadow-glow: 0 0 24px rgba(var(--ss-primary-rgb), 0.35);
+  --ss-shadow-glow: 0 0 24px color-mix(in srgb, var(--ss-accent) 35%, transparent);
 
   /* motion */
   --ss-ease: cubic-bezier(0.215, 0.61, 0.355, 1);

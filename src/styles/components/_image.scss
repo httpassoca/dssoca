@@ -10,7 +10,7 @@
   // Surface behind a ratio box before/while the image paints.
   --ss-image-frame-bg: var(--ss-bg-elev);
   // Shimmer highlight that sweeps across the skeleton (over --ss-skeleton).
-  --ss-image-shimmer: rgba(255, 255, 255, 0.06);
+  --ss-image-shimmer: color-mix(in srgb, var(--ss-bright-white) 6%, transparent);
   --ss-image-shimmer-dur: var(--ss-dur-xslow);
   // Focus ring thickness for the (inset) lightbox trigger.
   --ss-image-focus-w: 2px;
@@ -24,7 +24,7 @@
 }
 
 [data-theme='light'] {
-  --ss-image-shimmer: rgba(255, 255, 255, 0.5);
+  --ss-image-shimmer: color-mix(in srgb, var(--ss-bright-white) 50%, transparent);
   --ss-image-backdrop: rgba(0, 0, 0, 0.66);
 }
 
