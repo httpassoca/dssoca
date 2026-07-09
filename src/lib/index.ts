@@ -6,6 +6,8 @@ export {
   getDesignConfig,
   designAttributes,
   applyDesignConfig,
+  paletteToCss,
+  paletteSlotVar,
   resolveComponentSize,
   resolveSpinnerVariant,
 } from './config.js'
@@ -13,12 +15,19 @@ export {
 export {
   dssocaConfig,
   SPINNER_VARIANT_NAMES,
+  PALETTE_SLOTS,
   type DssocaConfig,
   type DesignAxis,
   type ComponentName,
   type ComponentsSize,
   type SpinnerVariant,
+  type Palette,
+  type ThemePalette,
+  type PaletteSlot,
 } from './dssoca.config.js'
+
+// Categorical palette shared by the chart family + Avatar (stable order/length).
+export { CHART_PALETTE } from './palette.js'
 
 export {
   default as Icon,
