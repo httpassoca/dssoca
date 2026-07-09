@@ -20,6 +20,15 @@ carries only tokens, base styles, and app-shell/layout — not per-component rul
 see agile `DS-0009`). Full rationale: `DESIGN.md`. Token table: `docs/tokens.md`. Theme API:
 `docs/themes.md`.
 
+**Color architecture (0.12.0, agile `DS-0125`)**: a monochromatic 16-slot terminal palette.
+`_tokens.scss` has a GENERATED root layer (19 slots per theme — the 16 ANSI colors + `bg`/`fg` +
+`--ss-accent` — in OKLCH; regenerate via `pnpm gen:palette`, recipe in `scripts/lib/palette.mjs`,
+drift-guarded by tests — **never edit the marked region by hand**) and a hand-maintained semantic
+layer where every other color token derives from the slots via `var()`/`color-mix()`. Custom
+palettes: `applyDesignConfig({ palette })` or `paletteToCss()`; interactive generator = the docs
+app's `/theme-builder` page. No raw color literals in components — slot-based `color-mix()` washes
+instead of the removed `--ss-*-rgb` triplets.
+
 ## Stack
 
 - **SvelteKit + `@sveltejs/package`** (`svelte-package`) builds `src/lib/` → `dist/`. `publint` validates.
@@ -88,6 +97,7 @@ pnpm build:css          # compile src/styles/theme.scss → dist/theme.css (Dart
 pnpm storybook          # Storybook dev server (port 6006): component pages + axis toolbar
 pnpm build-storybook    # static Storybook build → storybook-static/ (gitignored)
 pnpm release            # release helper: validates bump/branch, drafts changelog stub, prints git-flow steps
+pnpm gen:palette        # regenerate the root-slot palette region of _tokens.scss (--print previews + contrast report)
 ```
 
 Storybook config lives in `.storybook/` (`main.ts`, `preview.ts`); stories live in `src/stories/`
