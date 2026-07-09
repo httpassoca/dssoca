@@ -47,7 +47,13 @@ describe('docs.config — nav', () => {
     const guide = NAV.find((g) => g.section === 'guide')
     const hrefs = guide?.items.map((i) => i.href) ?? []
     expect(hrefs).toEqual(
-      expect.arrayContaining(['/introduction', '/installation', '/theming', '/tokens']),
+      expect.arrayContaining([
+        '/introduction',
+        '/installation',
+        '/theming',
+        '/tokens',
+        '/theme-builder',
+      ]),
     )
   })
 

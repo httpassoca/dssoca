@@ -92,3 +92,21 @@ applyDesignConfig({
 ```
 
 Components not listed inherit the global `sizeVariant`.
+
+## Custom palettes
+
+The color axis is backed by 19 root palette slots per theme (`bg`, `fg`, `accent` + the 16
+terminal slots); every semantic token derives from them, so replacing the slots recolors the
+whole system. Pass a `Palette` to `applyDesignConfig({ palette })` to apply one at runtime, or
+emit a zero-JS CSS override block with `paletteToCss(palette)` (load it after `dssoca/theme.css`):
+
+```ts
+import { applyDesignConfig, paletteToCss, type Palette } from 'dssoca';
+
+applyDesignConfig({ palette }); // runtime — tracks later theme flips
+const css = paletteToCss(palette); // static — ship as a stylesheet
+```
+
+Don't hand-write the 38 hex values — the [Theme Builder](/theme-builder) builds a palette
+interactively: pick an accent, live-preview real components, fix any WCAG failures with one
+click, and export exactly these two snippets.
