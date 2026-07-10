@@ -17,6 +17,7 @@ import {
   GEN_END,
   DEFAULT_SEED,
   RED_GREEN_MIN_DEG,
+  BRAND_PINS,
 } from '../../scripts/lib/palette.mjs'
 
 const AA = 4.5
@@ -98,7 +99,7 @@ describe('derivePalette — the mono recipe', () => {
   it('neutrals carry the seed hue (mono rule) and never hit pure black/white', () => {
     const seedHue = hexToOklch(DEFAULT_SEED).h
     for (const mode of ['dark', 'light'] as const) {
-      for (const slot of ['bg', 'black', 'brightBlack'] as const) {
+      for (const slot of ['black', 'brightBlack'] as const) {
         expect(
           hueDistDeg(hexToOklch(palette[mode][slot]).h, seedHue),
           `${mode}.${slot} hue`,
@@ -108,6 +109,22 @@ describe('derivePalette — the mono recipe', () => {
         expect(palette[mode][slot]).not.toBe('#000000')
         expect(palette[mode][slot]).not.toBe('#ffffff')
       }
+    }
+    // Light bg is hue-tinted; dark bg is a BRAND PIN, not a derivation.
+    expect(hueDistDeg(hexToOklch(palette.light.bg).h, seedHue)).toBeLessThan(15)
+  })
+
+  it('applies the brand pins for the default seed (dark bg = the original near-black)', () => {
+    expect(palette.dark.bg).toBe(BRAND_PINS.dark.bg)
+    expect(palette.dark.bg).toBe('#100f10')
+    // Pins are seed-scoped: a custom accent derives its bg fully by recipe.
+    expect(derivePalette({ accent: '#7aa2f7' }).dark.bg).not.toBe('#100f10')
+  })
+
+  it('keeps red and yellow near their anchors (semantic hues stay legible)', () => {
+    for (const mode of ['dark', 'light'] as const) {
+      expect(hueDistDeg(hexToOklch(palette[mode].red).h, 25), `${mode} red`).toBeLessThan(15)
+      expect(hueDistDeg(hexToOklch(palette[mode].yellow).h, 95), `${mode} yellow`).toBeLessThan(10)
     }
   })
 

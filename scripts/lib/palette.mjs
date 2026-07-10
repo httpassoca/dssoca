@@ -187,7 +187,15 @@ export const slotToCssVar = (slot) => '--ss-' + slot.replace(/[A-Z]/g, (m) => '-
  * here and get leaned toward the seed's hue by `tint` (mono rule: the neutrals
  * live fully in the seed hue; the functional hues only *lean*).
  */
-export const ANSI_ANCHORS = { red: 25, yellow: 110, green: 142, cyan: 195, blue: 264, magenta: 328 }
+export const ANSI_ANCHORS = { red: 25, yellow: 95, green: 142, cyan: 195, blue: 264, magenta: 328 }
+
+/**
+ * Per-slot lean damping. Red and yellow are the semantic load-bearers
+ * (failures / warnings) and drift into orange / chartreuse fastest under the
+ * global tint, so they take only a fraction of it — they must still read as
+ * "red" and "yellow" at a glance.
+ */
+const LEAN_WEIGHT = { red: 0.2, yellow: 0.2 }
 
 /** Hard floor on red↔green hue separation — below this, git diffs die. */
 export const RED_GREEN_MIN_DEG = 45
@@ -196,6 +204,15 @@ export const ADJACENT_MIN_DEG = 25
 
 /** The shipped default seed — today's brand green, byte-for-byte. */
 export const DEFAULT_SEED = '#66ef73'
+
+/**
+ * Brand pins — exact slot values for the SHIPPED default seed (and for anyone
+ * deriving from it in the theme builder). The dark page background is the
+ * original dssoca near-black #100f10: identity beats the tint rule for this
+ * one surface. Pins are applied before contrast solving, so every AA loop
+ * runs against the pinned values. Custom accents derive fully by recipe.
+ */
+export const BRAND_PINS = { dark: { bg: '#100f10' }, light: {} }
 
 const HUE_SLOTS = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan']
 const bright = (k) => 'bright' + k[0].toUpperCase() + k.slice(1)
@@ -271,7 +288,7 @@ export function derivePalette({ accent, tint = 0.35, neutralChroma = 1 } = {}) {
   const leans = {}
   for (const key of HUE_SLOTS) {
     const arc = ((Ha - ANSI_ANCHORS[key] + 540) % 360) - 180
-    leans[key] = Math.max(-45, Math.min(45, tint * arc))
+    leans[key] = Math.max(-45, Math.min(45, tint * (LEAN_WEIGHT[key] ?? 1) * arc))
   }
   const hueOf = (key) => (((ANSI_ANCHORS[key] + leans[key]) % 360) + 360) % 360
 
@@ -311,6 +328,10 @@ export function derivePalette({ accent, tint = 0.35, neutralChroma = 1 } = {}) {
       const c = Math.min(r.mul * Ca, r.cap) * neutralChroma
       out[slot] = oklchToHex(clampToSrgbGamut({ l: r.l, c, h: Ha }))
     }
+
+    // Brand pins for the shipped seed — applied BEFORE any contrast solving so
+    // the AA loops run against the pinned values (see BRAND_PINS).
+    if (accent === DEFAULT_SEED) Object.assign(out, BRAND_PINS[mode])
 
     // bg-elev mirrors the semantic layer: dark mixes bg 88% toward bright-white
     // (color-mix in oklab); light uses bright-white directly. Text slots must

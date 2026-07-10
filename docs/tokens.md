@@ -43,23 +43,23 @@ brand green byte-for-byte. Every text-role slot (the 12 hue slots, `fg`,
 
 | Token                 | Dark      | Light     | Terminal slot      |
 | --------------------- | --------- | --------- | ------------------ |
-| `--ss-bg`             | `#0a120a` | `#ebf2eb` | background         |
+| `--ss-bg`             | `#100f10` | `#ebf2eb` | background         |
 | `--ss-fg`             | `#dae0da` | `#1f231f` | foreground         |
 | `--ss-accent`         | `#66ef73` | `#2b7c34` | — (the 17th color) |
 | `--ss-black`          | `#151d15` | `#101910` | color0             |
-| `--ss-red`            | `#d39755` | `#996017` | color1             |
+| `--ss-red`            | `#e18a77` | `#a65644` | color1             |
 | `--ss-green`          | `#7ab677` | `#407a3e` | color2             |
-| `--ss-yellow`         | `#9fae5a` | `#5f6b0f` | color3             |
+| `--ss-yellow`         | `#b6a54e` | `#736300` | color3             |
 | `--ss-blue`           | `#46b4d6` | `#007693` | color4             |
-| `--ss-magenta`        | `#e08791` | `#a7545f` | color5             |
+| `--ss-magenta`        | `#df879a` | `#a65467` | color5             |
 | `--ss-cyan`           | `#46bba4` | `#007c6a` | color6             |
 | `--ss-white`          | `#e5e9e5` | `#d4d9d4` | color7             |
 | `--ss-bright-black`   | `#859085` | `#4f584f` | color8             |
-| `--ss-bright-red`     | `#f4ad5e` | `#845000` | color9             |
+| `--ss-bright-red`     | `#ffa28d` | `#983d2a` | color9             |
 | `--ss-bright-green`   | `#8bd387` | `#286f28` | color10            |
-| `--ss-bright-yellow`  | `#b7c965` | `#4c5600` | color11            |
+| `--ss-bright-yellow`  | `#d3bf56` | `#5d5000` | color11            |
 | `--ss-bright-blue`    | `#4acff8` | `#006882` | color12            |
-| `--ss-bright-magenta` | `#ff9ea8` | `#973949` | color13            |
+| `--ss-bright-magenta` | `#ff9cb1` | `#963952` | color13            |
 | `--ss-bright-cyan`    | `#4ad8bd` | `#006e5d` | color14            |
 | `--ss-bright-white`   | `#fafdfa` | `#fafdfa` | color15            |
 

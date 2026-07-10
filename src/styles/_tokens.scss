@@ -26,23 +26,23 @@
   /* Native form controls + scrollbars follow the theme (DS-0069). */
   color-scheme: dark;
 
-  --ss-bg: oklch(17.1% 0.0204 144.62); /* #0a120a */
+  --ss-bg: oklch(17.01% 0.0026 325.69); /* #100f10 */
   --ss-fg: oklch(90.04% 0.0103 145.49); /* #dae0da */
   --ss-accent: oklch(84.89% 0.2044 145.21); /* #66ef73 */
   --ss-black: oklch(21.98% 0.0194 144.88); /* #151d15 */
-  --ss-red: oklch(72.13% 0.1099 67.14); /* #d39755 */
+  --ss-red: oklch(72% 0.1108 33.1); /* #e18a77 */
   --ss-green: oklch(71.89% 0.1091 143.25); /* #7ab677 */
-  --ss-yellow: oklch(72.04% 0.1106 117.61); /* #9fae5a */
+  --ss-yellow: oklch(71.89% 0.1097 98.41); /* #b6a54e */
   --ss-blue: oklch(72.1% 0.1096 222.03); /* #46b4d6 */
-  --ss-magenta: oklch(71.98% 0.1095 12.93); /* #e08791 */
+  --ss-magenta: oklch(72.1% 0.1096 6.23); /* #df879a */
   --ss-cyan: oklch(72% 0.11 177.59); /* #46bba4 */
   --ss-white: oklch(92.98% 0.0068 145.52); /* #e5e9e5 */
   --ss-bright-black: oklch(64.11% 0.0206 145.33); /* #859085 */
-  --ss-bright-red: oklch(80% 0.1267 67.15); /* #f4ad5e */
+  --ss-bright-red: oklch(80.07% 0.1154 33.43); /* #ffa28d */
   --ss-bright-green: oklch(80.04% 0.1274 143.09); /* #8bd387 */
-  --ss-bright-yellow: oklch(80.09% 0.1274 117.8); /* #b7c965 */
+  --ss-bright-yellow: oklch(80.11% 0.127 98.62); /* #d3bf56 */
   --ss-bright-blue: oklch(79.9% 0.1266 222.5); /* #4acff8 */
-  --ss-bright-magenta: oklch(80.02% 0.116 13.34); /* #ff9ea8 */
+  --ss-bright-magenta: oklch(79.94% 0.1201 6.42); /* #ff9cb1 */
   --ss-bright-cyan: oklch(79.96% 0.1268 177.65); /* #4ad8bd */
   --ss-bright-white: oklch(99.1% 0.005 145.54); /* #fafdfa */
 }
@@ -55,19 +55,19 @@
   --ss-fg: oklch(25.05% 0.0095 145.29); /* #1f231f */
   --ss-accent: oklch(51.99% 0.1328 145.23); /* #2b7c34 */
   --ss-black: oklch(20.11% 0.0221 144.7); /* #101910 */
-  --ss-red: oklch(54.01% 0.1106 66.66); /* #996017 */
+  --ss-red: oklch(54.52% 0.1095 33.83); /* #a65644 */
   --ss-green: oklch(52.45% 0.1094 143.17); /* #407a3e */
-  --ss-yellow: oklch(50.07% 0.1099 117.4); /* #5f6b0f */
+  --ss-yellow: oklch(50% 0.1034 98.12); /* #736300 */
   --ss-blue: oklch(52.5% 0.0976 222.77); /* #007693 */
-  --ss-magenta: oklch(54.94% 0.1093 13.01); /* #a7545f */
+  --ss-magenta: oklch(55.03% 0.1093 6.63); /* #a65467 */
   --ss-cyan: oklch(52.45% 0.0966 177.84); /* #007c6a */
   --ss-white: oklch(88% 0.0087 145.5); /* #d4d9d4 */
   --ss-bright-black: oklch(44.95% 0.0184 145.26); /* #4f584f */
-  --ss-bright-red: oklch(48% 0.1056 67.68); /* #845000 */
+  --ss-bright-red: oklch(48.1% 0.1266 33.46); /* #983d2a */
   --ss-bright-green: oklch(48.04% 0.1268 143.28); /* #286f28 */
-  --ss-bright-yellow: oklch(42.93% 0.0992 117.23); /* #4c5600 */
+  --ss-bright-yellow: oklch(43.12% 0.0892 98.4); /* #5d5000 */
   --ss-bright-blue: oklch(48% 0.0893 222.84); /* #006882 */
-  --ss-bright-magenta: oklch(47.99% 0.1264 12.92); /* #973949 */
+  --ss-bright-magenta: oklch(48.07% 0.1266 6.56); /* #963952 */
   --ss-bright-cyan: oklch(48.12% 0.0892 177.06); /* #006e5d */
   --ss-bright-white: oklch(99.1% 0.005 145.54); /* #fafdfa */
 }

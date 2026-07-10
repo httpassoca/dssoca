@@ -43,6 +43,7 @@ export const ANSI_ANCHORS: Record<string, number>
 export const RED_GREEN_MIN_DEG: number
 export const ADJACENT_MIN_DEG: number
 export const DEFAULT_SEED: string
+export const BRAND_PINS: { dark: Record<string, string>; light: Record<string, string> }
 
 export function derivePalette(opts: DeriveOptions): DerivedPalette
 

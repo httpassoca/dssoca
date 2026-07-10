@@ -9,7 +9,7 @@ depends_on: []
 parent: null
 epic: DS-0125
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-10
 ---
 
 ## Description
@@ -43,6 +43,12 @@ split into Layer A (generated `oklch()` root slots ×2 themes, with hex comments
       deprecation/removal + migration recipes); `DESIGN.md` color-axis section corrected.
 
 ## Notes
+
+- 2026-07-10 feedback pass: dark `--ss-bg` is a **brand pin** (`#100f10`, the original
+  near-black — applied for the default seed before contrast solving; custom accents still
+  derive by recipe); red/yellow take only 20% of the tint lean (`LEAN_WEIGHT`) and the yellow
+  anchor moved 110→95 so the semantic hues read unmistakably red/yellow. Docs tokens page now
+  leads with the live 16-slot terminal palette for the current theme.
 
 - OKLCH chosen over HSL so "same lightness across hues" is actually true (HSL lies — the old
   light-theme yellow hack); over culori/dep so the math stays a single auditable module shared
