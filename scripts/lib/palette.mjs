@@ -206,13 +206,16 @@ export const ADJACENT_MIN_DEG = 25
 export const DEFAULT_SEED = '#66ef73'
 
 /**
- * Brand pins — exact slot values for the SHIPPED default seed (and for anyone
- * deriving from it in the theme builder). The dark page background is the
- * original dssoca near-black #100f10: identity beats the tint rule for this
- * one surface. Pins are applied before contrast solving, so every AA loop
- * runs against the pinned values. Custom accents derive fully by recipe.
+ * Dark background rule — measured from the ORIGINAL dssoca pairing of the
+ * lime accent (#66ef73) and its near-black page bg (#100f10): the bg sits at
+ * the accent's COMPLEMENT (+180.48°) at 1.279% of its chroma, L 0.17005.
+ * Encoding that relationship (rather than pinning the hex) means every
+ * accent gets "the same black": a whisper of the complementary hue — lime →
+ * #100f10 byte-exactly, blue → a warm-cast black, amber → a cool-cast one.
+ * The other dark neutrals keep the straight accent-hue tint; only the page
+ * bg complements.
  */
-export const BRAND_PINS = { dark: { bg: '#100f10' }, light: {} }
+export const DARK_BG_RULE = { l: 0.17005, chromaRatio: 0.01279, hueOffset: 180.48 }
 
 const HUE_SLOTS = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan']
 const bright = (k) => 'bright' + k[0].toUpperCase() + k.slice(1)
@@ -224,7 +227,7 @@ const bright = (k) => 'bright' + k[0].toUpperCase() + k.slice(1)
  */
 const NEUTRALS = {
   dark: {
-    bg: { l: 0.17, mul: 0.25, cap: 0.02 },
+    // (dark bg is not in this table — it follows DARK_BG_RULE, the complement)
     fg: { l: 0.9, mul: 0.06, cap: 0.01 },
     black: { l: 0.22, mul: 0.2, cap: 0.018 },
     brightBlack: { l: 0.47, mul: 0.12, cap: 0.02 },
@@ -329,9 +332,18 @@ export function derivePalette({ accent, tint = 0.35, neutralChroma = 1 } = {}) {
       out[slot] = oklchToHex(clampToSrgbGamut({ l: r.l, c, h: Ha }))
     }
 
-    // Brand pins for the shipped seed — applied BEFORE any contrast solving so
-    // the AA loops run against the pinned values (see BRAND_PINS).
-    if (accent === DEFAULT_SEED) Object.assign(out, BRAND_PINS[mode])
+    // Dark page bg overrides the straight tint with the complement rule (see
+    // DARK_BG_RULE) — applied BEFORE any contrast solving so every AA loop
+    // runs against the real background.
+    if (mode === 'dark') {
+      out.bg = oklchToHex(
+        clampToSrgbGamut({
+          l: DARK_BG_RULE.l,
+          c: DARK_BG_RULE.chromaRatio * Ca * neutralChroma,
+          h: (Ha + DARK_BG_RULE.hueOffset) % 360,
+        }),
+      )
+    }
 
     // bg-elev mirrors the semantic layer: dark mixes bg 88% toward bright-white
     // (color-mix in oklab); light uses bright-white directly. Text slots must

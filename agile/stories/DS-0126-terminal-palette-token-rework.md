@@ -44,9 +44,10 @@ split into Layer A (generated `oklch()` root slots ×2 themes, with hex comments
 
 ## Notes
 
-- 2026-07-10 feedback pass: dark `--ss-bg` is a **brand pin** (`#100f10`, the original
-  near-black — applied for the default seed before contrast solving; custom accents still
-  derive by recipe); red/yellow take only 20% of the tint lean (`LEAN_WEIGHT`) and the yellow
+- 2026-07-10 feedback pass: dark `--ss-bg` follows the **complement rule** — the measured
+  OKLCH relationship of the original lime ↔ `#100f10` pairing (accent hue +180.5°, ~1.3% of
+  the accent's chroma, L 0.17) applied to every accent, so lime reproduces `#100f10`
+  byte-exactly and custom accents get a matching complementary-cast black; red/yellow take only 20% of the tint lean (`LEAN_WEIGHT`) and the yellow
   anchor moved 110→95 so the semantic hues read unmistakably red/yellow. Docs tokens page now
   leads with the live 16-slot terminal palette for the current theme.
 

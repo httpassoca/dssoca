@@ -17,7 +17,7 @@ import {
   GEN_END,
   DEFAULT_SEED,
   RED_GREEN_MIN_DEG,
-  BRAND_PINS,
+  DARK_BG_RULE,
 } from '../../scripts/lib/palette.mjs'
 
 const AA = 4.5
@@ -114,11 +114,17 @@ describe('derivePalette — the mono recipe', () => {
     expect(hueDistDeg(hexToOklch(palette.light.bg).h, seedHue)).toBeLessThan(15)
   })
 
-  it('applies the brand pins for the default seed (dark bg = the original near-black)', () => {
-    expect(palette.dark.bg).toBe(BRAND_PINS.dark.bg)
+  it('dark bg follows the complement rule — lime reproduces the original #100f10 exactly', () => {
     expect(palette.dark.bg).toBe('#100f10')
-    // Pins are seed-scoped: a custom accent derives its bg fully by recipe.
-    expect(derivePalette({ accent: '#7aa2f7' }).dark.bg).not.toBe('#100f10')
+    // Same relationship, different accent → a different complementary-cast black.
+    const blue = derivePalette({ accent: '#66aef7' })
+    expect(blue.dark.bg).not.toBe('#100f10')
+    const bg = hexToOklch(blue.dark.bg)
+    // Hue itself is unmeasurable at whisper chroma (hex rounding dominates) —
+    // the rule's proof is the byte-exact lime reproduction above. Here we pin
+    // the black's character: same depth, same near-neutral chroma budget.
+    expect(bg.l).toBeCloseTo(DARK_BG_RULE.l, 1)
+    expect(bg.c).toBeLessThan(0.005)
   })
 
   it('keeps red and yellow near their anchors (semantic hues stay legible)', () => {
