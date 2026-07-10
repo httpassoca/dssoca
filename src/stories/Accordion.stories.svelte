@@ -3,7 +3,10 @@
   import Accordion, { type AccordionItem } from '$lib/components/Accordion.svelte'
 
   const ITEMS: AccordionItem[] = [
-    { id: 'shipping', label: 'Shipping & delivery' },
+    {
+      id: 'shipping',
+      label: 'Shipping, delivery, customs handling and international fulfilment options',
+    },
     { id: 'returns', label: 'Returns', hint: '30 days' },
     { id: 'warranty', label: 'Warranty' },
     { id: 'legacy', label: 'Discontinued models', disabled: true },
@@ -36,11 +39,17 @@
         options: [undefined, 'sm', 'md', 'lg'],
         description: 'Per-instance size; inherits the global size when unset.',
       },
+      overflow: {
+        control: { type: 'inline-radio' },
+        options: ['wrap', 'truncate'],
+        description: 'Long header label behaviour: wrap (default) or single-line truncate.',
+      },
     },
     args: {
       multiple: false,
       headingLevel: 3,
       size: undefined,
+      overflow: 'wrap',
     },
   })
 </script>
@@ -52,6 +61,7 @@
       multiple={args.multiple as boolean}
       headingLevel={args.headingLevel as 2 | 3 | 4}
       size={args.size as 'sm' | 'md' | 'lg' | undefined}
+      overflow={args.overflow as 'wrap' | 'truncate'}
       defaultValue={args.multiple ? ['shipping'] : 'shipping'}
     >
       {#snippet panel(item)}
@@ -68,3 +78,5 @@
 <Story name="Small" args={{ size: 'sm' }} />
 
 <Story name="Large" args={{ size: 'lg' }} />
+
+<Story name="Truncate" args={{ overflow: 'truncate' }} />

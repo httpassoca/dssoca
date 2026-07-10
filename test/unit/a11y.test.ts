@@ -34,7 +34,7 @@ describe('a11y (axe) — no violations', () => {
   })
 
   it('Badge', async () => {
-    const { container } = render(BadgeHarness, { tone: 'deg', text: 'degraded' })
+    const { container } = render(BadgeHarness, { tone: 'caution', text: 'degraded' })
     expect(await axe(container, axeOpts)).toHaveNoViolations()
   })
 

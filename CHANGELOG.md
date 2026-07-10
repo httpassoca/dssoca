@@ -8,6 +8,112 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+## [0.12.0] — monochromatic terminal color rework + DS-0107 component polish — 2026-07-11
+
+### Added
+
+- **Monochromatic 16-slot terminal palette** (`DS-0125`/`DS-0126`). The color surface is rebuilt as
+  two layers: a generated root layer of 19 slots per theme — the 16 ANSI colors + `--ss-bg` /
+  `--ss-fg` / `--ss-accent` — authored in OKLCH and seeded from the brand green `#66ef73` (dark
+  accent byte-identical), plus a semantic layer where every existing `--ss-*` token derives from
+  the slots via `var()`/`color-mix()`. Neutrals are hue-tinted toward the accent; the dark page
+  background follows the **complement rule** (the accent's complementary hue at ~1.3% chroma —
+  lime reproduces the original `#100f10` exactly); the six hue slots lean toward the accent with
+  red↔green held ≥45° apart for diff legibility. Every text-role slot holds WCAG 2.2 AA (≥4.5:1)
+  on `--ss-bg` **and** `--ss-bg-elev` in both themes, asserted mathematically in tests. Regenerate
+  with `pnpm gen:palette` (recipe in `scripts/lib/palette.mjs`; a drift-guard test pins the
+  committed values).
+- **Custom palette import** (`DS-0127`). `applyDesignConfig({ palette })` accepts a
+  `Palette` (`{ dark, light }` × 19 slots): the active theme's values are written as inline custom
+  properties and re-written on every call (theme flips are never masked); `palette: null` clears
+  back to the stylesheet. New `paletteToCss()` emits the zero-JS/SSR override block. `PALETTE_SLOTS`
+  and `Palette`/`ThemePalette`/`PaletteSlot` types exported.
+- **`CHART_PALETTE`** (`DS-0128`) — the categorical palette shared by Chart / ScatterPlot / BoxPlot /
+  BumpChart / Avatar, exported from the package root (`[accent, blue, magenta, cyan, yellow,
+green]`; order + length are stable API).
+- **Docs: interactive Theme Builder** (`DS-0129`) — a `/theme-builder` page in the documentation app
+  deriving full palettes from any accent with the same generator math, with a live preview on real
+  components, a WCAG corrector with one-click lightness fixes, and `applyDesignConfig` + CSS
+  exports. Plus a new **Color theory** guide page (`DS-0132`) explaining the system's philosophy.
+
+- **Configurable default `Spinner` variant** (`DS-0108`). `dssocaConfig` gains a `spinner` axis and
+  `resolveSpinnerVariant()`; `<Spinner>` (and `Button` `loading`) use the configured default when no
+  `variant` is set, overridable per usage.
+- **`Icon` fixed size scale + `chevron` glyph** (`DS-0109`, `DS-0110`). The Icon `size` prop is a
+  fixed scale `xs 12 / sm 16 / md 20 / lg 24` (adds `xs`); a new centered `chevron` glyph was added
+  to the icon set.
+- **`Accordion` `overflow` prop** (`DS-0117`) — `'truncate' | 'wrap'` (default `wrap`) controlling
+  how the header label behaves when it exceeds the available width.
+- **`--ss-gap-xs` spacing token** (`DS-0124`) — md 6 / sm 4 / lg 8 (below `--ss-gap-sm`); the
+  `FileDrop` files list now uses it.
+- **Coordinated inner sizes** (`DS-0111`) — a documented convention (see `DESIGN.md`) where a
+  component passes its resolved size to nested `Icon`/`Spinner`, so a `sm` component renders `sm`
+  internals and spacing in lockstep.
+- **Storybook** — the full `Icon` control surface is now wired so every control drives the icon
+  (`DS-0118`), and Card/Modal footer-action examples were added (`DS-0123`).
+
+### Changed
+
+- **BREAKING — status hues carry new values** (`DS-0126`). `--ss-red` / `--ss-yellow` / `--ss-blue`
+  / `--ss-cyan` are now terminal slots leaned toward the accent (no longer the old neon set), and
+  new `--ss-green` / `--ss-magenta` slots exist. `--ss-purple` → `--ss-magenta` and `--ss-lime` →
+  `--ss-green` ship as deprecated aliases for one minor (removal tracked in `DS-0130`).
+- **BREAKING — `--ss-primary-rgb` / `--ss-red-rgb` removed** (`DS-0126`). Comma-triplet tokens
+  cannot chain through `var()`, so they would silently ignore an imported palette. Migrate:
+  `rgba(var(--ss-primary-rgb), .06)` → `color-mix(in srgb, var(--ss-accent) 6%, transparent)`;
+  `rgba(var(--ss-red-rgb), .22)` → `color-mix(in srgb, var(--ss-danger) 22%, transparent)`.
+- **BREAKING — `Button` `loading` widened to `boolean | SpinnerVariant`** (`DS-0113`). The button's
+  loading affordance now renders the shared `<Spinner>` instead of the bespoke inline ring (the
+  `ss-btn-spin` keyframe and `.spinner` ring CSS were removed). `loading={true}` resolves to the
+  configured default Spinner variant (`resolveSpinnerVariant()`, default `boxBounce2`); pass a
+  `SpinnerVariant` string (e.g. `loading="pipe"`) to override it for one button. **Migration:**
+  existing `loading` / `loading={true}` / `loading={false}` call sites keep working unchanged — only
+  the prop's TS type and the rendered glyph (spinning ring → cli-spinners glyph) change. The spinner
+  inherits the button's size tier and reduced-motion handling from `Spinner`; its `role="status"` is
+  suppressed so the button stays the single live-region.
+- **BREAKING — `Badge` redefined to six semantic tones** (`DS-0119`). The `tone` union changes from
+  the homelab-flavoured `up`/`deg`/`down`/`maint`/`info`/`neutral` to `brand` / `neutral` /
+  `positive` / `caution` / `critical` / `info`, and the **default tone moves from `info` to
+  `neutral`**. Each tone now renders a theme-aware background, border, **and an explicit foreground**
+  that meets WCAG 2.2 AA (≥4.5:1 on the page background) in both `data-theme` values. **Migration —
+  value names:** `up`→`positive`, `deg`→`caution`, `down`→`critical`, `info`→`info`,
+  `neutral`→`neutral`; `maint` is dropped (no successor) and its accent slot becomes the new
+  `brand` tone. **Migration — token names:** `--ss-badge-up-*`→`--ss-badge-positive-*`,
+  `--ss-badge-deg-*`→`--ss-badge-caution-*`, `--ss-badge-down-*`→`--ss-badge-critical-*`,
+  `--ss-badge-maint-*`→`--ss-badge-brand-*`; `--ss-badge-info-*` / `--ss-badge-neutral-*` are
+  retained; every tone gains a new `--ss-badge-<tone>-fg` token.
+- **BREAKING — `Badge` dismiss removed** (`DS-0120`). The `ondismiss` prop and the trailing
+  `<button class="x">×</button>` dismiss control are gone; `Badge` now renders **no interactive or
+  focusable element** in any prop combination — it is strictly a presentational status/category
+  indicator. The `label`-names-the-dismiss-button coupling is removed; `label` is retained purely as
+  the accessible name for dot-/count-/label-less badges (WCAG 1.4.1). **Migration:** a removable,
+  interactive chip is a separate concern — use a dedicated Tag/Chip primitive, not `Badge`.
+- **`Badge` vertical padding removed** (`DS-0121`). `--ss-badge-py` is dropped from all size tiers;
+  the badge now pads `0 var(--ss-badge-px)` and derives its height from content + an explicit
+  `line-height`, so badges sit compactly inline with adjacent text. Internal chip-like paddings in
+  `Topbar` / `LogStream` / `ServiceCard` that previously read `--ss-badge-py` now read the new
+  `--ss-chip-py` (same sm 3 / md 5 / lg 7 values), so their rendering is unchanged.
+- **Global `--ss-icon` scale increased** (`DS-0109`) to sm 16 / md 20 / lg 24 (was 14 / 16 / 20), so
+  icons auto-sized inside controls grow one step.
+- **`Accordion` chevron** now renders via the shared `<Icon>` glyph (`DS-0110`) instead of a
+  CSS-border caret, centered so its open/close rotation pivots without vertical drift.
+- **`BottomNav` top separator** is drawn with `box-shadow: 0 -1px 0 var(--ss-line)` instead of a
+  layout `border-top` (`DS-0122`), so it no longer affects the bar's height.
+
+### Fixed
+
+- **`Topbar` active-tab wash was hardcoded** to the dark-mode brand green (`rgba(102, 239, 115,
+.06)`) and did not flip with the theme; it now derives from the accent slot like the other nav
+  washes (`DS-0128`).
+
+- **`Button` height is invariant to leading/trailing icons** (`DS-0112`) — an icon affix is clamped
+  to the text line-box and no longer grows the control.
+- **`Button` loading state is centered** (`DS-0114`) — no stray empty label span.
+- **`Accordion` panel padding is present from the first reveal frame** (`DS-0115`) — content animates
+  as a stable, already-padded block instead of snapping in.
+- **`Accordion` chevron alignment** (`DS-0116`) — the disclosure indicator stays centered with no
+  vertical drift between open and closed states.
+
 ## [0.11.0] — geossoca stats-dashboard charts — 2026-06-15
 
 Four data-viz primitives (`DS-0102` epic) the _geossoca_ performance dashboard needs, built in the

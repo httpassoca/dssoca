@@ -18,6 +18,7 @@
 <script lang="ts">
   import { untrack, type Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import Icon from './Icon.svelte'
 
   interface Props {
     /** The collapsible sections, top to bottom. */
@@ -43,6 +44,13 @@
     onChange?: (value: AccordionValue) => void
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
+    /**
+     * How a long header label behaves when it exceeds the available width.
+     * `wrap` (default) lets the label flow onto multiple lines; `truncate`
+     * keeps it on a single line with an ellipsis. Applies to the default
+     * header markup only — a custom `header` snippet owns its own overflow.
+     */
+    overflow?: 'truncate' | 'wrap'
     /** Heading level wrapping each header button (for the document outline). */
     headingLevel?: 1 | 2 | 3 | 4 | 5 | 6
     /**
@@ -66,6 +74,7 @@
     defaultValue,
     onChange,
     size,
+    overflow = 'wrap',
     headingLevel = 3,
     idBase = `ss-acc-${uid}`,
   }: Props = $props()
@@ -145,9 +154,15 @@
 
   const headerId = (item: AccordionItem) => `${idBase}-h-${item.id}`
   const panelId = (item: AccordionItem) => `${idBase}-p-${item.id}`
+
+  // DS-0111: resolve size ONCE at the root, then hand it explicitly to the
+  // nested chevron Icon so a sm/md/lg Accordion gets a matching chevron rather
+  // than relying on the cascade. `undefined` → Icon inherits the active
+  // --ss-icon token (still coordinated, since the root carries no override).
+  const resolvedSize = $derived(resolveComponentSize('Accordion', size))
 </script>
 
-<div class="ss-accordion" data-size-variant={resolveComponentSize('Accordion', size)}>
+<div class="ss-accordion" data-size-variant={resolvedSize} data-overflow={overflow}>
   {#each items as item, i (item.id)}
     {@const expanded = isOpen(item)}
     <div class="item" class:open={expanded} class:disabled={item.disabled}>
@@ -169,7 +184,9 @@
             <span class="title">{item.label}</span>
             {#if item.hint}<span class="hint">{item.hint}</span>{/if}
           {/if}
-          <span class="chevron" aria-hidden="true"></span>
+          <span class="chevron" aria-hidden="true">
+            <Icon name="chevron" size={resolvedSize} />
+          </span>
         </button>
       </div>
       <div
@@ -179,8 +196,10 @@
         aria-labelledby={headerId(item)}
         hidden={!expanded}
       >
-        <div class="panel-inner">
-          {@render panel(item)}
+        <div class="panel-clip">
+          <div class="panel-inner">
+            {@render panel(item)}
+          </div>
         </div>
       </div>
     </div>
@@ -196,7 +215,6 @@
     --ss-acc-head-px: var(--ss-row-px);
     --ss-acc-body-py: var(--ss-s-3);
     --ss-acc-body-px: var(--ss-row-px);
-    --ss-acc-chevron: 9px;
     --ss-acc-gap: var(--ss-s-3);
 
     &[data-size-variant='sm'] {
@@ -204,7 +222,6 @@
       --ss-acc-head-px: var(--ss-s-2);
       --ss-acc-body-py: var(--ss-s-2);
       --ss-acc-body-px: var(--ss-s-2);
-      --ss-acc-chevron: 7px;
       --ss-acc-gap: var(--ss-s-2);
     }
     &[data-size-variant='lg'] {
@@ -212,7 +229,6 @@
       --ss-acc-head-px: var(--ss-s-4);
       --ss-acc-body-py: var(--ss-s-4);
       --ss-acc-body-px: var(--ss-s-4);
-      --ss-acc-chevron: 11px;
       --ss-acc-gap: var(--ss-s-4);
     }
 
@@ -272,23 +288,34 @@
         font-size: var(--ss-ui-sm);
       }
 
-      // Chevron — a rotating caret built from borders; turns 180° on open.
+      // Chevron — now the shared Icon `chevron` glyph (DS-0110), rendered
+      // through `ss-icon` so it follows the icon scale + stroke. The wrapper
+      // owns the open/closed rotation so the glyph itself stays a plain Icon.
       .chevron {
         flex: 0 0 auto;
-        width: var(--ss-acc-chevron);
-        height: var(--ss-acc-chevron);
-        border-right: 1.5px solid currentColor;
-        border-bottom: 1.5px solid currentColor;
-        transform: rotate(45deg); // points down (collapsed)
+        display: inline-flex;
+        // Centre the glyph in a fixed square box so the rotation pivots about
+        // the visual centre with no vertical drift between states (DS-0116).
+        align-items: center;
+        justify-content: center;
+        transform: rotate(0deg); // glyph points down (collapsed)
         transform-origin: center;
         transition: transform var(--ss-dur) var(--ss-ease);
         color: var(--ss-fg-muted);
       }
     }
 
+    // overflow='truncate' — single-line label with an ellipsis. min-width:0 is
+    // already set on .title so the flex item can shrink below its content width.
+    &[data-overflow='truncate'] .head .title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .item.open .head .chevron {
-      // 45° (down) + 180° → points up when expanded.
-      transform: rotate(225deg);
+      // Flip the down-pointing chevron up when expanded.
+      transform: rotate(180deg);
     }
 
     // Animated reveal — grid-rows trick gives a height transition without a
@@ -308,12 +335,18 @@
       }
     }
 
-    .panel-inner {
+    // The clip: overflow:hidden + min-height:0 lets the 0fr grid track shrink
+    // the inner content to exactly 0 height when collapsed (no padding bleed).
+    .panel-clip {
       overflow: hidden;
       min-height: 0;
     }
 
-    .panel:not([hidden]) .panel-inner {
+    // Always-padded content block. The padding lives here (not toggled on open)
+    // so the content lays out as a stable, already-padded block from the first
+    // reveal frame — no mid-animation reflow/snap (DS-0115). While collapsed the
+    // grid clip above hides it entirely, so the closed height is still exactly 0.
+    .panel-inner {
       padding: var(--ss-acc-body-py) var(--ss-acc-body-px);
       color: var(--ss-fg-muted);
       font-size: var(--ss-ui-md);

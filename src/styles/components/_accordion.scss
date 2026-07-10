@@ -6,7 +6,8 @@
 //  in [data-size-variant] blocks) so the component ships self-contained —
 //  custom properties cascade through Svelte's scoped boundary, so the
 //  component works whether or not this partial is compiled into theme.css.
-//  Reuse the global spacing/row tokens; only the chevron + gaps are new.
+//  Reuse the global spacing/row tokens; only the gaps are new (the chevron is
+//  now the shared Icon glyph, so it carries no dedicated token here).
 //
 //  This partial mirrors those values for any consumer that wants the tokens
 //  globally. It is intentionally NOT @used by theme.scss yet (that entry is
@@ -20,7 +21,6 @@
   --ss-acc-head-px: var(--ss-row-px);
   --ss-acc-body-py: var(--ss-s-3);
   --ss-acc-body-px: var(--ss-row-px);
-  --ss-acc-chevron: 9px;
   --ss-acc-gap: var(--ss-s-3);
 }
 
@@ -29,7 +29,6 @@
   --ss-acc-head-px: var(--ss-s-2);
   --ss-acc-body-py: var(--ss-s-2);
   --ss-acc-body-px: var(--ss-s-2);
-  --ss-acc-chevron: 7px;
   --ss-acc-gap: var(--ss-s-2);
 }
 
@@ -38,6 +37,5 @@
   --ss-acc-head-px: var(--ss-s-4);
   --ss-acc-body-py: var(--ss-s-4);
   --ss-acc-body-px: var(--ss-s-4);
-  --ss-acc-chevron: 11px;
   --ss-acc-gap: var(--ss-s-4);
 }

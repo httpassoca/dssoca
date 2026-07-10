@@ -15,144 +15,129 @@ only — core + component partials, no element styles, no webfonts).
 
 ## 1. Color tokens — controlled by `data-theme`
 
-Defined under `:root, [data-theme="dark"]`; `[data-theme="light"]` overrides the
-full color surface. Brand and status hues are darkened in light mode so they
-hold WCAG AA contrast on the lighter surfaces; many tokens alias others (e.g.
-`--ss-danger` → `--ss-red`, `--ss-success` → `--ss-primary`).
+The color surface is a **monochromatic 16-slot terminal palette** in two
+layers (0.12.0 color rework):
 
-### Surfaces & lines
+- **Layer A — root slots (generated).** The 16 ANSI terminal colors plus
+  `bg`, `fg` and the single vivid `--ss-accent`, per theme, authored in
+  OKLCH. Neutrals carry the accent's hue at low chroma (bg strongest, whites
+  faintest); the six hue slots keep classic ANSI anchor hues leaned ~35%
+  toward the accent, with red↔green held ≥45° apart so git diffs stay
+  legible. Values are produced by `scripts/generate-palette.mjs`
+  (`pnpm gen:palette`) — tune the recipe there, never edit the region by
+  hand; a drift-guard test pins the committed values to the recipe.
+- **Layer B — semantic layer (hand-maintained).** Every other color token is
+  a `var()` alias or `color-mix()` derivation of the root slots, declared
+  inside the same `[data-theme]` blocks. Overriding the 19 slots — via
+  `applyDesignConfig({ palette })` or a `paletteToCss` CSS block (see
+  `docs/themes.md`) — therefore recolors the entire system, washes included.
 
-| Token                | Dark                    | Light             |
-| -------------------- | ----------------------- | ----------------- |
-| `--ss-bg`            | `#100f10`               | `#f0f0f0`         |
-| `--ss-bg-elev`       | `#1e1e1e`               | `#ffffff`         |
-| `--ss-bg-elev-hover` | `#262626`               | `#f4f4f4`         |
-| `--ss-bg-inset`      | `rgba(7,6,7,0)`         | `rgba(0,0,0,0)`   |
-| `--ss-line`          | `rgba(255,255,255,.12)` | `rgba(0,0,0,.16)` |
-| `--ss-line-strong`   | `rgba(255,255,255,.22)` | `rgba(0,0,0,.30)` |
-| `--ss-hover`         | `rgba(255,255,255,.05)` | `rgba(0,0,0,.05)` |
+### Root slots (Layer A)
 
-### Foreground
+Authored as `oklch()`; the hex equivalents below are the exact sRGB values
+(also in the generated comments in `_tokens.scss`). Dark `--ss-accent` is the
+brand green byte-for-byte. Every text-role slot (the 12 hue slots, `fg`,
+`accent`, `bright-black`) holds WCAG 2.2 AA (≥4.5:1) on both `--ss-bg` and
+`--ss-bg-elev` in both themes — asserted mathematically by
+`test/unit/palette-generator.test.ts`.
 
-| Token                | Dark      | Light     |
-| -------------------- | --------- | --------- |
-| `--ss-fg`            | `#e0e0e0` | `#1a1a1a` |
-| `--ss-fg-shine`      | `#ffffff` | `#000000` |
-| `--ss-fg-muted`      | `#aaaaaa` | `#525252` |
-| `--ss-fg-faint`      | `#8a8a8a` | `#5d5d5d` |
-| `--ss-fg-on-primary` | `#100f10` | `#ffffff` |
+| Token                 | Dark      | Light     | Terminal slot      |
+| --------------------- | --------- | --------- | ------------------ |
+| `--ss-bg`             | `#100f10` | `#ebf2eb` | background         |
+| `--ss-fg`             | `#dae0da` | `#1f231f` | foreground         |
+| `--ss-accent`         | `#66ef73` | `#2b7c34` | — (the 17th color) |
+| `--ss-black`          | `#151d15` | `#101910` | color0             |
+| `--ss-red`            | `#e18a77` | `#a65644` | color1             |
+| `--ss-green`          | `#7ab677` | `#407a3e` | color2             |
+| `--ss-yellow`         | `#b6a54e` | `#736300` | color3             |
+| `--ss-blue`           | `#46b4d6` | `#007693` | color4             |
+| `--ss-magenta`        | `#df879a` | `#a65467` | color5             |
+| `--ss-cyan`           | `#46bba4` | `#007c6a` | color6             |
+| `--ss-white`          | `#e5e9e5` | `#d4d9d4` | color7             |
+| `--ss-bright-black`   | `#859085` | `#4f584f` | color8             |
+| `--ss-bright-red`     | `#ffa28d` | `#983d2a` | color9             |
+| `--ss-bright-green`   | `#8bd387` | `#286f28` | color10            |
+| `--ss-bright-yellow`  | `#d3bf56` | `#5d5000` | color11            |
+| `--ss-bright-blue`    | `#4acff8` | `#006882` | color12            |
+| `--ss-bright-magenta` | `#ff9cb1` | `#963952` | color13            |
+| `--ss-bright-cyan`    | `#4ad8bd` | `#006e5d` | color14            |
+| `--ss-bright-white`   | `#fafdfa` | `#fafdfa` | color15            |
 
-`--ss-fg-faint` is tuned for WCAG AA (≥4.5:1) on both `--ss-bg` and
-`--ss-bg-elev` in each theme (see agile `DS-0013`).
+On light, the "bright" hue slots go _darker_ (more emphatic on a light page);
+yellow is dropped further — it has the highest luminance per unit lightness.
 
-### Brand, lime & primary
+### Semantic layer (Layer B)
 
-| Token                | Dark                    | Light                 |
-| -------------------- | ----------------------- | --------------------- |
-| `--ss-primary`       | `#66ef73`               | `#147c3a`             |
-| `--ss-primary-soft`  | `rgba(102,239,115,.18)` | `rgba(20,124,58,.12)` |
-| `--ss-primary-rgb`   | `102, 239, 115`         | `20, 124, 58`         |
-| `--ss-primary-hover` | `#7df089`               | `#0f6e31`             |
-| `--ss-lime`          | `#a6e22e`               | `#2f7a14`             |
+Derivations shown for dark; light overrides only where the recipe differs
+(deeper/inverted washes, `-hover` mixes toward black instead of white).
 
-`--ss-lime` is the softer green for monospace/code accents (not the loud
-primary). The light values are darkened so accents and the Button background
-stay AA-legible.
+| Token                  | Derivation (dark)                                                | Light differs?           |
+| ---------------------- | ---------------------------------------------------------------- | ------------------------ |
+| `--ss-bg-elev`         | `color-mix(in oklab, var(--ss-bg) 88%, var(--ss-bright-white))`  | `var(--ss-bright-white)` |
+| `--ss-bg-elev-hover`   | same mix at 83%                                                  | bright-white 96% + black |
+| `--ss-line`            | `color-mix(in srgb, var(--ss-bright-white) 12%, transparent)`    | black 16%                |
+| `--ss-line-strong`     | bright-white 22%                                                 | black 30%                |
+| `--ss-fg-shine`        | `var(--ss-bright-white)`                                         | `var(--ss-black)`        |
+| `--ss-fg-muted`        | `color-mix(in oklab, var(--ss-fg) 72%, var(--ss-bg))`            | same recipe              |
+| `--ss-fg-faint`        | `var(--ss-bright-black)` (AA-solved by the generator)            | no                       |
+| `--ss-fg-on-primary`   | `var(--ss-bg)`                                                   | `var(--ss-bright-white)` |
+| `--ss-primary`         | `var(--ss-accent)`                                               | no                       |
+| `--ss-primary-soft`    | accent 18% wash                                                  | accent 12% wash          |
+| `--ss-primary-hover`   | `color-mix(in oklab, var(--ss-accent) 82%, white)`               | accent 85% + black       |
+| `--ss-hover`           | bright-white 5% wash                                             | black 5% wash            |
+| `--ss-code-overlay`    | bright-white 6% wash                                             | black 6% wash            |
+| `--ss-skeleton`        | bright-white 10% wash                                            | black 10% wash           |
+| `--ss-danger`          | `var(--ss-red)`                                                  | no                       |
+| `--ss-danger-hover`    | red 80% + white                                                  | red 82% + black          |
+| `--ss-danger-soft`     | red 18% wash                                                     | red 12% wash             |
+| `--ss-fg-on-danger`    | `var(--ss-bg)`                                                   | `var(--ss-bright-white)` |
+| `--ss-success(-soft)`  | `var(--ss-accent)` / `var(--ss-primary-soft)`                    | no                       |
+| `--ss-code-bg`         | `color-mix(in oklab, var(--ss-bg) 65%, var(--ss-black))`         | bg 92% + black           |
+| `--ss-code-fg`         | `var(--ss-fg)`                                                   | no                       |
+| `--ss-code-string`     | `var(--ss-green)`                                                | no                       |
+| `--ss-code-number`     | `var(--ss-yellow)`                                               | no                       |
+| `--ss-code-keyword`    | `var(--ss-magenta)`                                              | no                       |
+| `--ss-code-func`       | `var(--ss-blue)`                                                 | no                       |
+| `--ss-code-comment`    | `var(--ss-bright-black)`                                         | no                       |
+| `--ss-log-*`           | aliases of the code/status tokens (unchanged)                    | no                       |
+| `--ss-selection-bg/fg` | `var(--ss-accent)` / `var(--ss-fg-on-primary)`                   | no                       |
+| `--ss-badge-<tone>-*`  | slot washes — bg 12% / border 40% (see below)                    | bg 10% / border 35%      |
+| `--ss-shadow-glow`     | `0 0 24px color-mix(in srgb, var(--ss-accent) 35%, transparent)` | no                       |
 
-### Status
+Badge tone → slot mapping (DS-0119 tones): `brand`→blue, `neutral`→extreme
+neutral washes + `--ss-line`, `positive`→accent (matches `--ss-success`),
+`caution`→yellow, `critical`→red, `info`→cyan. Each `-fg` is a text slot the
+generator AA-solved; on light, `positive-fg`/`critical-fg` use the deeper
+`-hover` mixes.
 
-| Token          | Dark          | Light         |
-| -------------- | ------------- | ------------- |
-| `--ss-red`     | `#ff5c5c`     | `#c62828`     |
-| `--ss-yellow`  | `#e0c36a`     | `#8a6d1a`     |
-| `--ss-blue`    | `#9aa4ff`     | `#2f3bd6`     |
-| `--ss-cyan`    | `#66d9ef`     | `#0b6e7d`     |
-| `--ss-purple`  | `#b98cff`     | `#6a35c9`     |
-| `--ss-red-rgb` | `255, 92, 92` | `198, 40, 40` |
+### Deprecated aliases (removed next minor)
 
-`--ss-red-rgb` backs the soft invalid focus ring (`DS-0033`).
+| Deprecated    | Use instead    | Alias shipped in 0.12.0          |
+| ------------- | -------------- | -------------------------------- |
+| `--ss-purple` | `--ss-magenta` | `--ss-purple: var(--ss-magenta)` |
+| `--ss-lime`   | `--ss-green`   | `--ss-lime: var(--ss-green)`     |
 
-### Destructive & sentiment
+### Removed in 0.12.0 (breaking)
 
-Decouple good/bad meaning from up/down direction (`DS-0032`, `DS-0037`).
-`--ss-danger` aliases `--ss-red`, `--ss-success` aliases `--ss-primary`; the
-soft variants back the opt-in emphasis chip so colour is never the only signal.
+`--ss-primary-rgb` and `--ss-red-rgb` are gone: comma-triplet tokens cannot
+chain through `var()`, so they would silently ignore an imported palette.
+Migration:
 
-| Token               | Dark                     | Light                    |
-| ------------------- | ------------------------ | ------------------------ |
-| `--ss-danger`       | `var(--ss-red)`          | `var(--ss-red)`          |
-| `--ss-danger-hover` | `#ff7a7a`                | `#a91f1f`                |
-| `--ss-danger-soft`  | `rgba(255,92,92,.18)`    | `rgba(198,40,40,.12)`    |
-| `--ss-fg-on-danger` | `#100f10`                | `#ffffff`                |
-| `--ss-success`      | `var(--ss-primary)`      | `var(--ss-primary)`      |
-| `--ss-success-soft` | `var(--ss-primary-soft)` | `var(--ss-primary-soft)` |
+```css
+/* before */
+background: rgba(var(--ss-primary-rgb), 0.06);
+/* after  */
+background: color-mix(in srgb, var(--ss-accent) 6%, transparent);
 
-### Skeleton
+/* before */
+box-shadow: 0 0 0 3px rgba(var(--ss-red-rgb), 0.22);
+/* after  */
+box-shadow: 0 0 0 3px color-mix(in srgb, var(--ss-danger) 22%, transparent);
+```
 
-| Token           | Dark                    | Light             |
-| --------------- | ----------------------- | ----------------- |
-| `--ss-skeleton` | `rgba(255,255,255,.10)` | `rgba(0,0,0,.10)` |
-
-Neutral wash for loading bars (`DS-0037`).
-
-### Code
-
-| Token               | Dark      | Light     |
-| ------------------- | --------- | --------- |
-| `--ss-code-bg`      | `#011627` | `#f5f5f5` |
-| `--ss-code-fg`      | `#d6deeb` | `#24292e` |
-| `--ss-code-string`  | `#addb67` | `#1f7a33` |
-| `--ss-code-number`  | `#f78c6c` | `#b35309` |
-| `--ss-code-keyword` | `#c792ea` | `#c5221f` |
-| `--ss-code-func`    | `#82aaff` | `#6639ba` |
-| `--ss-code-comment` | `#637777` | `#6a737d` |
-
-### Code overlay (`DS-0069`)
-
-| Token               | Dark                    | Light             |
-| ------------------- | ----------------------- | ----------------- |
-| `--ss-code-overlay` | `rgba(255,255,255,.06)` | `rgba(0,0,0,.06)` |
-
-Inline `code` / `kbd` / `.hs-mono` background wash. `_tokens.scss` also sets the
-`color-scheme` property per theme block (`dark` / `light`) so native form controls
-and scrollbars follow the theme — it ships in both `theme.css` and `tokens.css`.
-
-### Log-level accents
-
-Theme-correct on the code surface (`DS-0040`).
-
-| Token           | Value (both themes)     |
-| --------------- | ----------------------- |
-| `--ss-log-info` | `var(--ss-code-func)`   |
-| `--ss-log-warn` | `var(--ss-yellow)`      |
-| `--ss-log-err`  | `var(--ss-red)`         |
-| `--ss-log-ok`   | `var(--ss-code-string)` |
-
-### Selection
-
-`--ss-selection-bg` (`var(--ss-primary)`) and `--ss-selection-fg`
-(`var(--ss-fg-on-primary)`) — defined on the dark root and inherited.
-
-### Badge tones
-
-Theme-tracked fills/borders per tone so the washes read in both themes
-(`DS-0031`). The text colour tracks the matching status token. Tones:
-`up`, `deg`, `down`, `maint`, `info`, `neutral`.
-
-| Token                       | Dark                    | Light                  |
-| --------------------------- | ----------------------- | ---------------------- |
-| `--ss-badge-up-bg`          | `rgba(102,239,115,.12)` | `rgba(20,124,58,.10)`  |
-| `--ss-badge-up-border`      | `rgba(102,239,115,.40)` | `rgba(20,124,58,.35)`  |
-| `--ss-badge-deg-bg`         | `rgba(224,195,106,.12)` | `rgba(138,109,26,.10)` |
-| `--ss-badge-deg-border`     | `rgba(224,195,106,.40)` | `rgba(138,109,26,.35)` |
-| `--ss-badge-down-bg`        | `rgba(255,92,92,.12)`   | `rgba(198,40,40,.10)`  |
-| `--ss-badge-down-border`    | `rgba(255,92,92,.40)`   | `rgba(198,40,40,.35)`  |
-| `--ss-badge-maint-bg`       | `rgba(154,164,255,.12)` | `rgba(47,59,214,.10)`  |
-| `--ss-badge-maint-border`   | `rgba(154,164,255,.40)` | `rgba(47,59,214,.35)`  |
-| `--ss-badge-info-bg`        | `rgba(102,217,239,.12)` | `rgba(11,110,125,.10)` |
-| `--ss-badge-info-border`    | `rgba(102,217,239,.40)` | `rgba(11,110,125,.35)` |
-| `--ss-badge-neutral-bg`     | `rgba(255,255,255,.06)` | `rgba(0,0,0,.05)`      |
-| `--ss-badge-neutral-border` | `var(--ss-line)`        | `var(--ss-line)`       |
+Also note the six status hues (`--ss-red/yellow/blue/cyan` + new
+`--ss-green/--ss-magenta`) carry **new values** — they are terminal slots
+leaned toward the accent now, not the old neon set.
 
 ## 2. Size tokens — controlled by `data-size-variant`
 
@@ -160,52 +145,53 @@ Defined under `:root, [data-size-variant="md"]` (the default); `[data-size-varia
 and `[data-size-variant="lg"]` override them. These rescale the entire chrome.
 (Renamed from the density axis in 0.4.0: `sm` ← compact, `md` ← comfy, `lg` new.)
 
-| Token                      | sm       | md (default) | lg       | Drives                           |
-| -------------------------- | -------- | ------------ | -------- | -------------------------------- |
-| `--ss-leading`             | `1.3`    | `1.5`        | `1.6`    | html / body line-height          |
-| `--ss-ui-xs`               | `9.5px`  | `11px`       | `12.5px` | micro uppercase labels           |
-| `--ss-ui-sm`               | `10.5px` | `12px`       | `13.5px` | secondary chrome text            |
-| `--ss-ui-md`               | `11.5px` | `13px`       | `15px`   | primary chrome text              |
-| `--ss-ui-lg`               | `13px`   | `15px`       | `17px`   | names, logo                      |
-| `--ss-icon`                | `14px`   | `16px`       | `20px`   | Icon default size                |
-| `--ss-control-font`        | `12px`   | `14px`       | `16px`   | buttons                          |
-| `--ss-control-py`          | `5px`    | `9px`        | `12px`   | button padding-y                 |
-| `--ss-control-px`          | `9px`    | `16px`       | `22px`   | button padding-x                 |
-| `--ss-input-font`          | `14px`   | `15px`       | `17px`   | inputs                           |
-| `--ss-input-py`            | `10px`   | `13px`       | `17px`   | input padding-y                  |
-| `--ss-input-px`            | `12px`   | `16px`       | `20px`   | input padding-x                  |
-| `--ss-panel-head-py`       | `7px`    | `12px`       | `16px`   | panel header padding-y           |
-| `--ss-panel-head-px`       | `12px`   | `18px`       | `24px`   | panel header padding-x           |
-| `--ss-panel-body-py`       | `10px`   | `18px`       | `24px`   | panel body padding-y             |
-| `--ss-panel-body-px`       | `12px`   | `18px`       | `24px`   | panel body padding-x             |
-| `--ss-card-py`             | `10px`   | `16px`       | `22px`   | metric / service card padding-y  |
-| `--ss-card-px`             | `12px`   | `18px`       | `24px`   | metric / service card padding-x  |
-| `--ss-metric-val`          | `26px`   | `32px`       | `40px`   | metric tile value size           |
-| `--ss-row-py`              | `5px`    | `9px`        | `12px`   | nav rows, table cells padding-y  |
-| `--ss-row-px`              | `10px`   | `14px`       | `18px`   | nav rows, table cells padding-x  |
-| `--ss-badge-py`            | `3px`    | `5px`        | `7px`    | badge padding-y                  |
-| `--ss-badge-px`            | `8px`    | `12px`       | `16px`   | badge padding-x                  |
-| `--ss-badge-dot`           | `4px`    | `5px`        | `6px`    | badge status-dot size            |
-| `--ss-badge-gap`           | `5px`    | `6px`        | `7px`    | badge inner gap                  |
-| `--ss-gap`                 | `8px`    | `14px`       | `18px`   | default grid/flex gap            |
-| `--ss-gap-sm`              | `6px`    | `10px`       | `13px`   | tight gap                        |
-| `--ss-block-gap`           | `16px`   | `28px`       | `36px`   | spacing between major blocks     |
-| `--ss-shell-side-w`        | `180px`  | `220px`      | `260px`  | app-shell sidebar width (layout) |
-| `--ss-shell-top-h`         | `36px`   | `48px`       | `56px`   | topbar height                    |
-| `--ss-main-py`             | `16px`   | `28px`       | `36px`   | main content padding-y           |
-| `--ss-main-px`             | `20px`   | `36px`       | `48px`   | main content padding-x           |
-| `--ss-side-w`              | `180px`  | `220px`      | `260px`  | Sidebar expanded width           |
-| `--ss-side-w-rail`         | `44px`   | `56px`       | `64px`   | Sidebar collapsed rail width     |
-| `--ss-side-badge-py`       | `1px`    | `2px`        | `3px`    | Sidebar item badge padding-y     |
-| `--ss-side-badge-px`       | `5px`    | `6px`        | `8px`    | Sidebar item badge padding-x     |
-| `--ss-toast-ic`            | `15px`   | `18px`       | `22px`   | Toast icon box                   |
-| `--ss-toast-swipe`         | `60px`   | `72px`       | `88px`   | Toast swipe-dismiss threshold    |
-| `--ss-empty-glyph`         | `32px`   | `40px`       | `52px`   | EmptyState visual glyph          |
-| `--ss-empty-glyph-compact` | `22px`   | `28px`       | `36px`   | EmptyState glyph (compact)       |
-| `--ss-empty-max-w`         | `360px`  | `420px`      | `480px`  | EmptyState content max-width     |
-| `--ss-spark-h`             | `14px`   | `18px`       | `26px`   | Sparkline height                 |
-| `--ss-spark-bar-w`         | `2px`    | `3px`        | `4px`    | Sparkline bar width              |
-| `--ss-spark-gap`           | `1px`    | `1px`        | `2px`    | Sparkline bar gap                |
+| Token                      | sm       | md (default) | lg       | Drives                                                                          |
+| -------------------------- | -------- | ------------ | -------- | ------------------------------------------------------------------------------- |
+| `--ss-leading`             | `1.3`    | `1.5`        | `1.6`    | html / body line-height                                                         |
+| `--ss-ui-xs`               | `9.5px`  | `11px`       | `12.5px` | micro uppercase labels                                                          |
+| `--ss-ui-sm`               | `10.5px` | `12px`       | `13.5px` | secondary chrome text                                                           |
+| `--ss-ui-md`               | `11.5px` | `13px`       | `15px`   | primary chrome text                                                             |
+| `--ss-ui-lg`               | `13px`   | `15px`       | `17px`   | names, logo                                                                     |
+| `--ss-icon`                | `16px`   | `20px`       | `24px`   | Icon box (DS-0109 scale; `xs` 12px is Icon-prop-only)                           |
+| `--ss-control-font`        | `12px`   | `14px`       | `16px`   | buttons                                                                         |
+| `--ss-control-py`          | `5px`    | `9px`        | `12px`   | button padding-y                                                                |
+| `--ss-control-px`          | `9px`    | `16px`       | `22px`   | button padding-x                                                                |
+| `--ss-input-font`          | `14px`   | `15px`       | `17px`   | inputs                                                                          |
+| `--ss-input-py`            | `10px`   | `13px`       | `17px`   | input padding-y                                                                 |
+| `--ss-input-px`            | `12px`   | `16px`       | `20px`   | input padding-x                                                                 |
+| `--ss-panel-head-py`       | `7px`    | `12px`       | `16px`   | panel header padding-y                                                          |
+| `--ss-panel-head-px`       | `12px`   | `18px`       | `24px`   | panel header padding-x                                                          |
+| `--ss-panel-body-py`       | `10px`   | `18px`       | `24px`   | panel body padding-y                                                            |
+| `--ss-panel-body-px`       | `12px`   | `18px`       | `24px`   | panel body padding-x                                                            |
+| `--ss-card-py`             | `10px`   | `16px`       | `22px`   | metric / service card padding-y                                                 |
+| `--ss-card-px`             | `12px`   | `18px`       | `24px`   | metric / service card padding-x                                                 |
+| `--ss-metric-val`          | `26px`   | `32px`       | `40px`   | metric tile value size                                                          |
+| `--ss-row-py`              | `5px`    | `9px`        | `12px`   | nav rows, table cells padding-y                                                 |
+| `--ss-row-px`              | `10px`   | `14px`       | `18px`   | nav rows, table cells padding-x                                                 |
+| `--ss-badge-px`            | `8px`    | `12px`       | `16px`   | badge padding-x (no padding-y; height from line-height, DS-0121)                |
+| `--ss-chip-py`             | `3px`    | `5px`        | `7px`    | chip-like padding-y (Topbar skip-link / LogStream chips / ServiceCard skeleton) |
+| `--ss-badge-dot`           | `4px`    | `5px`        | `6px`    | badge status-dot size                                                           |
+| `--ss-badge-gap`           | `5px`    | `6px`        | `7px`    | badge inner gap                                                                 |
+| `--ss-gap`                 | `8px`    | `14px`       | `18px`   | default grid/flex gap                                                           |
+| `--ss-gap-sm`              | `6px`    | `10px`       | `13px`   | tight gap                                                                       |
+| `--ss-gap-xs`              | `4px`    | `6px`        | `8px`    | extra-small gap for dense intra-component lists (e.g. FileDrop files list)      |
+| `--ss-block-gap`           | `16px`   | `28px`       | `36px`   | spacing between major blocks                                                    |
+| `--ss-shell-side-w`        | `180px`  | `220px`      | `260px`  | app-shell sidebar width (layout)                                                |
+| `--ss-shell-top-h`         | `36px`   | `48px`       | `56px`   | topbar height                                                                   |
+| `--ss-main-py`             | `16px`   | `28px`       | `36px`   | main content padding-y                                                          |
+| `--ss-main-px`             | `20px`   | `36px`       | `48px`   | main content padding-x                                                          |
+| `--ss-side-w`              | `180px`  | `220px`      | `260px`  | Sidebar expanded width                                                          |
+| `--ss-side-w-rail`         | `44px`   | `56px`       | `64px`   | Sidebar collapsed rail width                                                    |
+| `--ss-side-badge-py`       | `1px`    | `2px`        | `3px`    | Sidebar item badge padding-y                                                    |
+| `--ss-side-badge-px`       | `5px`    | `6px`        | `8px`    | Sidebar item badge padding-x                                                    |
+| `--ss-toast-ic`            | `15px`   | `18px`       | `22px`   | Toast icon box                                                                  |
+| `--ss-toast-swipe`         | `60px`   | `72px`       | `88px`   | Toast swipe-dismiss threshold                                                   |
+| `--ss-empty-glyph`         | `32px`   | `40px`       | `52px`   | EmptyState visual glyph                                                         |
+| `--ss-empty-glyph-compact` | `22px`   | `28px`       | `36px`   | EmptyState glyph (compact)                                                      |
+| `--ss-empty-max-w`         | `360px`  | `420px`      | `480px`  | EmptyState content max-width                                                    |
+| `--ss-spark-h`             | `14px`   | `18px`       | `26px`   | Sparkline height                                                                |
+| `--ss-spark-bar-w`         | `2px`    | `3px`        | `4px`    | Sparkline bar width                                                             |
+| `--ss-spark-gap`           | `1px`    | `1px`        | `2px`    | Sparkline bar gap                                                               |
 
 `md` reproduces the original comfy values; `sm` the original compact dashboard;
 `lg` is a new larger step. Global default is `md`; set it via `sizeVariant`, or per
@@ -217,6 +203,14 @@ The components ported from the source website (`DS-0043`) keep their size-sensit
 metrics in per-component partials under `src/styles/components/` (joined by
 `_index.scss`, the source of truth for the values below). Each rescales with the size
 axis; reuse a shared token from the table above before adding a component-specific one.
+
+**Micro-token naming convention (DS-0111).** A component that needs its own
+size-stepped spacing names those tokens **`--ss-<name>-*`** and defines them per
+`[data-size-variant]` on its root (Accordion's `--ss-acc-*` is the reference
+shape). Inner padding/gap must read these tokens — never hardcoded px — so spacing
+tightens/loosens in lockstep with the size axis. Pair this with passing the
+resolved size explicitly into nested `Icon`/`Spinner` (see DESIGN.md → _Coordinated
+inner sizes_).
 
 **Menu** (`--ss-menu-*`)
 
@@ -246,8 +240,11 @@ axis; reuse a shared token from the table above before adding a component-specif
 | `--ss-acc-head-px` | `--ss-s-2` | `--ss-row-px` | `--ss-s-4` | Header horizontal padding |
 | `--ss-acc-body-py` | `--ss-s-2` | `--ss-s-3`    | `--ss-s-4` | Panel vertical padding    |
 | `--ss-acc-body-px` | `--ss-s-2` | `--ss-row-px` | `--ss-s-4` | Panel horizontal padding  |
-| `--ss-acc-chevron` | `7px`      | `9px`         | `11px`     | Disclosure chevron size   |
 | `--ss-acc-gap`     | `--ss-s-2` | `--ss-s-3`    | `--ss-s-4` | Header label/hint gap     |
+
+The disclosure chevron is now the shared `Icon` `chevron` glyph (DS-0110), sized
+to the resolved icon scale the Accordion passes it (DS-0111) — so it has no
+dedicated size token; it follows `--ss-icon`.
 
 **BottomNav** (`--ss-bottom-nav-*`) — derived from the shell/spacing scale (single tier):
 `--ss-bottom-nav-h` (= `--ss-shell-top-h`, bar height), `--ss-bottom-nav-px` (= `--ss-s-2`,
@@ -364,13 +361,13 @@ never override).
 
 ### Elevation
 
-| Token              | Value                                                |
-| ------------------ | ---------------------------------------------------- |
-| `--ss-shadow-0`    | `none`                                               |
-| `--ss-shadow-1`    | `0 0 0 1px var(--ss-line)`                           |
-| `--ss-shadow-2`    | `0 1px 0 0 rgba(0,0,0,.4), 0 0 0 1px var(--ss-line)` |
-| `--ss-shadow-pop`  | `0 12px 40px rgba(0,0,0,.35)`                        |
-| `--ss-shadow-glow` | `0 0 24px rgba(var(--ss-primary-rgb), .35)`          |
+| Token              | Value                                                            |
+| ------------------ | ---------------------------------------------------------------- |
+| `--ss-shadow-0`    | `none`                                                           |
+| `--ss-shadow-1`    | `0 0 0 1px var(--ss-line)`                                       |
+| `--ss-shadow-2`    | `0 1px 0 0 rgba(0,0,0,.4), 0 0 0 1px var(--ss-line)`             |
+| `--ss-shadow-pop`  | `0 12px 40px rgba(0,0,0,.35)`                                    |
+| `--ss-shadow-glow` | `0 0 24px color-mix(in srgb, var(--ss-accent) 35%, transparent)` |
 
 ### Motion
 

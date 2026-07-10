@@ -281,7 +281,10 @@
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: var(--ss-gap-sm, 4px);
+      // Tight extra-small step (DS-0124) so the selected-files list reads as one
+      // compact group. The per-file inner row (.file) keeps --ss-gap-sm — it
+      // separates name/size/remove and reads better with the larger step.
+      gap: var(--ss-gap-xs);
     }
 
     .file {

@@ -167,7 +167,13 @@
     background: color-mix(in srgb, var(--ss-bg) 88%, transparent);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border-top: 1px solid var(--ss-line);
+    // Top separator drawn OUTSIDE the box (DS-0122): a 1px hairline painted via
+    // box-shadow rather than border-top, so it never consumes layout space
+    // inside the box-sizing: border-box nav (the --_bar-h / min-height math is
+    // unaffected). Visually identical to a 1px border, theme-tracking
+    // var(--ss-line). The per-tab active accent stays a border-top (below) — a
+    // distinct concern that never shares this property.
+    box-shadow: 0 -1px 0 var(--ss-line);
     font-family: var(--ss-font-mono);
 
     .list {
@@ -216,7 +222,7 @@
 
       &.active {
         color: var(--ss-primary);
-        background: rgba(var(--ss-primary-rgb), 0.06);
+        background: color-mix(in srgb, var(--ss-accent) 6%, transparent);
         border-top-color: var(--ss-primary);
       }
 

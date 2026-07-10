@@ -5,22 +5,22 @@ export const badge: ComponentDoc = {
   slug: 'badge',
   tagline: 'Compact status/label pill (square, of course).',
   description:
-    'A small inline label with a semantic `tone` that backs the fill, border, and an optional leading `dot`. Also does numeric counts (clamped to `max`), a live status region, and an optional dismiss button. Content is optional for dot- or count-only badges.',
-  storyId: 'components-badge--up',
+    'A small, non-interactive inline label with a semantic `tone` that backs the fill, border, foreground, and an optional leading `dot`. Also does numeric counts (clamped to `max`) and a live status region. Content is optional for dot- or count-only badges. Need a removable chip? That is a Tag/Chip concern, not a Badge.',
+  storyId: 'components-badge--brand',
   usage: `<script>
   import { Badge } from 'dssoca';
 </script>
 
-<Badge tone="up" dot>up</Badge>
-<Badge tone="down">down</Badge>
+<Badge tone="positive" dot>up</Badge>
+<Badge tone="critical">down</Badge>
 <Badge tone="info">to_watch</Badge>
-<Badge tone="neutral" count={42} label="unread" />`,
+<Badge count={42} label="unread" />`,
   props: [
     {
       name: 'tone',
-      type: "'up' | 'deg' | 'down' | 'maint' | 'info' | 'neutral'",
-      default: "'info'",
-      desc: 'Semantic tone; sets fill/border + dot colour. `neutral` is the baseline for non-status labels.',
+      type: "'brand' | 'neutral' | 'positive' | 'caution' | 'critical' | 'info'",
+      default: "'neutral'",
+      desc: 'Semantic tone; sets fill/border/foreground + dot colour. `neutral` is the baseline for non-status labels.',
     },
     SIZE_PROP,
     { name: 'dot', type: 'boolean', default: 'false', desc: 'Render the leading status dot.' },
@@ -44,12 +44,7 @@ export const badge: ComponentDoc = {
     {
       name: 'label',
       type: 'string',
-      desc: 'Accessible label; required for dot- / count- / label-less badges so status is not colour-only (WCAG 1.4.1). Also names the dismiss target.',
-    },
-    {
-      name: 'ondismiss',
-      type: '() => void',
-      desc: 'When set, renders a trailing keyboard-focusable dismiss button.',
+      desc: 'Accessible label; required for dot- / count- / label-less badges so status is not colour-only (WCAG 1.4.1).',
     },
     {
       name: 'children',

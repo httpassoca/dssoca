@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, fireEvent } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
 import BottomNav from '$lib/components/BottomNav.svelte'
@@ -196,6 +198,37 @@ describe('BottomNav', () => {
   it('inherits the global size (no data-size-variant) when size is unset', () => {
     const { container } = render(BottomNav, { items: ITEMS })
     expect(container.querySelector('nav.ss-bottom-nav')).not.toHaveAttribute('data-size-variant')
+  })
+
+  // --- top separator (DS-0122) ---------------------------------------------
+  // jsdom's getComputedStyle does not apply Svelte's scoped <style> cascade, so
+  // the nav's separator technique can't be read off the rendered DOM — it's a
+  // pure CSS contract asserted at the source (mirrors the Button hover test).
+  describe('top separator via outer box-shadow', () => {
+    const source = readFileSync(
+      resolve(process.cwd(), 'src/lib/components/BottomNav.svelte'),
+      'utf8',
+    )
+    // Strip comments so prose mentioning the old technique isn't matched.
+    const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '')
+
+    it('draws the nav top hairline as an outer box-shadow (not a layout border-top)', () => {
+      expect(code).toMatch(/box-shadow:\s*0\s+-1px\s+0\s+var\(--ss-line\)/)
+    })
+
+    it('no longer uses a layout border-top: 1px solid var(--ss-line) on the nav', () => {
+      expect(code).not.toMatch(/border-top:\s*1px\s+solid\s+var\(--ss-line\)/)
+    })
+
+    it('keeps the per-tab active accent as a 2px primary border-top (distinct concern)', () => {
+      expect(code).toMatch(/border-top:\s*2px\s+solid\s+transparent/)
+      expect(code).toMatch(/border-top-color:\s*var\(--ss-primary\)/)
+    })
+
+    it('preserves the safe-area inset and backdrop blur', () => {
+      expect(code).toMatch(/padding-bottom:\s*env\(safe-area-inset-bottom/)
+      expect(code).toMatch(/backdrop-filter:\s*blur\(14px\)/)
+    })
   })
 
   // --- a11y ----------------------------------------------------------------

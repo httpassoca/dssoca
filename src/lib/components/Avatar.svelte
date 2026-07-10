@@ -1,15 +1,11 @@
 <script module lang="ts">
+  import { CHART_PALETTE } from '../palette.js'
+
   // Deterministic palette for the initials tile background (DS-0099). A given
   // `name` always maps to the same entry via a simple string hash, so the same
-  // person reads with a stable colour across the app.
-  const PALETTE = [
-    'var(--ss-primary)',
-    'var(--ss-blue)',
-    'var(--ss-purple)',
-    'var(--ss-cyan)',
-    'var(--ss-yellow)',
-    'var(--ss-lime)',
-  ]
+  // person reads with a stable colour across the app — CHART_PALETTE's order
+  // and length are stable API for exactly this reason.
+  const PALETTE = CHART_PALETTE
 
   /** Up to two leading initials, uppercased: "Ada Lovelace" → "AL", "Cher" → "C". */
   export function avatarInitials(name: string): string {

@@ -59,6 +59,12 @@ export const accordion: ComponentDoc = {
       desc: 'Fired with the new open value whenever a section toggles.',
     },
     {
+      name: 'overflow',
+      type: "'truncate' | 'wrap'",
+      default: "'wrap'",
+      desc: 'How a long header label behaves when it exceeds the available width. `wrap` (default) flows onto multiple lines; `truncate` keeps it on a single line with an ellipsis. Applies to the default header markup only.',
+    },
+    {
       name: 'headingLevel',
       type: '1 | 2 | 3 | 4 | 5 | 6',
       default: '3',
@@ -72,5 +78,5 @@ export const accordion: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Each header is a real `<button>` with `aria-expanded` + `aria-controls`; the panel is a `role="region"` labelled by its header (`aria-labelledby`). Enter/Space toggle; ArrowUp/ArrowDown move between headers (wrapping), Home/End jump to the first/last. Disabled sections use `aria-disabled` so they stay reachable by keyboard but do not toggle. Zero border-radius; padding/typography scale with the size axis. WCAG 2.2 AA.',
+    'Each header is a real `<button>` with `aria-expanded` + `aria-controls`; the panel is a `role="region"` labelled by its header (`aria-labelledby`). Enter/Space toggle; ArrowUp/ArrowDown move between headers (wrapping), Home/End jump to the first/last. Disabled sections use `aria-disabled` so they stay reachable by keyboard but do not toggle. The toggle chevron is the shared `Icon` `chevron` glyph (DS-0110) — `aria-hidden`, inside the header button — rotating 180° on open; the Accordion resolves its size once and passes it explicitly to that Icon (DS-0111), so a sm/md/lg Accordion gets a matching chevron, text, and spacing. The panel content is laid out as an always-padded block inside the grid-rows reveal clip, so it animates open as a stable padded block with no mid-animation reflow (DS-0115). Use `overflow="truncate"` to keep a long header label on a single line with an ellipsis (default `wrap`); a custom `header` snippet owns its own overflow handling. Zero border-radius; padding/typography scale with the size axis. WCAG 2.2 AA.',
 }

@@ -34,5 +34,5 @@ export const avatar: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Always a square (never a circle). The visual initials are aria-hidden; the root tile carries role="img" + aria-label so the name is announced exactly once. Colour comes from the palette [primary, blue, purple, cyan, yellow, lime] via a stable string hash.',
+    'Always a square (never a circle). The visual initials are aria-hidden; the root tile carries role="img" + aria-label so the name is announced exactly once. Colour comes from CHART_PALETTE — [accent, blue, magenta, cyan, yellow, green], shared with the chart family — via a stable string hash.',
 }

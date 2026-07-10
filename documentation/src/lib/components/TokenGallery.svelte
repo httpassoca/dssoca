@@ -6,6 +6,29 @@
   // swatch/preview itself reads the var via CSS (so it recolours/rescales with
   // the axes automatically); the resolved value text is read with
   // getComputedStyle and refreshed whenever the <html> axes change.
+  // The 19 root slots (color rework, DS-0125): bg/fg/accent + the 16 ANSI
+  // colors every other color token derives from. Rendered FIRST — this is the
+  // palette. Values are live for the CURRENT page theme.
+  const terminalWide = ['--ss-bg', '--ss-fg', '--ss-accent']
+  const terminalSlots = [
+    '--ss-black',
+    '--ss-red',
+    '--ss-green',
+    '--ss-yellow',
+    '--ss-blue',
+    '--ss-magenta',
+    '--ss-cyan',
+    '--ss-white',
+    '--ss-bright-black',
+    '--ss-bright-red',
+    '--ss-bright-green',
+    '--ss-bright-yellow',
+    '--ss-bright-blue',
+    '--ss-bright-magenta',
+    '--ss-bright-cyan',
+    '--ss-bright-white',
+  ]
+
   const colorGroups: { title: string; tokens: string[] }[] = [
     {
       title: 'surfaces',
@@ -24,11 +47,11 @@
     },
     {
       title: 'brand',
-      tokens: ['--ss-primary', '--ss-primary-soft', '--ss-primary-hover', '--ss-lime'],
+      tokens: ['--ss-primary', '--ss-primary-soft', '--ss-primary-hover'],
     },
     {
       title: 'status',
-      tokens: ['--ss-red', '--ss-yellow', '--ss-blue', '--ss-cyan', '--ss-purple'],
+      tokens: ['--ss-red', '--ss-yellow', '--ss-blue', '--ss-cyan', '--ss-magenta'],
     },
     {
       title: 'sentiment',
@@ -48,12 +71,12 @@
     {
       title: 'badge tones',
       tokens: [
-        '--ss-badge-up-bg',
-        '--ss-badge-deg-bg',
-        '--ss-badge-down-bg',
-        '--ss-badge-maint-bg',
-        '--ss-badge-info-bg',
+        '--ss-badge-brand-bg',
         '--ss-badge-neutral-bg',
+        '--ss-badge-positive-bg',
+        '--ss-badge-caution-bg',
+        '--ss-badge-critical-bg',
+        '--ss-badge-info-bg',
       ],
     },
     {
@@ -115,6 +138,13 @@
 
   let version = $state(0)
 
+  function currentTheme(): 'dark' | 'light' {
+    if (!browser) return 'dark'
+    // `version` read makes the label recompute on axis change.
+    version
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
+  }
+
   function val(name: string): string {
     if (!browser) return ''
     // `version` read makes resolved values recompute on axis change.
@@ -134,6 +164,38 @@
 </script>
 
 <div class="gallery">
+  <section>
+    <h3>terminal palette <small>({currentTheme()} theme)</small></h3>
+    <p class="hint">
+      The 16 ANSI slots plus <code>bg</code>/<code>fg</code>/<code>accent</code> — the root layer
+      every other color token derives from. Values shown are the <strong>{currentTheme()}</strong>
+      theme's; flip the page theme in the topbar to see the
+      {currentTheme() === 'dark' ? 'light' : 'dark'} set.
+    </p>
+    <div class="term-wide">
+      {#each terminalWide as token (token)}
+        <div class="swatch">
+          <div class="chip tall" style="background: var({token})"></div>
+          <div class="meta">
+            <code class="tok">{token}</code>
+            <code class="resolved">{val(token) || '…'}</code>
+          </div>
+        </div>
+      {/each}
+    </div>
+    <div class="term-grid">
+      {#each terminalSlots as token (token)}
+        <div class="swatch">
+          <div class="chip tall" style="background: var({token})"></div>
+          <div class="meta">
+            <code class="tok">{token.replace('--ss-', '')}</code>
+            <code class="resolved">{val(token) || '…'}</code>
+          </div>
+        </div>
+      {/each}
+    </div>
+  </section>
+
   {#each colorGroups as group (group.title)}
     <section>
       <h3>{group.title}</h3>
@@ -216,9 +278,51 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: var(--ss-gap);
   }
+  .hint {
+    font-size: var(--ss-size-sm);
+    color: var(--ss-fg-muted);
+    margin: 0 0 var(--ss-s-3);
+    max-width: 70ch;
+
+    code {
+      font-family: var(--ss-font-mono);
+      color: var(--ss-fg);
+      background: var(--ss-code-overlay);
+      padding: 0 var(--ss-s-1);
+    }
+  }
+  .term-wide {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--ss-gap-sm);
+    margin-bottom: var(--ss-gap-sm);
+  }
+  .term-grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: var(--ss-gap-sm);
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .term-wide .meta,
+  .term-grid .meta {
+    overflow: hidden;
+
+    code {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: block;
+    }
+  }
   .swatch {
     border: 1px solid var(--ss-line);
     background: var(--ss-bg-elev);
+  }
+  .chip.tall {
+    height: 72px;
   }
   .chip {
     height: 56px;

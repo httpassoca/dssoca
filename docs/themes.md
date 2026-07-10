@@ -138,6 +138,57 @@ putting it on a wrapper:
 </section>
 ```
 
+## Custom palettes (0.12.0 color rework)
+
+The color surface is a monochromatic 16-slot terminal palette: 19 root slots
+per theme (`bg`, `fg`, `accent` + the 16 ANSI colors) that every semantic
+`--ss-*` token derives from (see `docs/tokens.md`). Because the semantics
+chain through the slots, replacing the 19 slots recolors the whole system —
+that is the custom-palette API. Palettes are generated interactively in the
+documentation app's **Theme Builder** page, which exports both consumption
+formats below.
+
+### Types
+
+```ts
+import { PALETTE_SLOTS, type Palette, type ThemePalette, type PaletteSlot } from 'dssoca'
+
+// PaletteSlot  = 'bg' | 'fg' | 'accent' | 'black' | … | 'brightWhite'  (19 slots)
+// ThemePalette = Record<PaletteSlot, string>   // any CSS <color> per slot
+// Palette      = { dark: ThemePalette; light: ThemePalette }
+```
+
+### Runtime path — `applyDesignConfig({ palette })`
+
+```ts
+import { applyDesignConfig } from 'dssoca'
+import { myPalette } from './my-palette'
+
+applyDesignConfig({ palette: myPalette }) // custom colors, both themes covered
+applyDesignConfig({ theme: 'light' }) // flip themes — palette follows
+applyDesignConfig({ palette: null }) // back to the built-in palette
+```
+
+Semantics: the **active theme's** 19 values are written as inline custom
+properties on the target (default `<html>`) and re-written on every call, so
+a later theme flip can never be masked by stale inline values. The `palette`
+field is tri-state in partials: omit = keep the current palette, an object =
+set it, `null` = clear it (`el.style.removeProperty` per slot — the
+stylesheet palette resumes). `getDesignConfig().palette` returns a deep copy.
+
+### CSS path — `paletteToCss(palette)` (zero-JS / SSR)
+
+```ts
+import { paletteToCss } from 'dssoca'
+const css = paletteToCss(myPalette)
+```
+
+Emits a `:root, [data-theme='dark'] { … }` + `[data-theme='light'] { … }`
+override block (the Theme Builder's "CSS" export is exactly this output).
+Ship it **after** `dssoca/theme.css` in source order — the selectors have
+equal specificity, so order decides. This is the recommended SSR path: no
+flash, no post-hydration mutation, works with `designAttributes()` as usual.
+
 ## Notes
 
 - The two axes are independent — setting one never disturbs the other.
@@ -146,11 +197,13 @@ putting it on a wrapper:
 - **Theme-tracked colors.** `data-theme` controls the _full_ color surface, not
   just bg/fg: the sentiment tokens (`--ss-success`/`-soft`,
   `--ss-danger`/`-hover`/`-soft`, `--ss-fg-on-danger`), the log-level accents
-  (`--ss-log-info`/`-warn`/`-err`/`-ok`), and the per-tone badge fills/borders
-  (`--ss-badge-<tone>-bg`/`-border` for `up`/`deg`/`down`/`maint`/`info`/`neutral`)
-  all carry light-mode overrides so they hold AA contrast in both themes. Read
-  these tokens (never raw hexes) so a theme flip recolors your component too. The
-  full per-theme value table lives in `docs/tokens.md`.
+  (`--ss-log-info`/`-warn`/`-err`/`-ok`), and the per-tone badge
+  fills/borders/foregrounds (`--ss-badge-<tone>-bg`/`-border`/`-fg` for
+  `brand`/`neutral`/`positive`/`caution`/`critical`/`info`)
+  all derive from the 19 root slots and hold AA contrast in both themes. Read
+  these tokens (never raw hexes) so a theme flip — or an imported custom
+  palette — recolors your component too. The full per-theme value table lives
+  in `docs/tokens.md`.
 - **Legacy `.hs-*` typography classes are deprecated.** `theme.css` still ships
   the pre-rename `hubssoca` helpers (`.hs-display`, `.hs-h1`…`.hs-h3`, `.hs-p`,
   `.hs-sm`, `.hs-caption`, `.hs-link`, `.hs-no-underline`, `.hs-mono`) for

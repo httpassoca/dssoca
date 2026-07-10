@@ -23,8 +23,16 @@ The axes are orthogonal — any combination is valid (`dark/md`, `dark/sm`,
 
 ### Color (`data-theme`)
 
-Swaps surface + foreground tokens. Brand, status, and code colors are shared.
-Nothing about layout changes.
+Swaps the **entire** color surface (0.12.0 color rework). The palette is a
+monochromatic 16-slot terminal scheme: a generated root layer of the 16 ANSI
+colors + `bg`/`fg` + one vivid `--ss-accent` per theme (authored in OKLCH,
+neutrals tinted with the accent's hue, red↔green held ≥45° apart for diff
+legibility), and a hand-maintained semantic layer where every other token
+derives from those slots via `var()`/`color-mix()`. Because the semantics
+chain through the slots, a custom palette (`applyDesignConfig({ palette })`
+or a `paletteToCss` CSS block — see `docs/themes.md`) recolors everything.
+Values are static and hand-audited; regeneration is `pnpm gen:palette`
+(recipe in `scripts/lib/palette.mjs`). Nothing about layout changes.
 
 ### Size (`data-size-variant`)
 
@@ -141,6 +149,56 @@ navigation, out of or skipped by the keyboard model) _and_ communicated to
 assistive tech (native `disabled` or `aria-disabled="true"`); it is never
 just styled out.
 
+## Icons (DS-0109 / DS-0110)
+
+- **One icon primitive.** Every icon a component draws renders through the
+  shared `Icon` (`.ss-icon`) component — never a bespoke CSS-border shape or an
+  ad-hoc inline `<svg>`. This centralises the stroke, the named size scale, and
+  the a11y attributes. Need a new glyph? Add it to `BUILTIN_PATHS` in
+  `Icon.svelte` (and the `IconName` union), don't draw it locally.
+  - _Documented non-icons:_ the Button loading indicator is a **`Spinner`** (a
+    text-frame glyph, not an SVG) and the Badge status dot is a **styled span**
+    (a colour token, not a glyph). These are intentional and not forced through
+    `Icon`.
+- **Interactive icons get a wrapper.** An icon that _does_ something (toggle,
+  dismiss, navigate) is never the clickable element itself. It sits inside a real
+  control — a native `<button>` (preferred) or a roled/focusable hit-area — with
+  the accessible name on the **control** (`aria-label`) and the icon marked
+  `aria-hidden`. This also lets the hit area meet WCAG 2.2 AA target-size (2.5.8)
+  independent of the glyph's px.
+- **Named size scale.** `Icon` has a fixed local scale — **xs 12 / sm 16 / md 20
+  / lg 24 px**. `xs` is Icon-only (no global `data-size-variant` counterpart). An
+  unset `size` inherits the active `--ss-icon` token (16/20/24 across sm/md/lg);
+  `px` is the escape hatch.
+
+## Coordinated inner sizes (DS-0111)
+
+A component at a given size drives its nested icons, text, and spacing to the
+matching step — so a `sm` component is `sm` icons + `sm` text + tightened spacing
+as one coherent unit, not an accidental cascade. The repeatable rule:
+
+1. **Resolve once, at the root.** Resolve the effective size with
+   `resolveComponentSize(name, size)` and apply it as `data-size-variant` on the
+   component root. That is the single size decision for the whole subtree.
+2. **Pass size down explicitly.** When rendering a nested _component_ (`Icon`,
+   `Spinner`, nested `Badge`…), hand it the resolved size as a prop —
+   `<Icon size={resolved} />` — rather than trusting the cascade. The global axis
+   (`sm | md | lg`) is a subset of Icon's local scale (`xs | sm | md | lg`), so a
+   resolved `Size` is a valid `Icon` size; map a component step to the matching
+   icon step (icons generally sit one optical step below the text box). A
+   `resolved` of `undefined` means "inherit" — pass it through and the Icon
+   inherits the active `--ss-icon` token, still coordinated.
+3. **Step spacing in lockstep.** Inner padding/gap use size-stepped `--ss-*`
+   tokens, or component-local micro-tokens defined per `[data-size-variant]`
+   named **`--ss-<name>-*`** (e.g. Accordion's `--ss-acc-*`). Never hardcode
+   inner px — it won't rescale. Every component follows this micro-token shape
+   rather than inventing its own.
+4. **Don't break harmony.** Coordinated steps must preserve alignment and optical
+   balance (heights, baselines) across sm/md/lg.
+
+Reference implementation: **Accordion** resolves its size once and passes it to
+the chevron `Icon`, with `--ss-acc-*` micro-tokens stepping the spacing.
+
 ## Preview both modes
 
 `pnpm dev` opens the showcase. The page header has **size** and **theme** toggles
@@ -151,3 +209,8 @@ so you can compare combinations live. It boots in `sm/dark` because it models th
 - **Zero border-radius.** Every radius token is `0`. Never override.
 - pnpm only.
 - New chrome must read size tokens, not hardcoded px, or it won't rescale.
+- **Icons via `Icon`.** All component-drawn icons render through the shared
+  `Icon` component; interactive icons are wrapped in a real control (see _Icons_).
+- **Coordinated inner sizes.** Resolve size once at the root, pass it explicitly
+  to nested `Icon`/`Spinner`, and step spacing with `--ss-*` / `--ss-<name>-*`
+  tokens (see _Coordinated inner sizes_).

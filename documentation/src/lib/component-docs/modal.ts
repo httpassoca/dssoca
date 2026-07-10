@@ -68,7 +68,7 @@ export const modal: ComponentDoc = {
     {
       name: 'footer',
       type: 'Snippet',
-      desc: 'Footer content, typically action buttons.',
+      desc: 'Footer content, typically a trailing cancel→confirm action pair (the affirmative `Button` trails the dismissive `ghost` one, per dialog convention).',
     },
     {
       name: 'children',

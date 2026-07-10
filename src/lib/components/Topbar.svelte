@@ -302,7 +302,7 @@
       left: var(--ss-s-1);
       top: var(--ss-s-1);
       z-index: 20;
-      padding: var(--ss-badge-py) var(--ss-badge-px);
+      padding: var(--ss-chip-py) var(--ss-badge-px);
       background: var(--ss-primary);
       color: var(--ss-fg-on-primary);
       font: 500 var(--ss-ui-md) var(--ss-font-mono);
@@ -401,7 +401,7 @@
         }
         &.active {
           color: var(--ss-fg);
-          background: rgba(102, 239, 115, 0.06);
+          background: color-mix(in srgb, var(--ss-accent) 6%, transparent);
           box-shadow: inset 0 -2px 0 var(--ss-primary);
         }
         &.active .n {

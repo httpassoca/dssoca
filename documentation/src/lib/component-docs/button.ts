@@ -5,7 +5,7 @@ export const button: ComponentDoc = {
   slug: 'button',
   tagline: 'The primary action control.',
   description:
-    'Four variants — primary, secondary, ghost, danger. Square edges, token-driven padding. Supports a `loading` state (spinner, aria-busy, stays focusable), leading/trailing icon snippets, `iconOnly` and `fullWidth` layouts, a bindable element ref, and forwards any remaining native button attributes.',
+    'Four variants — primary, secondary, ghost, danger. Square edges, token-driven padding. Supports a `loading` state that renders the shared `Spinner` (aria-busy, stays focusable) and accepts `true` (the configured default variant) or a `SpinnerVariant` string, leading/trailing icon snippets that never change the control height, `iconOnly` and `fullWidth` layouts, a bindable element ref, and forwards any remaining native button attributes.',
   storyId: 'components-button--primary',
   usage: `<script>
   import { Button } from 'dssoca';
@@ -14,6 +14,7 @@ export const button: ComponentDoc = {
 <Button variant="primary" onclick={() => {}}>deploy</Button>
 <Button variant="secondary">cancel</Button>
 <Button variant="danger" loading loadingLabel="deleting…">delete</Button>
+<Button variant="primary" loading="pipe" loadingLabel="saving…">save</Button>
 <Button variant="ghost">forgot?</Button>`,
   props: [
     {
@@ -31,9 +32,9 @@ export const button: ComponentDoc = {
     { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disable the button.' },
     {
       name: 'loading',
-      type: 'boolean',
+      type: 'boolean | SpinnerVariant',
       default: 'false',
-      desc: 'Show a spinner, block clicks, set aria-busy; the button stays focusable.',
+      desc: 'Loading state, rendered with the shared Spinner: `true` uses the configured default variant, a SpinnerVariant string picks a glyph, `false` is off. Blocks clicks, sets aria-busy; the button stays focusable. (BREAKING since 0.x: was a plain boolean and a bespoke ring spinner.)',
     },
     {
       name: 'loadingLabel',

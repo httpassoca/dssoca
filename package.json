@@ -1,6 +1,6 @@
 {
   "name": "dssoca",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Svelte 5 design system — signal green on near-black, monospace-forward, zero border-radius; configured along two axes (color: dark/light, density: comfy/compact).",
   "license": "MIT",
   "author": "Rafael Passoca",
@@ -38,7 +38,8 @@
     "docs:dev": "pnpm --filter dssoca-docs dev",
     "docs:build": "pnpm --filter dssoca-docs build",
     "docs:preview": "pnpm --filter dssoca-docs preview",
-    "docs:test": "pnpm --filter dssoca-docs test"
+    "docs:test": "pnpm --filter dssoca-docs test",
+    "gen:palette": "node scripts/generate-palette.mjs"
   },
   "files": [
     "dist",

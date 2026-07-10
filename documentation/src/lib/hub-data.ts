@@ -15,7 +15,7 @@ export interface Variant {
   /** Generic short text (button label, badge text, menu/link label, toaster msg). */
   t?: string
   /** Badge tone. */
-  tone?: 'up' | 'down' | 'info' | 'deg' | 'neutral' | 'maint'
+  tone?: 'brand' | 'neutral' | 'positive' | 'caution' | 'critical' | 'info'
   dot?: boolean
   /** Input. */
   label?: string
@@ -59,16 +59,16 @@ export const V: Record<string, Variant[]> = {
     { variant: 'secondary', t: 'export' },
   ],
   badge: [
-    { tone: 'up', t: 'up', dot: true },
-    { tone: 'down', t: 'down', dot: true },
+    { tone: 'positive', t: 'up', dot: true },
+    { tone: 'critical', t: 'down', dot: true },
     { tone: 'info', t: 'sync' },
-    { tone: 'deg', t: 'degraded' },
+    { tone: 'caution', t: 'degraded' },
     { tone: 'neutral', t: 'idle' },
-    { tone: 'up', t: 'live', dot: true },
-    { tone: 'maint', t: 'maint' },
+    { tone: 'positive', t: 'live', dot: true },
+    { tone: 'brand', t: 'maint' },
     { tone: 'info', t: 'queued' },
-    { tone: 'down', t: 'error' },
-    { tone: 'up', t: 'ready' },
+    { tone: 'critical', t: 'error' },
+    { tone: 'positive', t: 'ready' },
   ],
   input: [
     { label: 'email', val: 'admin@hub.home' },

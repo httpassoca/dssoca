@@ -69,6 +69,13 @@
 
 <Story name="Default" />
 
+<!-- Dedicated footer-actions story (DS-0123): the footer snippet holds a
+     trailing cancel→confirm action pair (dialog convention — the affirmative
+     button trails the dismissive one). Cancel uses the ghost Button variant,
+     Confirm the default/primary. The `title` wires aria-labelledby so the
+     dialog stays a11y-clean. -->
+<Story name="FooterActions" args={{ title: 'Publish release' }} />
+
 <Story name="No title" args={{ title: undefined, 'aria-label': 'Untitled dialog' }} />
 
 <Story name="Danger" args={{ title: 'Delete project', danger: true }} />
