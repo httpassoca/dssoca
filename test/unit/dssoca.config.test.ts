@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { dssocaConfig, SPINNER_VARIANT_NAMES } from '$lib/dssoca.config'
+import { dssocaConfig, SPINNER_VARIANT_NAMES, PALETTE_SLOTS } from '$lib/dssoca.config'
 import { defaultDesignConfig } from '$lib/config'
 import { SPINNER_VARIANTS } from '$lib/components/Spinner.svelte'
 
@@ -34,6 +34,33 @@ describe('dssocaConfig manifest', () => {
       sizeVariant: dssocaConfig.size.default,
       componentsSize: {},
       spinnerVariant: dssocaConfig.spinner.default,
+      palette: null,
     })
+  })
+})
+
+describe('PALETTE_SLOTS (color rework)', () => {
+  it('pins the 19 slots — bg/fg/accent + the 16 ANSI colors, in canonical order', () => {
+    expect(PALETTE_SLOTS).toEqual([
+      'bg',
+      'fg',
+      'accent',
+      'black',
+      'red',
+      'green',
+      'yellow',
+      'blue',
+      'magenta',
+      'cyan',
+      'white',
+      'brightBlack',
+      'brightRed',
+      'brightGreen',
+      'brightYellow',
+      'brightBlue',
+      'brightMagenta',
+      'brightCyan',
+      'brightWhite',
+    ])
   })
 })

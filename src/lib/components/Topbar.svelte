@@ -401,7 +401,7 @@
         }
         &.active {
           color: var(--ss-fg);
-          background: rgba(102, 239, 115, 0.06);
+          background: color-mix(in srgb, var(--ss-accent) 6%, transparent);
           box-shadow: inset 0 -2px 0 var(--ss-primary);
         }
         &.active .n {

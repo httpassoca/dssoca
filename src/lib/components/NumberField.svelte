@@ -189,7 +189,7 @@
       border-color: var(--ss-red);
       &:focus-within {
         border-color: var(--ss-red);
-        box-shadow: 0 0 0 3px rgba(var(--ss-red-rgb), 0.22);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ss-danger) 22%, transparent);
       }
     }
 

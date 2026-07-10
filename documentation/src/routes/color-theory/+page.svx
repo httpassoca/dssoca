@@ -1,0 +1,201 @@
+# Color theory
+
+dssoca's palette is not a list of hand-picked hexes — it is one **relationship, applied
+systematically**: a single accent hue seeds sixteen terminal colors, two backgrounds, and every
+semantic token in the system. This page explains the theory behind that construction, where it
+comes from, and how the sixteen base colors flow through every component. For the mechanics of
+switching themes see [Theming & config](/theming); for the full value tables see
+[Tokens](/tokens); to build your own palette, use the [Theme Builder](/theme-builder).
+
+<div style="display:flex;gap:4px;margin:1rem 0">
+  <span style="flex:2;height:40px;background:var(--ss-bg);border:1px solid var(--ss-line)"></span>
+  <span style="flex:2;height:40px;background:var(--ss-fg)"></span>
+  <span style="flex:2;height:40px;background:var(--ss-accent)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-black)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-red)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-green)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-yellow)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-blue)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-magenta)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-cyan)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-white)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-bright-black)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-bright-red)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-bright-green)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-bright-yellow)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-bright-blue)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-bright-magenta)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-bright-cyan)"></span>
+  <span style="flex:1;height:40px;background:var(--ss-bright-white);border:1px solid var(--ss-line)"></span>
+</div>
+
+> The strip above is live — `bg` · `fg` · `accent`, then the 16 ANSI slots. Flip the page theme
+> in the topbar and it re-derives before your eyes.
+
+## One hue is enough
+
+The system is **monochromatic** at its core: one hue (the accent's), with all variety coming from
+lightness. The neutrals — page background, panels, borders, text tones — carry the accent's hue at
+whisper-level chroma instead of being pure gray, and hierarchy is expressed by _lightness steps_,
+never by introducing new hues.
+
+This is old theory. Among Johannes Itten's seven color contrasts, **light–dark contrast** is the
+one that works independently of hue — which is why a page can hold together with a single one. Constraining to one hue also removes an entire class of decisions: every derived color is
+guaranteed to harmonize, so typography, spacing, and lightness carry the communication. The
+classic failure mode of monochrome — steps too close together, "one muddy color" — is exactly
+what the audited lightness ramp (below) prevents.
+
+The accent is the **single vivid color** in the system. Everything else is functional or
+near-neutral, so the accent does all the pointing: primary buttons, focus rings, selection, active
+navigation. Think _black × lime_ — the duo is the identity.
+
+## The background is the accent's complement
+
+The impressionists rejected black shadows — Renoir is said to have insisted that no shadow is
+black, that it always has a color. Monet banished black from his shadows in the late 1860s (it
+vanished from his palette entirely by the mid-1880s) — since sunlight reads yellow, his shadows
+went **violet**, the complement, scandalizing critics. The science behind the trick is Chevreul's law of _simultaneous
+contrast_ (1839): adjacent colors push each other toward their complements, so a
+complement-tinted surround makes a color look **more** saturated and luminous. Your retina does
+this anyway — stare at lime and the afterimage is violet-magenta.
+
+dssoca's dark background is that trick, executed in math. Measured in OKLCH, the original pairing
+of the lime accent `#66ef73` and the near-black `#100f10` turned out to be exact color theory:
+
+```js
+// scripts/lib/palette.mjs — measured from the original lime ↔ #100f10 pairing
+export const DARK_BG_RULE = { l: 0.17005, chromaRatio: 0.01279, hueOffset: 180.48 }
+```
+
+The dark page background sits at the accent's **complementary hue** (+180°) at **1.3% of its
+chroma**, lightness 0.17. The palette generator encodes the relationship rather than the hex:
+lime reproduces `#100f10` byte-for-byte, a blue accent gets a faintly warm black, an amber accent
+a faintly cool one — every theme gets _the same black_, each with a whisper of its accent's
+complement underneath. Albers' point in _Interaction of Color_ applies directly: a color only
+exists in relation to its neighbors, so the background is derived **relationally** from the
+accent instead of being picked as an absolute gray.
+
+The other dark neutrals (`black`, `bright-black`) tint _toward_ the accent instead — the surround
+complements, the material harmonizes.
+
+## Why sixteen colors — the terminal contract
+
+Terminals predate truecolor: every CLI tool paints with the same **16 slots** — 8 normal + 8
+bright — and forty years of convention gave each slot a job. Red carries errors and diff
+removals, green carries success and diff additions, yellow warns, bright-black is the de-facto
+comment color. dssoca adopts that taxonomy as its palette structure, so the palette _is_ a valid
+terminal scheme by construction; every consumed slot has a defined job, and `white` plus the
+bright hues are deliberately reserved — the contract keeps them derived, audited, and exportable.
+
+Two rules keep the slots honest under the monochromatic pull:
+
+- The six hue slots start at classic ANSI anchor hues and **lean toward the accent** (35% of the
+  way in OKLCH hue, capped at ±45° and backed off when two slots would collide). Red and yellow —
+  the semantic load-bearers — take only 20% of that lean, so they always read as red and yellow at
+  a glance.
+- **Red and green must stay ≥ 45° apart in hue.** Below that, `git diff` becomes guesswork. The
+  generator enforces it by backing red's lean off; green never moves, because it lives in the
+  default accent's own hue family.
+
+The lineage here is Solarized: Ethan Schoonover designed it in CIELAB with symmetric lightness
+relationships so dark and light modes preserve the same perceived contrast. dssoca does the same
+thing one color space later — OKLab was built to fix CIELAB's failure modes and replaces it in CSS — and adds the accent-seeded
+monochromatic layer on top.
+
+## OKLCH — a lightness channel that doesn't lie
+
+HSL's lightness is a geometric artifact of the RGB cube, not a perceptual measurement:
+`hsl(60 100% 50%)` (yellow) and `hsl(240 100% 50%)` (blue) claim the same lightness, but yellow
+is drastically brighter to the eye. A palette built on HSL inherits that lie — which is why old
+hand-tuned palettes needed special-case hacks like "darken yellow on light backgrounds".
+
+OKLCH (Björn Ottosson, 2020; CSS Color 4; the space Tailwind v4 rebuilt its palette in) fixes
+this: **equal L means equal perceived lightness across every hue**. That property is what lets
+one recipe derive all six hue slots at the same lightness, walk any color's lightness until it
+clears a contrast target, and clamp out-of-gamut colors by reducing chroma while _never_
+disturbing lightness or hue. All 38 slot values ship as literal `oklch()` and are regenerated
+from the recipe with `pnpm gen:palette` — hand-audit means tuning constants, never editing hexes.
+
+## How the slots flow through the system
+
+Components read **semantic tokens** for everything with themed behavior — surfaces, sentiment,
+code roles — and the semantic layer derives those from the slots via `var()` and `color-mix()`.
+Status accents (form errors, toast kinds, service status, the active-nav wash) read their slot
+directly; that is safe because the slots _are_ the override surface. Either way the indirection
+is the whole API: override the 19 slots and the entire system recolors, washes included.
+
+| Slot                | Becomes                                                     | You see it as                                                                 |
+| ------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `--ss-bg`           | page canvas; mixed into `bg-elev`, `fg-muted`, `code-bg`    | the app shell; dark-theme button labels; the console surface                  |
+| `--ss-fg`           | body text; `fg-muted` (fg mixed 72/28 with bg); `code-fg`            | every paragraph, chart axis, log line                                          |
+| `--ss-accent`       | `primary`, `success`, selection, focus, glow, washes        | primary Button, Sparkline up-trend, active nav wash, `::selection`             |
+| `--ss-black`        | code-bg mix; light-theme _neutral_ borders and washes       | the inset console; light-mode lines, hovers, skeletons                         |
+| `--ss-red`          | `danger` + hover/soft, `log-err`, `badge-critical-*`        | danger Button, invalid form fields, error Toaster, LogStream `ERR`             |
+| `--ss-green`        | `code-string`, `log-ok`                                     | strings in code blocks, LogStream `OK`, 6th chart series                       |
+| `--ss-yellow`       | `code-number`, `log-warn`, `badge-caution-*`                | warnings, degraded ServiceCards, `tone="caution"` Badges                       |
+| `--ss-blue`         | `code-func`, `log-info`, `badge-brand-*`                    | functions in code, LogStream `INFO`, `tone="brand"` Badges                     |
+| `--ss-magenta`      | `code-keyword`                                              | keywords in code, LogStream service names, 3rd chart series                    |
+| `--ss-cyan`         | `badge-info-*`                                              | info Toaster + its loading spinner, `tone="info"` Badges                       |
+| `--ss-white`        | — (reserved)                                                | custom-palette overrides today; terminal-scheme exports are planned            |
+| `--ss-bright-black` | `fg-faint`, `code-comment`                                  | timestamps, placeholders, hints, comments — AA-solved so faint stays legible   |
+| `--ss-bright-*` hues| — (reserved emphasis tier)                                  | custom-palette overrides; a future bold/bright text tier                       |
+| `--ss-bright-white` | `bg-elev`, lines, hover/skeleton/overlay washes, `fg-shine` | **the busiest slot**: every panel, border, row hover, and loading shimmer      |
+
+A few worked examples of the flow:
+
+```svelte
+<Button variant="danger">Delete</Button>
+<!-- paints --ss-danger → var(--ss-red); dark hover mixes red 80% toward white -->
+
+<Badge tone="info">deployed</Badge>
+<!-- bg = color-mix(in srgb, var(--ss-cyan) 12%, transparent); border 40%; text cyan -->
+
+<Sparkline data={points} trend="auto" />
+<!-- up → --ss-success (accent) · down → --ss-danger (red) · flat → --ss-fg-muted -->
+```
+
+The chart family shares one categorical palette built from the slots — order and length are
+stable API (Avatar hashes names onto it, so a given name keeps its color):
+
+```ts
+// src/lib/palette.ts
+export const CHART_PALETTE = [
+  'var(--ss-accent)', 'var(--ss-blue)', 'var(--ss-magenta)',
+  'var(--ss-cyan)', 'var(--ss-yellow)', 'var(--ss-green)',
+] as const // order + length are stable API
+```
+
+Even the "invisible" colors are derivations: borders are `bright-white` at 12% alpha (dark) or
+`black` at 16% (light); row hovers are 5% washes; skeletons 10%; panel elevation is the bg mixed
+12% toward `bright-white` in OKLab. (The mix numbers quoted on this page are the dark theme's —
+light flips the washes to black-based ones and deepens hovers toward black instead of white.)
+Components ship no literal colors as a house rule, and the token layer's structure — slots
+present, semantics derived, no orphaned triplets — is pinned by tests.
+
+## Every pairing is audited
+
+Contrast is not left to taste. WCAG 2.2 asks **4.5:1** for normal text (AA — calibrated to
+roughly 20/40 vision), **3:1** for large text and UI components, **7:1** for AAA. The palette
+generator _solves_ for these: every hue and faint-text slot walks its OKLCH lightness away from
+the background until it clears 4.5:1 on both `--ss-bg` **and** `--ss-bg-elev`, in both themes;
+`fg` and the accent are pinned by the recipe and held to the same bar. The test suite asserts
+the ratios mathematically for all fourteen text-role slots, so a regression cannot merge. The
+[Theme Builder](/theme-builder) runs a live corrector built on the same math — body text at the
+stricter 7:1, faint text and button labels at 4.5:1, the hue slots at 3:1 as UI colors — and
+fixes failures the same way the generator does: move lightness, never hue.
+
+## The four rules
+
+1. **Never pure black or white.** The extremes always carry a trace of hue — the background its
+   complement, the whites the accent. It is what makes a page feel designed.
+2. **Hierarchy through lightness.** If everything sits on the same step, nothing stands out;
+   importance is a lightness distance, not a new hue.
+3. **Read tokens, never hexes.** Prefer the semantic role (`var(--ss-danger)`) and reach for a
+   slot (`var(--ss-red)`) only when you mean the status color itself — both survive a theme flip
+   or an imported palette; a literal never does.
+4. **The accent does all the pointing.** One vivid color, spent only on what matters: the primary
+   action, the active item, the focus ring.
+
+> Want these rules with a different accent? The [Theme Builder](/theme-builder) derives the full
+> 16-slot palette from any seed with the exact math described here, checks it, and exports it as
+> an `applyDesignConfig` snippet or a CSS block.

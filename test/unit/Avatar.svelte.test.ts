@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/svelte'
 import { tick } from 'svelte'
 import { axe } from 'vitest-axe'
+import { CHART_PALETTE } from '$lib/palette.js'
 import Avatar from '$lib/components/Avatar.svelte'
 
 const axeOpts = {
@@ -72,19 +73,16 @@ describe('Avatar — deterministic colour', () => {
     expect(colA).toBe(colB)
   })
 
-  it('maps to a value from the documented palette', () => {
+  it('maps to a value from the shared categorical palette', () => {
     const { container } = render(Avatar, { name: 'Grace Hopper' })
     const col = container
       .querySelector<HTMLElement>('.ss-avatar')!
       .style.getPropertyValue('--ss-avatar-bg')
-    expect([
-      'var(--ss-primary)',
-      'var(--ss-blue)',
-      'var(--ss-purple)',
-      'var(--ss-cyan)',
-      'var(--ss-yellow)',
-      'var(--ss-lime)',
-    ]).toContain(col)
+    expect(CHART_PALETTE).toContain(col)
+  })
+
+  it('keeps the palette length stable (name-hash → colour mapping is API)', () => {
+    expect(CHART_PALETTE).toHaveLength(6)
   })
 })
 

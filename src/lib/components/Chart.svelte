@@ -13,6 +13,7 @@
 </script>
 
 <script lang="ts">
+  import { CHART_PALETTE } from '../palette.js'
   import { scaleLinear, scaleTime, scaleBand } from 'd3-scale'
   import { line as shapeLine, area as shapeArea } from 'd3-shape'
   import { extent, max } from 'd3-array'
@@ -62,14 +63,7 @@
     size,
   }: Props = $props()
 
-  const PALETTE = [
-    'var(--ss-primary)',
-    'var(--ss-blue)',
-    'var(--ss-purple)',
-    'var(--ss-cyan)',
-    'var(--ss-yellow)',
-    'var(--ss-lime)',
-  ]
+  const PALETTE = CHART_PALETTE
 
   const M = { top: 8, right: 12, bottom: 24, left: 40 }
 

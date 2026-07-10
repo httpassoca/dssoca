@@ -13,13 +13,11 @@
   const inventory: { title: string; note?: string; tokens: string[] }[] = [
     {
       title: 'remaining color tokens',
-      note: 'theme axis (data-theme); -rgb triplets back translucent washes/rings',
+      note: 'theme axis (data-theme); washes are color-mix() derivations of the terminal slots',
       tokens: [
         '--ss-bg-inset',
         '--ss-fg-on-primary',
         '--ss-fg-on-danger',
-        '--ss-primary-rgb',
-        '--ss-red-rgb',
         '--ss-selection-bg',
         '--ss-selection-fg',
         '--ss-code-number',

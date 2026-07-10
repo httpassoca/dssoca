@@ -23,8 +23,16 @@ The axes are orthogonal — any combination is valid (`dark/md`, `dark/sm`,
 
 ### Color (`data-theme`)
 
-Swaps surface + foreground tokens. Brand, status, and code colors are shared.
-Nothing about layout changes.
+Swaps the **entire** color surface (0.12.0 color rework). The palette is a
+monochromatic 16-slot terminal scheme: a generated root layer of the 16 ANSI
+colors + `bg`/`fg` + one vivid `--ss-accent` per theme (authored in OKLCH,
+neutrals tinted with the accent's hue, red↔green held ≥45° apart for diff
+legibility), and a hand-maintained semantic layer where every other token
+derives from those slots via `var()`/`color-mix()`. Because the semantics
+chain through the slots, a custom palette (`applyDesignConfig({ palette })`
+or a `paletteToCss` CSS block — see `docs/themes.md`) recolors everything.
+Values are static and hand-audited; regeneration is `pnpm gen:palette`
+(recipe in `scripts/lib/palette.mjs`). Nothing about layout changes.
 
 ### Size (`data-size-variant`)
 
