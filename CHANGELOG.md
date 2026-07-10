@@ -8,9 +8,33 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
-## [0.12.0] — DS-0107 component polish & API corrections — 2026-06-21
+## [0.12.0] — monochromatic terminal color rework + DS-0107 component polish — 2026-07-11
 
 ### Added
+
+- **Monochromatic 16-slot terminal palette** (`DS-0125`/`DS-0126`). The color surface is rebuilt as
+  two layers: a generated root layer of 19 slots per theme — the 16 ANSI colors + `--ss-bg` /
+  `--ss-fg` / `--ss-accent` — authored in OKLCH and seeded from the brand green `#66ef73` (dark
+  accent byte-identical), plus a semantic layer where every existing `--ss-*` token derives from
+  the slots via `var()`/`color-mix()`. Neutrals are hue-tinted toward the accent; the dark page
+  background follows the **complement rule** (the accent's complementary hue at ~1.3% chroma —
+  lime reproduces the original `#100f10` exactly); the six hue slots lean toward the accent with
+  red↔green held ≥45° apart for diff legibility. Every text-role slot holds WCAG 2.2 AA (≥4.5:1)
+  on `--ss-bg` **and** `--ss-bg-elev` in both themes, asserted mathematically in tests. Regenerate
+  with `pnpm gen:palette` (recipe in `scripts/lib/palette.mjs`; a drift-guard test pins the
+  committed values).
+- **Custom palette import** (`DS-0127`). `applyDesignConfig({ palette })` accepts a
+  `Palette` (`{ dark, light }` × 19 slots): the active theme's values are written as inline custom
+  properties and re-written on every call (theme flips are never masked); `palette: null` clears
+  back to the stylesheet. New `paletteToCss()` emits the zero-JS/SSR override block. `PALETTE_SLOTS`
+  and `Palette`/`ThemePalette`/`PaletteSlot` types exported.
+- **`CHART_PALETTE`** (`DS-0128`) — the categorical palette shared by Chart / ScatterPlot / BoxPlot /
+  BumpChart / Avatar, exported from the package root (`[accent, blue, magenta, cyan, yellow,
+green]`; order + length are stable API).
+- **Docs: interactive Theme Builder** (`DS-0129`) — a `/theme-builder` page in the documentation app
+  deriving full palettes from any accent with the same generator math, with a live preview on real
+  components, a WCAG corrector with one-click lightness fixes, and `applyDesignConfig` + CSS
+  exports. Plus a new **Color theory** guide page (`DS-0132`) explaining the system's philosophy.
 
 - **Configurable default `Spinner` variant** (`DS-0108`). `dssocaConfig` gains a `spinner` axis and
   `resolveSpinnerVariant()`; `<Spinner>` (and `Button` `loading`) use the configured default when no
@@ -30,6 +54,14 @@ may include breaking changes (flagged **BREAKING**).
 
 ### Changed
 
+- **BREAKING — status hues carry new values** (`DS-0126`). `--ss-red` / `--ss-yellow` / `--ss-blue`
+  / `--ss-cyan` are now terminal slots leaned toward the accent (no longer the old neon set), and
+  new `--ss-green` / `--ss-magenta` slots exist. `--ss-purple` → `--ss-magenta` and `--ss-lime` →
+  `--ss-green` ship as deprecated aliases for one minor (removal tracked in `DS-0130`).
+- **BREAKING — `--ss-primary-rgb` / `--ss-red-rgb` removed** (`DS-0126`). Comma-triplet tokens
+  cannot chain through `var()`, so they would silently ignore an imported palette. Migrate:
+  `rgba(var(--ss-primary-rgb), .06)` → `color-mix(in srgb, var(--ss-accent) 6%, transparent)`;
+  `rgba(var(--ss-red-rgb), .22)` → `color-mix(in srgb, var(--ss-danger) 22%, transparent)`.
 - **BREAKING — `Button` `loading` widened to `boolean | SpinnerVariant`** (`DS-0113`). The button's
   loading affordance now renders the shared `<Spinner>` instead of the bespoke inline ring (the
   `ss-btn-spin` keyframe and `.spinner` ring CSS were removed). `loading={true}` resolves to the
@@ -69,6 +101,10 @@ may include breaking changes (flagged **BREAKING**).
   layout `border-top` (`DS-0122`), so it no longer affects the bar's height.
 
 ### Fixed
+
+- **`Topbar` active-tab wash was hardcoded** to the dark-mode brand green (`rgba(102, 239, 115,
+.06)`) and did not flip with the theme; it now derives from the accent slot like the other nav
+  washes (`DS-0128`).
 
 - **`Button` height is invariant to leading/trailing icons** (`DS-0112`) — an icon affix is clamped
   to the text line-box and no longer grows the control.
