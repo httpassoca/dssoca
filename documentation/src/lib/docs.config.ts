@@ -57,6 +57,7 @@ export const NAV: NavGroup[] = [
       { label: 'Introduction', href: '/introduction', icon: 'book' },
       { label: 'Installation', href: '/installation', icon: 'terminal' },
       { label: 'Theming & config', href: '/theming', icon: 'settings' },
+      { label: 'Color theory', href: '/color-theory', icon: 'note' },
       { label: 'Tokens', href: '/tokens', icon: 'grid' },
       { label: 'Theme Builder', href: '/theme-builder', icon: 'color-swatch' },
       { label: 'All components', href: '/components', icon: 'database' },

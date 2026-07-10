@@ -1,6 +1,6 @@
 # Theming & config
 
-dssoca is configured along two orthogonal axes (see [Introduction](/introduction)). This page covers
+dssoca is configured along two orthogonal axes (see [Introduction](/introduction)). The palette itself — why it is built this way — is explained in [Color theory](/color-theory). This page covers
 how to set them — statically and at runtime — and the `dssoca.config.ts` manifest that defines them.
 
 ## The color axis — `data-theme`

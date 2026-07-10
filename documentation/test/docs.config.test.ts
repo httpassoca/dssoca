@@ -51,6 +51,7 @@ describe('docs.config — nav', () => {
         '/introduction',
         '/installation',
         '/theming',
+        '/color-theory',
         '/tokens',
         '/theme-builder',
       ]),
