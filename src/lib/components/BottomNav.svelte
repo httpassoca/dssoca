@@ -222,7 +222,7 @@
 
       &.active {
         color: var(--ss-primary);
-        background: rgba(var(--ss-primary-rgb), 0.06);
+        background: color-mix(in srgb, var(--ss-accent) 6%, transparent);
         border-top-color: var(--ss-primary);
       }
 

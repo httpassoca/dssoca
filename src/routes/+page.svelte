@@ -24,9 +24,9 @@
     max-width: 40rem;
     margin: 4rem auto;
     padding: 0 1.5rem;
-    color: #e0e0e0;
+    color: var(--ss-fg, #dae0da);
   }
   code {
-    color: #66ef73;
+    color: var(--ss-accent, #66ef73);
   }
 </style>

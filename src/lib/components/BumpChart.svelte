@@ -10,6 +10,7 @@
 </script>
 
 <script lang="ts">
+  import { CHART_PALETTE } from '../palette.js'
   import { scalePoint, scaleLinear } from 'd3-scale'
   import { line as shapeLine } from 'd3-shape'
   import { max } from 'd3-array'
@@ -48,14 +49,7 @@
     size,
   }: Props = $props()
 
-  const PALETTE = [
-    'var(--ss-primary)',
-    'var(--ss-blue)',
-    'var(--ss-purple)',
-    'var(--ss-cyan)',
-    'var(--ss-yellow)',
-    'var(--ss-lime)',
-  ]
+  const PALETTE = CHART_PALETTE
 
   const M = { top: 12, right: 56, bottom: 28, left: 32 }
 

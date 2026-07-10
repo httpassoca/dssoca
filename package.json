@@ -38,7 +38,8 @@
     "docs:dev": "pnpm --filter dssoca-docs dev",
     "docs:build": "pnpm --filter dssoca-docs build",
     "docs:preview": "pnpm --filter dssoca-docs preview",
-    "docs:test": "pnpm --filter dssoca-docs test"
+    "docs:test": "pnpm --filter dssoca-docs test",
+    "gen:palette": "node scripts/generate-palette.mjs"
   },
   "files": [
     "dist",
