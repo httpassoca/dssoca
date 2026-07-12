@@ -156,8 +156,13 @@ Rules:
    `## [Unreleased]`; polish it by hand).
 3. PR `release/<x.y.z>` into `main`; merge when green (CI's `pnpm pack` is the release dry-run);
    tag `vX.Y.Z` + GitHub release.
-4. `pnpm publish --access public --provenance --otp <code>` (npm 2FA; `--provenance` attaches a
-   supply-chain attestation — requires the repo to be the linked npm package origin). `prepack`
-   rebuilds `dist/`. Full trusted-publishing from CI (OIDC, no local token) is intentionally out
-   of scope for now — publishing stays a manual, provenance-attested step.
+4. Publishing is **automated via npm Trusted Publishing** (agile `DS-0143`): creating the GitHub
+   release triggers `.github/workflows/release.yml`, which OIDC-authenticates to npm (no token,
+   no OTP) and runs `pnpm publish --access public --provenance --no-git-checks` (`prepack`
+   rebuilds `dist/`; a guard step asserts the tag matches `package.json`). The npm
+   trusted-publisher config (package settings) is pinned to repo `httpassoca/dssoca`, workflow
+   `release.yml`, environment `release` — renaming any of those must update both sides. Escape
+   hatch for an already-tagged version:
+   `gh workflow run release.yml --ref <branch> -f tag=vX.Y.Z`. Manual fallback still works:
+   `pnpm publish --access public --provenance --otp <code>`.
 5. Merge `main` back into `develop` (git-flow back-merge).

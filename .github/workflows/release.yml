@@ -1,0 +1,66 @@
+name: release
+
+# Publishes to npm via Trusted Publishing (OIDC) — no token, no OTP; npm
+# verifies this workflow's identity and attaches provenance automatically.
+# npmjs.com trusted-publisher config (package `dssoca`) must match EXACTLY:
+#   repository = httpassoca/dssoca · workflow = release.yml · environment = release
+#
+# Fires when a GitHub release is published (the tag's tree must contain this
+# file, so it applies from the first release cut after it lands on main).
+# The workflow_dispatch escape hatch publishes an existing tag:
+#   gh workflow run release.yml --ref <branch-with-this-file> -f tag=vX.Y.Z
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to publish (e.g. v0.14.0)'
+        required: true
+
+permissions:
+  contents: read
+  id-token: write # the OIDC grant — this is what replaces the npm token + OTP
+
+concurrency: npm-publish
+
+env:
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release # must match the npm trusted-publisher config
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24 # matches package.json#engines
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false # see ci.yml — corepack activates pnpm below
+
+      - name: Enable pnpm via corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Tag matches package.json version
+        run: |
+          TAG='${{ inputs.tag || github.ref_name }}'
+          PKG="v$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$PKG" ]; then
+            echo "::error::tag $TAG does not match package.json $PKG — publishing the wrong tree?"
+            exit 1
+          fi
+
+      # prepack runs the full release pipeline (sync → svelte-package →
+      # build:css → publint) — the same dry-run CI already gated the release PR
+      # on. --no-git-checks: the release event checks out a detached tag.
+      - name: Publish to npm (OIDC, provenance)
+        run: pnpm publish --access public --provenance --no-git-checks
