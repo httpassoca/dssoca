@@ -6,10 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
-## [Unreleased]
+## [0.13.0] — keyboard shortcuts + SearchPalette — 2026-07-12
 
 ### Added
 
+- **`SearchPalette` component** (`DS-0133`) — a Cmd/Ctrl+K search & command palette: modal
+  combobox over a grouped listbox, built on the native `<dialog>` like Modal (focus trap, Esc,
+  backdrop, top layer) with the APG combobox pattern (focus stays on the input, options referenced
+  via `aria-activedescendant`). Generic `items: T extends SearchPaletteItem` (id / label / hint /
+  href / group / keywords / disabled), internal substring filter (`filter={false}` + bindable
+  `query` for consumer-owned filtering), native `<a>` navigation for `href` items (Enter clicks
+  the real link so the router intercepts it), `onselect` (return `false` to keep it open) /
+  `onopen` / `onclose` callbacks, `item` / `empty` / `footer` snippets, `size` prop, and a global
+  toggle shortcut (`shortcut?: 'mod+k' | false`).
 - **Keyboard shortcut registry** (`DS-0136`) — new `shortcuts` singleton for app-level shortcuts:
   `add()` with a tinykeys-style grammar (`mod+k`, comma alternatives like `'?, mod+/'`; `mod` = ⌘
   on Apple platforms, Ctrl elsewhere), reactive `items` for display, and WCAG 2.1.4 mechanics in
