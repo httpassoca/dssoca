@@ -7,7 +7,11 @@ import { contrastHex, hexToOklch, hueDistDeg } from '../../scripts/lib/palette.m
 const options = (accent: string) => ({ accent, tint: 0.35, neutralChroma: 1 })
 
 describe('theme-builder checks — factory output passes by construction', () => {
-  it.each(PRESETS.map((p) => [p.name, p.accent]))(
+  // Seed presets only: the by-construction guarantee is about the mono
+  // DERIVATION. Terminal presets never derive — the builder loads their full
+  // palettes as overrides, and the library's own suite (test/unit/presets.
+  // test.ts) guards those values' contrast directly.
+  it.each(PRESETS.filter((p) => !p.theme).map((p) => [p.name, p.accent]))(
     '%s (%s) yields zero failures',
     (_name, accent) => {
       const failures = runChecks(deriveMonoPalette(options(accent as string))).filter((c) => !c.ok)

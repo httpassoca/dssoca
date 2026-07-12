@@ -110,3 +110,24 @@ const css = paletteToCss(palette); // static — ship as a stylesheet
 Don't hand-write the 38 hex values — the [Theme Builder](/theme-builder) builds a palette
 interactively: pick an accent, live-preview real components, fix any WCAG failures with one
 click, and export exactly these two snippets.
+
+## Preset themes
+
+Any terminal theme can be a website theme — and six well-known ones ship ready-made as
+`PRESET_THEMES`: **Dracula** (light = the official Alucard), **Tokyo Night** (Night + Day),
+**Gruvbox**, **Nord** (dark only), **Solarized**, and **Coffee** (light only). Resolve one with
+`presetPalette()` and feed it to either palette path:
+
+```ts
+import { applyDesignConfig, paletteToCss, presetPalette } from 'dssoca';
+
+applyDesignConfig({ palette: presetPalette('dracula') }); // runtime
+const css = paletteToCss(presetPalette('gruvbox')); // static CSS
+```
+
+A preset only carries the modes its upstream defines; `presetPalette()` mirrors a single-mode
+theme (Nord, Coffee) into both, so the theme toggle keeps the same colors. The palettes stay
+faithful to the upstream hues, but slots that fail dssoca's WCAG 2.2 AA contrast targets are
+nudged along OKLCH lightness (hue untouched) — every nudge is commented in the source with the
+upstream value. The [Theme Builder](/theme-builder) offers each preset as an example button, so
+you can load one, hand-tune any slot, and re-export it.
