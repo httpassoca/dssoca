@@ -6,6 +6,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
+## [0.14.0] — preset terminal themes — 2026-07-12
+
+### Added
+
+- **Preset terminal palettes** (`DS-0142`) — six ready-made 19-slot palettes ported from
+  well-known terminal themes, shipped as `PRESET_THEMES` + `presetPalette()` (new
+  `src/lib/presets.ts`, re-exported from the package root): **Dracula** (light = the official
+  Alucard Classic), **Tokyo Night** (Night + Day), **Gruvbox** (dark + light), **Nord**
+  (dark-only), **Solarized** (dark + light), and **Coffee** (the author's light-only site theme).
+  `presetPalette('dracula')` resolves to a full `Palette` for the existing
+  `applyDesignConfig({ palette })` / `paletteToCss()` paths; single-mode presets mirror their one
+  side into both themes so a theme flip keeps the colors. Fidelity policy (documented in
+  `docs/themes.md` → _Preset palettes_): hue slots upstream-verbatim, neutral slots role-mapped to
+  the dssoca conventions from each theme's own official colors, and slots failing the WCAG 2.2 AA
+  corrector checks nudged along OKLCH lightness only (each carries an `// AA-fixed from #…`
+  comment; contrast targets pinned by `test/unit/presets.test.ts`).
+- **Theme Builder preset examples** — the docs Theme Builder's preset row now includes the six
+  terminal presets after the seed swatches: picking one loads the full upstream palette as slot
+  overrides (all 19 slots marked `edited`, each still hand-tunable, export works as usual), while
+  the seed presets keep deriving fresh mono palettes.
+
+### Fixed
+
+- **Theme Builder preset buttons** — added the missing gap between the color swatch dot and the
+  label (`margin-inline-end` on the dot; both render inside `Button`'s gap-less `.label` span).
+
 ## [0.13.0] — keyboard shortcuts + SearchPalette — 2026-07-12
 
 ### Added
