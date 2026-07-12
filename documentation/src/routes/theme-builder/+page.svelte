@@ -9,6 +9,7 @@
   import SlotGrid from '$lib/components/theme-builder/SlotGrid.svelte'
   import { runChecks } from '$lib/theme-builder/checks'
   import { resolvePalette } from '$lib/theme-builder/derive'
+  import type { Preset } from '$lib/theme-builder/presets'
   import {
     SLOTS,
     SLOT_TO_CSS_VAR,
@@ -39,10 +40,19 @@
     const { [slot]: _removed, ...rest } = overrides[theme] ?? {}
     overrides = { ...overrides, [theme]: rest }
   }
-  function pickPreset(hex: string) {
-    accent = hex
-    overrides = {} // fresh start — stale manual edits would mask the new seed
+  function pickPreset(preset: Preset) {
+    accent = preset.accent
     selectedSlot = null
+    if (preset.theme) {
+      // Terminal preset: load the full upstream palette as slot overrides so
+      // the exact theme shows everywhere and every slot stays hand-tunable.
+      // Single-mode presets (Nord, Coffee) mirror their one side into both.
+      const dark = preset.theme.dark ?? preset.theme.light
+      const light = preset.theme.light ?? preset.theme.dark
+      overrides = { dark: { ...dark }, light: { ...light } }
+    } else {
+      overrides = {} // fresh start — stale manual edits would mask the new seed
+    }
   }
 
   // ---- corrector ----
@@ -113,8 +123,10 @@
     <p>
       Pick an accent and the mono rules derive both 16-slot terminal themes — neutrals fully in the
       seed's hue, the six ANSI hues leaning toward it, every text slot solved for
-      <strong>WCAG AA</strong>. Preview real dssoca components, hand-tune any slot, fix what the
-      corrector flags, then export the palette as
+      <strong>WCAG AA</strong>. Or start from a preset: the seed swatches derive a fresh mono
+      palette, while the terminal presets (Dracula, Gruvbox, Nord, …) load the library's ready-made
+      <code>PRESET_THEMES</code> palettes. Preview real dssoca components, hand-tune any slot, fix
+      what the corrector flags, then export the palette as
       <code>applyDesignConfig</code> code or a CSS override block.
     </p>
   </header>

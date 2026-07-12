@@ -189,6 +189,53 @@ Ship it **after** `dssoca/theme.css` in source order — the selectors have
 equal specificity, so order decides. This is the recommended SSR path: no
 flash, no post-hydration mutation, works with `designAttributes()` as usual.
 
+### Preset palettes (`PRESET_THEMES`)
+
+Because any terminal theme can be a website theme, the library ships six
+ready-made palettes ported from well-known terminal themes:
+
+| Preset (`name`) | Modes        | Source                                              |
+| --------------- | ------------ | --------------------------------------------------- |
+| `dracula`       | dark + light | Dracula spec ANSI; light = official Alucard Classic |
+| `tokyo-night`   | dark + light | folke/tokyonight.nvim — Night + Day                 |
+| `gruvbox`       | dark + light | morhetz/gruvbox — dark + light                      |
+| `nord`          | dark only    | nordtheme.com terminal spec                         |
+| `solarized`     | dark + light | Ethan Schoonover's official ANSI mapping            |
+| `coffee`        | light only   | custom warm theme (derived, no upstream)            |
+
+```ts
+import { applyDesignConfig, paletteToCss, PRESET_THEMES, presetPalette } from 'dssoca'
+
+applyDesignConfig({ palette: presetPalette('dracula') }) // runtime path
+const css = paletteToCss(presetPalette('gruvbox')) // zero-JS / SSR path
+
+PRESET_THEMES // readonly PresetTheme[] — { name, label, accent, dark?, light? }
+```
+
+A preset only carries the modes its upstream actually defines — there is no
+invented Nord-light or Coffee-dark. `presetPalette()` fills the `Palette`
+shape by **mirroring** the single mode into both, so flipping `data-theme`
+keeps the same colors for single-mode presets.
+
+**Fidelity + accessibility.** The hue slots are upstream-verbatim. Two kinds
+of adjustment were made, each visible as a comment in `src/lib/presets.ts`:
+
+- _Role-mapped neutrals_: terminal light themes map `ansiBlack` to the
+  background and `brightWhite` to dark text; dssoca's semantic layer expects
+  the opposite (`black` = darkest ink, `brightWhite` = lightest
+  surface/shine, `brightBlack` = muted text). The neutral slots are therefore
+  assigned by **role**, still using only the theme's own official colors.
+- _AA fixes_: slots that failed the Theme Builder's WCAG 2.2 AA checks (7:1
+  body text, 4.5:1 muted text and button labels, 3:1 UI hues) were nudged
+  along OKLCH lightness only — hue and chroma untouched, so each theme keeps
+  its identity. Every nudge carries an `// AA-fixed from #…` comment with the
+  upstream value, and `test/unit/presets.test.ts` pins the contrast targets
+  so an edit can't silently regress readability.
+
+The docs **Theme Builder** offers every preset as an example button: picking
+one loads the full palette into the builder (as slot overrides), where you
+can inspect, hand-tune, and re-export it.
+
 ## Notes
 
 - The two axes are independent — setting one never disturbs the other.

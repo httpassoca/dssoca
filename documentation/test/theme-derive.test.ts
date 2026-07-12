@@ -50,6 +50,33 @@ describe('theme-builder derive — red ↔ green separation', () => {
   })
 })
 
+describe('theme-builder presets — terminal presets carry full palettes', () => {
+  const terminal = PRESETS.filter((p) => p.theme)
+
+  it('the library PRESET_THEMES are all present after the seed swatches', () => {
+    expect(terminal.map((p) => p.theme!.name)).toEqual([
+      'dracula',
+      'tokyo-night',
+      'gruvbox',
+      'nord',
+      'solarized',
+      'coffee',
+    ])
+  })
+
+  it('every available mode defines all 19 slots as valid #rrggbb', () => {
+    for (const p of terminal) {
+      expect(p.theme!.dark ?? p.theme!.light, p.name).toBeDefined()
+      for (const mode of ['dark', 'light'] as const) {
+        const side = p.theme![mode]
+        if (!side) continue
+        expect(Object.keys(side).sort(), `${p.name} ${mode}`).toEqual([...SLOTS].sort())
+        for (const slot of SLOTS) expect(side[slot], `${p.name} ${mode}.${slot}`).toMatch(HEX)
+      }
+    }
+  })
+})
+
 describe('theme-builder resolvePalette — overrides', () => {
   const opts = options(PRESETS[0].accent)
 

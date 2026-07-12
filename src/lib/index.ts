@@ -29,6 +29,9 @@ export {
 // Categorical palette shared by the chart family + Avatar (stable order/length).
 export { CHART_PALETTE } from './palette.js'
 
+// Preset terminal palettes (DS-0142): ready-made 19-slot themes.
+export { PRESET_THEMES, presetPalette, type PresetTheme, type PresetName } from './presets.js'
+
 export {
   default as Icon,
   registerIcon,
