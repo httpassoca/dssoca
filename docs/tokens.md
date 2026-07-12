@@ -322,6 +322,22 @@ Chrome that previously hardcoded px, now size-aware (md = the former fixed value
 | `--ss-log-t-w`   | `52px`  | `58px`  | `64px`  | Timestamp column min-width        |
 | `--ss-log-lvl-w` | `34px`  | `38px`  | `42px`  | Level column min-width            |
 
+### Component override tokens (`DS-0133`)
+
+**SearchPalette** (`--ss-search-palette-*`) — consumer-overridable knobs read as inline
+`var(--ss-search-palette-*, fallback)` on the component (the Modal DS-0094 pattern; they are not
+defined in the global stylesheet). The size axis only steps the panel width.
+
+| Token                            | Default                     | Role                              |
+| -------------------------------- | --------------------------- | --------------------------------- |
+| `--ss-search-palette-w`          | `40rem` (sm `32` / lg `48`) | Panel width                       |
+| `--ss-search-palette-max`        | `calc(100vw - --ss-s-8)`    | Panel max-width                   |
+| `--ss-search-palette-top`        | `15vh`                      | Launcher offset from the top      |
+| `--ss-search-palette-list-h`     | `60vh`                      | Results max-height (then scrolls) |
+| `--ss-search-palette-input-pad`  | `--ss-s-4`                  | Input vertical padding            |
+| `--ss-search-palette-input-size` | `--ss-ui-lg`                | Input type size                   |
+| `--ss-search-palette-backdrop`   | `rgba(0, 0, 0, 0.62)`       | `::backdrop` wash                 |
+
 ## 3. Static tokens — not axis-controlled
 
 Defined once under `:root`. Same in every theme/size.

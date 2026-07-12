@@ -90,6 +90,7 @@ describe('docs.config — nav', () => {
       'NumberField',
       'Pagination',
       'ScatterPlot',
+      'SearchPalette',
       'SegmentedControl',
       'Select',
       'ServiceCard',
