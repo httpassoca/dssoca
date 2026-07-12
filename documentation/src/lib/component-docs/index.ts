@@ -42,6 +42,8 @@ import { scatterPlot } from './scatter-plot'
 import { boxPlot } from './box-plot'
 import { bumpChart } from './bump-chart'
 import { heatmap } from './heatmap'
+// Cmd/Ctrl+K search palette (DS-0133).
+import { searchPalette } from './search-palette'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -88,4 +90,6 @@ export const COMPONENTS: ComponentDoc[] = [
   boxPlot,
   bumpChart,
   heatmap,
+  // DS-0133 — Cmd/Ctrl+K search palette.
+  searchPalette,
 ]

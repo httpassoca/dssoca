@@ -308,6 +308,16 @@
         </div>
       </Card>
     </div>
+  {:else if slug === 'search-palette'}
+    <!-- A live palette is a top-layer <dialog> and would escape the inert
+         card, so show a faithful static stand-in (like Modal/Toaster). -->
+    <div class="palette-mock">
+      <div class="pm-input">tok</div>
+      <div class="pm-group">pages</div>
+      <div class="pm-row active">Tokens</div>
+      <div class="pm-row">Theming</div>
+      <div class="pm-foot">↑↓ navigate · ↵ open · esc close</div>
+    </div>
   {/if}
 {/snippet}
 
@@ -492,6 +502,46 @@
     }
     .ft-g.info {
       color: var(--ss-cyan);
+    }
+
+    // static SearchPalette stand-in
+    .palette-mock {
+      width: 100%;
+      max-width: 260px;
+      border: 1px solid var(--ss-line-strong);
+      background: var(--ss-bg-elev);
+      font-family: var(--ss-font-mono);
+    }
+    .pm-input {
+      padding: var(--ss-s-2) var(--ss-s-3);
+      border-bottom: 1px solid var(--ss-primary);
+      font-size: var(--ss-ui-md);
+      color: var(--ss-fg);
+    }
+    .pm-group {
+      padding: var(--ss-s-2) var(--ss-s-3) 2px;
+      font-size: var(--ss-ui-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ss-fg-muted);
+    }
+    .pm-row {
+      padding: var(--ss-s-1) var(--ss-s-3);
+      border-left: 2px solid transparent;
+      font-size: var(--ss-ui-md);
+      color: var(--ss-fg);
+
+      &.active {
+        background: var(--ss-primary-soft);
+        border-left-color: var(--ss-primary);
+      }
+    }
+    .pm-foot {
+      margin-top: var(--ss-s-1);
+      padding: var(--ss-s-1) var(--ss-s-3);
+      border-top: 1px solid var(--ss-line);
+      font-size: var(--ss-ui-xs);
+      color: var(--ss-fg-muted);
     }
   }
 

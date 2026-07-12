@@ -203,7 +203,8 @@ export const V: Record<string, Variant[]> = {
  * `tooltip`), data views needing real datasets (`chart`, `table`), or form
  * controls whose always-on tiles don't read as decorative — they live on their
  * docs pages only, not the landing showcase. The DS-0102 charts (`scatter-plot`,
- * …) are data views needing real datasets too, so they join the exclusions.
+ * …) are data views needing real datasets too, so they join the exclusions, as
+ * does the DS-0133 `search-palette` (a top-layer overlay, like `modal`).
  */
 export const LANDING_EXCLUDED = new Set<string>([
   'image',
@@ -222,6 +223,7 @@ export const LANDING_EXCLUDED = new Set<string>([
   'box-plot',
   'bump-chart',
   'heatmap',
+  'search-palette',
 ])
 
 /**
