@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button, SegmentedControl, Switch } from 'dssoca'
   import HexField from './HexField.svelte'
-  import { PRESETS } from '$lib/theme-builder/presets'
+  import { PRESETS, type Preset } from '$lib/theme-builder/presets'
 
   interface Props {
     /** Committed accent seed (#rrggbb). */
@@ -13,8 +13,8 @@
     previewTheme: 'dark' | 'light'
     /** "Try it on this page" — applies the palette to the whole docs site. */
     applyToPage: boolean
-    /** Preset click — the page also clears manual slot overrides on this path. */
-    onPreset: (accent: string) => void
+    /** Preset click — seed presets reset overrides, terminal presets load theirs. */
+    onPreset: (preset: Preset) => void
   }
   let {
     accent = $bindable(),
@@ -45,9 +45,9 @@
     <div class="hex">
       <HexField value={accent} onCommit={(hex) => (accent = hex)} />
     </div>
-    <div class="presets" role="group" aria-label="Accent presets">
+    <div class="presets" role="group" aria-label="Theme presets">
       {#each PRESETS as preset (preset.name)}
-        <Button variant="ghost" onclick={() => onPreset(preset.accent)}>
+        <Button variant="ghost" onclick={() => onPreset(preset)}>
           <span class="dot" style="background: {preset.accent}" aria-hidden="true"></span>
           {preset.name}
         </Button>
@@ -165,6 +165,9 @@
     height: var(--ss-badge-dot);
     border: 1px solid var(--ss-line-strong);
     flex: none;
+    // The dot and the label text are siblings inside Button's .label span
+    // (which has no gap of its own) — space them apart here.
+    margin-inline-end: var(--ss-s-1);
   }
   .sliders {
     gap: var(--ss-block-gap);
