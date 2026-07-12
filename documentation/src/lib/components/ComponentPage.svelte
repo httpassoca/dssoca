@@ -25,6 +25,9 @@
     {#if doc.notes}
       <p class="notes">{doc.notes}</p>
     {/if}
+    {#if doc.guide}
+      <p class="notes">Guide: <a href={doc.guide.href}>{doc.guide.label}</a>.</p>
+    {/if}
   </section>
 
   <section>

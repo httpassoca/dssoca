@@ -62,7 +62,7 @@
     "./tokens.css": "./dist/tokens.css"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.29.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

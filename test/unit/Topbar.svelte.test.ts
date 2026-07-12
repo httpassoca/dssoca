@@ -1,9 +1,20 @@
 import { readFileSync } from 'node:fs'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/svelte'
+import { tick } from 'svelte'
 import { axe } from 'vitest-axe'
 import Topbar from '$lib/components/Topbar.svelte'
+import { shortcuts } from '$lib/shortcuts.svelte'
 import TopbarHarness from '../harness/TopbarHarness.svelte'
+
+// The shortcut registry is a module singleton — restore overrides and any
+// stubbed globals (platform mocks) after each test.
+afterEach(() => {
+  shortcuts.resetOverrides()
+  vi.unstubAllGlobals()
+})
+
+const mockApple = () => vi.stubGlobal('navigator', { platform: 'MacIntel', userAgent: '' })
 
 // Same component-scope axe config as test/unit/a11y.test.ts (jsdom has no
 // layout, fragment renders lack page landmarks).
@@ -102,9 +113,9 @@ describe('Topbar', () => {
     // the default is asserted by the landmark test above
   })
 
-  // --- SSR safety (DS-0067) ---
+  // --- shortcut registry (DS-0139; SSR safety now lives in shortcuts.add) ---
 
-  it('attaches the global keydown listener on mount and removes it on destroy', () => {
+  it('attaches the registry keydown listener on mount and removes it on destroy', () => {
     const addSpy = vi.spyOn(window, 'addEventListener')
     const removeSpy = vi.spyOn(window, 'removeEventListener')
     const keydownCalls = (spy: typeof addSpy) =>
@@ -117,15 +128,51 @@ describe('Topbar', () => {
     removeSpy.mockRestore()
   })
 
-  it('guards window access with the typeof-window convention (toast.svelte.ts pattern)', () => {
-    // jsdom always has a window, so the no-window branch cannot run here;
-    // assert the guard itself (the option the story's AC allows).
+  it('owns no raw window keydown listener — the binding goes through shortcuts.add', () => {
     // (path is cwd-relative — vitest runs from the repo root; import.meta.url
     // is not a file: URL under the jsdom environment)
     const src = readFileSync('src/lib/components/Topbar.svelte', 'utf8')
-    expect(src).toMatch(/typeof window !== 'undefined'/)
-    expect(src).toMatch(/if \(hasWindow\) window\.addEventListener/)
-    expect(src).toMatch(/if \(hasWindow\) window\.removeEventListener/)
+    expect(src).not.toMatch(/window\.addEventListener\(\s*'keydown'/)
+    expect(src).toMatch(/shortcuts\.add\(/)
+  })
+
+  it('registers ss:topbar-command only while onCommand is set, unregistering on unmount', () => {
+    const find = () => shortcuts.items.find((s) => s.id === 'ss:topbar-command')
+    const bare = render(Topbar, {})
+    expect(find()).toBeUndefined()
+    bare.unmount()
+
+    const { unmount } = render(Topbar, { onCommand: () => {} })
+    const info = find()
+    expect(info).toMatchObject({
+      id: 'ss:topbar-command',
+      label: 'Open command menu',
+      keys: 'mod+k',
+      scope: 'global',
+    })
+    unmount()
+    expect(find()).toBeUndefined()
+  })
+
+  it('obeys a user-level setEnabled(false) override', async () => {
+    const onCommand = vi.fn()
+    render(Topbar, { onCommand })
+    shortcuts.setEnabled('ss:topbar-command', false)
+    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(onCommand).not.toHaveBeenCalled()
+    shortcuts.setEnabled('ss:topbar-command', true)
+    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(onCommand).toHaveBeenCalledTimes(1)
+  })
+
+  it('remap reroutes the trigger', async () => {
+    const onCommand = vi.fn()
+    render(Topbar, { onCommand })
+    shortcuts.remap('ss:topbar-command', 'ctrl+shift+p')
+    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(onCommand).not.toHaveBeenCalled()
+    await fireEvent.keyDown(window, { key: 'p', ctrlKey: true, shiftKey: true })
+    expect(onCommand).toHaveBeenCalledTimes(1)
   })
 
   // --- roving tabindex (DS-0038) ---
@@ -174,13 +221,26 @@ describe('Topbar', () => {
 
   // --- command menu (DS-0038) ---
 
-  it('renders a labelled command button with keyboard-shortcut hints', () => {
+  it('renders a labelled command button with a platform-true aria-keyshortcuts (non-Apple)', async () => {
     // DS-0081: the chip only exists when an onCommand handler is provided.
+    // DS-0139: the value derives from ariaKeyshortcuts('mod+k') — the platform
+    // modifier only, not the old either-modifier 'Meta+K Control+K'.
     render(Topbar, { onCommand: () => {} })
+    await tick() // platform-detection effect
     const btn = screen.getByRole('button', { name: /open command menu/i })
-    expect(btn).toHaveAttribute('aria-keyshortcuts', 'Meta+K Control+K')
-    // the visible ⌘K glyph stays decorative
+    expect(btn).toHaveAttribute('aria-keyshortcuts', 'Control+K')
+    // the visible chip is a real <Kbd> and stays decorative
     expect(btn.querySelector('.kbd')).toHaveAttribute('aria-hidden', 'true')
+    expect(btn.querySelector('.kbd .ss-kbd')).not.toBeNull()
+  })
+
+  it('reflects Apple platforms in aria-keyshortcuts and the Kbd chip', async () => {
+    mockApple()
+    const { container } = render(Topbar, { onCommand: () => {} })
+    await tick() // platform-detection effect
+    const btn = screen.getByRole('button', { name: /open command menu/i })
+    expect(btn).toHaveAttribute('aria-keyshortcuts', 'Meta+K')
+    expect(container.querySelector('.kbd .ss-kbd')?.textContent).toContain('⌘')
   })
 
   it('calls onCommand when the command chip is clicked', async () => {
@@ -190,12 +250,24 @@ describe('Topbar', () => {
     expect(onCommand).toHaveBeenCalledTimes(1)
   })
 
-  it('calls onCommand on Cmd/Ctrl+K', async () => {
+  it('calls onCommand on Ctrl+K — not Meta+K — on non-Apple platforms', async () => {
+    // DS-0139 behavior change: mod+k narrows to the platform modifier.
     const onCommand = vi.fn()
     render(Topbar, { onCommand })
     await fireEvent.keyDown(window, { key: 'k', metaKey: true })
+    expect(onCommand).not.toHaveBeenCalled()
     await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
-    expect(onCommand).toHaveBeenCalledTimes(2)
+    expect(onCommand).toHaveBeenCalledTimes(1)
+  })
+
+  it('calls onCommand on Meta+K — not Ctrl+K — on Apple platforms', async () => {
+    mockApple()
+    const onCommand = vi.fn()
+    render(Topbar, { onCommand })
+    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(onCommand).not.toHaveBeenCalled()
+    await fireEvent.keyDown(window, { key: 'k', metaKey: true })
+    expect(onCommand).toHaveBeenCalledTimes(1)
   })
 
   // --- user control (DS-0038) ---
@@ -380,9 +452,9 @@ describe('Topbar', () => {
     expect(screen.queryByRole('button', { name: /open command menu/i })).toBeNull()
   })
 
-  it('ignores Cmd/Ctrl+K when no onCommand handler is provided', async () => {
+  it('ignores mod+K when no onCommand handler is provided', async () => {
     render(Topbar, {})
-    const evt = new KeyboardEvent('keydown', { key: 'k', metaKey: true, cancelable: true })
+    const evt = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, cancelable: true })
     window.dispatchEvent(evt)
     expect(evt.defaultPrevented).toBe(false) // browser default left alone
   })

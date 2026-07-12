@@ -2,7 +2,7 @@
 id: DS-0137
 type: story
 title: "Kbd — display-only key-cap chip"
-status: backlog
+status: done
 priority: high
 tags: [ui, component, a11y, keyboard]
 depends_on: [DS-0136]
@@ -44,16 +44,16 @@ slot-based `color-mix()` washes), `--ss-badge-px/py/gap` (rescales with `data-si
 
 ## Acceptance criteria
 
-- [ ] Component + barrel export (`Kbd`); `'Kbd'` in `COMPONENT_NAMES`; scoped SCSS only, tokens
+- [x] Component + barrel export (`Kbd`); `'Kbd'` in `COMPONENT_NAMES`; scoped SCSS only, tokens
       above, no raw color literals, radius 0.
-- [ ] Unit tests (`test/unit/Kbd.svelte.test.ts`): nested-`<kbd>` structure, glyph vs label
+- [x] Unit tests (`test/unit/Kbd.svelte.test.ts`): nested-`<kbd>` structure, glyph vs label
       output with `platform` mocked both ways, full-word `aria-label` in glyph format,
       comma-alternative rendering, children escape hatch, size attribute; axe clean (added to
       the a11y coverage suite).
-- [ ] Storybook `src/stories/Kbd.stories.svelte`: glyph/label, both platforms (via the
+- [x] Storybook `src/stories/Kbd.stories.svelte`: glyph/label, both platforms (via the
       `platform` prop), sizes, both themes.
-- [ ] Docs entry `documentation/src/lib/component-docs/kbd.ts` (props/usage/description/notes —
+- [x] Docs entry `documentation/src/lib/component-docs/kbd.ts` (props/usage/description/notes —
       notes: purely visual, never show a key without explanatory text, pair the real binding
       with `ariaKeyshortcuts()` on the owning control) + `index.ts`/`categories.ts` registration
       + pinned nav-array test update; `pnpm docs:test` green.
-- [ ] `pnpm test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green. Agile board rebuilt.
+- [x] `pnpm test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green. Agile board rebuilt.

@@ -2,7 +2,7 @@
 id: DS-0141
 type: story
 title: "Editable ShortcutsHelp — built-in WCAG 2.1.4 remap/disable UI"
-status: backlog
+status: done
 priority: high
 tags: [ui, component, a11y, keyboard]
 depends_on: [DS-0138]
@@ -36,13 +36,13 @@ Extends [[DS-0138-shortcuts-help-overlay]] with an `editable?: boolean` prop (de
 
 ## Acceptance criteria
 
-- [ ] `editable` prop renders per-row Switch + remap + reset, global `characterKeys` Switch, and
+- [x] `editable` prop renders per-row Switch + remap + reset, global `characterKeys` Switch, and
       restore-defaults; non-editable rendering unchanged.
-- [ ] Unit tests: Switch toggles call `setEnabled`; recording captures a combo, validates via
+- [x] Unit tests: Switch toggles call `setEnabled`; recording captures a combo, validates via
       the parser, rejects invalid/reserved input with feedback, Esc cancels; other shortcuts
       suppressed while recording; reset/restore call `remap(id,null)`/`resetOverrides`; rows
       re-render live; axe clean in editable mode.
-- [ ] Storybook story for the editable state.
-- [ ] `shortcuts-help.ts` docs entry + guide §4 updated ("compliance out of the box" path);
+- [x] Storybook story for the editable state.
+- [x] `shortcuts-help.ts` docs entry + guide §4 updated ("compliance out of the box" path);
       `pnpm docs:test` green.
-- [ ] `pnpm test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green. Agile board rebuilt.
+- [x] `pnpm test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green. Agile board rebuilt.

@@ -24,6 +24,8 @@ export interface ComponentDoc {
   props: PropDoc[]
   /** Optional extra notes (a11y, behaviour). */
   notes?: string
+  /** Optional related guide page, rendered as a link under the notes. */
+  guide?: { href: string; label: string }
 }
 
 export const SIZE_PROP: PropDoc = {

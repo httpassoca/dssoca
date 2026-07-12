@@ -1,0 +1,318 @@
+# Making your site keyboard-friendly
+
+dssoca ships keyboard support in three layers: per-component behavior you get **for free**, an
+app-level **shortcut registry** (`shortcuts` — the module documented on this page; it has no
+component page because it is a `.svelte.ts` module, not a component), and **discovery** components
+([Kbd](/components/kbd), [ShortcutsHelp](/components/shortcuts-help)). This page walks the layers
+in the order you should apply them, maps every WCAG 2.2 AA obligation to the API that satisfies
+it, and ends with an audit checklist. Shortcuts are the *last* layer — the first two are what
+make a site keyboard-friendly at all.
+
+## What you get for free
+
+Every dssoca component implements its own ARIA-pattern keyboard behavior — you never wire arrow
+keys or focus traps yourself:
+
+| Component                                     | Built-in keyboard behavior                                                                                                              |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| [Modal](/components/modal)                    | Native `<dialog>`: focus trap, Esc closes, backdrop click closes, focus returns to the opener                                            |
+| [Menu](/components/menu)                      | Arrow keys open the menu and rove focus through items, Home/End jump, Esc closes and refocuses the trigger                               |
+| [SegmentedControl](/components/segmented-control) | Arrow keys move + select (skipping disabled segments), Home/End jump to the ends                                                     |
+| [Accordion](/components/accordion)            | Arrow keys and Home/End move focus between headers; Enter/Space toggle (native buttons)                                                  |
+| [Topbar](/components/topbar)                  | "Skip to content" link, roving-tabindex tab strip (arrows + Home/End), registry-backed `mod+k` command hook                              |
+| [Tooltip](/components/tooltip)                | Shows on focus (not just hover), Esc dismisses — the WAI-ARIA tooltip pattern                                                            |
+| [Select](/components/select)                  | A native `<select>` — full platform keyboard and screen-reader behavior for free                                                         |
+| [SearchPalette](/components/search-palette)   | Modal combobox: arrows wrap, PageUp/PageDown jump, Enter opens, Esc closes; registry-backed `mod+k` toggle                               |
+| [ShortcutsHelp](/components/shortcuts-help)   | Modal shortcut listing, self-registered on `?, mod+/`                                                                                    |
+| [Toaster](/components/toaster)                | Esc dismisses the focused toast                                                                                                          |
+
+Focus is always visible (SC 2.4.7 Focus Visible): the base stylesheet gives every focusable
+element a two-pixel `--ss-primary` outline via `:focus-visible` —
+
+```css
+:where(button, a, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ss-primary);
+  outline-offset: 2px;
+}
+```
+
+— so the convention for your own chrome is the same: **never `outline: none`** without an equal
+or better replacement, and prefer `:focus-visible` over `:focus` so mouse clicks don't paint
+rings.
+
+## The baseline before shortcuts
+
+Shortcuts **augment** keyboard access, they never provide it. Three things come first:
+
+1. **Everything operable by keyboard alone** (SC 2.1.1). Every action reachable by Tab, every
+   control activated by Enter/Space. A shortcut must never be the *only* way to do something —
+   `mod+k` opens the palette, but the Topbar chip button opens it too.
+2. **A skip link and landmarks** (SC 2.4.1 Bypass Blocks). [Topbar](/components/topbar) ships a
+   "Skip to content" link out of the box (`skipTarget`, default `#main`) plus `header`/`nav`
+   landmarks. If your shell doesn't use Topbar, provide your own: a visually-hidden-until-focused
+   `<a href="#main">Skip to content</a>` as the first focusable element, and a `<main id="main">`
+   landmark for it to land on.
+3. **Nothing hidden under sticky chrome** (SC 2.4.11 Focus Not Obscured). A sticky Topbar can
+   cover the element that keyboard focus just scrolled to. Reserve the space globally:
+
+```css
+html {
+  /* --ss-shell-top-h is the topbar-height token (36/48/56px by size) */
+  scroll-padding-top: calc(var(--ss-shell-top-h) + 8px);
+}
+```
+
+## Registering shortcuts
+
+The registry is a module singleton — one window `keydown` listener (attached lazily on the first
+browser-side `add()`, detached when the registry empties) serves every registration, and exactly
+one shortcut fires per event. `add()` returns a disposer and is a full no-op on the server, so
+it is SSR-safe by construction:
+
+```js
+import { shortcuts } from 'dssoca'
+
+const dispose = shortcuts.add({
+  id: 'app:save',
+  label: 'Save draft',
+  keys: 'mod+s',
+  group: 'Editing',
+  onPress: () => save(),
+})
+// later — e.g. in an effect/onDestroy cleanup
+dispose()
+```
+
+Inside a component, prefer the `shortcut()` attachment — it registers on mount, cleans up on
+unmount, and (given a thunk) re-registers when reactive state it reads changes. It is also the
+only way to get `scope: 'focus'`, because the attached element is what anchors the scope:
+
+```svelte
+<script>
+  import { shortcut } from 'dssoca'
+</script>
+
+<!-- fires only while focus is inside this section -->
+<section
+  {@attach shortcut({
+    id: 'inbox:archive',
+    label: 'Archive conversation',
+    keys: 'e',
+    scope: 'focus',
+    onPress: archive,
+  })}
+>
+```
+
+### The combo grammar
+
+`keys` is a comma-separated list of alternatives; each alternative is `+`-joined modifiers plus
+exactly one key. Malformed input throws at registration time — never silently at press time.
+
+| Form                | Meaning                                                                                             |
+| ------------------- | ---------------------------------------------------------------------------------------------------- |
+| `k`                 | A single key — lowercased `event.key` (`k`, `?`, `escape`, `arrowup`, `f1`)                           |
+| `mod+k`             | `mod` resolves per platform: `meta` (⌘) on Apple, `ctrl` elsewhere                                    |
+| `ctrl+shift+p`      | Explicit modifiers, any of `mod` \| `ctrl` \| `alt` \| `shift` \| `meta`, order-insensitive           |
+| `?, mod+/`          | Comma = alternatives; either combo fires the shortcut                                                 |
+| `mod++`             | A trailing `++` binds the literal `+` key                                                             |
+| `?` (not `shift+/`) | Shifted printables are bound as the character they produce; `shift+/` spellings get a dev warning     |
+| `g i`               | **Parse error** — space is reserved for key sequences, which are not supported yet                    |
+
+### `ShortcutOptions`
+
+| Option           | Type                          | Default    | What it does                                                                                                             |
+| ---------------- | ----------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `id`             | `string`                      | required   | Stable unique handle for `setEnabled` / `remap` and the key overrides persist under. `ss:*` is reserved for dssoca; pick your own prefix |
+| `label`          | `string`                      | required   | Human-readable action name — shown by ShortcutsHelp, read by assistive tech                                               |
+| `keys`           | `string`                      | required   | Combo(s) in the grammar above; throws on malformed input                                                                  |
+| `onPress`        | `(event) => void`             | required   | Invoked when the shortcut fires (after `preventDefault` unless opted out)                                                 |
+| `group`          | `string`                      | —          | Display grouping (ShortcutsHelp sections); ungrouped shortcuts land in "General"                                          |
+| `scope`          | `'global' \| 'focus'`         | `'global'` | `'focus'` fires only while the event target is inside the attached element — attachment-only                              |
+| `enabled`        | `boolean \| () => boolean`    | `true`     | Contextual gate owned by the registering code; ANDed with the user-level `setEnabled` override                            |
+| `allowInInputs`  | `boolean`                     | `false`    | Fire even when the target is an input/textarea/select/contenteditable                                                     |
+| `allowRepeat`    | `boolean`                     | `false`    | Fire on held-key auto-repeat events                                                                                       |
+| `preventDefault` | `boolean`                     | `true`     | Call `event.preventDefault()` before `onPress`                                                                            |
+
+### Everything the package exports
+
+| Export                                    | What it is                                                                                                                        |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `shortcuts`                               | The singleton registry (below) — never a class to instantiate; a second instance would break the "exactly one fires" guarantee      |
+| `shortcuts.add(options)`                  | Register; returns an idempotent disposer. Server-side: validates `keys`, registers nothing                                          |
+| `shortcuts.items`                         | Reactive `readonly ShortcutInfo[]` — id, label, group, scope, effective `keys`, `defaultKeys`, effective `enabled`. Feeds ShortcutsHelp |
+| `shortcuts.enabled`                       | Reactive global kill switch (`$state`, default `true`)                                                                              |
+| `shortcuts.characterKeys`                 | Reactive; when `false`, modifier-less bindings never fire (the WCAG 2.1.4 switch)                                                   |
+| `shortcuts.setEnabled(id, bool)`          | User-level per-shortcut disable/enable override                                                                                     |
+| `shortcuts.remap(id, keys)`               | Rebind (validated immediately); `remap(id, null)` restores the registered default                                                   |
+| `shortcuts.getOverrides()`                | Serializable `ShortcutOverrides` snapshot — global toggles + every per-id override                                                  |
+| `shortcuts.applyOverrides(o)`             | Merge a snapshot back in; overrides for not-yet-registered ids wait for them; malformed persisted combos are skipped with a dev warning |
+| `shortcuts.resetOverrides()`              | Clear every override and restore the global toggles                                                                                 |
+| `shortcut(options \| () => options)`      | The `{@attach}` attachment — mount/unmount lifecycle + `scope: 'focus'` anchoring                                                   |
+| `formatShortcut(keys, opts?)`             | Pure formatter for display: `'mod+k'` → `⌘K` (Apple) / `Ctrl+K` (elsewhere); `format: 'label'` → full words                         |
+| `ariaKeyshortcuts(keys, platform?)`       | The combo in `aria-keyshortcuts` spec syntax (`Meta+K`), `mod` resolved per platform                                                |
+| `Kbd`, `ShortcutsHelp`                    | The [display chip](/components/kbd) and the [help overlay](/components/shortcuts-help)                                              |
+| Types                                     | `ShortcutOptions`, `ShortcutInfo`, `ShortcutOverride`, `ShortcutOverrides`, `ShortcutScope`, `ShortcutPlatform`, `ShortcutFormat`, `FormatShortcutOptions` |
+
+### How the matcher decides
+
+One `keydown` listener on `window` (bubble phase) runs this skip chain — a shortcut fires only
+when every step passes:
+
+1. `shortcuts.enabled` is `false` → nothing fires (global kill switch).
+2. `event.defaultPrevented` → skip. **This is the composition rule**: any component that handled
+   the key (a Menu swallowing Esc, an Input owner calling `preventDefault()`) beats every global
+   shortcut, automatically. When your own widget owns a key, `preventDefault()` is how it says so.
+3. `event.isComposing` → skip (IME composition in progress).
+4. The combo must match exactly — key plus the precise modifier state, `mod` resolved for the
+   platform. (Exception: shifted printables like `?` ignore `shiftKey`, since the character
+   already encodes it.)
+5. `event.repeat` → skip, unless the registration set `allowRepeat`.
+6. A character-key combo (no ctrl/alt/meta/mod) while `shortcuts.characterKeys` is `false` → skip.
+7. The target is an `<input>`/`<textarea>`/`<select>` or contenteditable → skip, unless
+   `allowInInputs`. Typing must never trigger actions.
+8. The shortcut's effective enabled state — the user-level `setEnabled` override AND the
+   registration's own `enabled` option — must be `true`.
+9. `scope: 'focus'` → the event target must be inside the attached element.
+10. **An open modal `<dialog>` suppresses everything except focus-scoped shortcuts anchored
+    inside that dialog** (SC 2.1.2 No Keyboard Trap — the page behind a modal is inert for
+    focus, so it must be inert for shortcuts too).
+
+**Conflicts are deterministic**: exactly one shortcut fires per event; the focus-scoped tier
+beats the global tier; within a tier, the last-registered wins. Registering a duplicate `id`
+logs a dev warning.
+
+## Staying WCAG 2.1.4-compliant
+
+SC 2.1.4 Character Key Shortcuts: any shortcut made **only** of printable characters (letters,
+digits, punctuation — in this registry, any combo without ctrl/alt/meta/mod, like `e` or `?`) is
+a hazard for speech-input users and sloppy keyboards, so at least one of three remedies is
+**mandatory**. All three are built in:
+
+| SC 2.1.4 remedy               | dssoca API                                                                                                      |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| A mechanism to **turn off**   | `shortcuts.characterKeys = false` (all character keys), `shortcuts.setEnabled(id, false)` (one), `shortcuts.enabled = false` (everything) |
+| A mechanism to **remap**      | `shortcuts.remap(id, 'mod+shift+k')` — validated immediately; `remap(id, null)` restores the default              |
+| **Active only on focus**      | `scope: 'focus'` via the attachment — the binding exists only while its component has focus within                |
+
+### Compliance out of the box
+
+You don't have to build any of that UI: [ShortcutsHelp](/components/shortcuts-help) in editable
+mode **is** the settings surface —
+
+```svelte
+<ShortcutsHelp editable />
+```
+
+Every row gains an enable Switch (`setEnabled`), a **Change** button that records the next
+keydown as the new binding (validated through the same combo grammar; reserved browser combos
+are rejected with feedback, Escape cancels, and no other shortcut can fire mid-recording), and a
+**Reset** once remapped (`remap(id, null)`). A footer adds the global single-key kill switch
+(`characterKeys`) and a **Restore defaults** button (`resetOverrides`), and every change is
+announced to assistive tech through a live region. Pair it with the persistence recipe below and
+mounting that one component is the entire SC 2.1.4 compliance story.
+
+### Rolling your own settings UI
+
+Prefer your own surface? The `characterKeys` switch is one line of settings UI (this demo avoids
+runes — the docs' `.svx` pages compile in legacy mode; in a runes component the same two props
+work identically):
+
+```svelte
+<script>
+  import { Switch, shortcuts } from 'dssoca'
+</script>
+
+<Switch
+  label="Single-key shortcuts"
+  checked={shortcuts.characterKeys}
+  onchange={(on) => (shortcuts.characterKeys = on)}
+/>
+```
+
+Compliance that resets on every visit isn't compliance, so the overrides snapshot includes the
+global toggles and round-trips through JSON. Persistence stays app policy; here is the entire
+localStorage recipe:
+
+```js
+import { shortcuts } from 'dssoca'
+
+// once, at app start (client-side)
+const saved = localStorage.getItem('shortcut-overrides')
+if (saved) shortcuts.applyOverrides(JSON.parse(saved))
+
+// after any change your settings UI makes (setEnabled / remap / the toggles)
+localStorage.setItem('shortcut-overrides', JSON.stringify(shortcuts.getOverrides()))
+```
+
+Two caveats the registry warns about in dev mode:
+
+- **Screen-reader browse mode swallows printable keys.** NVDA/JAWS intercept bare `h`, `k`, `t`,
+  `1`–`6` (and more) as quick-navigation keys — a bare-key shortcut simply never reaches the page
+  for those users. Give anything important a `mod+` combo (that is why ShortcutsHelp defaults to
+  `?, mod+/` — the second alternative survives both browse mode and the `characterKeys` switch).
+- **The browser owns some combos.** `ctrl+t` / `ctrl+w` / `ctrl+n` (and their `mod+` forms)
+  control tabs and windows; the page never reliably sees them. The registry dev-warns on both
+  lists at registration time.
+
+## Discovery
+
+A shortcut nobody can find might as well not exist.
+
+- **Mount [ShortcutsHelp](/components/shortcuts-help) once** near the app root. It renders
+  whatever the registry holds — groups, effective (remapped) combos, disabled rows struck
+  through with "(off)" — and self-registers its own `?, mod+/` hotkey (id `ss:shortcuts-help`),
+  so it lists itself and is itself remappable.
+- **Give it a visible trigger.** Discovery must never be shortcut-only — the overlay that
+  documents your shortcuts can't be reachable exclusively *by* one:
+
+```svelte
+<script>
+  import { ShortcutsHelp, Kbd } from 'dssoca'
+
+  let open = false
+</script>
+
+<button onclick={() => (open = true)}>
+  Keyboard shortcuts <Kbd keys="?" />
+</button>
+
+<ShortcutsHelp bind:open />
+```
+
+- **Show combos where the action lives.** Put a [Kbd](/components/kbd) chip next to the label in
+  buttons, menu items, and tooltips (`Search <Kbd keys="mod+k" />`) — it renders the correct
+  platform glyphs (⌘K on Apple, Ctrl+K elsewhere) and gives assistive tech a full-word name. The
+  chip is display-only; never show a key without the action's text next to it.
+- **Announce shortcuts on the owning control** with `aria-keyshortcuts`, generated by the
+  helper so it stays platform-true: `aria-keyshortcuts={ariaKeyshortcuts('mod+k')}` renders
+  `Meta+K` on a Mac and `Control+K` elsewhere. Announce only what is actually implemented — and
+  if you let users remap, re-derive it from `shortcuts.items` so it stays truthful. Topbar and
+  SearchPalette already do all of this for their built-in `mod+k`.
+
+## Audit checklist
+
+The condensed list — run it on every release:
+
+- [ ] **Tab through every screen.** Everything interactive is reachable and operable with the
+      keyboard alone; nothing traps focus (SC 2.1.1, 2.1.2).
+- [ ] **Focus is always visible** — no `outline: none` without a visible replacement; check your
+      custom chrome, dssoca's base styles cover the rest (SC 2.4.7).
+- [ ] **Skip link + landmarks** exist (Topbar's, or your own) and the skip target is `<main>`
+      (SC 2.4.1).
+- [ ] **`scroll-padding-top`** is set if any chrome is sticky — focused elements are never hidden
+      under it (SC 2.4.11).
+- [ ] **No shortcut is the only way** to perform its action — each has a clickable equivalent
+      (SC 2.1.1).
+- [ ] **Every character-key shortcut** can be turned off (`characterKeys` / `setEnabled`), is
+      remappable (`remap`), or is focus-scoped (SC 2.1.4) — and the settings persist
+      (`getOverrides` → storage → `applyOverrides`). `<ShortcutsHelp editable />` ships that
+      whole UI.
+- [ ] **Important shortcuts use `mod+` combos** — bare keys die in screen-reader browse mode;
+      no reserved browser combos (the dev warnings are clean).
+- [ ] **ShortcutsHelp is mounted** with a visible trigger, and every registered shortcut carries
+      an honest `label` and `group`.
+- [ ] **`aria-keyshortcuts`** on owning controls matches what actually fires — platform-resolved,
+      remap-aware.
+- [ ] **Dialogs behave**: Esc closes, focus returns to the opener, and global shortcuts are inert
+      while one is open (free with Modal / the registry).

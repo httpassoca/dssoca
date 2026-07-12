@@ -31,6 +31,7 @@
     Container,
     Textarea,
     Spinner,
+    Kbd,
     type IconName,
     type SideGroup,
     type BottomNavItem,
@@ -191,6 +192,9 @@
     {:else if slug === 'spinner'}
       <!-- self-animating frames (static first frame under reduced motion) -->
       <Spinner variant="squareCorners" label="Loading" showLabel />
+    {:else if slug === 'kbd'}
+      <!-- pinned platform per variant: stable tiles, no client-side detection flip -->
+      <Kbd keys={v.t} platform={v.plat} />
     {/if}
     <!-- a single misbehaving tile must never take down the whole field -->
     {#snippet failed()}{/snippet}

@@ -40,6 +40,7 @@ export const CATEGORIES: Category[] = [
     label: 'Data display',
     slugs: [
       'badge',
+      'kbd',
       'metric-tile',
       'service-card',
       'sparkline',
@@ -55,7 +56,7 @@ export const CATEGORIES: Category[] = [
   {
     id: 'feedback',
     label: 'Feedback',
-    slugs: ['toaster', 'empty-state', 'spinner', 'modal', 'tooltip'],
+    slugs: ['toaster', 'empty-state', 'spinner', 'modal', 'shortcuts-help', 'tooltip'],
   },
   { id: 'media', label: 'Media', slugs: ['icon', 'image', 'avatar'] },
 ]

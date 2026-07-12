@@ -36,6 +36,7 @@
   // ─────────────────────────────────────────────────────────────────────────
   import { tick, type Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import { shortcuts } from '../shortcuts.svelte.js'
 
   interface Props {
     /** Whether the palette is shown. Bindable — sync it from caller state. */
@@ -46,7 +47,10 @@
     query?: string
     /** Internal substring filter over label+keywords. Set false when the consumer filters. @default true */
     filter?: boolean
-    /** Global toggle shortcut. 'mod+k' = Cmd+K on mac, Ctrl+K elsewhere; false disables. @default 'mod+k' */
+    /** Global toggle shortcut, registered through the shortcut registry as
+     *  `ss:search-palette` (DS-0139) — listed in ShortcutsHelp, obeys
+     *  `setEnabled`/`remap`. 'mod+k' = Cmd+K on mac, Ctrl+K elsewhere
+     *  (platform modifier only); false disables. @default 'mod+k' */
     shortcut?: 'mod+k' | false
     /** Input placeholder. @default 'Search…' */
     placeholder?: string
@@ -179,13 +183,27 @@
     if (e.target === dialog) open = false
   }
 
-  function onWindowKeydown(e: KeyboardEvent) {
-    if (shortcut === false || e.isComposing) return
-    if ((e.metaKey || e.ctrlKey) && !e.altKey && e.key.toLowerCase() === 'k') {
-      e.preventDefault()
-      open = !open
+  // DS-0139: the toggle chord goes through the shortcut registry (id
+  // `ss:search-palette`) instead of a hand-rolled window listener — listed in
+  // ShortcutsHelp, disable/remap-able (WCAG 2.1.4), deterministic on
+  // collision. While the palette is open, its own modal <dialog> suppresses
+  // global shortcuts (SC 2.1.2), so the binding re-registers focus-scoped on
+  // the dialog; same id, so overrides follow both directions of the toggle.
+  // `add()` is SSR-safe (no-op without `window`).
+  $effect(() => {
+    if (shortcut === false) return
+    const options = {
+      id: 'ss:search-palette',
+      label: 'Open search',
+      keys: shortcut,
+      allowInInputs: true, // chorded — must fire while typing (incl. the palette's own input)
+      onPress: () => {
+        open = !open
+      },
     }
-  }
+    const el = dialog
+    return open && el ? shortcuts.add({ ...options, scope: 'focus' }, el) : shortcuts.add(options)
+  })
 
   // Step to the next non-disabled option, wrapping; delta 0 re-validates.
   function move(delta: number, from = active) {
@@ -259,8 +277,6 @@
     active = firstSelectable()
   }
 </script>
-
-<svelte:window onkeydown={onWindowKeydown} />
 
 <dialog
   bind:this={dialog}

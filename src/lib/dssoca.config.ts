@@ -131,6 +131,7 @@ export const COMPONENT_NAMES = [
   'Icon',
   'Image',
   'Input',
+  'Kbd',
   'Link',
   'LogStream',
   'Menu',

@@ -2,7 +2,7 @@
 id: DS-0139
 type: story
 title: "Dogfood: Topbar + SearchPalette mod+k on the registry"
-status: backlog
+status: done
 priority: high
 tags: [ui, refactor, a11y, keyboard]
 depends_on: [DS-0136, DS-0137]
@@ -39,18 +39,18 @@ dev warn); the docs note tells consumers to pick one (e.g. `shortcut={false}` on
 
 ## Acceptance criteria
 
-- [ ] Neither component owns a raw `window.addEventListener('keydown', …)` for its global
+- [x] Neither component owns a raw `window.addEventListener('keydown', …)` for its global
       shortcut anymore; both register through `shortcuts` with the `ss:*` ids above; public
       component APIs unchanged.
-- [ ] Both appear in `ShortcutsHelp`, obey `enabled`/`setEnabled`/`remap`, and unregister when
+- [x] Both appear in `ShortcutsHelp`, obey `enabled`/`setEnabled`/`remap`, and unregister when
       unmounted / `onCommand` unset / `shortcut={false}`.
-- [ ] Topbar's `aria-keyshortcuts` and ⌘K chip derive from `ariaKeyshortcuts()` / `<Kbd>`; value
+- [x] Topbar's `aria-keyshortcuts` and ⌘K chip derive from `ariaKeyshortcuts()` / `<Kbd>`; value
       reflects the platform (`Meta+K` on Apple, `Control+K` elsewhere).
-- [ ] Existing Topbar/SearchPalette test suites updated: registration is conditional, fires
+- [x] Existing Topbar/SearchPalette test suites updated: registration is conditional, fires
       `onCommand`/toggles the palette, platform narrowing asserted both ways (mocked), remap
       reroutes the trigger.
-- [ ] CHANGELOG: behavior-change entry with migration note (`remap('ss:topbar-command',
+- [x] CHANGELOG: behavior-change entry with migration note (`remap('ss:topbar-command',
       'ctrl+k')`-style recipe for either-modifier die-hards).
-- [ ] `topbar.ts` / `search-palette.ts` docs notes updated (registry-backed, listed in
+- [x] `topbar.ts` / `search-palette.ts` docs notes updated (registry-backed, listed in
       ShortcutsHelp, collision guidance); `pnpm docs:test` green.
-- [ ] `pnpm test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green. Agile board rebuilt.
+- [x] `pnpm test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green. Agile board rebuilt.

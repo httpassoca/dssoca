@@ -44,6 +44,9 @@ import { bumpChart } from './bump-chart'
 import { heatmap } from './heatmap'
 // Cmd/Ctrl+K search palette (DS-0133).
 import { searchPalette } from './search-palette'
+// Keyboard-shortcuts feature (DS-0135).
+import { kbd } from './kbd'
+import { shortcutsHelp } from './shortcuts-help'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -92,4 +95,7 @@ export const COMPONENTS: ComponentDoc[] = [
   heatmap,
   // DS-0133 — Cmd/Ctrl+K search palette.
   searchPalette,
+  // DS-0135 — keyboard-shortcuts feature.
+  kbd,
+  shortcutsHelp,
 ]

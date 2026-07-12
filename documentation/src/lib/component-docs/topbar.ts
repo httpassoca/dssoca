@@ -5,7 +5,7 @@ export const topbar: ComponentDoc = {
   slug: 'topbar',
   tagline: 'App-shell top bar with tabs.',
   description:
-    'The application top bar: brand, a tab strip (buttons or real links), optional right-aligned chrome (services summary, stats, ⌘K chip, live clock), and a user control. Adds a skip link, a command-menu hook (⌘/Ctrl+K), custom brand/user snippets, and an optional sticky position. Uses header/nav landmarks and keyboard tab navigation, and degrades gracefully to a plain brand + tabs bar when the built-in chrome is opted out.',
+    'The application top bar: brand, a tab strip (buttons or real links), optional right-aligned chrome (services summary, stats, ⌘K chip, live clock), and a user control. Adds a skip link, a command-menu hook (Cmd+K on Apple platforms, Ctrl+K elsewhere — registered through the shortcut registry), custom brand/user snippets, and an optional sticky position. Uses header/nav landmarks and keyboard tab navigation, and degrades gracefully to a plain brand + tabs bar when the built-in chrome is opted out.',
   storyId: 'components-topbar--default',
   usage: `<script>
   import { Topbar } from 'dssoca';
@@ -47,7 +47,7 @@ export const topbar: ComponentDoc = {
     {
       name: 'onCommand',
       type: '() => void',
-      desc: 'Fired when the command menu is opened (chip click or ⌘/Ctrl+K). The ⌘K chip and the shortcut only exist when this is provided.',
+      desc: 'Fired when the command menu is opened (chip click or mod+K — Cmd+K on Apple platforms, Ctrl+K elsewhere). The chip (a `Kbd` with a platform-true `aria-keyshortcuts`) and the shortcut only exist when this is provided.',
     },
     {
       name: 'onUser',
@@ -102,5 +102,6 @@ export const topbar: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Active tabs carry `aria-current="page"`. Button tabs use a roving tabindex (arrow keys move focus, Home/End jump); link tabs stay in the natural tab order so they work without JS, while still supporting the arrow keys. Responsive behavior is built in: the tab strip shrinks and scrolls horizontally instead of overflowing the bar, the optional stat segments hide below 720px, and the strip hides below 520px (pair with BottomNav for mobile navigation, or pass `tabs={[]}` to drop the strip entirely) — never target `.ss-topbar` internals from global CSS.',
+    "Active tabs carry `aria-current=\"page\"`. Button tabs use a roving tabindex (arrow keys move focus, Home/End jump); link tabs stay in the natural tab order so they work without JS, while still supporting the arrow keys. The command shortcut is registry-backed (id `ss:topbar-command`, `mod+k`): it lists in ShortcutsHelp and obeys `shortcuts.setEnabled()` / `shortcuts.remap()` — it fires on the platform modifier only (Cmd+K on Apple, Ctrl+K elsewhere); remap to `'mod+k, ctrl+k'` if you want both. Don't pair it with a default-shortcut SearchPalette: both bind `mod+k` and the last one mounted wins — give one of them the chord (e.g. `shortcut={false}` on the palette, or skip `onCommand`). Responsive behavior is built in: the tab strip shrinks and scrolls horizontally instead of overflowing the bar, the optional stat segments hide below 720px, and the strip hides below 520px (pair with BottomNav for mobile navigation, or pass `tabs={[]}` to drop the strip entirely) — never target `.ss-topbar` internals from global CSS.",
+  guide: { href: '/keyboard', label: 'Making your site keyboard-friendly' },
 }

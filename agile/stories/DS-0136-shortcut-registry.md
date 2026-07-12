@@ -2,7 +2,7 @@
 id: DS-0136
 type: story
 title: "Shortcut registry core — shortcuts.svelte.ts + attachment"
-status: backlog
+status: done
 priority: high
 tags: [api, a11y, keyboard, feature]
 depends_on: []
@@ -66,24 +66,24 @@ cross-request singleton-state leak); no `window`/`document` at module scope.
 
 ## Acceptance criteria
 
-- [ ] `src/lib/shortcuts.svelte.ts` implements the surface above; barrel exports `shortcuts`,
+- [x] `src/lib/shortcuts.svelte.ts` implements the surface above; barrel exports `shortcuts`,
       `shortcut`, `formatShortcut`, `ariaKeyshortcuts` + types (`ShortcutOptions`,
       `ShortcutInfo`, `ShortcutOverrides`); the registry class is **not** exported.
-- [ ] Parser: table-driven tests — canonical normalization, comma alternatives, `mod` resolution
+- [x] Parser: table-driven tests — canonical normalization, comma alternatives, `mod` resolution
       both platforms (mocked), throws on sequences/multi-key/unknown modifiers, `shift+/`
       dev-warn.
-- [ ] Matcher: synthetic `KeyboardEvent` dispatch on `window` covers the full skip chain,
+- [x] Matcher: synthetic `KeyboardEvent` dispatch on `window` covers the full skip chain,
       shift-on-printable rule, `preventDefault` default vs opt-out, alternatives, conflict
       tiers (exactly one fires), modal-dialog suppression.
-- [ ] 2.1.4 mechanics: `setEnabled(id,false)` silences; `remap` fires on the new combo only,
+- [x] 2.1.4 mechanics: `setEnabled(id,false)` silences; `remap` fires on the new combo only,
       `remap(id,null)` restores; `getOverrides` → `applyOverrides` round-trips including the
       global toggles; `characterKeys=false` kills `/`-style but not `mod+k`.
-- [ ] Lifecycle: `addEventListener` spies prove lazy attach / detach-at-zero / one listener for N
+- [x] Lifecycle: `addEventListener` spies prove lazy attach / detach-at-zero / one listener for N
       shortcuts; disposers are idempotent; attachment harness (`test/harness/`) proves
       mount-register / unmount-clean / reactive re-register / `scope:'focus'`.
-- [ ] SSR posture: `add()` without `window` registers nothing and returns a working noop
+- [x] SSR posture: `add()` without `window` registers nothing and returns a working noop
       disposer.
-- [ ] Peer bump to `^5.29` lands with a CHANGELOG entry; `pnpm test`, `pnpm check`, `pnpm pack`
+- [x] Peer bump to `^5.29` lands with a CHANGELOG entry; `pnpm test`, `pnpm check`, `pnpm pack`
       green (coverage thresholds hold over the new module).
-- [ ] Registry API reference documented (guide page [[DS-0140-keyboard-guide-page]] is the docs
-      home; this story adds the API tables it will embed). Agile board rebuilt.
+- [x] Registry API reference documented (`docs/shortcuts.md` — the API tables the guide page
+      [[DS-0140-keyboard-guide-page]] will embed). Agile board rebuilt.

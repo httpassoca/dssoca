@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest'
+import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest'
 import { render, fireEvent } from '@testing-library/svelte'
 import { createRawSnippet, tick } from 'svelte'
 import { axe } from 'vitest-axe'
 import SearchPalette, { type SearchPaletteItem } from '$lib/components/SearchPalette.svelte'
+import { shortcuts } from '$lib/shortcuts.svelte'
 
 // jsdom implements neither HTMLDialogElement.showModal()/close() nor
 // Element.scrollIntoView(). Polyfill the bits the component relies on
@@ -254,24 +255,92 @@ describe('SearchPalette — keyboard', () => {
   })
 })
 
-describe('SearchPalette — shortcut', () => {
-  it('Ctrl+K toggles the palette open and closed', async () => {
-    const { container } = render(SearchPalette, { open: false, items: navItems })
-    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-search-palette')!
-    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
-    expect(dialog.open).toBe(true)
-    await fireEvent.keyDown(window, { key: 'k', metaKey: true })
-    expect(dialog.open).toBe(false)
+describe('SearchPalette — shortcut (registry-backed, DS-0139)', () => {
+  // The shortcut registry is a module singleton — restore overrides and any
+  // stubbed globals (platform mocks) after each test.
+  afterEach(() => {
+    shortcuts.resetOverrides()
+    vi.unstubAllGlobals()
   })
 
-  it('shortcut={false} disables the global chord', async () => {
+  const getDialog = (container: HTMLElement) =>
+    container.querySelector<HTMLDialogElement>('dialog.ss-search-palette')!
+  const find = () => shortcuts.items.find((s) => s.id === 'ss:search-palette')
+
+  it('registers ss:search-palette in the registry and unregisters on unmount', () => {
+    const { unmount } = render(SearchPalette, { open: false, items: navItems })
+    expect(find()).toMatchObject({
+      id: 'ss:search-palette',
+      label: 'Open search',
+      keys: 'mod+k',
+      scope: 'global',
+    })
+    unmount()
+    expect(find()).toBeUndefined()
+  })
+
+  it('shortcut={false} registers nothing and ignores the chord', async () => {
     const { container } = render(SearchPalette, {
       open: false,
       items: navItems,
       shortcut: false as const,
     })
-    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-search-palette')!
+    expect(find()).toBeUndefined()
     await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(getDialog(container).open).toBe(false)
+  })
+
+  it('Ctrl+K — not Meta+K — toggles the palette on non-Apple platforms', async () => {
+    // DS-0139 behavior change: mod+k narrows to the platform modifier.
+    const { container } = render(SearchPalette, { open: false, items: navItems })
+    const dialog = getDialog(container)
+    await fireEvent.keyDown(window, { key: 'k', metaKey: true })
+    expect(dialog.open).toBe(false)
+    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(dialog.open).toBe(true)
+    // While open, the binding is focus-scoped inside the modal dialog: a
+    // window-target chord no longer reaches it (SC 2.1.2 suppression)…
+    expect(find()?.scope).toBe('focus')
+    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(dialog.open).toBe(true)
+    // …but from the palette's own input (where focus lives) it toggles closed.
+    await fireEvent.keyDown(getInput(container), { key: 'k', ctrlKey: true })
+    expect(dialog.open).toBe(false)
+    expect(find()?.scope).toBe('global')
+  })
+
+  it('Meta+K — not Ctrl+K — toggles the palette on Apple platforms', async () => {
+    vi.stubGlobal('navigator', { platform: 'MacIntel', userAgent: '' })
+    const { container } = render(SearchPalette, { open: false, items: navItems })
+    const dialog = getDialog(container)
+    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(dialog.open).toBe(false)
+    await fireEvent.keyDown(window, { key: 'k', metaKey: true })
+    expect(dialog.open).toBe(true)
+    await fireEvent.keyDown(getInput(container), { key: 'k', metaKey: true })
+    expect(dialog.open).toBe(false)
+  })
+
+  it('obeys a user-level setEnabled(false) override', async () => {
+    const { container } = render(SearchPalette, { open: false, items: navItems })
+    shortcuts.setEnabled('ss:search-palette', false)
+    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(getDialog(container).open).toBe(false)
+    shortcuts.setEnabled('ss:search-palette', true)
+    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(getDialog(container).open).toBe(true)
+  })
+
+  it('remap reroutes the trigger — both directions of the toggle', async () => {
+    const { container } = render(SearchPalette, { open: false, items: navItems })
+    const dialog = getDialog(container)
+    shortcuts.remap('ss:search-palette', 'ctrl+shift+p')
+    await fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    expect(dialog.open).toBe(false)
+    await fireEvent.keyDown(window, { key: 'p', ctrlKey: true, shiftKey: true })
+    expect(dialog.open).toBe(true)
+    // The focus-scoped (open) registration shares the id, so it follows too.
+    await fireEvent.keyDown(getInput(container), { key: 'p', ctrlKey: true, shiftKey: true })
     expect(dialog.open).toBe(false)
   })
 })
