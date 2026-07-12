@@ -33,6 +33,11 @@
     Avatar,
     Pagination,
     Switch,
+    ScatterPlot,
+    BoxPlot,
+    BumpChart,
+    Heatmap,
+    Kbd,
   } from 'dssoca'
   import { componentsByCategory } from '$lib/categories'
   import { COMPONENTS } from '$lib/docs.config'
@@ -123,6 +128,31 @@
     { value: 'europe', label: 'Europe' },
     { value: 'us', label: 'USA' },
   ]
+
+  // --- sample data for the DS-0102 chart previews --------------------------
+  const scatterPoints = [
+    { label: 'Ada', x: 8.9, y: 7.5, size: 27 },
+    { label: 'Grace', x: 8.5, y: 5.7, size: 14 },
+    { label: 'Alan', x: 6.8, y: 4.2, size: 8 },
+  ]
+  const boxGroups = [
+    { label: 'Ada', values: [12, 14, 11, 15, 13] },
+    { label: 'Grace', values: [9, 15, 7, 17, 11] },
+    { label: 'Alan', values: [10, 11, 10, 12, 11] },
+  ]
+  const bumpStages = ['G1', 'G2', 'G3', 'G4']
+  const bumpSeries = [
+    { label: 'Ada', ranks: [1, 2, 1, 1] },
+    { label: 'Grace', ranks: [2, 1, 3, 2] },
+    { label: 'Alan', ranks: [3, 3, 2, 3] },
+  ]
+  // 3×3 with cellSize 32 → 28 + 96 = 124px tall, inside the 136px stage.
+  const heatNames = ['Ada', 'Grace', 'Alan']
+  const heatValues: (number | null)[][] = [
+    [null, 5, 7],
+    [3, null, 6],
+    [2, 4, null],
+  ]
 </script>
 
 <svelte:head>
@@ -207,6 +237,11 @@
       <Badge tone="critical">down</Badge>
       <Badge tone="info">to_watch</Badge>
     </div>
+  {:else if slug === 'kbd'}
+    <div class="row">
+      <Kbd keys="mod+k" platform="apple" />
+      <Kbd keys="?, mod+/" platform="other" />
+    </div>
   {:else if slug === 'metric-tile'}
     <div class="w-full">
       <MetricTile label="req/min" value="142" delta="12%" dir="up" deltaLabel="vs prev 7d">
@@ -263,6 +298,20 @@
     <div class="w-full">
       <Chart series={chartSeries} variant="line" height={150} fluid />
     </div>
+  {:else if slug === 'scatter-plot'}
+    <div class="w-full">
+      <ScatterPlot points={scatterPoints} xRef={8} yRef={5.5} height={150} fluid />
+    </div>
+  {:else if slug === 'box-plot'}
+    <div class="w-full">
+      <BoxPlot groups={boxGroups} height={150} fluid />
+    </div>
+  {:else if slug === 'bump-chart'}
+    <div class="w-full">
+      <BumpChart series={bumpSeries} stages={bumpStages} height={150} fluid />
+    </div>
+  {:else if slug === 'heatmap'}
+    <Heatmap rows={heatNames} columns={heatNames} values={heatValues} cellSize={32} />
   {:else if slug === 'table'}
     <div class="w-full">
       <Table columns={tableCols} rows={tableRows} />
@@ -307,6 +356,26 @@
           <Button variant="danger">Delete</Button>
         </div>
       </Card>
+    </div>
+  {:else if slug === 'search-palette'}
+    <!-- A live palette is a top-layer <dialog> and would escape the inert
+         card, so show a faithful static stand-in (like Modal/Toaster). -->
+    <div class="palette-mock">
+      <div class="pm-input">tok</div>
+      <div class="pm-group">pages</div>
+      <div class="pm-row active">Tokens</div>
+      <div class="pm-row">Theming</div>
+      <div class="pm-foot">↑↓ navigate · ↵ open · esc close</div>
+    </div>
+  {:else if slug === 'shortcuts-help'}
+    <!-- A live overlay is a top-layer <dialog> and would escape the inert
+         card, so show a static stand-in of the shortcut list (like
+         Modal/SearchPalette). -->
+    <div class="help-mock">
+      <div class="hm-group">navigation</div>
+      <div class="hm-row"><span>Open search</span> <Kbd keys="mod+k" platform="other" /></div>
+      <div class="hm-group">general</div>
+      <div class="hm-row"><span>Show shortcuts</span> <Kbd keys="?" platform="other" /></div>
     </div>
   {/if}
 {/snippet}
@@ -492,6 +561,77 @@
     }
     .ft-g.info {
       color: var(--ss-cyan);
+    }
+
+    // static SearchPalette stand-in
+    .palette-mock {
+      width: 100%;
+      max-width: 260px;
+      border: 1px solid var(--ss-line-strong);
+      background: var(--ss-bg-elev);
+      font-family: var(--ss-font-mono);
+    }
+    .pm-input {
+      padding: var(--ss-s-2) var(--ss-s-3);
+      border-bottom: 1px solid var(--ss-primary);
+      font-size: var(--ss-ui-md);
+      color: var(--ss-fg);
+    }
+    .pm-group {
+      padding: var(--ss-s-2) var(--ss-s-3) 2px;
+      font-size: var(--ss-ui-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ss-fg-muted);
+    }
+    .pm-row {
+      padding: var(--ss-s-1) var(--ss-s-3);
+      border-left: 2px solid transparent;
+      font-size: var(--ss-ui-md);
+      color: var(--ss-fg);
+
+      &.active {
+        background: var(--ss-primary-soft);
+        border-left-color: var(--ss-primary);
+      }
+    }
+    .pm-foot {
+      margin-top: var(--ss-s-1);
+      padding: var(--ss-s-1) var(--ss-s-3);
+      border-top: 1px solid var(--ss-line);
+      font-size: var(--ss-ui-xs);
+      color: var(--ss-fg-muted);
+    }
+
+    // static ShortcutsHelp stand-in
+    .help-mock {
+      width: 100%;
+      max-width: 260px;
+      border: 1px solid var(--ss-line-strong);
+      background: var(--ss-bg-elev);
+      padding: var(--ss-s-2) var(--ss-s-3);
+    }
+    .hm-group {
+      padding-top: var(--ss-s-1);
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ss-fg-faint);
+    }
+    .hm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--ss-gap-sm);
+      padding: var(--ss-s-1) 0;
+      border-bottom: 1px solid var(--ss-line);
+      font-size: var(--ss-ui-md);
+      color: var(--ss-fg);
+
+      &:last-child {
+        border-bottom: 0;
+      }
     }
   }
 

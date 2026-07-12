@@ -1,8 +1,12 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import { render } from '@testing-library/svelte'
+import { tick } from 'svelte'
 import { axe } from 'vitest-axe'
+import { shortcuts } from '$lib/shortcuts.svelte'
 import CardHarness from '../harness/CardHarness.svelte'
 import AccordionHarness from '../harness/AccordionHarness.svelte'
+import KbdHarness from '../harness/KbdHarness.svelte'
+import ShortcutsHelpHarness from '../harness/ShortcutsHelpHarness.svelte'
 import EmptyState from '$lib/components/EmptyState.svelte'
 import Sparkline from '$lib/components/Sparkline.svelte'
 import LogStream from '$lib/components/LogStream.svelte'
@@ -148,6 +152,82 @@ describe('a11y (axe) — coverage expansion (DS-0071)', () => {
         defaultValue: 'one',
         idBase: 'a11y-acc-h2',
       })
+      expect(await axe(container, axeOpts)).toHaveNoViolations()
+    })
+  })
+
+  describe('Kbd (DS-0137)', () => {
+    it('glyph format (role="img" + full-word aria-label)', async () => {
+      const { container } = render(KbdHarness, {
+        keys: 'mod+k',
+        format: 'glyph',
+        platform: 'apple',
+      })
+      expect(await axe(container, axeOpts)).toHaveNoViolations()
+    })
+
+    it('label format with comma alternatives', async () => {
+      const { container } = render(KbdHarness, {
+        keys: '?, mod+/',
+        format: 'label',
+        platform: 'other',
+      })
+      expect(await axe(container, axeOpts)).toHaveNoViolations()
+    })
+
+    it('raw-content escape hatch', async () => {
+      const { container } = render(KbdHarness, { text: 'F12' })
+      expect(await axe(container, axeOpts)).toHaveNoViolations()
+    })
+  })
+
+  describe('ShortcutsHelp (DS-0138)', () => {
+    // jsdom lacks HTMLDialogElement.showModal()/close(); polyfill the bits
+    // Modal relies on (mirrors Modal.svelte.test.ts).
+    beforeAll(() => {
+      const proto = HTMLDialogElement.prototype
+      if (!proto.showModal) {
+        proto.showModal = function (this: HTMLDialogElement) {
+          this.open = true
+        }
+      }
+      if (!proto.close) {
+        proto.close = function (this: HTMLDialogElement) {
+          this.open = false
+          this.dispatchEvent(new Event('close'))
+        }
+      }
+    })
+
+    it('open dialog with grouped rows and a disabled shortcut', async () => {
+      const disposeA = shortcuts.add({
+        id: 'a11y:save',
+        label: 'Save',
+        keys: 'mod+s',
+        group: 'Editing',
+        onPress: () => {},
+      })
+      const disposeB = shortcuts.add({
+        id: 'a11y:next',
+        label: 'Next item',
+        keys: 'j',
+        group: 'Navigation',
+        enabled: false,
+        onPress: () => {},
+      })
+      try {
+        const { container } = render(ShortcutsHelpHarness, { open: true })
+        await tick()
+        expect(await axe(container, axeOpts)).toHaveNoViolations()
+      } finally {
+        disposeA()
+        disposeB()
+      }
+    })
+
+    it('open dialog with an empty registry (EmptyState body)', async () => {
+      const { container } = render(ShortcutsHelpHarness, { open: true, hotkey: null })
+      await tick()
       expect(await axe(container, axeOpts)).toHaveNoViolations()
     })
   })

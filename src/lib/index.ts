@@ -83,12 +83,32 @@ export { default as Tooltip } from './components/Tooltip.svelte'
 export { default as Avatar } from './components/Avatar.svelte'
 export { default as Pagination } from './components/Pagination.svelte'
 export { default as Switch } from './components/Switch.svelte'
+export { default as SearchPalette, type SearchPaletteItem } from './components/SearchPalette.svelte'
 
 // geossoca stats-dashboard charts (DS-0102).
 export { default as ScatterPlot, type ScatterPoint } from './components/ScatterPlot.svelte'
 export { default as BoxPlot, type BoxGroup } from './components/BoxPlot.svelte'
 export { default as BumpChart, type BumpSeries } from './components/BumpChart.svelte'
 export { default as Heatmap } from './components/Heatmap.svelte'
+
+// Keyboard-shortcuts feature (DS-0135): registry core + display chip.
+export { default as Kbd } from './components/Kbd.svelte'
+export { default as ShortcutsHelp } from './components/ShortcutsHelp.svelte'
+
+export {
+  shortcuts,
+  shortcut,
+  formatShortcut,
+  ariaKeyshortcuts,
+  type ShortcutOptions,
+  type ShortcutInfo,
+  type ShortcutOverride,
+  type ShortcutOverrides,
+  type ShortcutScope,
+  type ShortcutPlatform,
+  type ShortcutFormat,
+  type FormatShortcutOptions,
+} from './shortcuts.svelte.js'
 
 export {
   toast,
