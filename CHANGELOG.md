@@ -8,6 +8,59 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+### Added
+
+- **Keyboard shortcut registry** (`DS-0136`) — new `shortcuts` singleton for app-level shortcuts:
+  `add()` with a tinykeys-style grammar (`mod+k`, comma alternatives like `'?, mod+/'`; `mod` = ⌘
+  on Apple platforms, Ctrl elsewhere), reactive `items` for display, and WCAG 2.1.4 mechanics in
+  the box — global `enabled` / `characterKeys` kill switches, per-shortcut `setEnabled()` /
+  `remap()` (with `remap(id, null)` restoring the default), and serializable
+  `getOverrides()` / `applyOverrides()` / `resetOverrides()` for persistence. One lazy `window`
+  keydown listener serves all registrations, with input/contenteditable guarding, IME + repeat
+  skipping, and suppression of global shortcuts while a modal `<dialog>` is open. Also ships the
+  `shortcut()` attachment (`{@attach}` registration with `scope: 'focus'` support) and pure
+  `formatShortcut()` / `ariaKeyshortcuts()` formatters.
+- **`Kbd` component** (`DS-0137`) — display-only key-cap chip for shortcut hints. Renders a combo
+  from the shortcut grammar as MDN-style nested `<kbd>` key caps with per-platform rendering
+  (`format="glyph"` default: ⌘⇧ concatenated on Apple, `Ctrl+K` words elsewhere; `format="label"`
+  for always-words), comma alternatives joined by a muted "or", and a full-word `aria-label` on
+  glyph roots (⌘ reads poorly in AT). `platform` prop overrides auto-detection (SSR-stable:
+  `'other'` first paint, corrected client-side); `size` prop + `'Kbd'` in `COMPONENT_NAMES`;
+  raw-content escape hatch (`<Kbd>F12</Kbd>`). Registers nothing — pair it with the shortcut
+  registry and `ariaKeyshortcuts()` on the owning control.
+- **`ShortcutsHelp` component** (`DS-0138`, `DS-0141`) — the GitHub/Slack-style "?" shortcuts
+  overlay, always in sync with the live registry: a section per `group`, `Kbd` key caps showing
+  the effective (remapped) combos, disabled rows struck through with a visible "(off)", and a
+  `groupOrder` prop. Composes `Modal` (native `<dialog>` focus trap / Esc / backdrop / focus
+  return) and self-registers its own hotkey (default `'?, mod+/'`, id `ss:shortcuts-help`) through
+  the registry, so it is itself disable-able and remappable. With the `editable` prop the overlay
+  doubles as the built-in WCAG 2.1.4 settings UI: per-row enable Switch (`setEnabled`), a Change
+  button that records the next keydown as the new binding (validated through the combo grammar,
+  reserved browser combos rejected, Escape cancels, other shortcuts suppressed while recording),
+  per-row Reset (`remap(id, null)`), the global single-key kill switch (`characterKeys`), and
+  Restore defaults (`resetOverrides`) — with live-region announcements throughout.
+- **`Switch` `labelHidden` prop** (`DS-0141`) — visually hides the `label` while keeping it as
+  the accessible name, for dense settings rows where the visible context sits elsewhere (used by
+  editable ShortcutsHelp's per-row switches).
+
+### Changed
+
+- **Peer dependency: `svelte` is now `^5.29.0`** (was `^5.0.0`) — the `shortcut()` attachment is
+  typed against `svelte/attachments`, introduced in Svelte 5.29 (`DS-0136`).
+- **Topbar and SearchPalette `mod+k` is now registry-backed and platform-narrowed** (`DS-0139`).
+  Both components register their global shortcut through the `shortcuts` registry (ids
+  `ss:topbar-command` / `ss:search-palette`) instead of hand-rolled `window` listeners: they list
+  in ShortcutsHelp, obey the global `enabled` switch and per-shortcut
+  `setEnabled()` / `remap()` (closing their WCAG 2.1.4 gap), unregister on unmount /
+  `onCommand` unset / `shortcut={false}`, and collide deterministically (last registered wins,
+  with a dev warning — give the chord to exactly one component). **Behavior change:** `mod+k`
+  fires on the platform modifier only — Ctrl+K no longer triggers them on macOS (Cmd+K remains),
+  matching Slack/Linear/GitHub convention; Topbar's `aria-keyshortcuts` is now platform-true
+  (`Meta+K` on Apple, `Control+K` elsewhere, was the untruthful `Meta+K Control+K`) and its ⌘K
+  chip renders through `Kbd`. Either-modifier die-hards can restore the old reach with
+  `shortcuts.remap('ss:topbar-command', 'mod+k, ctrl+k')` (same recipe for
+  `ss:search-palette`).
+
 ## [0.12.0] — monochromatic terminal color rework + DS-0107 component polish — 2026-07-11
 
 ### Added

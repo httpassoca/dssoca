@@ -91,6 +91,25 @@ export { default as BoxPlot, type BoxGroup } from './components/BoxPlot.svelte'
 export { default as BumpChart, type BumpSeries } from './components/BumpChart.svelte'
 export { default as Heatmap } from './components/Heatmap.svelte'
 
+// Keyboard-shortcuts feature (DS-0135): registry core + display chip.
+export { default as Kbd } from './components/Kbd.svelte'
+export { default as ShortcutsHelp } from './components/ShortcutsHelp.svelte'
+
+export {
+  shortcuts,
+  shortcut,
+  formatShortcut,
+  ariaKeyshortcuts,
+  type ShortcutOptions,
+  type ShortcutInfo,
+  type ShortcutOverride,
+  type ShortcutOverrides,
+  type ShortcutScope,
+  type ShortcutPlatform,
+  type ShortcutFormat,
+  type FormatShortcutOptions,
+} from './shortcuts.svelte.js'
+
 export {
   toast,
   toasts,

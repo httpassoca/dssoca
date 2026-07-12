@@ -2,7 +2,7 @@
 id: DS-0138
 type: story
 title: "ShortcutsHelp — ? discovery overlay"
-status: backlog
+status: done
 priority: high
 tags: [ui, component, a11y, keyboard]
 depends_on: [DS-0136, DS-0137]
@@ -44,16 +44,16 @@ Tokens: Modal chrome inherited; rows use `--ss-line` separators, `--ss-fg-muted`
 
 ## Acceptance criteria
 
-- [ ] Component + barrel export; scoped SCSS, tokens above, radius 0.
-- [ ] Unit tests (`test/unit/ShortcutsHelp.svelte.test.ts` + harness): seeded registry renders
+- [x] Component + barrel export; scoped SCSS, tokens above, radius 0.
+- [x] Unit tests (`test/unit/ShortcutsHelp.svelte.test.ts` + harness): seeded registry renders
       groups/labels/Kbd values; remap updates the rendered binding reactively; disabled rows
       struck-through; `?` and `mod+/` keydown open it (`open` binds); `hotkey={null}` registers
       nothing; self-registration appears in `shortcuts.items` and unregisters on unmount;
       empty-registry EmptyState; dialog semantics per Modal's existing contract; axe clean on
       the open dialog.
-- [ ] Storybook `src/stories/ShortcutsHelp.stories.svelte` (seeded registry, open state, both
+- [x] Storybook `src/stories/ShortcutsHelp.stories.svelte` (seeded registry, open state, both
       themes).
-- [ ] Docs entry `documentation/src/lib/component-docs/shortcuts-help.ts` (notes: native-dialog
+- [x] Docs entry `documentation/src/lib/component-docs/shortcuts-help.ts` (notes: native-dialog
       semantics via Modal, registry-backed rows, visible-trigger guidance) + registration +
       nav-pin test update; `pnpm docs:test` green.
-- [ ] `pnpm test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green. Agile board rebuilt.
+- [x] `pnpm test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green. Agile board rebuilt.

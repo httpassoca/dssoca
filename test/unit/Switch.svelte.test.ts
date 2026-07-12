@@ -90,6 +90,15 @@ describe('Switch', () => {
     expect(container.querySelector('[role="switch"]')).toHaveAttribute('aria-checked', 'true')
   })
 
+  it('labelHidden visually hides the label but keeps it as the accessible name', async () => {
+    const { container, getByRole } = render(Switch, { label: 'Enable saving', labelHidden: true })
+    const labelEl = container.querySelector('.ss-switch .label')!
+    expect(labelEl).toHaveClass('sr-only')
+    // Accessible name still computed from the (hidden) label element.
+    expect(getByRole('switch', { name: 'Enable saving' })).toBeTruthy()
+    expect(await axe(container, axeOpts)).toHaveNoViolations()
+  })
+
   it('writes data-size-variant when an explicit size is given', () => {
     const { container } = render(Switch, { label: 'X', size: 'lg' })
     expect(container.querySelector('.ss-switch')).toHaveAttribute('data-size-variant', 'lg')

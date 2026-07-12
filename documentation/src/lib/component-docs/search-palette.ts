@@ -12,7 +12,7 @@ export const searchPalette: ComponentDoc = {
   let open = $state(false);
 </script>
 
-<!-- opens with Ctrl/Cmd+K (or set bind:open yourself) -->
+<!-- opens with mod+K — Cmd+K on macOS, Ctrl+K elsewhere (or set bind:open yourself) -->
 <SearchPalette
   bind:open
   items={[
@@ -50,7 +50,7 @@ export const searchPalette: ComponentDoc = {
       name: 'shortcut',
       type: "'mod+k' | false",
       default: "'mod+k'",
-      desc: 'Global toggle chord (Cmd+K on macOS, Ctrl+K elsewhere). `false` disables it.',
+      desc: 'Global toggle chord (Cmd+K on macOS, Ctrl+K elsewhere — the platform modifier only). Registered through the shortcut registry as `ss:search-palette`. `false` disables it.',
     },
     {
       name: 'placeholder',
@@ -115,5 +115,6 @@ export const searchPalette: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Built on the native `<dialog>` (focus trap, Esc, top layer, `::backdrop`) with the ARIA APG combobox pattern: focus stays on the input and options are referenced via `aria-activedescendant` — never DOM-focused. ArrowUp/Down wrap, PageUp/PageDown jump to first/last (Home/End keep their native caret behavior), Tab is swallowed while open, disabled items are skipped. The component is generic (`T extends SearchPaletteItem`), so your extra item fields flow through `onselect` and the `item` snippet typed. With several palettes mounted, the last one mounted wins the `mod+k` chord. Size controls the panel width only. Zero border-radius.',
+    "Built on the native `<dialog>` (focus trap, Esc, top layer, `::backdrop`) with the ARIA APG combobox pattern: focus stays on the input and options are referenced via `aria-activedescendant` — never DOM-focused. ArrowUp/Down wrap, PageUp/PageDown jump to first/last (Home/End keep their native caret behavior), Tab is swallowed while open, disabled items are skipped. The component is generic (`T extends SearchPaletteItem`), so your extra item fields flow through `onselect` and the `item` snippet typed. The toggle chord is registry-backed (id `ss:search-palette`): it lists in ShortcutsHelp, obeys `shortcuts.setEnabled()` / `shortcuts.remap()`, and fires on the platform modifier only (Cmd+K on macOS, Ctrl+K elsewhere — remap to `'mod+k, ctrl+k'` if you want both). Anything else bound to `mod+k` (another palette, a Topbar with `onCommand`) collides deterministically — the last one mounted wins — so give the chord to exactly one (`shortcut={false}` on the rest). Size controls the panel width only. Zero border-radius.",
+  guide: { href: '/keyboard', label: 'Making your site keyboard-friendly' },
 }

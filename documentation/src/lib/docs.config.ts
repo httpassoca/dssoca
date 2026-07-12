@@ -60,6 +60,7 @@ export const NAV: NavGroup[] = [
       { label: 'Color theory', href: '/color-theory', icon: 'note' },
       { label: 'Tokens', href: '/tokens', icon: 'grid' },
       { label: 'Theme Builder', href: '/theme-builder', icon: 'color-swatch' },
+      { label: 'Keyboard', href: '/keyboard', icon: 'target' },
       { label: 'All components', href: '/components', icon: 'database' },
     ],
   },

@@ -37,6 +37,7 @@
     BoxPlot,
     BumpChart,
     Heatmap,
+    Kbd,
   } from 'dssoca'
   import { componentsByCategory } from '$lib/categories'
   import { COMPONENTS } from '$lib/docs.config'
@@ -236,6 +237,11 @@
       <Badge tone="critical">down</Badge>
       <Badge tone="info">to_watch</Badge>
     </div>
+  {:else if slug === 'kbd'}
+    <div class="row">
+      <Kbd keys="mod+k" platform="apple" />
+      <Kbd keys="?, mod+/" platform="other" />
+    </div>
   {:else if slug === 'metric-tile'}
     <div class="w-full">
       <MetricTile label="req/min" value="142" delta="12%" dir="up" deltaLabel="vs prev 7d">
@@ -360,6 +366,16 @@
       <div class="pm-row active">Tokens</div>
       <div class="pm-row">Theming</div>
       <div class="pm-foot">↑↓ navigate · ↵ open · esc close</div>
+    </div>
+  {:else if slug === 'shortcuts-help'}
+    <!-- A live overlay is a top-layer <dialog> and would escape the inert
+         card, so show a static stand-in of the shortcut list (like
+         Modal/SearchPalette). -->
+    <div class="help-mock">
+      <div class="hm-group">navigation</div>
+      <div class="hm-row"><span>Open search</span> <Kbd keys="mod+k" platform="other" /></div>
+      <div class="hm-group">general</div>
+      <div class="hm-row"><span>Show shortcuts</span> <Kbd keys="?" platform="other" /></div>
     </div>
   {/if}
 {/snippet}
@@ -585,6 +601,37 @@
       border-top: 1px solid var(--ss-line);
       font-size: var(--ss-ui-xs);
       color: var(--ss-fg-muted);
+    }
+
+    // static ShortcutsHelp stand-in
+    .help-mock {
+      width: 100%;
+      max-width: 260px;
+      border: 1px solid var(--ss-line-strong);
+      background: var(--ss-bg-elev);
+      padding: var(--ss-s-2) var(--ss-s-3);
+    }
+    .hm-group {
+      padding-top: var(--ss-s-1);
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ss-fg-faint);
+    }
+    .hm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--ss-gap-sm);
+      padding: var(--ss-s-1) 0;
+      border-bottom: 1px solid var(--ss-line);
+      font-size: var(--ss-ui-md);
+      color: var(--ss-fg);
+
+      &:last-child {
+        border-bottom: 0;
+      }
     }
   }
 

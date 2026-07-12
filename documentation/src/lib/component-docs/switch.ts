@@ -22,6 +22,12 @@ export const switchDoc: ComponentDoc = {
       type: 'string',
       desc: 'Visible label rendered adjacent to the track; becomes the accessible name.',
     },
+    {
+      name: 'labelHidden',
+      type: 'boolean',
+      default: 'false',
+      desc: 'Visually hide the label while keeping it as the accessible name — for dense rows (settings lists) where the visible context sits elsewhere.',
+    },
     { name: 'id', type: 'string', desc: 'Id for the underlying button.' },
     { name: 'name', type: 'string', desc: 'Form field name (mirrored onto a data attribute).' },
     { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disable: inert + non-toggling.' },

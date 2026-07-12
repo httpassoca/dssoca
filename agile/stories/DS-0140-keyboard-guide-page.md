@@ -2,7 +2,7 @@
 id: DS-0140
 type: story
 title: "Docs guide — Making your site keyboard-friendly with dssoca"
-status: backlog
+status: done
 priority: high
 tags: [documentation, a11y, keyboard]
 depends_on: [DS-0136, DS-0137, DS-0138]
@@ -47,11 +47,12 @@ Outline:
 
 ## Acceptance criteria
 
-- [ ] `/keyboard` page live with the six sections above; content describes only what exists
+- [x] `/keyboard` page live with the six sections above; content describes only what exists
       (house rule: no speculative APIs).
-- [ ] NAV entry added; guide-hrefs `arrayContaining` assertion updated; `pnpm docs:test` green;
+- [x] NAV entry added; guide-hrefs `arrayContaining` assertion updated; `pnpm docs:test` green;
       docs build/prerender + `pnpm check` green.
-- [ ] Registry API reference (exports, `ShortcutOptions`, grammar, matcher skip chain, overrides)
+- [x] Registry API reference (exports, `ShortcutOptions`, grammar, matcher skip chain, overrides)
       embedded and complete.
-- [ ] Component pages (`kbd.ts`, `shortcuts-help.ts`, `topbar.ts`, `search-palette.ts`) link to
-      the guide. Agile board rebuilt.
+- [x] Component pages (`kbd.ts`, `shortcuts-help.ts`, `topbar.ts`, `search-palette.ts`) link to
+      the guide (new optional `guide` field on `ComponentDoc`, rendered by `ComponentPage`).
+      Agile board rebuilt.

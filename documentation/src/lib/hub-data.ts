@@ -42,6 +42,8 @@ export interface Variant {
   /** Toaster stand-in. */
   k?: 'ok' | 'info' | 'err'
   g?: string
+  /** Kbd — combo (in `t`) rendered for a pinned platform (stable, no detection). */
+  plat?: 'apple' | 'other'
 }
 
 /** Per-component variant pools (keyed by component slug). */
@@ -193,6 +195,14 @@ export const V: Record<string, Variant[]> = {
     { label: 'description', val: 'token-driven, squared' },
     { label: 'feedback', val: 'ship it' },
   ],
+  kbd: [
+    { t: 'mod+k', plat: 'apple' },
+    { t: 'mod+k', plat: 'other' },
+    { t: 'mod+shift+p', plat: 'apple' },
+    { t: 'alt+enter', plat: 'other' },
+    { t: 'mod+s', plat: 'apple' },
+    { t: 'shift+escape', plat: 'other' },
+  ],
   // spinner self-animates (frame cycling) and container is a static width
   // wrapper — neither needs a variant pool; their tiles render statically.
 }
@@ -204,7 +214,8 @@ export const V: Record<string, Variant[]> = {
  * controls whose always-on tiles don't read as decorative — they live on their
  * docs pages only, not the landing showcase. The DS-0102 charts (`scatter-plot`,
  * …) are data views needing real datasets too, so they join the exclusions, as
- * does the DS-0133 `search-palette` (a top-layer overlay, like `modal`).
+ * do the DS-0133 `search-palette` and DS-0138 `shortcuts-help` (top-layer
+ * overlays, like `modal`).
  */
 export const LANDING_EXCLUDED = new Set<string>([
   'image',
@@ -224,6 +235,7 @@ export const LANDING_EXCLUDED = new Set<string>([
   'bump-chart',
   'heatmap',
   'search-palette',
+  'shortcuts-help',
 ])
 
 /**
@@ -253,6 +265,7 @@ export const ALL_SLUGS: string[] = [
   'container',
   'textarea',
   'spinner',
+  'kbd',
 ]
 
 /**

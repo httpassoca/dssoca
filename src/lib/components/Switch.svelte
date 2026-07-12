@@ -14,6 +14,11 @@
     checked?: boolean
     /** Visible label rendered adjacent to the track; becomes the accessible name. */
     label?: string
+    /**
+     * Visually hide the label while keeping it as the accessible name — for
+     * dense rows (settings lists) where the visible context sits elsewhere.
+     */
+    labelHidden?: boolean
     /** Id for the underlying button (label `for`-style association uses it). */
     id?: string
     /** Form field name (mirrored onto a data attribute for form integration). */
@@ -31,6 +36,7 @@
   let {
     checked = $bindable(false),
     label,
+    labelHidden = false,
     id,
     name,
     disabled = false,
@@ -55,7 +61,11 @@
   const sizeAttr = $derived(resolveComponentSize('Switch', size))
 </script>
 
-<span class="ss-switch" class:has-label={label != null} data-size-variant={sizeAttr}>
+<span
+  class="ss-switch"
+  class:has-label={label != null && !labelHidden}
+  data-size-variant={sizeAttr}
+>
   <button
     id={buttonId}
     type="button"
@@ -73,15 +83,26 @@
   </button>
   {#if label != null}
     <!-- Clicking the label toggles the switch (a11y: same target as the control). -->
-    <span id={labelId} class="label" onclick={toggle} role="presentation">{label}</span>
+    <span
+      id={labelId}
+      class="label"
+      class:sr-only={labelHidden}
+      onclick={toggle}
+      role="presentation">{label}</span
+    >
   {/if}
 </span>
 
 <style lang="scss">
   .ss-switch {
+    // Anchors the visually-hidden (absolute) label so it never escapes the row.
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: var(--ss-switch-gap, var(--ss-gap-sm));
+
+    &.has-label {
+      gap: var(--ss-switch-gap, var(--ss-gap-sm));
+    }
 
     .track {
       // Track metrics are component-scoped with sane fallbacks (no global edits).
@@ -149,6 +170,19 @@
       color: var(--ss-fg);
       cursor: pointer;
       user-select: none;
+
+      // `labelHidden`: out of flow and clipped, still the accessible name.
+      &.sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
     }
 
     &:has(.track:disabled) .label {

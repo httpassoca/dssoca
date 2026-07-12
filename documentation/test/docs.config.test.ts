@@ -54,6 +54,7 @@ describe('docs.config — nav', () => {
         '/color-theory',
         '/tokens',
         '/theme-builder',
+        '/keyboard',
       ]),
     )
   })
@@ -82,6 +83,7 @@ describe('docs.config — nav', () => {
       'Icon',
       'Image',
       'Input',
+      'Kbd',
       'Link',
       'LogStream',
       'Menu',
@@ -94,6 +96,7 @@ describe('docs.config — nav', () => {
       'SegmentedControl',
       'Select',
       'ServiceCard',
+      'ShortcutsHelp',
       'Sidebar',
       'Sparkline',
       'Spinner',

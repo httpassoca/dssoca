@@ -22,6 +22,13 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    ariaKeyshortcuts,
+    detectPlatform,
+    shortcuts,
+    type ShortcutPlatform,
+  } from '../shortcuts.svelte.js'
+  import Kbd from './Kbd.svelte'
 
   interface Stat {
     key: string
@@ -36,8 +43,11 @@
     tabs?: Array<string | TopbarTab>
     /** Fired with the tab id when a tab is activated (also for `href` tabs). */
     onTab?: (tab: string) => void
-    /** Fired when the command menu is opened (chip click or Cmd/Ctrl+K).
-     *  The ⌘K chip and the shortcut only exist when this handler is provided. */
+    /** Fired when the command menu is opened (chip click or mod+K — Cmd+K on
+     *  Apple platforms, Ctrl+K elsewhere). Registered through the shortcut
+     *  registry as `ss:topbar-command` (DS-0139), so it lists in ShortcutsHelp
+     *  and obeys `setEnabled`/`remap`. The ⌘K chip and the shortcut only
+     *  exist when this handler is provided. */
     onCommand?: () => void
     /** Fired when the user chip is activated (when no `userMenu` snippet given). */
     onUser?: () => void
@@ -88,10 +98,14 @@
     size,
   }: Props = $props()
 
-  // SSR safety (DS-0067): same guard pattern as toast.svelte.ts — effects
-  // normally don't run on the server, but the guard is the house convention
-  // and protects against eager evaluation.
-  const hasWindow = typeof window !== 'undefined'
+  // Platform detection mirrors Kbd's hydration posture (DS-0139): 'other' on
+  // the server and the first client render, corrected in an effect so server
+  // and client first paints agree.
+  let platform = $state<ShortcutPlatform>('other')
+  $effect(() => {
+    // not a writable $derived: detection must NOT run during hydration render
+    if (platform === 'other') platform = detectPlatform()
+  })
 
   // DS-0080: normalize both tab shapes to one internal form. `string` tabs
   // keep id === label; object tabs default `label` to `id`.
@@ -122,18 +136,23 @@
           time = nowStr()
         }, 1000)
       : undefined
-    const onKey = (e: KeyboardEvent) => {
-      // Only claim the Cmd/Ctrl+K shortcut when a command handler exists
-      // (DS-0081) — otherwise leave the browser's default alone.
-      if (onCommand && (e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
-        e.preventDefault()
-        onCommand()
-      }
-    }
-    if (hasWindow) window.addEventListener('keydown', onKey)
+    // DS-0139: the shortcut goes through the registry (id `ss:topbar-command`)
+    // instead of a hand-rolled window listener — discoverable in ShortcutsHelp,
+    // disable/remap-able (WCAG 2.1.4), deterministic on collision. Only claim
+    // mod+k when a command handler exists (DS-0081) — otherwise leave the
+    // browser's default alone. `add()` is SSR-safe (no-op without `window`).
+    const dispose = onCommand
+      ? shortcuts.add({
+          id: 'ss:topbar-command',
+          label: 'Open command menu',
+          keys: 'mod+k',
+          allowInInputs: true, // chorded — safe while typing, like Slack/GitHub
+          onPress: () => onCommand?.(),
+        })
+      : undefined
     return () => {
       if (t) clearInterval(t)
-      if (hasWindow) window.removeEventListener('keydown', onKey)
+      dispose?.()
     }
   })
 
@@ -248,11 +267,11 @@
   {#if onCommand}
     <button
       class="seg right click cmd"
-      aria-keyshortcuts="Meta+K Control+K"
+      aria-keyshortcuts={ariaKeyshortcuts('mod+k', platform)}
       aria-label="Open command menu"
       onclick={() => onCommand?.()}
     >
-      <span class="kbd" aria-hidden="true">⌘K</span>
+      <span class="kbd" aria-hidden="true"><Kbd keys="mod+k" {platform} {size} /></span>
     </button>
   {/if}
 
@@ -421,9 +440,9 @@
     .stat {
       font-variant-numeric: tabular-nums;
       // DS-0068: 4px = --ss-s-1. The remaining hardcoded px in this block
-      // (6px dot, 6px tab-number margin, 2px clock separators, 2px/5px kbd
-      // padding) have no matching --ss-s-*/--ss-gap-* value at md and stay
-      // literal rather than inventing new tokens.
+      // (6px dot, 6px tab-number margin, 2px clock separators) have no
+      // matching --ss-s-*/--ss-gap-* value at md and stay literal rather
+      // than inventing new tokens.
       .k {
         color: var(--ss-fg-faint);
         margin-right: var(--ss-s-1);
@@ -440,13 +459,11 @@
         margin: 0 2px;
       }
     }
+    // The ⌘K chip renders through <Kbd> (DS-0139); the wrapper only keeps the
+    // glyph decorative (aria-hidden) and vertically centered.
     .kbd {
-      font-family: var(--ss-font-mono);
-      font-size: var(--ss-ui-sm);
-      color: var(--ss-fg-muted);
-      border: 1px solid var(--ss-line);
-      padding: 2px 5px;
-      line-height: 1;
+      display: inline-flex;
+      align-items: center;
     }
 
     // Responsive collapse (DS-0082, documented breakpoints above): drop the

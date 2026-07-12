@@ -2,7 +2,7 @@
 id: DS-0135
 type: epic
 title: "Keyboard shortcuts — opt-in keyboard-friendly apps"
-status: backlog
+status: in-progress
 priority: high
 tags: [ui, epic, a11y, keyboard, api]
 depends_on: []
@@ -55,9 +55,9 @@ storage is app policy); a SkipLink component (Topbar ships one; guide documents 
 
 ## Acceptance criteria
 
-- [ ] All child stories (DS-0136 … DS-0141) are done.
-- [ ] `pnpm test`, `pnpm docs:test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green.
-- [ ] CHANGELOG carries the peer-dep bump (`svelte@^5.29`) and the Topbar/SearchPalette `mod+k`
+- [x] All child stories (DS-0136 … DS-0141) are done.
+- [x] `pnpm test`, `pnpm docs:test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green.
+- [x] CHANGELOG carries the peer-dep bump (`svelte@^5.29`) and the Topbar/SearchPalette `mod+k`
       platform-narrowing note with migration guidance.
 - [ ] Hand audit: shortcuts fire/skip per the matcher rules in showcase + Storybook, both themes,
       all three sizes; ShortcutsHelp lists every registered shortcut including its own trigger.
