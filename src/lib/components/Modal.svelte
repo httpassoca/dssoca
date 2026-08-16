@@ -25,6 +25,14 @@
     title?: string
     /** Token size (sm|md|lg); controls max-width. Inherits the global size when unset. */
     size?: Size
+    /**
+     * Fill the viewport instead of rendering a centred, capped panel (DS-0145).
+     * The size axis no longer affects width, and — since the panel is full-bleed —
+     * there is no backdrop left to click, so `closeOnBackdrop` is unreachable:
+     * the close button and Esc are the exits. Drive responsiveness from the
+     * caller (`fullscreen={width < 640}`). @default false
+     */
+    fullscreen?: boolean
     /** Clicking the backdrop (outside the panel) closes the modal. @default true */
     closeOnBackdrop?: boolean
     /** Esc closes the modal. When false, Esc is swallowed (cancel prevented). @default true */
@@ -47,6 +55,7 @@
     open = $bindable(false),
     title,
     size,
+    fullscreen = false,
     closeOnBackdrop = true,
     closeOnEsc = true,
     danger = false,
@@ -97,6 +106,7 @@
   class="ss-modal"
   class:danger
   data-size-variant={resolveComponentSize('Modal', size)}
+  data-fullscreen={fullscreen ? '' : undefined}
   aria-labelledby={title ? titleId : undefined}
   aria-label={title ? undefined : ariaLabel}
   onclose={onDialogClose}
@@ -154,12 +164,44 @@
     &[data-size-variant='lg'] {
       --ss-modal-w: 48rem;
     }
+
+    // Fullscreen (DS-0145): fill the viewport — every cap, inset and the outer
+    // border go, so the size axis above is inert. dvw/dvh account for mobile
+    // browser chrome; vw/vh is the fallback for engines without them.
+    &[data-fullscreen] {
+      width: 100vw;
+      height: 100vh;
+      max-width: none;
+      max-height: none;
+      margin: 0;
+      border: 0;
+
+      @supports (height: 100dvh) {
+        width: 100dvw;
+        height: 100dvh;
+      }
+    }
   }
 
   .panel {
     display: flex;
     flex-direction: column;
     max-height: inherit;
+  }
+
+  // Fullscreen: the panel owns the full height, head/foot stay pinned and the
+  // body takes the slack (it already owns the scroll).
+  .ss-modal[data-fullscreen] .panel {
+    height: 100%;
+    max-height: none;
+  }
+  .ss-modal[data-fullscreen] .head,
+  .ss-modal[data-fullscreen] .foot {
+    flex: none;
+  }
+  .ss-modal[data-fullscreen] .body {
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   .head {

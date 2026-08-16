@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
+## [0.15.0] — richer tooltips, fullscreen modals — 2026-08-16
+
+### Added
+
+- **`Tooltip` accepts a rendered template** (`DS-0144`) — `text` widens from `string` to
+  `string | Snippet`, so a tip can hold a small template (a `<code>` path, a `Kbd` chip, an
+  emphasised label) instead of one flat string. A snippet renders inside the same tip element, so
+  the `aria-describedby` contract is unchanged: the accessible description stays whatever the tip
+  contains. Existing `text="…"` call sites are unaffected. Markup only, not interaction — the tip
+  keeps `pointer-events: none` and stays `hidden` while closed, per the WAI-ARIA tooltip pattern, so
+  snippets must be non-interactive **phrasing content** (`code`, `strong`, `kbd`, `br`, `Icon`);
+  interactive hints belong in a click-triggered toggletip/popover. `.tip` now uses `display: block`
+  so wrapped/multi-line content lays out correctly.
+- **`Modal` fullscreen variant** (`DS-0145`) — new `fullscreen` prop (default `false`) fills the
+  viewport instead of rendering a centred, capped panel: header and footer stay pinned, the body
+  owns the scroll, and `100dvh`/`100dvw` (with a `vh`/`vw` fallback) keeps mobile browser chrome
+  from overshooting. A boolean rather than a `size="full"` value, since `sm|md|lg` is a design axis
+  and "full" is a layout mode — in this mode the size variants go inert. Responsiveness stays with
+  the caller (`fullscreen={width < 640}`). Note that a full-bleed panel leaves no backdrop area to
+  hit, so `closeOnBackdrop` is unreachable there — the close button and Esc are the exits.
+
+### Changed
+
+- **Releases publish via npm Trusted Publishing** (`DS-0143`) — creating the GitHub release now
+  triggers `.github/workflows/release.yml`, which OIDC-authenticates to npm (no token, no OTP) and
+  runs `pnpm publish --access public --provenance`. A guard step asserts the tag matches
+  `package.json`. Manual publishing still works as a fallback.
+
 ## [0.14.0] — preset terminal themes — 2026-07-12
 
 ### Added
