@@ -171,6 +171,68 @@ describe('Modal — bindable open', () => {
   })
 })
 
+// DS-0145: `fullscreen` fills the viewport instead of rendering a capped panel.
+describe('Modal — fullscreen', () => {
+  it('is off by default (no data-fullscreen)', () => {
+    const { container } = render(Modal, baseProps())
+    expect(container.querySelector('dialog.ss-modal')).not.toHaveAttribute('data-fullscreen')
+  })
+
+  it('marks the dialog with data-fullscreen when set', () => {
+    const { container } = render(Modal, { ...baseProps(), fullscreen: true })
+    expect(container.querySelector('dialog.ss-modal')).toHaveAttribute('data-fullscreen')
+  })
+
+  it('keeps the size axis on the element (CSS makes it inert, the API does not change)', () => {
+    const { container } = render(Modal, { ...baseProps(), fullscreen: true, size: 'sm' })
+    const dialog = container.querySelector('dialog.ss-modal')!
+    expect(dialog).toHaveAttribute('data-size-variant', 'sm')
+    expect(dialog).toHaveAttribute('data-fullscreen')
+  })
+
+  it('still renders the header/body/footer anatomy', () => {
+    const { container, getByText, getByLabelText } = render(Modal, {
+      ...baseProps(),
+      fullscreen: true,
+      footer: snippet('<button type="button">OK</button>'),
+    })
+    expect(container.querySelector('.ss-modal .panel')).not.toBeNull()
+    expect(getByText('Confirm')).toBeTruthy()
+    expect(getByText('Body copy')).toBeTruthy()
+    expect(getByText('OK')).toBeTruthy()
+    expect(getByLabelText('Close')).toBeTruthy()
+  })
+
+  it('closes via the Close button', async () => {
+    const onclose = vi.fn()
+    const { container, getByLabelText } = render(Modal, {
+      ...baseProps(),
+      fullscreen: true,
+      onclose,
+    })
+    await fireEvent.click(getByLabelText('Close'))
+    expect(container.querySelector<HTMLDialogElement>('dialog.ss-modal')!.open).toBe(false)
+    expect(onclose).toHaveBeenCalledTimes(1)
+  })
+
+  it('still honours closeOnEsc=false (cancel prevented)', () => {
+    const { container } = render(Modal, { ...baseProps(), fullscreen: true, closeOnEsc: false })
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
+    const cancel = new Event('cancel', { cancelable: true })
+    dialog.dispatchEvent(cancel)
+    expect(cancel.defaultPrevented).toBe(true)
+  })
+
+  it('has no axe violations while open', async () => {
+    const { container } = render(Modal, {
+      ...baseProps(),
+      fullscreen: true,
+      footer: snippet('<button type="button">OK</button>'),
+    })
+    expect(await axe(container, axeOpts)).toHaveNoViolations()
+  })
+})
+
 describe('Modal — a11y', () => {
   it('has no axe violations while open', async () => {
     const { container } = render(Modal, {

@@ -19,6 +19,11 @@ export const modal: ComponentDoc = {
     <Button onclick={() => (open = false)}>Confirm</Button>
   {/snippet}
   <p>Are you sure you want to continue?</p>
+</Modal>
+
+<!-- Fills the viewport: header/footer pinned, body scrolls, size axis inert -->
+<Modal bind:open={logsOpen} fullscreen title="Log stream">
+  <LogStream {lines} />
 </Modal>`,
   props: [
     {
@@ -51,6 +56,12 @@ export const modal: ComponentDoc = {
       desc: 'Styling hint for destructive dialogs (tints the title).',
     },
     {
+      name: 'fullscreen',
+      type: 'boolean',
+      default: 'false',
+      desc: 'Fill the viewport instead of a centred, capped panel: header and footer stay pinned, the body scrolls, the size axis goes inert and the backdrop is no longer clickable.',
+    },
+    {
       name: 'aria-label',
       type: 'string',
       desc: 'Accessible name used when no `title` is set.',
@@ -78,5 +89,5 @@ export const modal: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Uses the native `<dialog>` element: the browser provides the focus trap, Esc handling and an inert `::backdrop`. `aria-labelledby` points at the title when set; otherwise pass `aria-label`. The close button carries `aria-label="Close"`. Size controls the dialog max-width only. Zero border-radius.',
+    'Uses the native `<dialog>` element: the browser provides the focus trap, Esc handling and an inert `::backdrop`. `aria-labelledby` points at the title when set; otherwise pass `aria-label`. The close button carries `aria-label="Close"`. Size controls the dialog max-width only. Zero border-radius. With `fullscreen` the dialog fills the viewport (`100dvh`, `vh` fallback) and the size axis has no effect on width; because the panel is full-bleed there is no backdrop area left to hit, so `closeOnBackdrop` is unreachable in that mode — the close button and Esc are the exits. Responsiveness stays with the caller: pass `fullscreen={width < 640}` to mirror MUI\'s full-screen-on-mobile pattern.',
 }
