@@ -30,12 +30,18 @@
         control: 'boolean',
         description: 'Destructive styling hint (tints the title).',
       },
+      fullscreen: {
+        control: 'boolean',
+        description:
+          'Fill the viewport instead of a centred capped panel; the size axis goes inert and the backdrop is no longer clickable.',
+      },
     },
     args: {
       title: 'Confirm action',
       closeOnBackdrop: true,
       closeOnEsc: true,
       danger: false,
+      fullscreen: false,
     },
   })
 
@@ -54,6 +60,7 @@
     closeOnBackdrop={args.closeOnBackdrop as boolean}
     closeOnEsc={args.closeOnEsc as boolean}
     danger={args.danger as boolean}
+    fullscreen={args.fullscreen as boolean}
     aria-label={(args['aria-label'] as string) ?? undefined}
   >
     {#snippet footer()}
@@ -64,6 +71,16 @@
       This is the modal body. It can contain any content — text, forms, or other components. The
       native &lt;dialog&gt; gives us a focus trap, Esc-to-close and an inert backdrop.
     </p>
+    {#if args.fullscreen}
+      <!-- Enough copy to prove the body (not the page) owns the scroll while the
+           header and footer stay pinned to the viewport edges. -->
+      {#each Array(14) as _, i (i)}
+        <p>
+          Fullscreen row {i + 1}: the panel fills the viewport, the size axis is inert, and there is
+          no backdrop left to click — the close button and Esc are the exits.
+        </p>
+      {/each}
+    {/if}
   </Modal>
 {/snippet}
 
@@ -81,3 +98,6 @@
 <Story name="Danger" args={{ title: 'Delete project', danger: true }} />
 
 <Story name="Large" args={{ title: 'Large modal', size: 'lg' }} />
+
+<!-- Fullscreen variant (DS-0145): fills the viewport, header/footer pinned, body scrolls -->
+<Story name="Fullscreen" args={{ title: 'Log stream', fullscreen: true }} />
