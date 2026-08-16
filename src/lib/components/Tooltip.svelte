@@ -6,8 +6,14 @@
   type Placement = 'top' | 'bottom' | 'left' | 'right'
 
   interface Props {
-    /** Tooltip text (the accessible description of the trigger). */
-    text: string
+    /**
+     * Tooltip content (the accessible description of the trigger): a plain string, or a
+     * snippet for a small rendered template. Snippets must stay **phrasing content**
+     * (`code`, `strong`, `kbd`, `br`, `Icon`, …) and must not contain interactive
+     * elements — the tip is `pointer-events: none` and hidden while closed, per the
+     * WAI-ARIA tooltip pattern.
+     */
+    text: string | Snippet
     /** Where the tooltip attaches relative to the trigger. Default `top`. */
     placement?: Placement
     /** Token size (sm|md|lg); inherits the global size when unset. */
@@ -36,6 +42,9 @@
   }
 
   const sizeAttr = $derived(resolveComponentSize('Tooltip', size))
+
+  // Snippets are functions, so a runtime typeof check narrows the union.
+  const tipSnippet = $derived(typeof text === 'function' ? text : undefined)
 </script>
 
 <!--
@@ -44,6 +53,9 @@
   tooltip; Escape dismisses it. While open the wrapper carries aria-describedby
   pointing at the tooltip; the tip itself is kept in the DOM but hidden (and
   given `hidden`) when closed so it is never announced.
+
+  `text` is either a string or a snippet (DS-0144); a snippet renders inside the
+  same tip element, so the accessible description stays whatever the tip contains.
 -->
 <!-- svelte-ignore a11y_no_static_element_interactions -- the wrapper is a passive
   container; the real interactive element is the trigger snippet inside it, and the
@@ -60,7 +72,9 @@
   onkeydown={onKeydown}
 >
   <span class="trigger">{@render children()}</span>
-  <span id={tipId} class="tip" class:open role="tooltip" hidden={!open}>{text}</span>
+  <span id={tipId} class="tip" class:open role="tooltip" hidden={!open}>
+    {#if tipSnippet}{@render tipSnippet()}{:else}{text}{/if}
+  </span>
 </span>
 
 <style lang="scss">
@@ -76,6 +90,10 @@
   .tip {
     position: absolute;
     z-index: 60;
+    // Block formatting so multi-line snippet content (wrapped text, `<br>`) lays
+    // out sensibly — and so the template's own leading/trailing whitespace around
+    // the content is trimmed instead of padding the box.
+    display: block;
     // Keep on a single line until it grows; cap so long text wraps sensibly.
     width: max-content;
     max-width: var(--ss-tooltip-max-w, 240px);

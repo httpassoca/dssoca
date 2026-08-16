@@ -74,6 +74,46 @@ describe('Tooltip', () => {
     expect(root(container)).not.toHaveAttribute('aria-describedby')
   })
 
+  // DS-0144: `text` accepts a snippet for small rendered templates.
+  describe('snippet content', () => {
+    it('renders the snippet markup inside the tip', () => {
+      const { container } = render(TooltipHarness, { rich: true })
+      const t = tip(container)
+      expect(t.querySelector('strong')).toHaveTextContent('Copy path')
+      expect(t.querySelector('code')).toHaveTextContent('/srv/app')
+    })
+
+    it('is hidden (and unannounced) while closed, like the string form', () => {
+      const { container } = render(TooltipHarness, { rich: true })
+      expect(tip(container)).toHaveAttribute('hidden')
+      expect(root(container)).not.toHaveAttribute('aria-describedby')
+    })
+
+    it('becomes the accessible description while open', async () => {
+      const { container } = render(TooltipHarness, { rich: true })
+      await fireEvent.focusIn(root(container))
+      const t = tip(container)
+      expect(root(container)).toHaveAttribute('aria-describedby', t.id)
+      expect(t).not.toHaveAttribute('hidden')
+      expect(t.textContent?.trim()).toContain('Copy path')
+      expect(t.textContent?.trim()).toContain('/srv/app')
+    })
+
+    it('still dismisses on Escape', async () => {
+      const { container } = render(TooltipHarness, { rich: true })
+      await fireEvent.focusIn(root(container))
+      expect(tip(container)).toHaveClass('open')
+      await fireEvent.keyDown(root(container), { key: 'Escape' })
+      expect(tip(container)).not.toHaveClass('open')
+    })
+
+    it('has no axe violations while open', async () => {
+      const { container } = render(TooltipHarness, { rich: true })
+      await fireEvent.focusIn(root(container))
+      expect(await axe(container, axeOpts)).toHaveNoViolations()
+    })
+  })
+
   describe('placement', () => {
     it('defaults to top', () => {
       const { container } = render(TooltipHarness)
