@@ -6,6 +6,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
+## [0.16.0] — collision-aware tooltips, keyboard-friendly docs — 2026-08-30
+
+### Added
+
+- **`Tooltip` avoids viewport collisions** (`DS-0146`) — `placement` is now the _preferred_ side.
+  On open (and on scroll/resize while open) the tip measures the room around its trigger inside the
+  viewport and any `overflow`-clipping ancestor, flips to the opposite side, then to the
+  perpendicular side with more room (or the roomiest side if nothing fits), and finally shifts along
+  the cross axis so it never overhangs the edge. Manual `getBoundingClientRect` math — no dependency,
+  no CSS anchor positioning yet (noted as a future enhancement). The resolved side is exposed as
+  `data-placement` on the root; a new `avoidCollisions` prop (default `true`) pins the tip to
+  `placement` when `false`. No visual change when the preferred side fits.
+
+### Docs
+
+- **The docs site is keyboard-friendly and searchable** (`DS-0147`) — it now dogfoods the
+  library's keyboard layer: dssoca `Topbar` replaces the hand-rolled header (⌘K chip),
+  `SearchPalette` is the site search + command surface (every page and component — props, slug,
+  category and tagline are searchable — plus actions: toggle theme, cycle size, shortcuts help, copy
+  install command, GitHub, Storybook), and `ShortcutsHelp` is mounted in editable mode with
+  overrides persisted in `localStorage`. Site bindings go through the shortcut registry:
+  `mod+k` · `/` · `?, mod+/` · `shift+d` (theme) · `shift+s` (size); deliberately no
+  single-letter go-to keys. The `/keyboard` guide gains a "Try it on this site" section.
+
 ## [0.15.0] — richer tooltips, fullscreen modals — 2026-08-16
 
 ### Added
