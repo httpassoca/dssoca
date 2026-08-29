@@ -22,13 +22,26 @@ No playwright install in the repo, but working pieces exist on the machine:
   playwright-core 1.55.0) and `-1228`.
 - Driver: `pnpm add playwright-core@1.55.0` in a scratch dir, then
   `chromium.launch({ executablePath: <shell path> })`.
-- **Missing system libs** (libnspr4, libnss3, X libs…) — reuse the extracted sets via
-  `LD_LIBRARY_PATH=/tmp/claude-1001/-home-passoca-dev-passoca/5a1792f7-182c-475d-aa26-16895d465fad/scratchpad/libs/root/usr/lib:/tmp/claude-1001/-home-passoca-dev-passoca/7f545753-f2af-444b-bc44-386ae942c7eb/scratchpad/gifcap/libs/usr/lib`
-  (if those tmp dirs are gone, re-extract the .debs/pkgs — dejavu + nss + X11 set).
+- **Missing system libs** (nss/nspr, at-spi2, X11 libs, libgbm, libxkbcommon, alsa, libXi) — this
+  is Arch but `pacman -Sw` needs root, so fetch by hand into the scratchpad (`$S`):
+  1. `curl -sL https://geo.mirror.pkgbuild.com/{core,extra}/os/x86_64/{core,extra}.db`, `bsdtar -x`
+     each into `$S/db/<repo>/`, read `%FILENAME%` from `db/*/<pkg>-[0-9]*/desc`.
+  2. Packages: `nspr nss at-spi2-core libx11 libxi libxcomposite libxdamage libxext libxfixes
+libxrandr libxrender libxcb libxkbcommon alsa-lib mesa libdrm fontconfig freetype2 ttf-dejavu
+libxau libxdmcp wayland libglvnd libxshmfence libxxf86vm libelf llvm-libs lm_sensors libunwind
+zstd libpciaccess` — curl each `.pkg.tar.zst`, `bsdtar -xf … -C $S/root --exclude .BUILDINFO
+--exclude .MTREE --exclude .PKGINFO` (use `bash -c`, zsh won't word-split the list).
+  3. `LD_LIBRARY_PATH=$S/root/usr/lib ldd <shell> | grep "not found"` must be empty.
 - **Fontconfig is mandatory**: without it the renderer hard-crashes
-  (`NOTREACHED remote_font_face_source.cc`) as soon as a page loads webfonts. Set
-  `FONTCONFIG_FILE=/tmp/claude-1001/-home-passoca-dev-passoca/5a1792f7-182c-475d-aa26-16895d465fad/scratchpad/fonts/fonts.conf`
-  (a two-line fontconfig pointing at a dir with DejaVu fonts + a cachedir works).
+  (`NOTREACHED remote_font_face_source.cc`) as soon as a page loads webfonts. Write
+  `$S/fonts/fonts.conf` = `<fontconfig><dir>$S/root/usr/share/fonts</dir><cachedir>$S/fonts/cache</cachedir></fontconfig>`
+  and set `FONTCONFIG_FILE` to it.
+- Launch: `chromium.launch({ executablePath: '~/.cache/ms-playwright/chromium_headless_shell-1228/chrome-headless-shell-linux64/chrome-headless-shell', args: ['--no-sandbox'] })`
+  with `playwright-core@latest` in a scratch dir. Storybook: `pnpm storybook --ci --port 6006 &`,
+  then `iframe.html?id=<story-id>&viewMode=story&args=prop:value`. Stop it with `kill <pid>`,
+  not `pkill -f storybook` (that matches the calling shell too).
+- `page.setViewportSize` fires a synthetic mouse-leave that closes hover tooltips — use `focus()`
+  to keep a tooltip open across a resize.
 
 ## Gotchas
 
