@@ -1,10 +1,24 @@
 <script lang="ts">
   import '@dssoca/styles/theme.scss'
   import '$lib/styles/code.css'
+  import { onMount, untrack } from 'svelte'
+  import { browser } from '$app/environment'
   import { page } from '$app/state'
   import { goto } from '$app/navigation'
-  import { Sidebar, Icon } from 'dssoca'
+  import {
+    Sidebar,
+    Icon,
+    Topbar,
+    SearchPalette,
+    ShortcutsHelp,
+    Toaster,
+    shortcuts,
+    toast,
+  } from 'dssoca'
   import { NAV } from '$lib/docs.config'
+  import { buildSearchItems, INSTALL_COMMAND, type DocsSearchItem } from '$lib/search'
+  import { axes } from '$lib/axes.svelte'
+  import { restoreShortcutOverrides, saveShortcutOverrides } from '$lib/shortcut-persistence'
   import ThemeControls from '$lib/components/ThemeControls.svelte'
 
   let { children } = $props()
@@ -20,48 +34,158 @@
   const current = $derived(page.url.pathname.replace(/\/$/, '') || '/')
 
   // The landing route ('/') is a full-screen branded hero — render it WITHOUT the
-  // docs shell (no top bar / sidebar).
+  // docs shell (no top bar / sidebar). The palette + shortcuts below still work there.
   const isLanding = $derived(current === '/')
 
   function navigate(id: string) {
     goto(id)
   }
+
+  // --- keyboard: site search + shortcuts (DS-0147) ---------------------------
+  // The site dogfoods the library's own keyboard layer: Topbar owns mod+k and
+  // opens the SearchPalette (so the palette's built-in mod+k is off on shell
+  // routes — the landing has no Topbar, so there the palette registers it
+  // itself); ShortcutsHelp lists everything the registry holds and is
+  // editable, with overrides persisted in localStorage.
+  const searchItems = buildSearchItems()
+  let paletteOpen = $state(false)
+  let helpOpen = $state(false)
+
+  function runAction(item: DocsSearchItem): boolean | void {
+    if (item.url) {
+      window.open(item.url, '_blank', 'noopener,noreferrer')
+      return
+    }
+    switch (item.action) {
+      case 'toggle-theme':
+        axes.nextTheme()
+        break
+      case 'cycle-size':
+        axes.nextSize()
+        break
+      case 'open-help':
+        helpOpen = true
+        break
+      case 'copy-install':
+        navigator.clipboard
+          ?.writeText(INSTALL_COMMAND)
+          .then(() => toast.success(`Copied "${INSTALL_COMMAND}"`))
+          .catch(() => toast.error('Clipboard unavailable'))
+        break
+    }
+    // `href` items navigate through their own anchor; nothing to do here.
+  }
+
+  onMount(() => {
+    axes.sync()
+    const disposers = [
+      shortcuts.add({
+        id: 'docs:search',
+        label: 'Open search',
+        keys: '/',
+        group: 'General',
+        onPress: () => (paletteOpen = true),
+      }),
+      shortcuts.add({
+        id: 'docs:toggle-theme',
+        label: 'Toggle theme (dark / light)',
+        keys: 'shift+d',
+        group: 'Appearance',
+        onPress: () => axes.nextTheme(),
+      }),
+      shortcuts.add({
+        id: 'docs:cycle-size',
+        label: 'Cycle size (sm / md / lg)',
+        keys: 'shift+s',
+        group: 'Appearance',
+        onPress: () => axes.nextSize(),
+      }),
+    ]
+    return () => disposers.forEach((d) => d())
+  })
+
+  // Persist after any change the editable overlay makes (remap, per-id toggle,
+  // the global switches) — `items` is derived from those, so reading it here
+  // tracks all of them. The first run restores instead of saving: restoring
+  // anywhere else (e.g. onMount) races this effect, which would clobber the
+  // stored snapshot with the empty default before it was read. Overrides for
+  // ids registered later are kept pending by the registry, so order vs. the
+  // `shortcuts.add` calls above does not matter.
+  let restored = false
+  $effect(() => {
+    if (!browser) return
+    void shortcuts.items
+    void shortcuts.characterKeys
+    void shortcuts.enabled
+    if (!restored) {
+      restored = true
+      untrack(() => restoreShortcutOverrides())
+      return
+    }
+    saveShortcutOverrides()
+  })
 </script>
+
+{#snippet brand()}
+  <a class="brand" href="/">
+    <img class="logo" src="/dssoca-logo.svg" alt="" width="22" height="22" />
+    <span class="name">dssoca</span>
+    <span class="tag">docs</span>
+  </a>
+{/snippet}
+
+{#snippet tools()}
+  <div class="tools">
+    <ThemeControls />
+    <a
+      class="ext"
+      href="https://github.com/httpassoca/dssoca"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="GitHub repository"
+    >
+      <Icon name="external" px={16} title="GitHub repository" />
+    </a>
+  </div>
+{/snippet}
 
 {#if isLanding}
   {@render children?.()}
 {:else}
   <div class="docs">
-    <header class="topbar">
-      <a class="brand" href="/">
-        <img class="logo" src="/dssoca-logo.svg" alt="" width="22" height="22" />
-        <span class="name">dssoca</span>
-        <span class="tag">docs</span>
-      </a>
-      <div class="right">
-        <ThemeControls />
-        <a
-          class="ext"
-          href="https://github.com/httpassoca/dssoca"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="GitHub repository"
-        >
-          <Icon name="external" px={16} title="GitHub repository" />
-        </a>
-      </div>
-    </header>
+    <Topbar
+      {brand}
+      userMenu={tools}
+      tabs={[]}
+      stats={[]}
+      services={false}
+      clock={false}
+      skipTarget="#main"
+      onCommand={() => (paletteOpen = true)}
+    />
 
     <div class="body">
       <nav class="nav" aria-label="Documentation">
         <Sidebar active={current} {groups} onSelect={navigate} />
       </nav>
-      <main class="main">
+      <main id="main" class="main" tabindex="-1">
         {@render children?.()}
       </main>
     </div>
   </div>
 {/if}
+
+<!-- Mounted on every route (landing included) so mod+k / "/" / "?" work anywhere. -->
+<SearchPalette
+  bind:open={paletteOpen}
+  items={searchItems}
+  shortcut={isLanding ? 'mod+k' : false}
+  placeholder="Search pages, components, actions…"
+  aria-label="Search the docs"
+  onselect={runAction}
+/>
+<ShortcutsHelp bind:open={helpOpen} editable groupOrder={['Appearance']} />
+<Toaster />
 
 <style lang="scss">
   // Docs-only polish: a plain, always-on transition so flipping the theme
@@ -99,18 +223,7 @@
     background: var(--ss-bg);
     color: var(--ss-fg);
   }
-  .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: var(--ss-shell-top-h);
-    padding: 0 var(--ss-main-px);
-    border-bottom: 1px solid var(--ss-line);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--ss-bg);
-  }
+  // Rendered inside the dssoca Topbar's `brand` / `userMenu` slots.
   .brand {
     display: inline-flex;
     align-items: center;
@@ -134,7 +247,7 @@
       letter-spacing: 0.12em;
     }
   }
-  .right {
+  .tools {
     display: inline-flex;
     align-items: center;
     gap: var(--ss-gap);
@@ -162,6 +275,7 @@
   .main {
     padding: var(--ss-main-py) var(--ss-main-px);
     min-width: 0;
+    outline: none;
   }
   @media (max-width: 720px) {
     .body {
