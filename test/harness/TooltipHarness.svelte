@@ -9,8 +9,17 @@
     trigger?: string
     /** Render the tip from a snippet instead of the `text` string (DS-0144). */
     rich?: boolean
+    /** Collision avoidance switch (DS-0146). */
+    avoidCollisions?: boolean
   }
-  let { text = 'More info', placement, size, trigger = 'Help', rich = false }: Props = $props()
+  let {
+    text = 'More info',
+    placement,
+    size,
+    trigger = 'Help',
+    rich = false,
+    avoidCollisions = true,
+  }: Props = $props()
 </script>
 
 {#snippet richTip()}
@@ -18,6 +27,6 @@
   <code data-testid="rich-code">/srv/app</code>
 {/snippet}
 
-<Tooltip text={rich ? richTip : text} {placement} {size}>
+<Tooltip text={rich ? richTip : text} {placement} {size} {avoidCollisions}>
   <button type="button">{trigger}</button>
 </Tooltip>
