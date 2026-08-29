@@ -43,6 +43,8 @@ export interface NavItem {
   href: string
   /** Optional leading glyph; component links render without one. */
   icon?: string
+  /** Extra search terms for the site palette (DS-0147); labels are always matched. */
+  keywords?: string[]
 }
 export interface NavGroup {
   section: string
@@ -54,14 +56,72 @@ export const NAV: NavGroup[] = [
   {
     section: 'guide',
     items: [
-      { label: 'Introduction', href: '/introduction', icon: 'book' },
-      { label: 'Installation', href: '/installation', icon: 'terminal' },
-      { label: 'Theming & config', href: '/theming', icon: 'settings' },
-      { label: 'Color theory', href: '/color-theory', icon: 'note' },
-      { label: 'Tokens', href: '/tokens', icon: 'grid' },
-      { label: 'Theme Builder', href: '/theme-builder', icon: 'color-swatch' },
-      { label: 'Keyboard', href: '/keyboard', icon: 'target' },
-      { label: 'All components', href: '/components', icon: 'database' },
+      {
+        label: 'Introduction',
+        href: '/introduction',
+        icon: 'book',
+        keywords: ['overview', 'principles', 'axes', 'getting started', 'what is dssoca'],
+      },
+      {
+        label: 'Installation',
+        href: '/installation',
+        icon: 'terminal',
+        keywords: ['install', 'setup', 'pnpm add', 'npm', 'import', 'theme.css', 'fonts', 'peer'],
+      },
+      {
+        label: 'Theming & config',
+        href: '/theming',
+        icon: 'settings',
+        keywords: [
+          'data-theme',
+          'data-size-variant',
+          'dark',
+          'light',
+          'size',
+          'applyDesignConfig',
+          'manifest',
+          'palette',
+          'presets',
+          'config',
+        ],
+      },
+      {
+        label: 'Color theory',
+        href: '/color-theory',
+        icon: 'note',
+        keywords: ['oklch', 'terminal', 'ansi', '16 colors', 'contrast', 'slots', 'accent'],
+      },
+      {
+        label: 'Tokens',
+        href: '/tokens',
+        icon: 'grid',
+        keywords: [
+          '--ss-',
+          'css variables',
+          'custom properties',
+          'spacing',
+          'typography',
+          'colors',
+        ],
+      },
+      {
+        label: 'Theme Builder',
+        href: '/theme-builder',
+        icon: 'color-swatch',
+        keywords: ['generator', 'custom palette', 'export', 'accent', 'contrast checks'],
+      },
+      {
+        label: 'Keyboard',
+        href: '/keyboard',
+        icon: 'target',
+        keywords: ['shortcuts', 'hotkeys', 'a11y', 'accessibility', 'wcag', 'registry', 'focus'],
+      },
+      {
+        label: 'All components',
+        href: '/components',
+        icon: 'database',
+        keywords: ['gallery', 'overview', 'catalog', 'list'],
+      },
     ],
   },
   {

@@ -1,37 +1,18 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { Button, applyDesignConfig, dssocaConfig, type ColorTheme, type Size } from 'dssoca'
+  import { Button } from 'dssoca'
+  import { axes } from '$lib/axes.svelte'
 
-  // The two design axes, driven straight from the dssoca manifest so this stays
-  // correct if values are ever added. Applied to <html> via applyDesignConfig —
-  // exactly how a consuming app flips the system (dogfooding the real API).
-  const themes = dssocaConfig.theme.values as readonly ColorTheme[]
-  const sizes = dssocaConfig.size.values as readonly Size[]
-
-  let theme = $state<ColorTheme>(dssocaConfig.theme.default)
-  let size = $state<Size>(dssocaConfig.size.default)
-
-  onMount(() => {
-    const el = document.documentElement
-    theme = (el.getAttribute('data-theme') as ColorTheme) ?? theme
-    size = (el.getAttribute('data-size-variant') as Size) ?? size
-  })
-
-  // The smooth recolor/rescale on flip is handled by a plain CSS transition in
-  // +layout.svelte (docs-only) — no JS timing needed here.
-  function nextTheme() {
-    theme = themes[(themes.indexOf(theme) + 1) % themes.length]
-    applyDesignConfig({ theme })
-  }
-  function nextSize() {
-    size = sizes[(sizes.indexOf(size) + 1) % sizes.length]
-    applyDesignConfig({ sizeVariant: size })
-  }
+  // The two design axes live in `$lib/axes.svelte.ts` (shared with the palette
+  // actions and the shift+d / shift+s shortcuts — DS-0147); these buttons are
+  // just the visible trigger. The smooth recolor/rescale on flip is a plain
+  // CSS transition in +layout.svelte (docs-only) — no JS timing needed here.
+  onMount(() => axes.sync())
 </script>
 
 <div class="controls">
-  <Button variant="ghost" onclick={nextTheme}>theme: {theme}</Button>
-  <Button variant="ghost" onclick={nextSize}>size: {size}</Button>
+  <Button variant="ghost" onclick={() => axes.nextTheme()}>theme: {axes.theme}</Button>
+  <Button variant="ghost" onclick={() => axes.nextSize()}>size: {axes.size}</Button>
 </div>
 
 <style lang="scss">
