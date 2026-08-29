@@ -1,3 +1,7 @@
+<script>
+  import { Kbd } from 'dssoca'
+</script>
+
 # Making your site keyboard-friendly
 
 dssoca ships keyboard support in three layers: per-component behavior you get **for free**, an
@@ -254,6 +258,30 @@ Two caveats the registry warns about in dev mode:
 - **The browser owns some combos.** `ctrl+t` / `ctrl+w` / `ctrl+n` (and their `mod+` forms)
   control tabs and windows; the page never reliably sees them. The registry dev-warns on both
   lists at registration time.
+
+## Try it on this site
+
+This site is built with the pieces above — nothing here is a mock-up. The <Kbd keys="mod+k" />
+chip in the top bar is the real [Topbar](/components/topbar); it opens a
+[SearchPalette](/components/search-palette) indexed over every page, every component (props are
+searchable — try `avoidCollisions`) and a few actions. Press <Kbd keys="?" /> anywhere for the
+[ShortcutsHelp](/components/shortcuts-help) overlay: it is in **editable** mode, so you can remap
+or switch off any binding below (and the character-keys switch), and the site persists your
+choices in `localStorage` under `dssoca-docs:shortcuts`.
+
+| Shortcut                    | Does                                    | Registered by                                     |
+| --------------------------- | --------------------------------------- | ------------------------------------------------- |
+| <Kbd keys="mod+k" />        | Open search                             | `Topbar` (`ss:topbar-command`)                    |
+| <Kbd keys="/" />            | Open search (second opener)             | the site (`docs:search`)                          |
+| <Kbd keys="?, mod+/" />     | Keyboard shortcuts overlay              | `ShortcutsHelp` (`ss:shortcuts-help`)             |
+| <Kbd keys="shift+d" />      | Toggle theme (dark / light)             | the site (`docs:toggle-theme`)                    |
+| <Kbd keys="shift+s" />      | Cycle size (sm / md / lg)               | the site (`docs:cycle-size`)                      |
+
+Deliberately absent: single-letter "go to" keys. The palette reaches any page in two keystrokes,
+and bare letters collide with screen-reader quick-navigation keys (see the caveats above) — the
+only bare keys here are `/` and `?`, the two that every docs site has taught people to expect.
+The site's own bindings are ordinary `shortcuts.add()` calls in the root layout; the persistence
+is the localStorage recipe from the previous section, verbatim.
 
 ## Discovery
 
