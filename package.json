@@ -1,7 +1,7 @@
 {
   "name": "dssoca",
-  "version": "0.16.0",
-  "description": "Svelte 5 design system — signal green on near-black, monospace-forward, zero border-radius; configured along two axes (color: dark/light, density: comfy/compact).",
+  "version": "0.17.0",
+  "description": "Svelte 5 design system — signal green on near-black, monospace-forward, zero border-radius; configured along two axes (color: dark/light, size: sm/md/lg). Also consumable from plain HTML via vanilla.css + vanilla.js.",
   "license": "MIT",
   "author": "Rafael Passoca",
   "packageManager": "pnpm@11.1.3",
@@ -23,7 +23,8 @@
     "prepare": "svelte-kit sync || echo ''",
     "build:css": "sass src/styles/theme.scss dist/theme.css --no-source-map --no-charset --style=expanded && pnpm build:css:tokens",
     "build:css:tokens": "sass src/styles/tokens.scss dist/tokens.css --no-source-map --no-charset --style=expanded",
-    "prepack": "svelte-kit sync && svelte-package && pnpm build:css && publint",
+    "build:vanilla": "node scripts/build-vanilla.mjs",
+    "prepack": "svelte-kit sync && svelte-package && pnpm build:css && pnpm build:vanilla && publint",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test": "vitest run",
@@ -47,7 +48,8 @@
     "!dist/**/*.spec.*"
   ],
   "sideEffects": [
-    "**/*.css"
+    "**/*.css",
+    "./dist/vanilla/index.js"
   ],
   "svelte": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -59,7 +61,12 @@
       "default": "./dist/index.js"
     },
     "./theme.css": "./dist/theme.css",
-    "./tokens.css": "./dist/tokens.css"
+    "./tokens.css": "./dist/tokens.css",
+    "./vanilla.css": "./dist/vanilla.css",
+    "./vanilla.js": {
+      "types": "./dist/vanilla/index.d.ts",
+      "default": "./dist/vanilla/index.js"
+    }
   },
   "peerDependencies": {
     "svelte": "^5.29.0"
@@ -105,7 +112,9 @@
     "design-system",
     "components",
     "ui",
-    "theme"
+    "theme",
+    "vanilla",
+    "css"
   ],
   "dependencies": {
     "d3-array": "^3.2.4",
