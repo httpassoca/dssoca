@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const pagination: ComponentDoc = {
   name: 'Pagination',
   slug: 'pagination',
+  htmlExample: {
+    props: { page: 2, pageCount: 6 },
+    behaviour: 'css',
+    note: 'Static: render the current page yourself (or wire the buttons).',
+  },
   tagline: 'Windowed page navigator.',
   description:
     'A page navigator with Prev/Next controls and a windowed list of page numbers: it always shows the first and last page plus `siblingCount` pages around the current one, bridging hidden runs with `…`. Give it a `pageCount`, or a `total` item count with `pageSize` to derive the count. `page` is bindable (1-based); the current page is `aria-current="page"`, visually active and inert. Mono numerals, zero radius, `--ss-line` hairlines.',

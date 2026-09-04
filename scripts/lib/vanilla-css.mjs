@@ -3,9 +3,10 @@
  *
  * Turns the components' compiled `<style>` blocks into ONE global stylesheet that plain-HTML
  * consumers can load after `theme.css`/`tokens.css`. Every component's rules are wrapped in a
- * donut `@scope (.ss-root) to (<every component root>)` so the unprefixed internal class
+ * donut `@scope (.ss-root) to (<every other component root>)` so the unprefixed internal class
  * names (`.label`, `.head`, …) that are safe under Svelte's hash scoping stay isolated from
- * nested components in a global sheet too.
+ * nested components in a global sheet too. Root-anchored selectors get a zero-specificity
+ * `:where(:scope)` prefix so they still match the root (see `scopeSelector`).
  *
  * Dependency-free plain JS (like `palette.mjs`) so Node can run it directly from `prepack`
  * and Vitest can exercise the exact same function on Sass-compiled sources. Pure: identical
@@ -74,8 +75,17 @@ export const ROOT_CLASSES = Object.freeze({
 /** Every root class, flattened, in manifest order. Doubles as the `@scope … to (…)` limit list. */
 export const ALL_ROOTS = Object.freeze(Object.values(ROOT_CLASSES).flat())
 
-/** Selector list used as the donut lower bound of every scope block. */
-export const SCOPE_LIMIT = ALL_ROOTS.map((c) => `.${c}`).join(', ')
+/**
+ * Donut lower bound for a component's scope block: every OTHER component root. A component's own
+ * root is deliberately not a limit — Chrome excludes a scoping root that matches its own limit
+ * selector, which would strip the root's own rules. (Nested same-component instances therefore
+ * share rules, exactly as they do under Svelte's per-component hash class.)
+ */
+export function scopeLimit(roots) {
+  return ALL_ROOTS.filter((c) => !roots.includes(c))
+    .map((c) => `.${c}`)
+    .join(', ')
+}
 
 /** Pull the `<style>` body out of a `.svelte` source (compiled or not). `null` when absent. */
 export function extractStyleBlock(svelteSource) {
@@ -173,6 +183,42 @@ export function deglobalize(prelude, roots) {
     .join(', ')
 }
 
+/** Does this compound (no combinators) carry one of the root classes as a whole token? */
+function compoundHasRoot(compound, roots) {
+  return roots.some((r) => new RegExp(`\\.${r}(?![\\w-])`).test(compound))
+}
+
+/** Length of the first compound of a complex selector (stops at a combinator outside parens). */
+function firstCompoundEnd(sel) {
+  let depth = 0
+  for (let i = 0; i < sel.length; i++) {
+    const ch = sel[i]
+    if (ch === '(' || ch === '[') depth++
+    else if (ch === ')' || ch === ']') depth--
+    else if (depth === 0 && /[\s>+~]/.test(ch)) return i
+  }
+  return sel.length
+}
+
+/**
+ * Make a selector match the scoping root. Inside `@scope`, a selector without `:scope` is
+ * implicitly `:where(:scope) <selector>` (a DESCENDANT of the root), so `.ss-btn { … }` in
+ * `@scope (.ss-btn)` never styles the root itself. Prefixing the first compound with
+ * `:where(:scope)` (zero specificity) when it names a root class restores the component's
+ * exact semantics — root rules match the root, and for multi-root components the class keeps
+ * the two roots apart.
+ */
+export function scopeSelector(prelude, roots) {
+  return prelude
+    .split(',')
+    .map((sel) => {
+      const s = sel.trim()
+      const first = s.slice(0, firstCompoundEnd(s))
+      return compoundHasRoot(first, roots) && !first.includes(':scope') ? `:where(:scope)${s}` : s
+    })
+    .join(', ')
+}
+
 /** Re-indent a raw rule body by `indent` (keeping its relative nesting) for readable output. */
 function indentBlock(text, indent) {
   const lines = text.split('\n').filter((l) => l.trim())
@@ -213,21 +259,25 @@ export function extractComponentCss(name, css) {
           `vanilla-css: ${name} nests @keyframes inside ${rule.prelude} (unsupported)`,
         )
       }
-      out.scoped.push(renderRule(rule.prelude, rule.body, '  '))
+      // Inner rules of a conditional block need the same root treatment.
+      const inner = splitRules(rule.body)
+        .map((r) => renderRule(scopeSelector(r.prelude, roots), r.body, ''))
+        .join('\n')
+      out.scoped.push(renderRule(rule.prelude, inner, '  '))
       continue
     }
     if (rule.prelude.includes(':global(')) {
       out.globals.push(renderRule(deglobalize(rule.prelude, roots), rule.body, ''))
       continue
     }
-    out.scoped.push(renderRule(rule.prelude, rule.body, '  '))
+    out.scoped.push(renderRule(scopeSelector(rule.prelude, roots), rule.body, '  '))
   }
   return out
 }
 
 /** Wrap rendered rules in the component's donut scope block. */
 export function scopeBlock(roots, scopedRules) {
-  const head = `@scope (${roots.map((r) => `.${r}`).join(', ')}) to (${SCOPE_LIMIT}) {`
+  const head = `@scope (${roots.map((r) => `.${r}`).join(', ')}) to (${scopeLimit(roots)}) {`
   return `${head}\n${scopedRules.join('\n')}\n}`
 }
 
@@ -260,7 +310,7 @@ export function spinnerCss(variants, defaultVariant) {
     `  .frame:empty::before {\n    content: ${cssString(variants[defaultVariant].frames[0])};\n    display: inline-block;\n    min-width: 1ch;\n    text-align: center;\n    animation: ss-spinner-${defaultVariant} ${dur(defaultVariant)} steps(1, end) infinite;\n  }`,
     ...names.map(
       (v) =>
-        `  .ss-spinner[data-variant="${v}"] .frame:empty::before {\n    content: ${cssString(variants[v].frames[0])};\n    animation-name: ss-spinner-${v};\n    animation-duration: ${dur(v)};\n  }`,
+        `  :where(:scope).ss-spinner[data-variant="${v}"] .frame:empty::before {\n    content: ${cssString(variants[v].frames[0])};\n    animation-name: ss-spinner-${v};\n    animation-duration: ${dur(v)};\n  }`,
     ),
     `  @media (prefers-reduced-motion: reduce) {\n    .frame:empty::before {\n      animation: none;\n    }\n  }`,
   ]
@@ -285,10 +335,10 @@ export const TOASTER_EXTRA = {
   scoped: [
     `  .ss-toast {\n    animation: ss-toast-in var(--ss-dur-fast) var(--ss-ease) both;\n  }`,
     `  .ss-toast.leaving {\n    animation: ss-toast-out var(--ss-dur-fast) var(--ss-ease) forwards;\n    pointer-events: none;\n  }`,
-    `  .ss-toaster[data-position$="left"] {\n    --ss-toast-fly-x: -16px;\n  }`,
-    `  .ss-toaster[data-position$="center"] {\n    --ss-toast-fly-x: 0px;\n  }`,
-    `  .ss-toaster[data-position="top-center"] {\n    --ss-toast-fly-y: -16px;\n  }`,
-    `  .ss-toaster[data-position="bottom-center"] {\n    --ss-toast-fly-y: 16px;\n  }`,
+    `  :where(:scope).ss-toaster[data-position$="left"] {\n    --ss-toast-fly-x: -16px;\n  }`,
+    `  :where(:scope).ss-toaster[data-position$="center"] {\n    --ss-toast-fly-x: 0px;\n  }`,
+    `  :where(:scope).ss-toaster[data-position="top-center"] {\n    --ss-toast-fly-y: -16px;\n  }`,
+    `  :where(:scope).ss-toaster[data-position="bottom-center"] {\n    --ss-toast-fly-y: 16px;\n  }`,
   ],
 }
 

@@ -3,6 +3,25 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const chart: ComponentDoc = {
   name: 'Chart',
   slug: 'chart',
+  htmlExample: {
+    props: {
+      series: [
+        {
+          label: 'cpu',
+          data: [
+            { x: 1, y: 12 },
+            { x: 2, y: 18 },
+            { x: 3, y: 9 },
+            { x: 4, y: 22 },
+          ],
+        },
+      ],
+      variant: 'line',
+      legend: true,
+    },
+    behaviour: 'css',
+    note: 'Charts are rendered geometry: copy the SVG as-is. Hover tooltips are not wired by vanilla.js.',
+  },
   tagline: 'Multi-series line, area, and bar chart.',
   description:
     'A token-driven chart for comparing one or more series as a line, filled area, or grouped bars. Scales and paths are computed from the data; the SVG is rendered as plain markup with `--ss-*`-styled axes, gridlines, and a cycling categorical palette. Every datum is keyboard-focusable and reveals an accessible tooltip; the chart auto-generates a screen-reader summary (or pass `summary`). Empty input shows an em-dash placeholder.',

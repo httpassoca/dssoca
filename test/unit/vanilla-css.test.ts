@@ -7,9 +7,10 @@ import { SPINNER_VARIANTS } from '$lib/spinner-frames'
 import {
   ROOT_CLASSES,
   ALL_ROOTS,
-  SCOPE_LIMIT,
+  scopeLimit,
   splitRules,
   deglobalize,
+  scopeSelector,
   extractComponentCss,
   extractStyleBlock,
   spinnerCss,
@@ -109,6 +110,34 @@ describe('vanilla.css — parser', () => {
     expect(deglobalize('.ss-icon :global(.ss-icon-dot)', ['ss-icon'])).toBe('.ss-icon .ss-icon-dot')
   })
 
+  it('scopeSelector anchors root-led selectors with a zero-specificity :where(:scope)', () => {
+    expect(scopeSelector('.ss-btn', ['ss-btn'])).toBe(':where(:scope).ss-btn')
+    expect(scopeSelector('.ss-btn.primary:hover, .ss-btn .label', ['ss-btn'])).toBe(
+      ':where(:scope).ss-btn.primary:hover, :where(:scope).ss-btn .label',
+    )
+    expect(scopeSelector('.ss-btn:not(.a .b) > .x', ['ss-btn'])).toBe(
+      ':where(:scope).ss-btn:not(.a .b) > .x',
+    )
+    // internals and lookalike classes are left alone; multi-root keeps the class
+    expect(scopeSelector('.label', ['ss-btn'])).toBe('.label')
+    expect(scopeSelector('.ss-btn-x .y', ['ss-btn'])).toBe('.ss-btn-x .y')
+    expect(scopeSelector('.ss-image-lightbox .close', ['ss-image', 'ss-image-lightbox'])).toBe(
+      ':where(:scope).ss-image-lightbox .close',
+    )
+    expect(scopeSelector(':where(:scope).ss-btn', ['ss-btn'])).toBe(':where(:scope).ss-btn')
+  })
+
+  it('applies the root anchor inside nested @media blocks too', () => {
+    const { scoped } = extractComponentCss(
+      'Badge',
+      '.ss-badge { color: red; }\n@media (x) {\n  .ss-badge { color: blue; }\n  .dot { a: b; }\n}',
+    )
+    expect(scoped[0]).toContain(':where(:scope).ss-badge {')
+    expect(scoped[1]).toContain('@media (x) {')
+    expect(scoped[1]).toContain(':where(:scope).ss-badge {')
+    expect(scoped[1]).toContain('    .dot {')
+  })
+
   it('refuses unprefixed @keyframes (they would be global)', () => {
     expect(() => extractComponentCss('Badge', '@keyframes pulse { to { opacity: 0 } }')).toThrow(
       /ss-prefixed/,
@@ -119,12 +148,32 @@ describe('vanilla.css — parser', () => {
 describe('vanilla.css — output', () => {
   const componentCount = Object.keys(ROOT_CLASSES).length
 
-  it('has one donut @scope block per component, all limited by every root', () => {
+  it('has one donut @scope block per component, limited by every OTHER root', () => {
     const blocks = css.match(/^@scope \((.+?)\) to \((.+?)\) \{$/gm) ?? []
     expect(blocks).toHaveLength(componentCount)
-    for (const b of blocks) expect(b).toContain(`to (${SCOPE_LIMIT})`)
     for (const [, roots] of Object.entries(ROOT_CLASSES)) {
-      expect(css).toContain(`@scope (${roots.map((r) => `.${r}`).join(', ')}) to (`)
+      const head = `@scope (${roots.map((r) => `.${r}`).join(', ')}) to (${scopeLimit(roots)}) {`
+      expect(css).toContain(head)
+      // Own roots are never limits (Chrome would exclude the root itself); all others are.
+      const limit = scopeLimit(roots)
+      for (const r of roots) expect(limit).not.toContain(`.${r},`)
+      for (const other of ALL_ROOTS)
+        if (!roots.includes(other)) expect(limit).toContain(`.${other}`)
+    }
+  })
+
+  it('never leaves a bare root class as the first compound of a scoped rule', () => {
+    // Inside @scope such a selector could only match a DESCENDANT, never the root.
+    for (const [name, roots] of Object.entries(ROOT_CLASSES)) {
+      const start = css.indexOf(`/* ── ${name} ── */`)
+      const block = css.slice(css.indexOf('@scope (', start), css.indexOf('\n}\n', start) + 1)
+      for (const line of block.split('\n').slice(1)) {
+        const t = line.trim()
+        if (!t.endsWith('{') || t.startsWith('@')) continue
+        for (const r of roots) {
+          expect(t, `${name}: ${t}`).not.toMatch(new RegExp(`^\\.${r}(?![\\w-])`))
+        }
+      }
     }
   })
 

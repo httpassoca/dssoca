@@ -48,7 +48,7 @@ export type ComponentName =
 
 export const ROOT_CLASSES: Readonly<Record<ComponentName, readonly string[]>>
 export const ALL_ROOTS: readonly string[]
-export const SCOPE_LIMIT: string
+export function scopeLimit(roots: readonly string[]): string
 export const BANNER: string
 
 export interface Rule {
@@ -77,6 +77,7 @@ export function extractStyleBlock(svelteSource: string): string | null
 export function stripCommentsAndCharset(css: string): string
 export function splitRules(css: string): Rule[]
 export function deglobalize(prelude: string, roots: readonly string[]): string
+export function scopeSelector(prelude: string, roots: readonly string[]): string
 export function extractComponentCss(name: string, css: string): ExtractedCss
 export function scopeBlock(roots: readonly string[], scopedRules: string[]): string
 export function spinnerCss(

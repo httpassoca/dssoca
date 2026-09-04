@@ -47,6 +47,12 @@ Import components from the package barrel:
 </Card>
 ```
 
+## Without Svelte
+
+Static sites and quick demos can use the same look from plain HTML: load `dssoca/vanilla.css`
+after `theme.css` and (optionally) the `dssoca/vanilla.js` module — no build step, straight from
+a CDN. See [Plain HTML & CSS](/vanilla).
+
 ## Fonts
 
 The system is monospace-forward and expects its display/body fonts. `theme.css` pulls the web fonts

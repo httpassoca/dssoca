@@ -3,6 +3,18 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const accordion: ComponentDoc = {
   name: 'Accordion',
   slug: 'accordion',
+  htmlExample: {
+    props: {
+      items: [
+        { id: 'a', label: 'Alpha', hint: 'first' },
+        { id: 'b', label: 'Beta' },
+      ],
+      idBase: 'acc',
+    },
+    snippets: { panel: '<p>Panel content.</p>' },
+    behaviour: 'js',
+    note: "vanilla.js toggles the panel referenced by each header's aria-controls (single-open; add data-ss-multiple on the root to allow several) and roves focus with Arrow/Home/End. Emits ss:change.",
+  },
   tagline: 'Collapsible sections with one or many open at a time.',
   description:
     'A vertically stacked set of collapsible sections. Each item is a heading-wrapped `<button>` toggle (label + optional hint + a chevron that rotates 180° on open) over an animated content `region`. Single-open by default; `multiple` lets several stay open. Works uncontrolled (`defaultValue`) or controlled (bindable `value` + `onChange`). The reveal uses the `--ss-dur` / `--ss-ease` motion tokens and collapses instantly under `prefers-reduced-motion`.',

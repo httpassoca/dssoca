@@ -3,6 +3,12 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const button: ComponentDoc = {
   name: 'Button',
   slug: 'button',
+  htmlExample: {
+    props: { variant: 'primary' },
+    children: 'deploy',
+    behaviour: 'css',
+    note: 'A native <button>; add your own click handler. Use <span data-ss-icon="arrow" class="affix"> for leading/trailing icons (vanilla.js hydrates it).',
+  },
   tagline: 'The primary action control.',
   description:
     'Four variants — primary, secondary, ghost, danger. Square edges, token-driven padding. Supports a `loading` state that renders the shared `Spinner` (aria-busy, stays focusable) and accepts `true` (the configured default variant) or a `SpinnerVariant` string, leading/trailing icon snippets that never change the control height, `iconOnly` and `fullWidth` layouts, a bindable element ref, and forwards any remaining native button attributes.',

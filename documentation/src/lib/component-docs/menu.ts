@@ -3,6 +3,18 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const menu: ComponentDoc = {
   name: 'Menu',
   slug: 'menu',
+  htmlExample: {
+    props: {
+      items: [
+        { id: 'edit', label: 'Edit', icon: 'note' },
+        { id: 'delete', label: 'Delete' },
+      ],
+      label: 'Actions',
+    },
+    children: 'Actions',
+    behaviour: 'js',
+    note: 'vanilla.js opens/closes the panel, roves focus (arrows, Home/End, Escape, outside click) and emits ss:select with the item index / data-value.',
+  },
   tagline: 'Dropdown menu — trigger + floating list of actions.',
   description:
     'A trigger button that opens a floating panel of selectable items, with click-outside / Esc dismissal and full roving-focus keyboard navigation. Generalises the hand-rolled theme/language/overflow menus into one token-driven primitive (zero radius, --ss-shadow-pop). When any item carries a `selected` flag the rows become `menuitemradio` with a check marker; otherwise they are plain `menuitem` action rows.',

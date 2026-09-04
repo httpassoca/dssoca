@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const toaster: ComponentDoc = {
   name: 'Toaster',
   slug: 'toaster',
+  htmlExample: {
+    props: { position: 'top-right' },
+    behaviour: 'js',
+    note: 'Optional: place this container to choose the position; otherwise toast.success(…) from vanilla.js creates one. Toasts render into it.',
+  },
   tagline: 'Toast notification host.',
   description:
     'Mount once near the app root; drive it imperatively with the `toast` API. The stack anchors at one of six `position`s, supports swipe-to-dismiss, pause-on-hover, an inline action button, and announces via a live region. This page is the canonical reference for the whole toast API: every `toast.*` method and the `toasts` store.',

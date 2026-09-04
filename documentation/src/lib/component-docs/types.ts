@@ -7,6 +7,24 @@ export interface PropDoc {
   desc: string
 }
 
+/**
+ * Plain-HTML example (DS-0148). The docs build server-renders the real component with these
+ * props and shows the resulting markup on the component page, so the snippet can never drift
+ * from what the component actually emits. Everything here must be plain, serialisable data.
+ */
+export interface HtmlExample {
+  /** Component props (no functions, no snippets). */
+  props?: Record<string, unknown>
+  /** Raw HTML rendered as the default `children` snippet. */
+  children?: string
+  /** Raw HTML for other snippet-typed props (`footer`, `panel`, …). */
+  snippets?: Record<string, string>
+  /** `js` when `dssoca/vanilla.js` adds behaviour to this markup; `css` when it is static. */
+  behaviour: 'js' | 'css'
+  /** Short note shown under the snippet (what the JS does, or what to wire yourself). */
+  note?: string
+}
+
 export interface ComponentDoc {
   /** Exported component name (as imported from `dssoca`). */
   name: string
@@ -26,6 +44,8 @@ export interface ComponentDoc {
   notes?: string
   /** Optional related guide page, rendered as a link under the notes. */
   guide?: { href: string; label: string }
+  /** Plain-HTML example rendered at build time (see the "Plain HTML & CSS" guide). */
+  htmlExample: HtmlExample
 }
 
 export const SIZE_PROP: PropDoc = {

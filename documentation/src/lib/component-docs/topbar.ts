@@ -3,6 +3,18 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const topbar: ComponentDoc = {
   name: 'Topbar',
   slug: 'topbar',
+  htmlExample: {
+    props: {
+      active: 'overview',
+      tabs: ['overview', 'logs'],
+      user: 'ops@example.com',
+      services: false,
+      stats: [],
+      clock: false,
+    },
+    behaviour: 'css',
+    note: 'Static shell chrome; the clock, mod+k hook and roving tabs need the Svelte component.',
+  },
   tagline: 'App-shell top bar with tabs.',
   description:
     'The application top bar: brand, a tab strip (buttons or real links), optional right-aligned chrome (services summary, stats, ⌘K chip, live clock), and a user control. Adds a skip link, a command-menu hook (Cmd+K on Apple platforms, Ctrl+K elsewhere — registered through the shortcut registry), custom brand/user snippets, and an optional sticky position. Uses header/nav landmarks and keyboard tab navigation, and degrades gracefully to a plain brand + tabs bar when the built-in chrome is opted out.',
