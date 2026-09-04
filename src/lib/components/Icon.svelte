@@ -1,13 +1,15 @@
 <script module lang="ts">
   // Glyph table + registry live in `../icons.ts` (DS-0148) so the vanilla build can share
   // them without importing a .svelte file. Re-exported here for backward compatibility.
-  import { PATHS, registerIcon, resolveIcon, type IconName } from '../icons.js'
-  export { PATHS, registerIcon, resolveIcon }
-  export type { IconName }
+  export { PATHS, registerIcon, resolveIcon } from '../icons.js'
+  export type { IconName } from '../icons.js'
 </script>
 
 <script lang="ts">
   import { resolveComponentSize, type Size } from '../config.js'
+  // Aliased: the module script re-exports the same names, and eslint-plugin-svelte
+  // merges both scopes.
+  import { resolveIcon as lookupIcon, type IconName as GlyphName } from '../icons.js'
 
   /**
    * Icon-local size scale (DS-0109). Distinct from the global `Size` axis
@@ -22,7 +24,7 @@
   const DEFAULT_PX = SIZE_PX.md
 
   interface Props {
-    name: IconName
+    name: GlyphName
     /**
      * Icon-local size (`xs | sm | md | lg`, a fixed px scale); inherits the
      * active `--ss-icon` token when unset. `xs` (12px) is Icon-only and has no
@@ -87,7 +89,7 @@
   // Resolve the glyph: explicit `paths` escape hatch → registered/built-in → warn.
   const markup = $derived.by(() => {
     if (paths != null) return paths
-    const found = resolveIcon(name)
+    const found = lookupIcon(name)
     if (found != null) return found
     if (typeof console !== 'undefined') {
       console.warn(

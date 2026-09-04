@@ -9,13 +9,14 @@
 
   // Frame data lives in `../spinner-frames.ts` (DS-0148) so the vanilla CSS generator can
   // share it without importing a .svelte file. Re-exported here for backward compatibility.
-  import { SPINNER_VARIANTS, type SpinnerFrames } from '../spinner-frames.js'
-  export { SPINNER_VARIANTS }
-  export type { SpinnerFrames }
+  export { SPINNER_VARIANTS } from '../spinner-frames.js'
+  export type { SpinnerFrames } from '../spinner-frames.js'
 </script>
 
 <script lang="ts">
   import { resolveComponentSize, resolveSpinnerVariant, type Size } from '../config.js'
+  // Aliased: the module script re-exports the same name (eslint-plugin-svelte merges scopes).
+  import { SPINNER_VARIANTS as VARIANTS } from '../spinner-frames.js'
 
   interface Props {
     /**
@@ -40,7 +41,7 @@
   // An explicit `variant` prop wins; otherwise fall back to the configured
   // house default (`spinnerVariant`, from the manifest) — DS-0108.
   const resolvedVariant = $derived(resolveSpinnerVariant(variant))
-  const spinner = $derived(SPINNER_VARIANTS[resolvedVariant])
+  const spinner = $derived(VARIANTS[resolvedVariant])
   const interval = $derived(speed ?? spinner.interval)
   const resolvedSize = $derived(resolveComponentSize('Spinner', size))
 
