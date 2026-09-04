@@ -114,9 +114,15 @@ The `ss-` prefix is reserved for **component-identity / design-system** classes
 (`.ss-btn`, `.ss-panel`, `.ss-badge`, …); generic internal elements use plain,
 unprefixed scoped names (`.head`, `.title`, `.dot`, …).
 
-> **Breaking in 0.3.0:** the global `.ss-*` _component_ rules were removed from
-> `theme.css` (they now live in the components). Use the exported components;
-> hand-rolling raw `<button class="ss-btn">` against `theme.css` no longer works.
+> **Since 0.3.0** the global `.ss-*` _component_ rules live only in the components,
+> not in `theme.css`. **Since 0.17.0 (DS-0148)** plain-HTML consumers get them from
+> **`dssoca/vanilla.css`** — a stylesheet _generated_ in `prepack` from the
+> components' own `<style>` blocks (never hand-written), with each component
+> wrapped in a donut `@scope (.ss-root) to (<every other root>)` block so the
+> unprefixed internals stay isolated. The markup contract is the exact DOM the
+> Svelte components render (the docs show it per component); the optional
+> `dssoca/vanilla.js` module adds the interactive behaviours. Hand-rolling
+> `<button class="ss-btn">` against `theme.css` alone still does nothing.
 
 > **Breaking in 0.4.0:** the **density** axis became the **size** axis.
 > `data-density` → `data-size-variant`, `Density`(comfy/compact) → `Size`(sm/md/lg)
@@ -155,7 +161,8 @@ just styled out.
   shared `Icon` (`.ss-icon`) component — never a bespoke CSS-border shape or an
   ad-hoc inline `<svg>`. This centralises the stroke, the named size scale, and
   the a11y attributes. Need a new glyph? Add it to `BUILTIN_PATHS` in
-  `Icon.svelte` (and the `IconName` union), don't draw it locally.
+  `src/lib/icons.ts` (the `IconName` union derives from it; `Icon.svelte` and
+  `vanilla.js` share the table), don't draw it locally.
   - _Documented non-icons:_ the Button loading indicator is a **`Spinner`** (a
     text-frame glyph, not an SVG) and the Badge status dot is a **styled span**
     (a colour token, not a glyph). These are intentional and not forced through

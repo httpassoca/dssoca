@@ -3,6 +3,17 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const boxPlot: ComponentDoc = {
   name: 'BoxPlot',
   slug: 'box-plot',
+  htmlExample: {
+    props: {
+      groups: [
+        { label: 'api', values: [12, 15, 14, 19, 22, 17] },
+        { label: 'db', values: [30, 28, 35, 40, 33, 31] },
+      ],
+      yLabel: 'ms',
+    },
+    behaviour: 'css',
+    note: 'Charts are rendered geometry: copy the SVG as-is or render it with the Svelte component. Hover tooltips are not wired by vanilla.js.',
+  },
   tagline: 'Box-and-whisker distributions with an optional point overlay.',
   description:
     'A token-driven box plot for comparing the score distributions of a few players (or any groups) at a glance — a short box means a consistent scorer. Each group draws Tukey whiskers, a quartile box (Q1–Q3) tinted in the group `color`, and a median line; pass `showPoints` to overlay every value as a deterministically jittered dot (no SSR/hydration randomness). The y axis uses the padded data extent across all values, every box is keyboard-focusable with a five-number-summary tooltip, and empty input shows an em-dash placeholder.',

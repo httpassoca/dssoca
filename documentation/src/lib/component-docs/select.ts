@@ -3,6 +3,19 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const select: ComponentDoc = {
   name: 'Select',
   slug: 'select',
+  htmlExample: {
+    props: {
+      label: 'Region',
+      id: 'region',
+      options: [
+        { value: 'eu', label: 'Europe' },
+        { value: 'us', label: 'United States' },
+      ],
+      value: 'eu',
+    },
+    behaviour: 'css',
+    note: 'A labelled native <select>.',
+  },
   tagline: 'Styled native dropdown.',
   description:
     'A native `<select>` wrapped in the shared field chrome — best-in-class keyboard and mobile a11y, with a custom CSS chevron and zero runtime deps. Pass a flat `options` list or grouped `SelectOptGroup[]` (auto-detected); add a `placeholder` for an empty first choice, and wire `hint`/`error` text via `aria-describedby` exactly like `Input`.',

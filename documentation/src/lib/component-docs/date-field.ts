@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const dateField: ComponentDoc = {
   name: 'DateField',
   slug: 'date-field',
+  htmlExample: {
+    props: { label: 'Date', id: 'date', hint: 'YYYY-MM-DD' },
+    behaviour: 'css',
+    note: 'A labelled native <input type="date">.',
+  },
   tagline: 'Styled native date input.',
   description:
     'A styled wrapper around the native `<input type="date">`, sharing the field chrome of `Input`: label association, focus ring on the wrapper, hint/error messaging wired through `aria-describedby`, and invalid/disabled/readonly states. Bind an ISO `yyyy-mm-dd` string via `value` and constrain the range with `min`/`max`. The calendar picker glyph is tuned to read on the dark theme; zero border-radius.',

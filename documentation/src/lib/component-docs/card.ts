@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const card: ComponentDoc = {
   name: 'Card',
   slug: 'card',
+  htmlExample: {
+    props: { title: 'Uptime', meta: '24h' },
+    children: '<p>All systems nominal.</p>',
+    behaviour: 'css',
+  },
   tagline: 'Titled panel container.',
   description:
     'A bordered panel with an optional title (string or snippet), meta, description, and action slot, plus full-bleed `media` and a `footer` band. Becomes a link (`href`) or button (`onclick`) when interactive, with keyboard activation. `outlined` or `elevated` surface; the title renders at a configurable heading level for a correct document outline.',

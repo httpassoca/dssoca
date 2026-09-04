@@ -435,11 +435,11 @@
       width: var(--ss-s-2);
       height: var(--ss-s-2);
       background: var(--ss-primary);
-      animation: pulse var(--ss-dur-xslow) var(--ss-ease) infinite;
+      animation: ss-logs-pulse var(--ss-dur-xslow) var(--ss-ease) infinite;
     }
   }
 
-  @keyframes pulse {
+  @keyframes ss-logs-pulse {
     0%,
     100% {
       opacity: 0.3;

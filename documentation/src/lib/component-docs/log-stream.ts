@@ -3,6 +3,18 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const logStream: ComponentDoc = {
   name: 'LogStream',
   slug: 'log-stream',
+  htmlExample: {
+    props: {
+      lines: [
+        { t: '12:00:01', lvl: 'info', svc: 'api', msg: 'listening on :8080' },
+        { t: '12:00:02', lvl: 'warn', svc: 'db', msg: 'slow query (412ms)' },
+        { t: '12:00:03', lvl: 'ok', svc: 'api', msg: 'healthy' },
+      ],
+      live: false,
+    },
+    behaviour: 'css',
+    note: 'Static log lines; the filter chips, copy and follow-tail need the Svelte component.',
+  },
   tagline: 'Live, levelled log viewer.',
   description:
     'A terminal-style log viewer. Pass controlled `lines` to render exactly those, or let the built-in `demo` ticker simulate a live feed. Includes a controls toolbar (filters, search, wrap, copy, clear) you can replace, a `loading` indicator, a custom `empty` slot, and a `role="log"` region with configurable aria-live announcements.',

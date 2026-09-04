@@ -3,6 +3,11 @@ import { type ComponentDoc } from './types'
 export const icon: ComponentDoc = {
   name: 'Icon',
   slug: 'icon',
+  htmlExample: {
+    props: { name: 'check', size: 'sm' },
+    behaviour: 'js',
+    note: 'Write <span data-ss-icon="check" data-size="sm"></span> and vanilla.js swaps it for this exact SVG (or paste the SVG for a no-JS page).',
+  },
   tagline: 'The inline SVG icon set.',
   description:
     'A small, token-sized SVG icon set. Built-in stroke glyphs are drawn from a `name` map; register your own with `registerIcon`, or pass raw `paths` inline. Decorative by default; pass a `title` to expose an accessible name. Supports `spin`, quarter-turn `rotate`, `flip`, an `outline`/`solid` `variant`, and configurable stroke.',

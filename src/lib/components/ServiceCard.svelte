@@ -284,7 +284,7 @@
       inset: 0;
       transform: translateX(-100%);
       background: linear-gradient(90deg, transparent, var(--ss-hover), transparent);
-      animation: sk-shimmer var(--ss-dur-xslow) var(--ss-ease) infinite;
+      animation: ss-svc-shimmer var(--ss-dur-xslow) var(--ss-ease) infinite;
     }
   }
   .sk-name {
@@ -305,7 +305,7 @@
     height: var(--ss-icon);
   }
 
-  @keyframes sk-shimmer {
+  @keyframes ss-svc-shimmer {
     100% {
       transform: translateX(100%);
     }

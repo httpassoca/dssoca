@@ -155,7 +155,7 @@
     .skeleton {
       background: var(--ss-skeleton);
       border-radius: var(--ss-radius-0);
-      animation: skeleton-pulse var(--ss-dur-xslow) var(--ss-ease) infinite alternate;
+      animation: ss-metric-skeleton-pulse var(--ss-dur-xslow) var(--ss-ease) infinite alternate;
     }
     .skeleton-val {
       height: var(--ss-metric-val);
@@ -167,7 +167,7 @@
     }
   }
 
-  @keyframes skeleton-pulse {
+  @keyframes ss-metric-skeleton-pulse {
     from {
       opacity: 1;
     }

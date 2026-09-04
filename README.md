@@ -75,6 +75,25 @@ SSR / no-flash — spread the attributes directly in markup instead of mutating 
 <html {...designAttributes({ sizeVariant: 'sm' })}>
 ```
 
+## Plain HTML (no Svelte)
+
+Static sites and quick demos can use the same look without a build step: `dssoca/vanilla.css`
+carries every component's styles (generated from the components themselves — the markup contract
+is the exact DOM they render) and `dssoca/vanilla.js` is an optional, dependency-free module that
+wires the interactive parts (modal, menu, accordion, tooltip, switch, toasts, icons…). Load the CSS
+**after** `theme.css`; it needs CSS `@scope` (Chrome/Edge 118+, Safari 17.4+, Firefox 2026+).
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/theme.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla/index.js"></script>
+
+<button class="ss-btn primary" type="button" data-ss-modal="#confirm">deploy</button>
+```
+
+Every component page in the docs has an **HTML** section with copy-paste markup; the full contract
+is in the _Plain HTML & CSS_ guide.
+
 ## What's in the box
 
 **Components (23):** `Icon`, `Badge`, `Button`, `Input`, `Textarea`, `Card`, `Sparkline`,

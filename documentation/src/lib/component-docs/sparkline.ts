@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const sparkline: ComponentDoc = {
   name: 'Sparkline',
   slug: 'sparkline',
+  htmlExample: {
+    props: { data: [3, 5, 4, 8, 6, 9, 7], variant: 'bars', label: 'requests' },
+    behaviour: 'css',
+    note: 'Bars are inline heights; line/area variants are computed SVG — copy as rendered.',
+  },
   tagline: 'Tiny inline trend chart.',
   description:
     'A compact sparkline for trends, rendered as bars, a line, or a filled area. Fix the scale with `min`/`max` to compare rows, colour by `trend` (auto derives up/down/flat → success/danger/muted), and flex it to the cell with `fluid`/`width`. Decorative by default; the auto-generated summary (or `label`) names it for assistive tech.',
