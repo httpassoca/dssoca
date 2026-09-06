@@ -6,6 +6,52 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
+## [Unreleased]
+
+### Added
+
+- **Inspirations — example websites on the plain-HTML path** (`DS-0150`). Twelve hand-written
+  sites under `inspirations/` (ops dashboard, social feed, dating app, team chat, SaaS landing
+  page, personal blog, media tracker, storefront, mail client, kanban board, music player,
+  account settings + sign-in), each plain HTML on `dssoca/vanilla.css` + `dssoca/vanilla.js`,
+  self-contained (inline-SVG placeholders, no external assets), responsive and axe-checked, plus
+  a gallery page with screenshot thumbnails (each opens the site in a new tab) and theme/size
+  toggles that every opened page honours (`inspirations/assets/axes.js`). Deployed to
+  **GitHub Pages** (<https://httpassoca.github.io/dssoca/>) by `.github/workflows/pages.yml` on
+  every push to `main`: the run rebuilds `dist/`, vendors it into the site
+  (`pnpm build:inspirations`) and captures the thumbnails with the Playwright CLI — nothing
+  generated is committed. Local preview: `pnpm inspirations:dev`. Guarded by
+  `test/unit/inspirations.test.ts` (page contract, folder ↔ gallery drift, every `ss-*` class
+  present in the generated CSS, axe, layout-only page CSS) and built in CI. Not part of the npm
+  package.
+- **Sidebar `external` item flag** (`DS-0154`). `SideItem.external` (with `href`) renders the
+  entry as a new-tab link — `target="_blank"`, `rel="noopener noreferrer"`, a trailing external
+  glyph and an "(opens in a new tab)" announcement (also folded into the collapsed-rail name).
+  The docs nav uses it for the Inspirations link.
+
+### Changed
+
+- Docs: "Inspirations" entry in the guide nav and the search palette (opens in a new tab), a
+  pointer at the end of the _Plain HTML & CSS_ guide, README.
+
+### Fixed
+
+Found while building the Inspirations pages (`DS-0150`):
+
+- **Global link underline leaking into component anchors.** `theme.css` draws an animated
+  `a::before` underline under every `<a>`; Sidebar items, BottomNav tabs, Topbar link tabs and
+  skip link, Card `href` overlays, ServiceCard links and SearchPalette rows now cancel it in their
+  own scoped CSS (so the reset ships in `vanilla.css` too). Previously a stray 1px primary line
+  showed under nav items and along the bottom edge of linked cards.
+- **Toaster host is a named landmark.** The `.ss-toaster` container (Svelte and the vanilla
+  `toast` API) now carries `role="region"` — `aria-label` on a role-less `<div>` is an axe
+  `aria-prohibited-attr` violation.
+- **MetricTile contrast.** The unit suffix (`.small`) is `--ss-fg-muted` instead of a
+  half-transparent fg, the negative `emphasis` chip lifts its text toward fg, and the period label
+  inside a chip inherits the chip colour — all three failed WCAG AA (4.5:1) on the dark tile.
+- **`vanilla.js` Input clear button honours `hidden`.** Input's `.clear` rule restates
+  `display: none` for `[hidden]`, so the × no longer shows on an empty field in plain HTML.
+
 ## [0.17.0] — plain HTML & CSS consumption — 2026-09-06
 
 ### Added
@@ -576,7 +622,7 @@ Docs-site only (the published library is unchanged from `0.8.0`).
   component set (`DS-0002`), toast notifications (`DS-0003`), and empty/error-state affordances
   (`DS-0004`).
 
-[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.17.0...HEAD
 [0.9.0]: https://github.com/httpassoca/dssoca/compare/v0.8.2...v0.9.0
 [0.2.0]: https://github.com/httpassoca/dssoca/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/httpassoca/dssoca/releases/tag/v0.1.0

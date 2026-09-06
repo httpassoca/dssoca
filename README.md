@@ -92,7 +92,9 @@ wires the interactive parts (modal, menu, accordion, tooltip, switch, toasts, ic
 ```
 
 Every component page in the docs has an **HTML** section with copy-paste markup; the full contract
-is in the _Plain HTML & CSS_ guide.
+is in the _Plain HTML & CSS_ guide. For whole pages, see **[Inspirations](https://httpassoca.github.io/dssoca/)**
+— twelve example websites (dashboard, social feed, chat, storefront, blog, …) written in plain
+HTML on this path, deployed from `inspirations/` to GitHub Pages.
 
 ## What's in the box
 

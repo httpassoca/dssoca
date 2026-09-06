@@ -59,6 +59,10 @@ src/styles/        Sass source (@use partials) → compiled to dist/theme.css; n
   theme.scss       entry; _tokens / _base / _layout / _components partials
                    (the --ss-* / .ss-* prefix lives here — token + base-style source of truth)
 src/routes/        showcase/preview app (dev only, not published)
+inspirations/      Inspirations site (DS-0150): example websites in plain HTML on the vanilla
+                   path — index.html gallery, <slug>/index.html (+ site.css, site.js), assets/axes.js.
+                   Built by scripts/build-inspirations.mjs → inspirations-dist/ (gitignored),
+                   deployed to GitHub Pages by .github/workflows/pages.yml. Not published to npm.
 test/              Vitest suite (unit/ + harness/) + setup.ts
 docs/              themes.md, tokens.md
 agile/             work tracker (board = index.html). Slug: DS
@@ -83,6 +87,14 @@ Published surface (`exports`): `dssoca` (components + config), `dssoca/theme.css
   DOM a component renders. `@keyframes` names must be `ss-`-prefixed (the generator throws
   otherwise). A behaviour that must work in plain HTML goes in `src/lib/vanilla/` (no runes, no
   Svelte imports, relative `.js` specifiers — guarded by `vanilla-purity.test.ts`).
+- **Inspirations pages are plain HTML on the vanilla contract.** A page under `inspirations/`
+  loads `../vendor/theme.css` → `../vendor/vanilla.css` → `../vendor/vanilla/index.js` (+
+  `../assets/axes.js`), uses only component markup and `ss-*` classes that exist in the
+  generated CSS, keeps its own `site.css` to layout (tokens only, no colour literals, no
+  radius), is self-contained (no external assets) and passes axe — all pinned by
+  `test/unit/inspirations.test.ts`; the gallery must link every `<slug>/` folder. Thumbnails
+  are generated in the Pages workflow, never committed. Adding a site = a new folder + a
+  gallery card.
 - **Tests are a RULE**: run `pnpm test` and add/extend tests for any change before calling it done.
   A11y is covered by `vitest-axe` (unit) + `@storybook/addon-a11y` (Storybook); target WCAG 2.2 AA.
 - **Docs are a RULE**: every user-facing change ships its docs. Update the component page in
@@ -108,6 +120,9 @@ pnpm check              # svelte-check (type-checks src + test under the SvelteK
 pnpm pack               # build dist/ via prepack (sync → svelte-package → build:css → build:vanilla → publint), make tarball
 pnpm build:css          # compile src/styles/theme.scss → dist/theme.css (Dart Sass)
 pnpm build:vanilla      # generate dist/vanilla.css from dist/components/*.svelte (run after svelte-package)
+pnpm build:inspirations # assemble inspirations/ + vendored dist files → inspirations-dist/ (needs dist/)
+pnpm inspirations:dev   # build + serve inspirations-dist/ on http://127.0.0.1:4380/
+pnpm inspirations:shots # capture gallery thumbnails with the Playwright CLI (pnpm dlx; CI does this)
 pnpm storybook          # Storybook dev server (port 6006): component pages + axis toolbar
 pnpm build-storybook    # static Storybook build → storybook-static/ (gitignored)
 pnpm release            # release helper: validates bump/branch, drafts changelog stub, prints git-flow steps

@@ -51,8 +51,9 @@ export function pageItems(nav: NavGroup[] = NAV): DocsSearchItem[] {
     ...guide.map((it) => ({
       id: `page:${it.href}`,
       label: it.label,
-      hint: 'Guide',
-      href: it.href,
+      hint: it.external ? 'Site · opens in a new tab' : 'Guide',
+      // External guide entries open in a new tab (see `DocsSearchItem.url`).
+      ...(it.external ? { url: it.href } : { href: it.href }),
       group: GROUP_PAGES,
       keywords: it.keywords ?? [],
     })),
