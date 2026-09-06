@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Relay — #general · Northwind Studio</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body>
+    <div class="relay" id="relay">
+      <!-- ── Server rail ─────────────────────────────────────────────────── -->
+      <nav class="relay-rail" aria-label="Servers">
+        <a class="relay-brand" href="#relay" aria-label="Relay home">
+          <span aria-hidden="true">R</span>
+        </a>
+        <ul class="relay-servers">
+          <li>
+            <span class="ss-tooltip" data-placement="right">
+              <span class="trigger">
+                <button type="button" class="relay-server" aria-current="true">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Northwind Studio"
+                    style="--ss-avatar-bg: var(--ss-green)"
+                  >
+                    <span class="initials" aria-hidden="true">NS</span>
+                  </span>
+                </button>
+              </span>
+              <span class="tip" role="tooltip" hidden style="--shift: 0px">Northwind Studio</span>
+            </span>
+          </li>
+          <li>
+            <span class="ss-tooltip" data-placement="right">
+              <span class="trigger">
+                <button type="button" class="relay-server">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Open Source"
+                    style="--ss-avatar-bg: var(--ss-blue)"
+                  >
+                    <span class="initials" aria-hidden="true">OS</span>
+                  </span>
+                </button>
+              </span>
+              <span class="tip" role="tooltip" hidden style="--shift: 0px">Open Source</span>
+            </span>
+          </li>
+          <li>
+            <span class="ss-tooltip" data-placement="right">
+              <span class="trigger">
+                <button type="button" class="relay-server">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Kite Labs"
+                    style="--ss-avatar-bg: var(--ss-magenta)"
+                  >
+                    <span class="initials" aria-hidden="true">KL</span>
+                  </span>
+                </button>
+              </span>
+              <span class="tip" role="tooltip" hidden style="--shift: 0px">Kite Labs</span>
+            </span>
+          </li>
+          <li>
+            <span class="ss-tooltip" data-placement="right">
+              <span class="trigger">
+                <button type="button" class="relay-server">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Weekend Climbers"
+                    style="--ss-avatar-bg: var(--ss-yellow)"
+                  >
+                    <span class="initials" aria-hidden="true">WC</span>
+                  </span>
+                </button>
+              </span>
+              <span class="tip" role="tooltip" hidden style="--shift: 0px">Weekend Climbers</span>
+            </span>
+          </li>
+        </ul>
+        <span class="ss-tooltip relay-rail-tail" data-placement="right">
+          <span class="trigger">
+            <button class="ss-btn ghost icon-only" type="button" aria-label="Add a server">
+              <span class="affix" aria-hidden="true">+</span>
+            </button>
+          </span>
+          <span class="tip" role="tooltip" hidden style="--shift: 0px">Add a server</span>
+        </span>
+      </nav>
+
+      <!-- ── Channel sidebar ─────────────────────────────────────────────── -->
+      <section class="relay-channels" id="relay-channels" aria-label="Workspace">
+        <div class="relay-ws">
+          <span class="relay-ws-name">Northwind Studio</span>
+          <span class="ss-badge positive" data-size-variant="sm">
+            <span class="dot" aria-hidden="true"></span>
+            5 online
+          </span>
+        </div>
+
+        <nav class="ss-side" aria-label="Channels">
+          <div class="section" id="relay-sec-text">Text channels</div>
+          <ul class="list" aria-labelledby="relay-sec-text">
+            <li class="row">
+              <a class="item active" href="#relay-messages" aria-current="page">
+                <span data-ss-icon="terminal" data-px="13"></span>
+                <span class="label">general</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#relay-messages">
+                <span data-ss-icon="color-swatch" data-px="13"></span>
+                <span class="label">design</span>
+                <span class="badge">2</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#relay-messages">
+                <span data-ss-icon="target" data-px="13"></span>
+                <span class="label">shipping</span>
+                <span class="badge">7</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#relay-messages">
+                <span data-ss-icon="cup" data-px="13"></span>
+                <span class="label">random</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#relay-messages">
+                <span data-ss-icon="book" data-px="13"></span>
+                <span class="label">docs</span>
+              </a>
+            </li>
+          </ul>
+
+          <div class="section" id="relay-sec-voice">Voice</div>
+          <ul class="list" aria-labelledby="relay-sec-voice">
+            <li class="row">
+              <a class="item" href="#relay-messages">
+                <span data-ss-icon="activity" data-px="13"></span>
+                <span class="label">Standup room</span>
+                <span class="badge">3</span>
+                <span class="dot" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#relay-messages">
+                <span data-ss-icon="activity" data-px="13"></span>
+                <span class="label">Focus</span>
+              </a>
+            </li>
+          </ul>
+
+          <div class="section" id="relay-sec-dm">Direct messages</div>
+          <ul class="list" aria-labelledby="relay-sec-dm">
+            <li class="row">
+              <a class="item" href="#relay-messages">
+                <span data-ss-icon="user" data-px="13"></span>
+                <span class="label">Priya Natarajan</span>
+                <span class="badge">1</span>
+                <span class="dot" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#relay-messages">
+                <span data-ss-icon="user" data-px="13"></span>
+                <span class="label">Tomás Herrera</span>
+                <span class="dot" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#relay-messages">
+                <span data-ss-icon="user" data-px="13"></span>
+                <span class="label">Mika Lindqvist</span>
+                <span class="badge">4</span>
+                <span class="dot warn" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#relay-messages">
+                <span data-ss-icon="user" data-px="13"></span>
+                <span class="label">Dev Sharma</span>
+                <span class="dot err" aria-hidden="true"></span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="relay-me">
+          <span
+            class="ss-avatar"
+            data-size-variant="sm"
+            role="img"
+            aria-label="Jules Marchetti"
+            style="--ss-avatar-bg: var(--ss-cyan)"
+          >
+            <span class="initials" aria-hidden="true">JM</span>
+          </span>
+          <span class="relay-me-text">
+            <span class="relay-me-name">Jules Marchetti</span>
+            <span class="relay-me-handle">@jules</span>
+          </span>
+          <span class="ss-tooltip" data-placement="top">
+            <span class="trigger">
+              <button class="ss-btn ghost icon-only" type="button" aria-label="User settings">
+                <span class="affix" aria-hidden="true">
+                  <span data-ss-icon="settings" data-size="sm"></span>
+                </span>
+              </button>
+            </span>
+            <span class="tip" role="tooltip" hidden style="--shift: 0px">User settings</span>
+          </span>
+        </div>
+      </section>
+
+      <!-- ── Channel ─────────────────────────────────────────────────────── -->
+      <main class="relay-main">
+        <header class="relay-chan">
+          <button
+            class="ss-btn ghost icon-only relay-nav-toggle"
+            type="button"
+            id="relay-nav-toggle"
+            aria-label="Show channels"
+            aria-controls="relay-channels"
+            aria-expanded="false"
+          >
+            <span class="affix" aria-hidden="true">
+              <span data-ss-icon="grid" data-size="sm"></span>
+            </span>
+          </button>
+          <h1 class="relay-chan-name"><span aria-hidden="true">#</span>general</h1>
+          <span class="ss-badge neutral" data-size-variant="sm">24 members</span>
+          <p class="relay-topic">Company-wide announcements and water-cooler chat.</p>
+
+          <div class="ss-field relay-search">
+            <div class="control">
+              <span class="affix prefix" aria-hidden="true">⌕</span>
+              <input
+                class="ss-input"
+                id="relay-search"
+                type="text"
+                placeholder="Search #general"
+                aria-label="Search messages in #general"
+              />
+              <button type="button" class="clear" aria-label="Clear" hidden>×</button>
+            </div>
+          </div>
+
+          <span class="ss-tooltip" data-placement="bottom">
+            <span class="trigger">
+              <button
+                class="ss-btn ghost icon-only"
+                type="button"
+                id="relay-theme"
+                aria-label="Toggle light or dark theme"
+              >
+                <span class="affix" aria-hidden="true">
+                  <span data-ss-icon="color-swatch" data-size="sm"></span>
+                </span>
+              </button>
+            </span>
+            <span class="tip" role="tooltip" hidden style="--shift: 0px">Toggle theme</span>
+          </span>
+
+          <div class="ss-menu" data-align="end" data-side="bottom" id="relay-chan-menu">
+            <button
+              type="button"
+              class="trigger"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-controls="relay-chan-menu-panel"
+              aria-label="Channel actions"
+            >
+              <span aria-hidden="true">⋯</span>
+            </button>
+            <div
+              id="relay-chan-menu-panel"
+              class="panel"
+              role="menu"
+              aria-label="Channel actions"
+              aria-hidden="true"
+              tabindex="-1"
+            >
+              <button
+                type="button"
+                class="item"
+                data-mi="0"
+                data-value="pin"
+                role="menuitem"
+                tabindex="-1"
+              >
+                <span data-ss-icon="target"></span>
+                <span class="label">Pin channel</span>
+                <span class="marker" aria-hidden="true"></span>
+              </button>
+              <button
+                type="button"
+                class="item"
+                data-mi="1"
+                data-value="mute"
+                role="menuitem"
+                tabindex="-1"
+              >
+                <span data-ss-icon="activity"></span>
+                <span class="label">Mute for 1 hour</span>
+                <span class="marker" aria-hidden="true"></span>
+              </button>
+              <button
+                type="button"
+                class="item"
+                data-mi="2"
+                data-value="leave"
+                role="menuitem"
+                tabindex="-1"
+              >
+                <span data-ss-icon="external"></span>
+                <span class="label">Leave channel</span>
+                <span class="marker" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div
+          class="relay-log"
+          id="relay-log"
+          role="log"
+          aria-label="Messages in #general"
+          tabindex="0"
+        >
+          <ol class="relay-msgs" id="relay-messages">
+            <li class="relay-sys">
+              <span data-ss-icon="arrow" data-size="xs" data-rotate="90"></span>
+              <span><strong>Wren Okonkwo</strong> joined #general.</span>
+              <time datetime="2026-09-06T09:04">09:04</time>
+            </li>
+
+            <li class="relay-group" data-author="Priya Natarajan">
+              <span
+                class="ss-avatar"
+                role="img"
+                aria-label="Priya Natarajan"
+                style="--ss-avatar-bg: var(--ss-magenta)"
+              >
+                <span class="initials" aria-hidden="true">PN</span>
+              </span>
+              <div class="relay-group-body">
+                <div class="relay-group-head">
+                  <span class="relay-author">Priya Natarajan</span>
+                  <span class="ss-badge neutral" data-size-variant="sm">admin</span>
+                  <time datetime="2026-09-06T09:12">09:12</time>
+                </div>
+                <p class="relay-msg">Morning all — the 0.17 release notes are up on the wiki.</p>
+                <p class="relay-msg">
+                  Skim them before standup if you can, especially the deprecations section.
+                </p>
+              </div>
+            </li>
+
+            <li class="relay-group" data-author="Tomás Herrera">
+              <span
+                class="ss-avatar"
+                role="img"
+                aria-label="Tomás Herrera"
+                style="--ss-avatar-bg: var(--ss-blue)"
+              >
+                <span class="initials" aria-hidden="true">TH</span>
+              </span>
+              <div class="relay-group-body">
+                <div class="relay-group-head">
+                  <span class="relay-author">Tomás Herrera</span>
+                  <time datetime="2026-09-06T09:15">09:15</time>
+                </div>
+                <p class="relay-msg">Nice. Did the plain-HTML path land too?</p>
+              </div>
+            </li>
+
+            <li class="relay-group" data-author="Priya Natarajan">
+              <span
+                class="ss-avatar"
+                role="img"
+                aria-label="Priya Natarajan"
+                style="--ss-avatar-bg: var(--ss-magenta)"
+              >
+                <span class="initials" aria-hidden="true">PN</span>
+              </span>
+              <div class="relay-group-body">
+                <div class="relay-group-head">
+                  <span class="relay-author">Priya Natarajan</span>
+                  <span class="ss-badge neutral" data-size-variant="sm">admin</span>
+                  <time datetime="2026-09-06T09:16">09:16</time>
+                </div>
+                <p class="relay-msg">
+                  Yep. Plain HTML gets <code>theme.css</code> + <code>vanilla.css</code> +
+                  <code>vanilla.js</code>. Hydrating is one call:
+                </p>
+                <pre><code>import { mount, toast } from 'dssoca/vanilla.js'
+
+mount(document)
+toast.success('hydrated')</code></pre>
+              </div>
+            </li>
+
+            <li class="relay-group" data-author="Wren Okonkwo">
+              <span
+                class="ss-avatar"
+                role="img"
+                aria-label="Wren Okonkwo"
+                style="--ss-avatar-bg: var(--ss-yellow)"
+              >
+                <span class="initials" aria-hidden="true">WO</span>
+              </span>
+              <div class="relay-group-body">
+                <div class="relay-group-head">
+                  <span class="relay-author">Wren Okonkwo</span>
+                  <span class="ss-badge positive" data-size-variant="sm">new</span>
+                  <time datetime="2026-09-06T09:31">09:31</time>
+                </div>
+                <p class="relay-msg">First day here — where do the design tokens live?</p>
+              </div>
+            </li>
+
+            <li class="relay-group" data-author="Tomás Herrera">
+              <span
+                class="ss-avatar"
+                role="img"
+                aria-label="Tomás Herrera"
+                style="--ss-avatar-bg: var(--ss-blue)"
+              >
+                <span class="initials" aria-hidden="true">TH</span>
+              </span>
+              <div class="relay-group-body">
+                <div class="relay-group-head">
+                  <span class="relay-author">Tomás Herrera</span>
+                  <time datetime="2026-09-06T09:32">09:32</time>
+                </div>
+                <p class="relay-msg">
+                  <code>docs/tokens.md</code> in the repo. Short version: every colour, size and
+                  space is a <code>--ss-*</code> custom property.
+                </p>
+                <p class="relay-msg">Also: zero border-radius. Don't fight it.</p>
+                <ul class="relay-reactions" aria-label="Reactions">
+                  <li><span class="ss-badge positive" data-size-variant="sm">👍 3</span></li>
+                  <li><span class="ss-badge neutral" data-size-variant="sm">🫡 2</span></li>
+                  <li><span class="ss-badge neutral" data-size-variant="sm">🔥 1</span></li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="relay-group" data-author="Mika Lindqvist">
+              <span
+                class="ss-avatar"
+                role="img"
+                aria-label="Mika Lindqvist"
+                style="--ss-avatar-bg: var(--ss-accent)"
+              >
+                <span class="initials" aria-hidden="true">ML</span>
+              </span>
+              <div class="relay-group-body">
+                <div class="relay-group-head">
+                  <span class="relay-author">Mika Lindqvist</span>
+                  <time datetime="2026-09-06T09:40">09:40</time>
+                </div>
+                <p class="relay-msg">Standup in 20 — agenda is pinned in #shipping.</p>
+              </div>
+            </li>
+
+            <li class="relay-divider"><span>New messages</span></li>
+
+            <li class="relay-group" data-author="Priya Natarajan">
+              <span
+                class="ss-avatar"
+                role="img"
+                aria-label="Priya Natarajan"
+                style="--ss-avatar-bg: var(--ss-magenta)"
+              >
+                <span class="initials" aria-hidden="true">PN</span>
+              </span>
+              <div class="relay-group-body">
+                <div class="relay-group-head">
+                  <span class="relay-author">Priya Natarajan</span>
+                  <span class="ss-badge neutral" data-size-variant="sm">admin</span>
+                  <time datetime="2026-09-06T10:02">10:02</time>
+                </div>
+                <p class="relay-msg">
+                  Reminder: design review moved to 15:00. Bring the message-list mockups.
+                </p>
+              </div>
+            </li>
+
+            <li class="relay-group" data-author="Wren Okonkwo">
+              <span
+                class="ss-avatar"
+                role="img"
+                aria-label="Wren Okonkwo"
+                style="--ss-avatar-bg: var(--ss-yellow)"
+              >
+                <span class="initials" aria-hidden="true">WO</span>
+              </span>
+              <div class="relay-group-body">
+                <div class="relay-group-head">
+                  <span class="relay-author">Wren Okonkwo</span>
+                  <span class="ss-badge positive" data-size-variant="sm">new</span>
+                  <time datetime="2026-09-06T10:05">10:05</time>
+                </div>
+                <p class="relay-msg">On it. Uploading the light-theme variants now.</p>
+              </div>
+            </li>
+
+            <li class="relay-group" data-author="Tomás Herrera">
+              <span
+                class="ss-avatar"
+                role="img"
+                aria-label="Tomás Herrera"
+                style="--ss-avatar-bg: var(--ss-blue)"
+              >
+                <span class="initials" aria-hidden="true">TH</span>
+              </span>
+              <div class="relay-group-body">
+                <div class="relay-group-head">
+                  <span class="relay-author">Tomás Herrera</span>
+                  <time datetime="2026-09-06T10:06">10:06</time>
+                </div>
+                <p class="relay-msg">🙏 Thanks — I'll review before the meeting.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <footer class="relay-composer-wrap">
+          <form class="relay-composer" id="relay-composer">
+            <div class="relay-composer-tools">
+              <span class="ss-tooltip" data-placement="top">
+                <span class="trigger">
+                  <button class="ss-btn ghost icon-only" type="button" aria-label="Attach a file">
+                    <span class="affix" aria-hidden="true">
+                      <span data-ss-icon="folder" data-size="sm"></span>
+                    </span>
+                  </button>
+                </span>
+                <span class="tip" role="tooltip" hidden style="--shift: 0px">Attach a file</span>
+              </span>
+            </div>
+
+            <div class="ss-textarea relay-draft">
+              <div class="control">
+                <textarea
+                  class="field autosize"
+                  id="relay-draft"
+                  rows="1"
+                  placeholder="Message #general"
+                  aria-label="Message #general"
+                  aria-describedby="relay-hint"
+                  style="max-height: calc(6 * 1lh + 2 * var(--ss-input-py))"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="relay-composer-tools">
+              <span class="ss-tooltip" data-placement="top">
+                <span class="trigger">
+                  <button class="ss-btn ghost icon-only" type="button" aria-label="Add an emoji">
+                    <span class="affix" aria-hidden="true">☺</span>
+                  </button>
+                </span>
+                <span class="tip" role="tooltip" hidden style="--shift: 0px">Add an emoji</span>
+              </span>
+              <button class="ss-btn primary icon-only" type="submit" aria-label="Send message">
+                <span class="affix" aria-hidden="true">
+                  <span data-ss-icon="arrow" data-size="sm"></span>
+                </span>
+              </button>
+            </div>
+
+            <p class="relay-hint" id="relay-hint">
+              <kbd class="ss-kbd" role="img" aria-label="Enter"><kbd class="key">Enter</kbd></kbd>
+              to send
+              <span aria-hidden="true">·</span>
+              <kbd class="ss-kbd" role="img" aria-label="Shift Enter">
+                <kbd class="key">Shift</kbd>
+                <span class="sep" aria-hidden="true">+</span>
+                <kbd class="key">Enter</kbd>
+              </kbd>
+              newline
+            </p>
+          </form>
+        </footer>
+      </main>
+
+      <!-- ── Members / threads ───────────────────────────────────────────── -->
+      <aside class="relay-members" aria-label="Threads and members" tabindex="0">
+        <section aria-labelledby="relay-threads-h">
+          <h2 id="relay-threads-h">Threads</h2>
+          <div class="ss-empty empty compact" role="status" aria-atomic="true">
+            <div class="ic glyph" aria-hidden="true">⌁</div>
+            <p class="title" role="heading" aria-level="3">No open threads</p>
+            <p class="msg">Start one from any message to keep a topic together.</p>
+          </div>
+        </section>
+
+        <section aria-labelledby="relay-members-h">
+          <h2 id="relay-members-h">Members</h2>
+
+          <h3>Online — 5</h3>
+          <ul class="relay-member-list">
+            <li class="relay-member">
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Priya Natarajan"
+                style="--ss-avatar-bg: var(--ss-magenta)"
+              >
+                <span class="initials" aria-hidden="true">PN</span>
+              </span>
+              <span class="relay-member-text">
+                <span class="relay-member-name">Priya Natarajan</span>
+                <span class="relay-member-role">Design lead</span>
+              </span>
+              <span
+                class="ss-badge positive label-less"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Online"
+              >
+                <span class="dot" aria-hidden="true"></span>
+              </span>
+            </li>
+            <li class="relay-member">
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Tomás Herrera"
+                style="--ss-avatar-bg: var(--ss-blue)"
+              >
+                <span class="initials" aria-hidden="true">TH</span>
+              </span>
+              <span class="relay-member-text">
+                <span class="relay-member-name">Tomás Herrera</span>
+                <span class="relay-member-role">Frontend</span>
+              </span>
+              <span
+                class="ss-badge positive label-less"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Online"
+              >
+                <span class="dot" aria-hidden="true"></span>
+              </span>
+            </li>
+            <li class="relay-member">
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Wren Okonkwo"
+                style="--ss-avatar-bg: var(--ss-yellow)"
+              >
+                <span class="initials" aria-hidden="true">WO</span>
+              </span>
+              <span class="relay-member-text">
+                <span class="relay-member-name">Wren Okonkwo</span>
+                <span class="relay-member-role">Product design</span>
+              </span>
+              <span
+                class="ss-badge positive label-less"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Online"
+              >
+                <span class="dot" aria-hidden="true"></span>
+              </span>
+            </li>
+            <li class="relay-member">
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Jules Marchetti"
+                style="--ss-avatar-bg: var(--ss-cyan)"
+              >
+                <span class="initials" aria-hidden="true">JM</span>
+              </span>
+              <span class="relay-member-text">
+                <span class="relay-member-name">Jules Marchetti</span>
+                <span class="relay-member-role">You · Platform</span>
+              </span>
+              <span
+                class="ss-badge positive label-less"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Online"
+              >
+                <span class="dot" aria-hidden="true"></span>
+              </span>
+            </li>
+            <li class="relay-member">
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Mika Lindqvist"
+                style="--ss-avatar-bg: var(--ss-accent)"
+              >
+                <span class="initials" aria-hidden="true">ML</span>
+              </span>
+              <span class="relay-member-text">
+                <span class="relay-member-name">Mika Lindqvist</span>
+                <span class="relay-member-role">Engineering manager</span>
+              </span>
+              <span
+                class="ss-badge caution label-less"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Away"
+              >
+                <span class="dot" aria-hidden="true"></span>
+              </span>
+            </li>
+          </ul>
+
+          <h3>Offline — 4</h3>
+          <ul class="relay-member-list relay-offline">
+            <li class="relay-member">
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Dev Sharma"
+                style="--ss-avatar-bg: var(--ss-green)"
+              >
+                <span class="initials" aria-hidden="true">DS</span>
+              </span>
+              <span class="relay-member-text">
+                <span class="relay-member-name">Dev Sharma</span>
+                <span class="relay-member-role">Backend</span>
+              </span>
+              <span
+                class="ss-badge neutral label-less"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Offline"
+              >
+                <span class="dot" aria-hidden="true"></span>
+              </span>
+            </li>
+            <li class="relay-member">
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Aiko Tanaka"
+                style="--ss-avatar-bg: var(--ss-blue)"
+              >
+                <span class="initials" aria-hidden="true">AT</span>
+              </span>
+              <span class="relay-member-text">
+                <span class="relay-member-name">Aiko Tanaka</span>
+                <span class="relay-member-role">QA</span>
+              </span>
+              <span
+                class="ss-badge neutral label-less"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Offline"
+              >
+                <span class="dot" aria-hidden="true"></span>
+              </span>
+            </li>
+            <li class="relay-member">
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Rosa Delgado"
+                style="--ss-avatar-bg: var(--ss-magenta)"
+              >
+                <span class="initials" aria-hidden="true">RD</span>
+              </span>
+              <span class="relay-member-text">
+                <span class="relay-member-name">Rosa Delgado</span>
+                <span class="relay-member-role">Content</span>
+              </span>
+              <span
+                class="ss-badge neutral label-less"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Offline"
+              >
+                <span class="dot" aria-hidden="true"></span>
+              </span>
+            </li>
+            <li class="relay-member">
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Ben Carver"
+                style="--ss-avatar-bg: var(--ss-yellow)"
+              >
+                <span class="initials" aria-hidden="true">BC</span>
+              </span>
+              <span class="relay-member-text">
+                <span class="relay-member-name">Ben Carver</span>
+                <span class="relay-member-role">Ops</span>
+              </span>
+              <span
+                class="ss-badge neutral label-less"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Offline"
+              >
+                <span class="dot" aria-hidden="true"></span>
+              </span>
+            </li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </body>
+</html>

@@ -150,7 +150,6 @@
         // Inside a chip the faint period label sits on the wash: inherit the chip colour.
         .period {
           color: inherit;
-          opacity: 0.8;
         }
       }
     }
