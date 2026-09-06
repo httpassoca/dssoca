@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Orbit — Account settings</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body>
+    <div
+      class="ss-toaster"
+      role="region"
+      aria-label="Notifications"
+      data-position="bottom-right"
+    ></div>
+
+    <!-- ============================== settings view ============================== -->
+    <div id="stg-app" class="stg-app">
+      <header class="stg-top">
+        <a class="stg-logo" href="#main" aria-label="Orbit home">
+          <svg class="stg-logo-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="var(--ss-primary)" stroke-width="2" />
+            <circle cx="12" cy="12" r="3" fill="var(--ss-primary)" />
+            <circle cx="19" cy="7" r="2" fill="var(--ss-fg)" />
+          </svg>
+          <span class="stg-logo-name">Orbit</span>
+        </a>
+        <span class="stg-top-crumb" aria-hidden="true">/ settings</span>
+        <div class="stg-top-grow"></div>
+        <a href="#api-keys" class="ss-link inline stg-top-docs">
+          <span class="label">API docs</span>
+        </a>
+        <span class="ss-badge brand">pro</span>
+        <div id="stg-account" class="ss-menu" data-align="end" data-side="bottom">
+          <button
+            type="button"
+            class="trigger"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-controls="stg-account-panel"
+          >
+            <span
+              class="ss-avatar"
+              role="img"
+              aria-label="Ines Varga"
+              style="--ss-avatar-bg: var(--ss-cyan)"
+              data-size-variant="sm"
+            >
+              <span class="initials" aria-hidden="true">IV</span>
+            </span>
+            <span class="stg-top-name" aria-hidden="true">Ines Varga</span>
+            <span data-ss-icon="chevron" data-size="xs" aria-hidden="true"></span>
+          </button>
+          <div
+            id="stg-account-panel"
+            class="panel"
+            role="menu"
+            aria-label="Account"
+            aria-hidden="true"
+            tabindex="-1"
+          >
+            <button
+              type="button"
+              class="item"
+              data-mi="0"
+              role="menuitem"
+              tabindex="-1"
+              data-value="profile"
+            >
+              <span data-ss-icon="user"></span>
+              <span class="label">Your profile</span>
+              <span class="marker" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="item"
+              data-mi="1"
+              role="menuitem"
+              tabindex="-1"
+              data-value="keys"
+            >
+              <span data-ss-icon="terminal"></span>
+              <span class="label">API keys</span>
+              <span class="marker" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="item"
+              data-mi="2"
+              role="menuitem"
+              tabindex="-1"
+              data-value="theme"
+            >
+              <span data-ss-icon="color-swatch"></span>
+              <span class="label">Toggle theme</span>
+              <span class="marker" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="item"
+              data-mi="3"
+              role="menuitem"
+              tabindex="-1"
+              data-value="signout"
+            >
+              <span data-ss-icon="arrow"></span>
+              <span class="label">Sign out</span>
+              <span class="marker" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="stg-shell">
+        <nav class="ss-side" aria-label="Settings sections">
+          <div class="section" id="stg-sec-account">Account</div>
+          <ul class="list" aria-labelledby="stg-sec-account">
+            <li class="row">
+              <a class="item active" href="#profile" aria-current="page" data-stg-nav="profile">
+                <span data-ss-icon="user" data-px="13"></span>
+                <span class="label">Profile</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#account" data-stg-nav="account">
+                <span data-ss-icon="settings" data-px="13"></span>
+                <span class="label">Account</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#notifications" data-stg-nav="notifications">
+                <span data-ss-icon="activity" data-px="13"></span>
+                <span class="label">Notifications</span>
+                <span class="badge">5</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#security" data-stg-nav="security">
+                <span data-ss-icon="target" data-px="13"></span>
+                <span class="label">Security</span>
+                <span class="dot" aria-hidden="true"></span>
+              </a>
+            </li>
+          </ul>
+          <div class="section" id="stg-sec-platform">Platform</div>
+          <ul class="list" aria-labelledby="stg-sec-platform">
+            <li class="row">
+              <a class="item" href="#billing" data-stg-nav="billing">
+                <span data-ss-icon="wallet" data-px="13"></span>
+                <span class="label">Billing</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#api-keys" data-stg-nav="api-keys">
+                <span data-ss-icon="terminal" data-px="13"></span>
+                <span class="label">API keys</span>
+                <span class="badge">3</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#danger" data-stg-nav="danger">
+                <span data-ss-icon="logs" data-px="13"></span>
+                <span class="label">Danger zone</span>
+                <span class="dot err" aria-hidden="true"></span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Below ~760px the rail hides and this horizontal scroll strip takes over. -->
+        <nav class="stg-strip" aria-label="Settings sections (compact)">
+          <a href="#profile" class="ss-link inline" aria-current="page" data-stg-nav="profile">
+            <span class="label">Profile</span>
+          </a>
+          <a href="#account" class="ss-link inline" data-stg-nav="account">
+            <span class="label">Account</span>
+          </a>
+          <a href="#notifications" class="ss-link inline" data-stg-nav="notifications">
+            <span class="label">Notifications</span>
+          </a>
+          <a href="#security" class="ss-link inline" data-stg-nav="security">
+            <span class="label">Security</span>
+          </a>
+          <a href="#billing" class="ss-link inline" data-stg-nav="billing">
+            <span class="label">Billing</span>
+          </a>
+          <a href="#api-keys" class="ss-link inline" data-stg-nav="api-keys">
+            <span class="label">API keys</span>
+          </a>
+          <a href="#danger" class="ss-link inline" data-stg-nav="danger">
+            <span class="label">Danger zone</span>
+          </a>
+        </nav>
+
+        <main id="main" class="ss-main">
+          <div class="ss-pageHead">
+            <div>
+              <h1>Settings</h1>
+              <div class="sub">ines.varga@orbit.dev · workspace <strong>lumen-labs</strong></div>
+            </div>
+            <span class="stg-sync">
+              <span class="ss-badge positive">
+                <span class="dot" aria-hidden="true"></span>
+                all changes synced
+              </span>
+            </span>
+          </div>
+
+          <div class="stg-content">
+            <!-- ---------------------------- Profile ---------------------------- -->
+            <form class="stg-section" id="profile" data-stg-form aria-labelledby="stg-profile-t">
+              <div class="ss-card">
+                <div class="head">
+                  <div class="heading">
+                    <div class="title" id="stg-profile-t" role="heading" aria-level="2">
+                      Profile
+                    </div>
+                    <div class="desc">How you appear to other members of lumen-labs.</div>
+                  </div>
+                  <div class="actions">
+                    <div class="meta">public</div>
+                  </div>
+                </div>
+                <div class="body">
+                  <div class="stg-avatar-row">
+                    <span
+                      class="ss-avatar"
+                      role="img"
+                      aria-label="Ines Varga"
+                      style="--ss-avatar-bg: var(--ss-cyan)"
+                      data-size-variant="lg"
+                    >
+                      <span class="initials" aria-hidden="true">IV</span>
+                    </span>
+                    <div class="ss-filedrop stg-avatar-drop">
+                      <span class="lbl" id="stg-avatar-label">Change avatar</span>
+                      <input
+                        class="native"
+                        id="stg-avatar-input"
+                        type="file"
+                        accept="image/png,image/jpeg"
+                        tabindex="-1"
+                        aria-hidden="true"
+                      />
+                      <div
+                        class="zone"
+                        role="button"
+                        tabindex="0"
+                        aria-label="Change avatar. PNG or JPG, square, up to 2 MB"
+                        aria-describedby="stg-avatar-hint"
+                      >
+                        <span class="prompt">
+                          <span class="title">Drop an image here</span>
+                          <span class="sub">or click to browse</span>
+                        </span>
+                      </div>
+                      <span class="msg hint" id="stg-avatar-hint"
+                        >PNG or JPG, square, up to 2 MB</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="stg-form">
+                    <div class="ss-field">
+                      <label class="lbl" for="stg-name">Display name</label>
+                      <div class="control">
+                        <input
+                          class="ss-input"
+                          id="stg-name"
+                          type="text"
+                          value="Ines Varga"
+                          autocomplete="name"
+                        />
+                        <button type="button" class="clear" aria-label="Clear">×</button>
+                      </div>
+                    </div>
+
+                    <div class="ss-field">
+                      <label class="lbl" for="stg-username">Username</label>
+                      <div class="control">
+                        <span class="affix prefix" aria-hidden="true">@</span>
+                        <input
+                          class="ss-input"
+                          id="stg-username"
+                          type="text"
+                          value="inesv"
+                          autocomplete="username"
+                          aria-describedby="stg-username-hint"
+                        />
+                      </div>
+                      <span class="msg hint" id="stg-username-hint">orbit.dev/@inesv</span>
+                    </div>
+
+                    <div class="ss-textarea stg-span">
+                      <label class="lbl" for="stg-bio">Bio</label>
+                      <div class="control">
+                        <textarea
+                          class="field autosize"
+                          id="stg-bio"
+                          rows="3"
+                          maxlength="160"
+                          aria-describedby="stg-bio-hint"
+                          style="max-height: calc(6 * 1lh + 2 * var(--ss-input-py))"
+                        >
+Platform engineer at Lumen Labs. I break build pipelines so you don't have to. Mostly Rust, sometimes regret.</textarea
+                        >
+                      </div>
+                      <span class="msg hint" id="stg-bio-hint">
+                        <span data-stg-count>109</span> / 160 characters
+                      </span>
+                    </div>
+
+                    <div class="ss-select">
+                      <label class="lbl" for="stg-tz">Timezone</label>
+                      <div class="control">
+                        <select class="select" id="stg-tz">
+                          <option value="utc">UTC</option>
+                          <option value="lisbon" selected>Europe/Lisbon (UTC+1)</option>
+                          <option value="berlin">Europe/Berlin (UTC+2)</option>
+                          <option value="ny">America/New_York (UTC−4)</option>
+                          <option value="la">America/Los_Angeles (UTC−7)</option>
+                          <option value="tokyo">Asia/Tokyo (UTC+9)</option>
+                        </select>
+                        <span class="chevron" aria-hidden="true"></span>
+                      </div>
+                    </div>
+
+                    <div class="ss-datefield">
+                      <label class="lbl" for="stg-birthday">Birthday</label>
+                      <div class="control">
+                        <input
+                          class="field"
+                          type="date"
+                          id="stg-birthday"
+                          value="1991-06-14"
+                          max="2010-12-31"
+                          aria-describedby="stg-birthday-hint"
+                        />
+                      </div>
+                      <span class="msg hint" id="stg-birthday-hint">Only shown to you.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span>last saved 2 min ago</span>
+                  <div class="stg-actions">
+                    <button class="ss-btn ghost" type="reset">
+                      <span class="label">Cancel</span>
+                    </button>
+                    <button class="ss-btn primary" type="submit">
+                      <span class="label">Save changes</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <!-- ---------------------------- Account ---------------------------- -->
+            <form class="stg-section" id="account" data-stg-form aria-labelledby="stg-account-t">
+              <div class="ss-card">
+                <div class="head">
+                  <div class="heading">
+                    <div class="title" id="stg-account-t" role="heading" aria-level="2">
+                      Account
+                    </div>
+                    <div class="desc">Sign-in email and workspace membership.</div>
+                  </div>
+                </div>
+                <div class="body">
+                  <div class="stg-form">
+                    <div class="ss-field">
+                      <label class="lbl" for="stg-email-acct">Email</label>
+                      <div class="control">
+                        <input
+                          class="ss-input"
+                          id="stg-email-acct"
+                          type="email"
+                          value="ines.varga@orbit.dev"
+                          autocomplete="email"
+                          aria-describedby="stg-email-acct-hint"
+                        />
+                      </div>
+                      <span class="msg hint" id="stg-email-acct-hint">Verified · 14 Mar 2026</span>
+                    </div>
+                    <div class="ss-select">
+                      <label class="lbl" for="stg-lang">Language</label>
+                      <div class="control">
+                        <select class="select" id="stg-lang">
+                          <option value="en" selected>English</option>
+                          <option value="pt">Português</option>
+                          <option value="de">Deutsch</option>
+                          <option value="ja">日本語</option>
+                        </select>
+                        <span class="chevron" aria-hidden="true"></span>
+                      </div>
+                    </div>
+                    <div class="ss-field stg-span">
+                      <label class="lbl" for="stg-workspace">Default workspace</label>
+                      <div class="control">
+                        <input
+                          class="ss-input"
+                          id="stg-workspace"
+                          type="text"
+                          value="lumen-labs"
+                          readonly
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span>member since 2023</span>
+                  <div class="stg-actions">
+                    <button class="ss-btn ghost" type="reset">
+                      <span class="label">Cancel</span>
+                    </button>
+                    <button class="ss-btn primary" type="submit">
+                      <span class="label">Save changes</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <!-- ------------------------- Notifications ------------------------- -->
+            <form
+              class="stg-section"
+              id="notifications"
+              data-stg-form
+              aria-labelledby="stg-notif-t"
+            >
+              <div class="ss-card">
+                <div class="head">
+                  <div class="heading">
+                    <div class="title" id="stg-notif-t" role="heading" aria-level="2">
+                      Notifications
+                    </div>
+                    <div class="desc">
+                      Pick what lands in your inbox and what stays in the feed.
+                    </div>
+                  </div>
+                  <div class="actions">
+                    <div class="meta">email + push</div>
+                  </div>
+                </div>
+                <div class="body">
+                  <ul class="stg-rows">
+                    <li class="stg-row">
+                      <div class="stg-row-text">
+                        <span class="ss-switch has-label">
+                          <button
+                            id="stg-n-deploy"
+                            type="button"
+                            role="switch"
+                            class="track on"
+                            aria-checked="true"
+                            aria-labelledby="stg-n-deploy-label"
+                            aria-describedby="stg-n-deploy-desc"
+                          >
+                            <span class="thumb" aria-hidden="true"></span>
+                          </button>
+                          <span id="stg-n-deploy-label" class="label" role="presentation">
+                            Deploy finished
+                          </span>
+                        </span>
+                        <p class="stg-row-desc" id="stg-n-deploy-desc">
+                          One message per production deploy, with the diff summary.
+                        </p>
+                      </div>
+                      <span class="ss-badge neutral">push</span>
+                    </li>
+                    <li class="stg-row">
+                      <div class="stg-row-text">
+                        <span class="ss-switch has-label">
+                          <button
+                            id="stg-n-fail"
+                            type="button"
+                            role="switch"
+                            class="track on"
+                            aria-checked="true"
+                            aria-labelledby="stg-n-fail-label"
+                            aria-describedby="stg-n-fail-desc"
+                          >
+                            <span class="thumb" aria-hidden="true"></span>
+                          </button>
+                          <span id="stg-n-fail-label" class="label" role="presentation">
+                            Build failures
+                          </span>
+                        </span>
+                        <p class="stg-row-desc" id="stg-n-fail-desc">
+                          Immediately, on every failed build in a project you own.
+                        </p>
+                      </div>
+                      <span class="ss-badge critical">email + push</span>
+                    </li>
+                    <li class="stg-row">
+                      <div class="stg-row-text">
+                        <span class="ss-switch has-label">
+                          <button
+                            id="stg-n-mention"
+                            type="button"
+                            role="switch"
+                            class="track on"
+                            aria-checked="true"
+                            aria-labelledby="stg-n-mention-label"
+                            aria-describedby="stg-n-mention-desc"
+                          >
+                            <span class="thumb" aria-hidden="true"></span>
+                          </button>
+                          <span id="stg-n-mention-label" class="label" role="presentation">
+                            Mentions
+                          </span>
+                        </span>
+                        <p class="stg-row-desc" id="stg-n-mention-desc">
+                          When someone @mentions you in a review or an incident thread.
+                        </p>
+                      </div>
+                      <span class="ss-badge neutral">push</span>
+                    </li>
+                    <li class="stg-row">
+                      <div class="stg-row-text">
+                        <span class="ss-switch has-label">
+                          <button
+                            id="stg-n-digest"
+                            type="button"
+                            role="switch"
+                            class="track"
+                            aria-checked="false"
+                            aria-labelledby="stg-n-digest-label"
+                            aria-describedby="stg-n-digest-desc"
+                          >
+                            <span class="thumb" aria-hidden="true"></span>
+                          </button>
+                          <span id="stg-n-digest-label" class="label" role="presentation">
+                            Weekly digest
+                          </span>
+                        </span>
+                        <p class="stg-row-desc" id="stg-n-digest-desc">
+                          Usage, spend and incident summary every Monday at 09:00.
+                        </p>
+                      </div>
+                      <span class="ss-badge neutral">email</span>
+                    </li>
+                    <li class="stg-row stg-row-quiet">
+                      <div class="stg-row-text">
+                        <span class="stg-row-title" id="stg-n-dnd-title">Pause everything</span>
+                        <p class="stg-row-desc" id="stg-n-dnd-desc">
+                          Silence all channels until you come back. Security alerts still get
+                          through.
+                        </p>
+                      </div>
+                      <span class="ss-switch">
+                        <button
+                          id="stg-n-dnd"
+                          type="button"
+                          role="switch"
+                          class="track"
+                          aria-checked="false"
+                          aria-labelledby="stg-n-dnd-label"
+                          aria-describedby="stg-n-dnd-desc"
+                        >
+                          <span class="thumb" aria-hidden="true"></span>
+                        </button>
+                        <span id="stg-n-dnd-label" class="label sr-only" role="presentation">
+                          Pause everything
+                        </span>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="foot">
+                  <span>4 of 5 channels on</span>
+                  <div class="stg-actions">
+                    <button class="ss-btn ghost" type="reset">
+                      <span class="label">Cancel</span>
+                    </button>
+                    <button class="ss-btn primary" type="submit">
+                      <span class="label">Save changes</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <!-- ---------------------------- Security ---------------------------- -->
+            <form class="stg-section" id="security" data-stg-form aria-labelledby="stg-sec-t">
+              <div class="ss-card">
+                <div class="head">
+                  <div class="heading">
+                    <div class="title" id="stg-sec-t" role="heading" aria-level="2">Security</div>
+                    <div class="desc">
+                      Password, second factor and the devices signed in right now.
+                    </div>
+                  </div>
+                  <div class="actions">
+                    <span class="ss-badge caution">
+                      <span class="dot" aria-hidden="true"></span>
+                      1 new device
+                    </span>
+                  </div>
+                </div>
+                <div class="body">
+                  <div class="stg-form">
+                    <div class="ss-field">
+                      <label class="lbl" for="stg-pw-current">Current password</label>
+                      <div class="control">
+                        <input
+                          class="ss-input"
+                          id="stg-pw-current"
+                          type="password"
+                          autocomplete="current-password"
+                          placeholder="••••••••••••"
+                        />
+                      </div>
+                    </div>
+                    <div class="ss-field invalid">
+                      <label class="lbl" for="stg-pw-new">New password</label>
+                      <div class="control">
+                        <input
+                          class="ss-input"
+                          id="stg-pw-new"
+                          type="password"
+                          autocomplete="new-password"
+                          value="orbit123"
+                          aria-invalid="true"
+                          aria-describedby="stg-pw-new-error stg-pw-new-hint"
+                        />
+                      </div>
+                      <span class="msg error" id="stg-pw-new-error" role="alert">
+                        Must be at least 12 characters and not contain your username.
+                      </span>
+                      <span class="msg hint" id="stg-pw-new-hint">
+                        Use a passphrase — length beats symbols.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="stg-row stg-row-2fa">
+                    <div class="stg-row-text">
+                      <span class="ss-switch has-label">
+                        <button
+                          id="stg-2fa"
+                          type="button"
+                          role="switch"
+                          class="track on"
+                          aria-checked="true"
+                          aria-labelledby="stg-2fa-label"
+                          aria-describedby="stg-2fa-desc"
+                        >
+                          <span class="thumb" aria-hidden="true"></span>
+                        </button>
+                        <span id="stg-2fa-label" class="label" role="presentation">
+                          Two-factor authentication
+                        </span>
+                      </span>
+                      <p class="stg-row-desc" id="stg-2fa-desc">
+                        Authenticator app · 8 recovery codes left.
+                      </p>
+                    </div>
+                    <button class="ss-btn secondary" type="button" data-stg-codes>
+                      <span class="label">View recovery codes</span>
+                    </button>
+                  </div>
+
+                  <div class="stg-table-wrap">
+                    <table class="ss-table" id="stg-sessions">
+                      <caption>
+                        Active sessions
+                      </caption>
+                      <thead>
+                        <tr>
+                          <th scope="col" class="head" data-align="left">
+                            <span class="label">Device</span>
+                          </th>
+                          <th scope="col" class="head" data-align="left">
+                            <span class="label">Location</span>
+                          </th>
+                          <th scope="col" class="head" data-align="left">
+                            <span class="label">Last active</span>
+                          </th>
+                          <th scope="col" class="head" data-align="right">
+                            <span class="label">Action</span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="row">
+                          <td class="cell" data-align="left">Firefox · Fedora</td>
+                          <td class="cell" data-align="left">Lisbon, PT</td>
+                          <td class="cell" data-align="left">now</td>
+                          <td class="cell" data-align="right">
+                            <span class="ss-badge positive">this device</span>
+                          </td>
+                        </tr>
+                        <tr class="row">
+                          <td class="cell" data-align="left">Orbit CLI 4.2</td>
+                          <td class="cell" data-align="left">Lisbon, PT</td>
+                          <td class="cell" data-align="left">12 min ago</td>
+                          <td class="cell" data-align="right">
+                            <button class="ss-btn ghost" type="button" data-stg-revoke>
+                              <span class="label">Revoke</span>
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="row">
+                          <td class="cell" data-align="left">Safari · iPhone</td>
+                          <td class="cell" data-align="left">Porto, PT</td>
+                          <td class="cell" data-align="left">yesterday</td>
+                          <td class="cell" data-align="right">
+                            <button class="ss-btn ghost" type="button" data-stg-revoke>
+                              <span class="label">Revoke</span>
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="row">
+                          <td class="cell" data-align="left">Chrome · Windows</td>
+                          <td class="cell" data-align="left">Frankfurt, DE</td>
+                          <td class="cell" data-align="left">3 days ago</td>
+                          <td class="cell" data-align="right">
+                            <button class="ss-btn ghost" type="button" data-stg-revoke>
+                              <span class="label">Revoke</span>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span>password changed 41 days ago</span>
+                  <div class="stg-actions">
+                    <button class="ss-btn ghost" type="reset">
+                      <span class="label">Cancel</span>
+                    </button>
+                    <button class="ss-btn primary" type="submit">
+                      <span class="label">Save changes</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <!-- ---------------------------- Billing ---------------------------- -->
+            <section class="stg-section" id="billing" aria-labelledby="stg-billing-t">
+              <div class="ss-card">
+                <div class="head">
+                  <div class="heading">
+                    <div class="title" id="stg-billing-t" role="heading" aria-level="2">
+                      Billing
+                    </div>
+                    <div class="desc">Current plan and this cycle's usage. Renews 1 Oct 2026.</div>
+                  </div>
+                  <div class="actions">
+                    <span class="ss-badge brand">
+                      <span class="dot" aria-hidden="true"></span>
+                      Pro · $24/mo
+                    </span>
+                  </div>
+                </div>
+                <div class="body">
+                  <div class="stg-metrics">
+                    <div class="ss-metric">
+                      <div class="label">Build minutes</div>
+                      <div class="val" role="status" aria-live="polite">
+                        1,840<span class="small">/3k</span>
+                      </div>
+                      <div
+                        class="delta neutral"
+                        role="img"
+                        aria-label="increased 12% vs last cycle"
+                      >
+                        <span aria-hidden="true">↑ 12%</span>
+                        <span class="period" aria-hidden="true">vs last cycle</span>
+                      </div>
+                    </div>
+                    <div class="ss-metric">
+                      <div class="label">Bandwidth</div>
+                      <div class="val" role="status" aria-live="polite">
+                        212<span class="small">GB</span>
+                      </div>
+                      <div
+                        class="delta positive"
+                        role="img"
+                        aria-label="decreased 3% vs last cycle"
+                      >
+                        <span aria-hidden="true">↓ 3%</span>
+                        <span class="period" aria-hidden="true">vs last cycle</span>
+                      </div>
+                    </div>
+                    <div class="ss-metric">
+                      <div class="label">Seats</div>
+                      <div class="val" role="status" aria-live="polite">
+                        7<span class="small">/10</span>
+                      </div>
+                      <div
+                        class="delta negative emphasis"
+                        role="img"
+                        aria-label="increased 2 seats this cycle"
+                      >
+                        <span aria-hidden="true">↑ 2</span>
+                        <span class="period" aria-hidden="true">this cycle</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="stg-note">
+                    Card ending <code>4471</code> · invoices go to
+                    <code>finance@lumen-labs.io</code> ·
+                    <a href="#billing" class="ss-link inline"
+                      ><span class="label">view invoices</span></a
+                    >
+                  </p>
+                </div>
+                <div class="foot">
+                  <span>next invoice · 1 Oct · $24.00</span>
+                  <div class="stg-actions">
+                    <button
+                      class="ss-btn ghost"
+                      type="button"
+                      data-stg-toast="downloading invoice…"
+                    >
+                      <span class="label">Download invoice</span>
+                    </button>
+                    <button
+                      class="ss-btn primary"
+                      type="button"
+                      data-stg-toast="plan changes apply next cycle"
+                    >
+                      <span class="label">Manage plan</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- ---------------------------- API keys ---------------------------- -->
+            <section class="stg-section" id="api-keys" aria-labelledby="stg-keys-t">
+              <div class="ss-card">
+                <div class="head">
+                  <div class="heading">
+                    <div class="title" id="stg-keys-t" role="heading" aria-level="2">API keys</div>
+                    <div class="desc">
+                      Keys are shown once at creation. Rotate anything older than 90 days.
+                    </div>
+                  </div>
+                  <div class="actions">
+                    <div class="meta">3 of 10</div>
+                    <button class="ss-btn primary" type="button" data-ss-modal="#stg-key-modal">
+                      <span class="affix" aria-hidden="true">+</span>
+                      <span class="label">Generate key</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="body">
+                  <div class="stg-table-wrap">
+                    <table class="ss-table" id="stg-keys">
+                      <caption>
+                        Personal access keys
+                      </caption>
+                      <thead>
+                        <tr>
+                          <th scope="col" class="head" data-align="left">
+                            <span class="label">Name</span>
+                          </th>
+                          <th scope="col" class="head" data-align="left">
+                            <span class="label">Key</span>
+                          </th>
+                          <th scope="col" class="head" data-align="left">
+                            <span class="label">Scope</span>
+                          </th>
+                          <th scope="col" class="head numeric" data-align="right">
+                            <span class="label">Expires</span>
+                          </th>
+                          <th scope="col" class="head" data-align="right">
+                            <span class="label">Copy</span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="row">
+                          <td class="cell" data-align="left">ci-deploy</td>
+                          <td class="cell" data-align="left"><code>orb_live_7f3a…c9e1</code></td>
+                          <td class="cell" data-align="left">
+                            <span class="ss-badge info">deploy</span>
+                          </td>
+                          <td class="cell numeric" data-align="right">62 d</td>
+                          <td class="cell" data-align="right">
+                            <button
+                              class="ss-btn ghost icon-only"
+                              type="button"
+                              aria-label="Copy key ci-deploy"
+                              data-stg-copy="orb_live_7f3a…c9e1"
+                            >
+                              <span class="affix" aria-hidden="true"
+                                ><svg
+                                  class="ss-icon"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  stroke-linecap="square"
+                                  stroke-linejoin="miter"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                  data-size-variant="sm"
+                                  style="width: 16px; height: 16px"
+                                >
+                                  <rect x="9" y="9" width="11" height="11" />
+                                  <path d="M15 9V4H4v11h5" /></svg
+                              ></span>
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="row">
+                          <td class="cell" data-align="left">laptop</td>
+                          <td class="cell" data-align="left"><code>orb_live_b2d0…41af</code></td>
+                          <td class="cell" data-align="left">
+                            <span class="ss-badge neutral">read</span>
+                          </td>
+                          <td class="cell numeric" data-align="right">180 d</td>
+                          <td class="cell" data-align="right">
+                            <button
+                              class="ss-btn ghost icon-only"
+                              type="button"
+                              aria-label="Copy key laptop"
+                              data-stg-copy="orb_live_b2d0…41af"
+                            >
+                              <span class="affix" aria-hidden="true"
+                                ><svg
+                                  class="ss-icon"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  stroke-linecap="square"
+                                  stroke-linejoin="miter"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                  data-size-variant="sm"
+                                  style="width: 16px; height: 16px"
+                                >
+                                  <rect x="9" y="9" width="11" height="11" />
+                                  <path d="M15 9V4H4v11h5" /></svg
+                              ></span>
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="row">
+                          <td class="cell" data-align="left">metrics-export</td>
+                          <td class="cell" data-align="left"><code>orb_live_e91c…08b3</code></td>
+                          <td class="cell" data-align="left">
+                            <span class="ss-badge caution">admin</span>
+                          </td>
+                          <td class="cell numeric" data-align="right">4 d</td>
+                          <td class="cell" data-align="right">
+                            <button
+                              class="ss-btn ghost icon-only"
+                              type="button"
+                              aria-label="Copy key metrics-export"
+                              data-stg-copy="orb_live_e91c…08b3"
+                            >
+                              <span class="affix" aria-hidden="true"
+                                ><svg
+                                  class="ss-icon"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  stroke-linecap="square"
+                                  stroke-linejoin="miter"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                  data-size-variant="sm"
+                                  style="width: 16px; height: 16px"
+                                >
+                                  <rect x="9" y="9" width="11" height="11" />
+                                  <path d="M15 9V4H4v11h5" /></svg
+                              ></span>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span>1 key expires within a week</span>
+                  <a href="#api-keys" class="ss-link inline"
+                    ><span class="label">rotation policy</span></a
+                  >
+                </div>
+              </div>
+            </section>
+
+            <!-- --------------------------- Danger zone --------------------------- -->
+            <section class="stg-section" id="danger" aria-labelledby="stg-danger-t">
+              <div class="ss-card">
+                <div class="head">
+                  <div class="heading">
+                    <div class="title" id="stg-danger-t" role="heading" aria-level="2">
+                      Danger zone
+                    </div>
+                    <div class="desc">These actions are permanent. Read twice, click once.</div>
+                  </div>
+                  <div class="actions">
+                    <span class="ss-badge critical">
+                      <span class="dot" aria-hidden="true"></span>
+                      irreversible
+                    </span>
+                  </div>
+                </div>
+                <div class="body">
+                  <ul class="stg-rows">
+                    <li class="stg-row">
+                      <div class="stg-row-text">
+                        <span class="stg-row-title">Transfer ownership</span>
+                        <p class="stg-row-desc">
+                          Hand lumen-labs to another admin. You keep your seat, lose billing access.
+                        </p>
+                      </div>
+                      <button
+                        class="ss-btn secondary"
+                        type="button"
+                        data-stg-toast="pick a new owner in the workspace page"
+                      >
+                        <span class="label">Transfer</span>
+                      </button>
+                    </li>
+                    <li class="stg-row">
+                      <div class="stg-row-text">
+                        <span class="stg-row-title">Delete account</span>
+                        <p class="stg-row-desc">
+                          Removes your profile, keys and sessions. Projects you own are archived for
+                          14 days, then purged.
+                        </p>
+                      </div>
+                      <button class="ss-btn danger" type="button" data-ss-modal="#stg-delete-modal">
+                        <span class="label">Delete account</span>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+                <div class="foot">
+                  <span>support can undo a deletion within 14 days</span>
+                  <a href="#danger" class="ss-link inline"
+                    ><span class="label">contact support</span></a
+                  >
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <footer class="ss-footer">
+            <span>Orbit · developer platform</span>
+            <span>settings v4.2 · region eu-west</span>
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <!-- ============================== sign-in view ============================== -->
+    <div id="stg-login" class="ss-login" hidden>
+      <form class="ss-login-card" id="stg-login-form" aria-labelledby="stg-login-h" novalidate>
+        <div class="mark">
+          <svg class="stg-logo-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="var(--ss-primary)" stroke-width="2" />
+            <circle cx="12" cy="12" r="3" fill="var(--ss-primary)" />
+            <circle cx="19" cy="7" r="2" fill="var(--ss-fg)" />
+          </svg>
+          <span class="wm">Orbit</span>
+        </div>
+        <h2 class="h" id="stg-login-h">Sign in</h2>
+        <p class="sub">You were signed out. Pick up where you left off.</p>
+
+        <div class="ss-field">
+          <label class="lbl" for="stg-login-email">Email</label>
+          <div class="control">
+            <input
+              class="ss-input"
+              id="stg-login-email"
+              type="email"
+              value="ines.varga@orbit.dev"
+              autocomplete="email"
+              placeholder="you@company.dev"
+            />
+          </div>
+        </div>
+
+        <div class="ss-field">
+          <label class="lbl" for="stg-login-pw">Password</label>
+          <div class="control">
+            <input
+              class="ss-input"
+              id="stg-login-pw"
+              type="password"
+              autocomplete="current-password"
+              placeholder="••••••••••••"
+            />
+            <span class="affix suffix">
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-size-variant="sm"
+                aria-pressed="false"
+                aria-controls="stg-login-pw"
+                data-stg-reveal
+              >
+                <span class="label">show</span>
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <span class="ss-switch has-label">
+          <button
+            id="stg-remember"
+            type="button"
+            role="switch"
+            class="track on"
+            aria-checked="true"
+            aria-labelledby="stg-remember-label"
+          >
+            <span class="thumb" aria-hidden="true"></span>
+          </button>
+          <span id="stg-remember-label" class="label" role="presentation">
+            Remember me on this device
+          </span>
+        </span>
+
+        <button class="ss-btn primary full-width" type="submit">
+          <span class="label">Sign in</span>
+        </button>
+
+        <div class="stg-login-links">
+          <a href="#stg-login" class="ss-link inline">
+            <span class="label">forgot password?</span>
+          </a>
+          <a href="#stg-login" class="ss-link inline">
+            <span class="label">use a passkey</span>
+          </a>
+        </div>
+
+        <div class="footer">orbit.dev · sso · status: all systems nominal</div>
+      </form>
+    </div>
+
+    <!-- ============================== dialogs ============================== -->
+    <dialog id="stg-key-modal" class="ss-modal" aria-labelledby="stg-key-modal-t">
+      <div class="panel">
+        <header class="head">
+          <h2 class="title" id="stg-key-modal-t">Generate API key</h2>
+          <button type="button" class="close" data-ss-dismiss aria-label="Close">×</button>
+        </header>
+        <div class="body">
+          <div class="stg-modal-form">
+            <div class="ss-field">
+              <label class="lbl" for="stg-key-name">Key name</label>
+              <div class="control">
+                <input
+                  class="ss-input"
+                  id="stg-key-name"
+                  type="text"
+                  placeholder="e.g. staging-ci"
+                />
+                <button type="button" class="clear" aria-label="Clear" hidden>×</button>
+              </div>
+            </div>
+            <div class="ss-numberfield">
+              <label class="lbl" for="stg-key-days">Expires in days</label>
+              <div class="control">
+                <button type="button" class="step dec" aria-label="Decrease">−</button>
+                <input
+                  class="ss-input"
+                  id="stg-key-days"
+                  type="number"
+                  inputmode="decimal"
+                  value="90"
+                  min="1"
+                  max="365"
+                  step="30"
+                  aria-describedby="stg-key-days-hint"
+                />
+                <button type="button" class="step inc" aria-label="Increase">+</button>
+              </div>
+              <span class="msg hint" id="stg-key-days-hint">1–365 · admin keys max 90</span>
+            </div>
+            <div class="ss-select">
+              <label class="lbl" for="stg-key-scope">Scope</label>
+              <div class="control">
+                <select class="select" id="stg-key-scope">
+                  <option value="read" selected>read — inspect projects and logs</option>
+                  <option value="deploy">deploy — trigger builds and releases</option>
+                  <option value="admin">admin — everything, including billing</option>
+                </select>
+                <span class="chevron" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">
+          <button class="ss-btn ghost" type="button" data-ss-dismiss>
+            <span class="label">Cancel</span>
+          </button>
+          <button class="ss-btn primary" type="button" data-ss-dismiss data-stg-generate>
+            <span class="label">Generate</span>
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog
+      id="stg-delete-modal"
+      class="ss-modal danger"
+      aria-labelledby="stg-delete-modal-t"
+      data-ss-static
+    >
+      <div class="panel">
+        <header class="head">
+          <h2 class="title" id="stg-delete-modal-t">Delete your account?</h2>
+          <button type="button" class="close" data-ss-dismiss aria-label="Close">×</button>
+        </header>
+        <div class="body">
+          <p>
+            This removes <strong>@inesv</strong>, all API keys and every active session. Projects
+            you own go to a 14-day archive first.
+          </p>
+          <div class="ss-field">
+            <label class="lbl" for="stg-delete-confirm">Type <code>inesv</code> to confirm</label>
+            <div class="control">
+              <input
+                class="ss-input"
+                id="stg-delete-confirm"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                aria-describedby="stg-delete-confirm-hint"
+              />
+            </div>
+            <span class="msg hint" id="stg-delete-confirm-hint">Case-sensitive.</span>
+          </div>
+        </div>
+        <footer class="foot">
+          <button class="ss-btn ghost" type="button" data-ss-dismiss>
+            <span class="label">Keep my account</span>
+          </button>
+          <button class="ss-btn danger" type="button" disabled data-stg-delete>
+            <span class="label">Delete account</span>
+          </button>
+        </footer>
+      </div>
+    </dialog>
+  </body>
+</html>

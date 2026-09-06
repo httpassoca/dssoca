@@ -1,0 +1,1242 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reelog — my list</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body class="rl-page">
+    <!-- Shared poster gradients (token colours) — referenced by every poster placeholder. -->
+    <svg class="rl-defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="rl-g1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" style="stop-color: var(--ss-blue)" />
+          <stop offset="1" style="stop-color: var(--ss-cyan)" />
+        </linearGradient>
+        <linearGradient id="rl-g2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color: var(--ss-magenta)" />
+          <stop offset="1" style="stop-color: var(--ss-red)" />
+        </linearGradient>
+        <linearGradient id="rl-g3" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" style="stop-color: var(--ss-green)" />
+          <stop offset="1" style="stop-color: var(--ss-cyan)" />
+        </linearGradient>
+        <linearGradient id="rl-g4" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" style="stop-color: var(--ss-yellow)" />
+          <stop offset="1" style="stop-color: var(--ss-red)" />
+        </linearGradient>
+        <linearGradient id="rl-g5" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color: var(--ss-magenta)" />
+          <stop offset="1" style="stop-color: var(--ss-blue)" />
+        </linearGradient>
+        <linearGradient id="rl-g6" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" style="stop-color: var(--ss-bright-black)" />
+          <stop offset="1" style="stop-color: var(--ss-bright-blue)" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <header class="ss-topbar sticky">
+      <a class="skip" href="#main">Skip to content</a>
+      <div class="seg logo">
+        <svg class="mark" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+          <rect
+            x="1"
+            y="3"
+            width="14"
+            height="10"
+            fill="none"
+            stroke="var(--ss-primary)"
+            stroke-width="2"
+          />
+          <rect x="4" y="6" width="3" height="4" fill="var(--ss-primary)" />
+          <rect x="9" y="6" width="3" height="4" fill="var(--ss-primary)" />
+        </svg>
+        <span class="nm">reelog</span>
+      </div>
+      <nav class="ws" aria-label="Primary">
+        <a class="tab" href="#browse">browse</a>
+        <a class="tab active" href="#main" aria-current="page">my list</a>
+        <a class="tab" href="#stats">stats</a>
+        <a class="tab" href="#profile">profile</a>
+      </nav>
+      <div class="grow"></div>
+      <div class="seg right stat collapsible" title="currently watching">
+        <span class="k">watching</span><span class="v">3</span>
+      </div>
+      <div class="seg right stat collapsible" title="episodes this week">
+        <span class="k">week</span><span class="v">11 ep</span>
+      </div>
+      <button
+        class="seg right click"
+        type="button"
+        id="rl-theme"
+        aria-label="Switch to light theme"
+      >
+        <span aria-hidden="true">☾</span>
+      </button>
+      <div class="seg right user-slot">
+        <span
+          class="ss-avatar"
+          data-size-variant="sm"
+          role="img"
+          aria-label="Noor Halvorsen"
+          style="--ss-avatar-bg: var(--ss-magenta)"
+        >
+          <span class="initials" aria-hidden="true">NH</span>
+        </span>
+        <span class="rl-user">noor</span>
+      </div>
+    </header>
+
+    <main class="ss-main" id="main">
+      <div class="ss-pageHead rl-hero">
+        <div class="rl-hero-text">
+          <h1>my <span class="accent">list</span></h1>
+          <p class="sub">148 titles · last activity 2 h ago</p>
+        </div>
+        <div class="rl-stats">
+          <div class="ss-metric">
+            <div class="label">watched</div>
+            <div class="val" role="status" aria-live="polite">148</div>
+            <div class="delta positive" role="img" aria-label="up 6 this month">
+              <span aria-hidden="true">↑ 6</span>
+              <span class="period" aria-hidden="true">this month</span>
+            </div>
+          </div>
+          <div class="ss-metric">
+            <div class="label">hours</div>
+            <div class="val" role="status" aria-live="polite">412<span class="small">h</span></div>
+            <div class="delta positive" role="img" aria-label="up 18 hours this month">
+              <span aria-hidden="true">↑ 18h</span>
+              <span class="period" aria-hidden="true">this month</span>
+            </div>
+          </div>
+          <div class="ss-metric">
+            <div class="label">mean score</div>
+            <div class="val" role="status" aria-live="polite">7.4</div>
+            <div class="delta negative" role="img" aria-label="down 0.1 since last month">
+              <span aria-hidden="true">↓ 0.1</span>
+              <span class="period" aria-hidden="true">vs last month</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="rl-list" aria-label="Your list">
+        <div class="rl-toolbar" role="group" aria-label="List controls">
+          <div class="ss-segmented" role="radiogroup" aria-label="Status" id="rl-status">
+            <button
+              type="button"
+              class="segment selected"
+              role="radio"
+              aria-checked="true"
+              tabindex="0"
+              data-value="all"
+            >
+              <span class="label">all</span>
+            </button>
+            <button
+              type="button"
+              class="segment"
+              role="radio"
+              aria-checked="false"
+              tabindex="-1"
+              data-value="watching"
+            >
+              <span class="label">watching</span>
+            </button>
+            <button
+              type="button"
+              class="segment"
+              role="radio"
+              aria-checked="false"
+              tabindex="-1"
+              data-value="completed"
+            >
+              <span class="label">completed</span>
+            </button>
+            <button
+              type="button"
+              class="segment"
+              role="radio"
+              aria-checked="false"
+              tabindex="-1"
+              data-value="planned"
+            >
+              <span class="label">planned</span>
+            </button>
+            <button
+              type="button"
+              class="segment"
+              role="radio"
+              aria-checked="false"
+              tabindex="-1"
+              data-value="dropped"
+            >
+              <span class="label">dropped</span>
+            </button>
+          </div>
+
+          <div class="ss-field rl-search">
+            <div class="control">
+              <span class="affix prefix" aria-hidden="true">⌕</span>
+              <input
+                class="ss-input"
+                id="rl-q"
+                type="text"
+                placeholder="Search titles…"
+                aria-label="Search titles"
+                autocomplete="off"
+              />
+              <button type="button" class="clear" aria-label="Clear" hidden>×</button>
+            </div>
+          </div>
+
+          <div class="ss-select rl-sort">
+            <div class="control">
+              <select class="select" id="rl-sort" aria-label="Sort by">
+                <option value="added" selected>sort: date added</option>
+                <option value="title">sort: title</option>
+                <option value="score">sort: score</option>
+              </select>
+              <span class="chevron" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <div class="ss-segmented" role="radiogroup" aria-label="View" id="rl-view">
+            <button
+              type="button"
+              class="segment selected"
+              role="radio"
+              aria-checked="true"
+              tabindex="0"
+              data-value="grid"
+            >
+              <span class="label">grid</span>
+            </button>
+            <button
+              type="button"
+              class="segment"
+              role="radio"
+              aria-checked="false"
+              tabindex="-1"
+              data-value="table"
+            >
+              <span class="label">table</span>
+            </button>
+          </div>
+        </div>
+
+        <p class="rl-count" id="rl-count" aria-live="polite">showing 12 of 148 titles</p>
+
+        <!-- Grid view -->
+        <div class="rl-grid rl-view" id="rl-grid" role="list">
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t1"
+            data-title="Lanterns of the Salt Sea"
+            data-status="watching"
+            data-score="8"
+            data-added="2026-08-21"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g1)" />
+                <circle cx="140" cy="96" r="54" class="rl-shape" />
+                <circle cx="140" cy="96" r="30" class="rl-shape" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Lanterns of</text>
+                <text x="16" y="286" class="rl-poster-title">the Salt Sea</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t1" role="heading" aria-level="2">
+                  Lanterns of the Salt Sea
+                </div>
+                <div class="desc">TV · 14 / 24 ep</div>
+              </div>
+              <div class="actions"><div class="meta">2023</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge positive rl-score"
+                  ><span class="rl-sr-only">score </span>8</span
+                >
+                <span class="ss-badge brand rl-status"
+                  ><span class="dot" aria-hidden="true"></span>watching</span
+                >
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added Aug 21</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Lanterns of the Salt Sea"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t1" aria-labelledby="rl-t1"
+              ><span class="sr-only">Lanterns of the Salt Sea</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t2"
+            data-title="Orbital Lullaby"
+            data-status="completed"
+            data-score="9"
+            data-added="2026-08-14"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g5)" />
+                <circle cx="60" cy="80" r="70" class="rl-shape" />
+                <line x1="0" y1="180" x2="200" y2="120" class="rl-line" />
+                <line x1="0" y1="200" x2="200" y2="140" class="rl-line" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Orbital</text>
+                <text x="16" y="286" class="rl-poster-title">Lullaby</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t2" role="heading" aria-level="2">Orbital Lullaby</div>
+                <div class="desc">Film · 1 / 1</div>
+              </div>
+              <div class="actions"><div class="meta">2021</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge positive rl-score"
+                  ><span class="rl-sr-only">score </span>9</span
+                >
+                <span class="ss-badge positive rl-status">completed</span>
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added Aug 14</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Orbital Lullaby"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t2" aria-labelledby="rl-t2"
+              ><span class="sr-only">Orbital Lullaby</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t3"
+            data-title="Paper Wolves"
+            data-status="completed"
+            data-score="7"
+            data-added="2026-08-02"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g4)" />
+                <polygon points="100,40 170,170 30,170" class="rl-shape" />
+                <polygon points="100,90 140,160 60,160" class="rl-shape" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Paper</text>
+                <text x="16" y="286" class="rl-poster-title">Wolves</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t3" role="heading" aria-level="2">Paper Wolves</div>
+                <div class="desc">TV · 12 / 12 ep</div>
+              </div>
+              <div class="actions"><div class="meta">2019</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge info rl-score"><span class="rl-sr-only">score </span>7</span>
+                <span class="ss-badge positive rl-status">completed</span>
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added Aug 2</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Paper Wolves"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t3" aria-labelledby="rl-t3"
+              ><span class="sr-only">Paper Wolves</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t4"
+            data-title="Ninefold Garden"
+            data-status="watching"
+            data-score="6"
+            data-added="2026-07-30"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g3)" />
+                <rect x="30" y="40" width="40" height="40" class="rl-shape" />
+                <rect x="80" y="40" width="40" height="40" class="rl-shape" />
+                <rect x="130" y="40" width="40" height="40" class="rl-shape" />
+                <rect x="30" y="90" width="40" height="40" class="rl-shape" />
+                <rect x="130" y="90" width="40" height="40" class="rl-shape" />
+                <rect x="30" y="140" width="40" height="40" class="rl-shape" />
+                <rect x="80" y="140" width="40" height="40" class="rl-shape" />
+                <rect x="130" y="140" width="40" height="40" class="rl-shape" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Ninefold</text>
+                <text x="16" y="286" class="rl-poster-title">Garden</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t4" role="heading" aria-level="2">Ninefold Garden</div>
+                <div class="desc">TV · 3 / 13 ep</div>
+              </div>
+              <div class="actions"><div class="meta">2024</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge info rl-score"><span class="rl-sr-only">score </span>6</span>
+                <span class="ss-badge brand rl-status"
+                  ><span class="dot" aria-hidden="true"></span>watching</span
+                >
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added Jul 30</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Ninefold Garden"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t4" aria-labelledby="rl-t4"
+              ><span class="sr-only">Ninefold Garden</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t5"
+            data-title="Static Bloom"
+            data-status="planned"
+            data-score=""
+            data-added="2026-07-19"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g6)" />
+                <line x1="0" y1="60" x2="200" y2="60" class="rl-line" />
+                <line x1="0" y1="90" x2="200" y2="90" class="rl-line" />
+                <line x1="0" y1="120" x2="200" y2="120" class="rl-line" />
+                <line x1="0" y1="150" x2="200" y2="150" class="rl-line" />
+                <circle cx="100" cy="110" r="36" class="rl-shape" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Static</text>
+                <text x="16" y="286" class="rl-poster-title">Bloom</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t5" role="heading" aria-level="2">Static Bloom</div>
+                <div class="desc">OVA · 0 / 4 ep</div>
+              </div>
+              <div class="actions"><div class="meta">2018</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge neutral rl-score"
+                  ><span class="rl-sr-only">score </span>—</span
+                >
+                <span class="ss-badge neutral rl-status">planned</span>
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added Jul 19</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Static Bloom"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t5" aria-labelledby="rl-t5"
+              ><span class="sr-only">Static Bloom</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t6"
+            data-title="The Cartographer's Daughter"
+            data-status="completed"
+            data-score="10"
+            data-added="2026-07-05"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g2)" />
+                <path d="M0 200 C 40 120, 80 220, 120 140 S 180 100, 200 160" class="rl-stroke" />
+                <path d="M0 230 C 50 160, 90 250, 140 170 S 190 130, 200 190" class="rl-stroke" />
+                <circle cx="120" cy="140" r="6" class="rl-shape" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">The Cartographer's</text>
+                <text x="16" y="286" class="rl-poster-title">Daughter</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t6" role="heading" aria-level="2">
+                  The Cartographer's Daughter
+                </div>
+                <div class="desc">Film · 1 / 1</div>
+              </div>
+              <div class="actions"><div class="meta">2022</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge positive rl-score"
+                  ><span class="rl-sr-only">score </span>10</span
+                >
+                <span class="ss-badge positive rl-status">completed</span>
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added Jul 5</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate The Cartographer's Daughter"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t6" aria-labelledby="rl-t6"
+              ><span class="sr-only">The Cartographer's Daughter</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t7"
+            data-title="Rust Choir"
+            data-status="dropped"
+            data-score="4"
+            data-added="2026-06-22"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g4)" />
+                <rect x="24" y="60" width="16" height="120" class="rl-shape" />
+                <rect x="56" y="90" width="16" height="90" class="rl-shape" />
+                <rect x="88" y="40" width="16" height="140" class="rl-shape" />
+                <rect x="120" y="110" width="16" height="70" class="rl-shape" />
+                <rect x="152" y="70" width="16" height="110" class="rl-shape" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Rust</text>
+                <text x="16" y="286" class="rl-poster-title">Choir</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t7" role="heading" aria-level="2">Rust Choir</div>
+                <div class="desc">TV · 5 / 26 ep</div>
+              </div>
+              <div class="actions"><div class="meta">2020</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge critical rl-score"
+                  ><span class="rl-sr-only">score </span>4</span
+                >
+                <span class="ss-badge caution rl-status">dropped</span>
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added Jun 22</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Rust Choir"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t7" aria-labelledby="rl-t7"
+              ><span class="sr-only">Rust Choir</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t8"
+            data-title="Meridian Express"
+            data-status="planned"
+            data-score=""
+            data-added="2026-06-10"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g1)" />
+                <polygon points="0,220 200,60 200,90 0,250" class="rl-shape" />
+                <polygon points="0,170 200,10 200,30 0,190" class="rl-shape" />
+                <circle cx="150" cy="60" r="18" class="rl-shape" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Meridian</text>
+                <text x="16" y="286" class="rl-poster-title">Express</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t8" role="heading" aria-level="2">Meridian Express</div>
+                <div class="desc">TV · 0 / 12 ep</div>
+              </div>
+              <div class="actions"><div class="meta">2024</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge neutral rl-score"
+                  ><span class="rl-sr-only">score </span>—</span
+                >
+                <span class="ss-badge neutral rl-status">planned</span>
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added Jun 10</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Meridian Express"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t8" aria-labelledby="rl-t8"
+              ><span class="sr-only">Meridian Express</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t9"
+            data-title="Glass Harbour"
+            data-status="completed"
+            data-score="8"
+            data-added="2026-05-27"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g3)" />
+                <rect x="0" y="150" width="200" height="90" class="rl-shape" />
+                <polygon points="40,150 70,80 100,150" class="rl-shape" />
+                <polygon points="90,150 130,60 170,150" class="rl-shape" />
+                <circle cx="40" cy="50" r="14" class="rl-shape" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Glass</text>
+                <text x="16" y="286" class="rl-poster-title">Harbour</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t9" role="heading" aria-level="2">Glass Harbour</div>
+                <div class="desc">Film · 1 / 1</div>
+              </div>
+              <div class="actions"><div class="meta">2017</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge positive rl-score"
+                  ><span class="rl-sr-only">score </span>8</span
+                >
+                <span class="ss-badge positive rl-status">completed</span>
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added May 27</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Glass Harbour"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t9" aria-labelledby="rl-t9"
+              ><span class="sr-only">Glass Harbour</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t10"
+            data-title="Hollow Frequency"
+            data-status="watching"
+            data-score="7"
+            data-added="2026-05-09"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g5)" />
+                <path
+                  d="M0 130 L20 130 30 90 45 170 60 110 75 150 90 130 200 130"
+                  class="rl-stroke"
+                />
+                <circle cx="100" cy="130" r="60" class="rl-ring" />
+                <circle cx="100" cy="130" r="80" class="rl-ring" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Hollow</text>
+                <text x="16" y="286" class="rl-poster-title">Frequency</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t10" role="heading" aria-level="2">Hollow Frequency</div>
+                <div class="desc">TV · 9 / 12 ep</div>
+              </div>
+              <div class="actions"><div class="meta">2023</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge info rl-score"><span class="rl-sr-only">score </span>7</span>
+                <span class="ss-badge brand rl-status"
+                  ><span class="dot" aria-hidden="true"></span>watching</span
+                >
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added May 9</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Hollow Frequency"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t10" aria-labelledby="rl-t10"
+              ><span class="sr-only">Hollow Frequency</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t11"
+            data-title="Ember Protocol"
+            data-status="dropped"
+            data-score="3"
+            data-added="2026-04-18"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g2)" />
+                <polygon points="100,30 160,130 100,230 40,130" class="rl-shape" />
+                <polygon points="100,70 130,130 100,190 70,130" class="rl-shape" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Ember</text>
+                <text x="16" y="286" class="rl-poster-title">Protocol</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t11" role="heading" aria-level="2">Ember Protocol</div>
+                <div class="desc">TV · 2 / 24 ep</div>
+              </div>
+              <div class="actions"><div class="meta">2016</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge critical rl-score"
+                  ><span class="rl-sr-only">score </span>3</span
+                >
+                <span class="ss-badge caution rl-status">dropped</span>
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added Apr 18</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Ember Protocol"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t11" aria-labelledby="rl-t11"
+              ><span class="sr-only">Ember Protocol</span></a
+            >
+          </div>
+
+          <div
+            class="ss-card interactive"
+            role="listitem"
+            aria-labelledby="rl-t12"
+            data-title="Small Hours Radio"
+            data-status="planned"
+            data-score=""
+            data-added="2026-03-30"
+          >
+            <div class="media">
+              <svg class="rl-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+                <rect width="200" height="300" fill="url(#rl-g6)" />
+                <circle cx="100" cy="120" r="70" class="rl-ring" />
+                <circle cx="100" cy="120" r="46" class="rl-ring" />
+                <circle cx="100" cy="120" r="22" class="rl-ring" />
+                <circle cx="100" cy="120" r="5" class="rl-shape" />
+                <rect x="0" y="238" width="200" height="62" class="rl-band" />
+                <text x="16" y="264" class="rl-poster-title">Small Hours</text>
+                <text x="16" y="286" class="rl-poster-title">Radio</text>
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="rl-t12" role="heading" aria-level="2">Small Hours Radio</div>
+                <div class="desc">OVA · 0 / 6 ep</div>
+              </div>
+              <div class="actions"><div class="meta">2022</div></div>
+            </div>
+            <div class="body">
+              <span class="rl-tags">
+                <span class="ss-badge neutral rl-score"
+                  ><span class="rl-sr-only">score </span>—</span
+                >
+                <span class="ss-badge neutral rl-status">planned</span>
+              </span>
+            </div>
+            <div class="foot">
+              <span class="rl-added">added Mar 30</span>
+              <button
+                class="ss-btn ghost"
+                type="button"
+                data-ss-modal="#rl-rate"
+                data-rate
+                aria-label="Rate Small Hours Radio"
+              >
+                <span class="label">rate</span>
+              </button>
+            </div>
+            <a class="overlay" href="#rl-t12" aria-labelledby="rl-t12"
+              ><span class="sr-only">Small Hours Radio</span></a
+            >
+          </div>
+        </div>
+
+        <!-- Table view (site.js swaps it in from the view toggle) -->
+        <div class="rl-table rl-view" id="rl-table" hidden>
+          <table class="ss-table">
+            <caption>
+              My list — this page
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col" class="head" data-align="left" aria-sort="none">
+                  <button type="button" class="sort" data-sort="title">
+                    <span class="label">Title</span>
+                    <span class="indicator" aria-hidden="true">↕</span>
+                  </button>
+                </th>
+                <th scope="col" class="head" data-align="left"><span class="label">Type</span></th>
+                <th scope="col" class="head numeric" data-align="right" aria-sort="none">
+                  <button type="button" class="sort" data-sort="progress">
+                    <span class="label">Progress</span>
+                    <span class="indicator" aria-hidden="true">↕</span>
+                  </button>
+                </th>
+                <th scope="col" class="head numeric" data-align="right" aria-sort="none">
+                  <button type="button" class="sort" data-sort="score">
+                    <span class="label">Score</span>
+                    <span class="indicator" aria-hidden="true">↕</span>
+                  </button>
+                </th>
+                <th scope="col" class="head" data-align="left">
+                  <span class="label">Status</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="row"
+                data-title="Lanterns of the Salt Sea"
+                data-status="watching"
+                data-score="8"
+                data-progress="0.58"
+                data-added="2026-08-21"
+              >
+                <td class="cell" data-align="left">Lanterns of the Salt Sea</td>
+                <td class="cell" data-align="left">TV</td>
+                <td class="cell numeric" data-align="right">14 / 24</td>
+                <td class="cell numeric rl-score-cell" data-align="right">8</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge brand rl-status"
+                    ><span class="dot" aria-hidden="true"></span>watching</span
+                  >
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="Orbital Lullaby"
+                data-status="completed"
+                data-score="9"
+                data-progress="1"
+                data-added="2026-08-14"
+              >
+                <td class="cell" data-align="left">Orbital Lullaby</td>
+                <td class="cell" data-align="left">Film</td>
+                <td class="cell numeric" data-align="right">1 / 1</td>
+                <td class="cell numeric rl-score-cell" data-align="right">9</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge positive rl-status">completed</span>
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="Paper Wolves"
+                data-status="completed"
+                data-score="7"
+                data-progress="1"
+                data-added="2026-08-02"
+              >
+                <td class="cell" data-align="left">Paper Wolves</td>
+                <td class="cell" data-align="left">TV</td>
+                <td class="cell numeric" data-align="right">12 / 12</td>
+                <td class="cell numeric rl-score-cell" data-align="right">7</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge positive rl-status">completed</span>
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="Ninefold Garden"
+                data-status="watching"
+                data-score="6"
+                data-progress="0.23"
+                data-added="2026-07-30"
+              >
+                <td class="cell" data-align="left">Ninefold Garden</td>
+                <td class="cell" data-align="left">TV</td>
+                <td class="cell numeric" data-align="right">3 / 13</td>
+                <td class="cell numeric rl-score-cell" data-align="right">6</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge brand rl-status"
+                    ><span class="dot" aria-hidden="true"></span>watching</span
+                  >
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="Static Bloom"
+                data-status="planned"
+                data-score=""
+                data-progress="0"
+                data-added="2026-07-19"
+              >
+                <td class="cell" data-align="left">Static Bloom</td>
+                <td class="cell" data-align="left">OVA</td>
+                <td class="cell numeric" data-align="right">0 / 4</td>
+                <td class="cell numeric rl-score-cell" data-align="right">—</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge neutral rl-status">planned</span>
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="The Cartographer's Daughter"
+                data-status="completed"
+                data-score="10"
+                data-progress="1"
+                data-added="2026-07-05"
+              >
+                <td class="cell" data-align="left">The Cartographer's Daughter</td>
+                <td class="cell" data-align="left">Film</td>
+                <td class="cell numeric" data-align="right">1 / 1</td>
+                <td class="cell numeric rl-score-cell" data-align="right">10</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge positive rl-status">completed</span>
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="Rust Choir"
+                data-status="dropped"
+                data-score="4"
+                data-progress="0.19"
+                data-added="2026-06-22"
+              >
+                <td class="cell" data-align="left">Rust Choir</td>
+                <td class="cell" data-align="left">TV</td>
+                <td class="cell numeric" data-align="right">5 / 26</td>
+                <td class="cell numeric rl-score-cell" data-align="right">4</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge caution rl-status">dropped</span>
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="Meridian Express"
+                data-status="planned"
+                data-score=""
+                data-progress="0"
+                data-added="2026-06-10"
+              >
+                <td class="cell" data-align="left">Meridian Express</td>
+                <td class="cell" data-align="left">TV</td>
+                <td class="cell numeric" data-align="right">0 / 12</td>
+                <td class="cell numeric rl-score-cell" data-align="right">—</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge neutral rl-status">planned</span>
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="Glass Harbour"
+                data-status="completed"
+                data-score="8"
+                data-progress="1"
+                data-added="2026-05-27"
+              >
+                <td class="cell" data-align="left">Glass Harbour</td>
+                <td class="cell" data-align="left">Film</td>
+                <td class="cell numeric" data-align="right">1 / 1</td>
+                <td class="cell numeric rl-score-cell" data-align="right">8</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge positive rl-status">completed</span>
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="Hollow Frequency"
+                data-status="watching"
+                data-score="7"
+                data-progress="0.75"
+                data-added="2026-05-09"
+              >
+                <td class="cell" data-align="left">Hollow Frequency</td>
+                <td class="cell" data-align="left">TV</td>
+                <td class="cell numeric" data-align="right">9 / 12</td>
+                <td class="cell numeric rl-score-cell" data-align="right">7</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge brand rl-status"
+                    ><span class="dot" aria-hidden="true"></span>watching</span
+                  >
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="Ember Protocol"
+                data-status="dropped"
+                data-score="3"
+                data-progress="0.08"
+                data-added="2026-04-18"
+              >
+                <td class="cell" data-align="left">Ember Protocol</td>
+                <td class="cell" data-align="left">TV</td>
+                <td class="cell numeric" data-align="right">2 / 24</td>
+                <td class="cell numeric rl-score-cell" data-align="right">3</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge caution rl-status">dropped</span>
+                </td>
+              </tr>
+              <tr
+                class="row"
+                data-title="Small Hours Radio"
+                data-status="planned"
+                data-score=""
+                data-progress="0"
+                data-added="2026-03-30"
+              >
+                <td class="cell" data-align="left">Small Hours Radio</td>
+                <td class="cell" data-align="left">OVA</td>
+                <td class="cell numeric" data-align="right">0 / 6</td>
+                <td class="cell numeric rl-score-cell" data-align="right">—</td>
+                <td class="cell" data-align="left">
+                  <span class="ss-badge neutral rl-status">planned</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rl-empty" id="rl-empty" hidden>
+          <div class="ss-empty no-results" role="status" aria-atomic="true">
+            <div class="ic glyph" aria-hidden="true">⌕</div>
+            <p class="title" role="heading" aria-level="2">Nothing matches</p>
+            <p class="msg">Try another status, or clear the search.</p>
+          </div>
+        </div>
+
+        <nav class="ss-pagination rl-pagination" aria-label="Pagination">
+          <button type="button" class="page nav-btn" aria-label="Previous page" disabled>
+            <span aria-hidden="true">‹</span>
+          </button>
+          <button type="button" class="page active" aria-current="page" aria-label="Page 1">
+            1
+          </button>
+          <button type="button" class="page" aria-label="Page 2">2</button>
+          <button type="button" class="page" aria-label="Page 3">3</button>
+          <button type="button" class="page" aria-label="Page 4">4</button>
+          <span class="ellipsis" aria-hidden="true">…</span>
+          <button type="button" class="page" aria-label="Page 13">13</button>
+          <button type="button" class="page nav-btn" aria-label="Next page">
+            <span aria-hidden="true">›</span>
+          </button>
+        </nav>
+      </section>
+
+      <!-- Rate dialog — opened from every card's "rate" action via data-ss-modal -->
+      <dialog id="rl-rate" class="ss-modal" aria-labelledby="rl-rate-title">
+        <div class="panel">
+          <header class="head">
+            <h2 class="title" id="rl-rate-title">Rate title</h2>
+            <button type="button" class="close" data-ss-dismiss aria-label="Close">×</button>
+          </header>
+          <div class="body">
+            <p class="rl-rate-for">
+              Update your entry for <strong id="rl-rate-name">this title</strong>.
+            </p>
+            <div class="rl-rate-form">
+              <div class="ss-numberfield">
+                <label class="lbl" for="rl-score">Score</label>
+                <div class="control">
+                  <button type="button" class="step dec" aria-label="Decrease">−</button>
+                  <input
+                    class="ss-input"
+                    id="rl-score"
+                    type="number"
+                    inputmode="decimal"
+                    value="7"
+                    min="1"
+                    max="10"
+                    step="1"
+                    aria-describedby="rl-score-hint"
+                  />
+                  <button type="button" class="step inc" aria-label="Increase">+</button>
+                </div>
+                <span class="msg hint" id="rl-score-hint"
+                  >1 is a mistake, 10 is a masterpiece.</span
+                >
+              </div>
+              <div class="ss-select">
+                <label class="lbl" for="rl-rate-status">Status</label>
+                <div class="control">
+                  <select class="select" id="rl-rate-status">
+                    <option value="watching">watching</option>
+                    <option value="completed">completed</option>
+                    <option value="planned">planned</option>
+                    <option value="dropped">dropped</option>
+                  </select>
+                  <span class="chevron" aria-hidden="true"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="foot">
+            <button class="ss-btn ghost" type="button" data-ss-dismiss>
+              <span class="label">cancel</span>
+            </button>
+            <button class="ss-btn primary" type="button" id="rl-rate-save">
+              <span class="label">save</span>
+            </button>
+          </footer>
+        </div>
+      </dialog>
+
+      <div
+        class="ss-toaster"
+        role="region"
+        aria-label="Notifications"
+        data-position="bottom-right"
+      ></div>
+    </main>
+
+    <footer class="ss-footer rl-footer">
+      <span>reelog · a fictional tracker, built with dssoca</span>
+      <span>148 titles · 412 h logged</span>
+    </footer>
+
+    <nav class="ss-bottom-nav rl-mobile-nav" aria-label="Mobile">
+      <ul class="list">
+        <li class="row">
+          <a class="tab" href="#browse">
+            <span class="glyph"><span data-ss-icon="grid"></span></span>
+            <span class="label">browse</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="tab active" href="#main" aria-current="page">
+            <span class="glyph"><span data-ss-icon="book"></span></span>
+            <span class="label">my list</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="tab" href="#stats">
+            <span class="glyph"><span data-ss-icon="activity"></span></span>
+            <span class="label">stats</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="tab" href="#profile">
+            <span class="glyph"><span data-ss-icon="user"></span></span>
+            <span class="label">profile</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </body>
+</html>

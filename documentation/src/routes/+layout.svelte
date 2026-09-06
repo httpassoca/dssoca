@@ -27,7 +27,13 @@
   // the route, so `active` / `onSelect` drive real navigation (dogfooding).
   const groups = NAV.map((g) => ({
     section: g.section,
-    items: g.items.map((it) => ({ id: it.href, label: it.label, icon: it.icon as never })),
+    items: g.items.map((it) => ({
+      id: it.href,
+      label: it.label,
+      icon: it.icon as never,
+      // External entries (Inspirations) are real new-tab anchors; the rest stay SPA buttons.
+      ...(it.external ? { href: it.href, external: true } : {}),
+    })),
   }))
 
   // Normalise trailing slash so the active item matches (trailingSlash: always).
@@ -38,6 +44,8 @@
   const isLanding = $derived(current === '/')
 
   function navigate(id: string) {
+    // External items navigate through their own anchor (goto rejects absolute URLs).
+    if (/^https?:\/\//.test(id)) return
     goto(id)
   }
 

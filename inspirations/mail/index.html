@@ -1,0 +1,1278 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lettera — Inbox</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body>
+    <div class="mail-shell">
+      <!-- ── top bar ─────────────────────────────────────────────────────── -->
+      <header class="ss-topbar">
+        <a class="skip" href="#main">Skip to content</a>
+        <div class="seg logo">
+          <svg
+            class="mark"
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            fill="none"
+            stroke="var(--ss-primary)"
+            stroke-width="2"
+            stroke-linecap="square"
+            stroke-linejoin="miter"
+            aria-hidden="true"
+          >
+            <rect x="3" y="5" width="18" height="14" />
+            <path d="M3 7l9 6 9-6" />
+          </svg>
+          <span class="nm">lettera</span>
+        </div>
+        <nav class="ws" aria-label="Workspaces">
+          <button type="button" class="tab active" aria-current="page" tabindex="0">
+            <span class="n" aria-hidden="true">1</span>mail
+          </button>
+          <button type="button" class="tab" tabindex="-1">
+            <span class="n" aria-hidden="true">2</span>calendar
+          </button>
+          <button type="button" class="tab" tabindex="-1">
+            <span class="n" aria-hidden="true">3</span>contacts
+          </button>
+        </nav>
+        <div class="grow"></div>
+        <div class="seg right stat collapsible" title="unread messages">
+          <span class="k">unread</span><span class="v" id="unread-stat">3</span>
+        </div>
+        <button
+          class="seg right click cmd"
+          type="button"
+          id="search-open"
+          aria-keyshortcuts="/"
+          aria-label="Search mail"
+        >
+          <span aria-hidden="true">⌕</span>
+          <span>search</span>
+          <span class="kbd" aria-hidden="true">
+            <kbd class="ss-kbd"><kbd class="key">/</kbd></kbd>
+          </span>
+        </button>
+        <button
+          class="seg right click"
+          type="button"
+          id="theme-toggle"
+          aria-label="Switch to light theme"
+        >
+          <span aria-hidden="true">◐</span>
+        </button>
+        <button class="seg right click user-btn" type="button">mara@lettera.app</button>
+      </header>
+
+      <!-- ── sidebar ─────────────────────────────────────────────────────── -->
+      <nav class="ss-side" aria-label="Mailboxes">
+        <div class="mail-compose">
+          <button class="ss-btn primary full-width" type="button" data-ss-modal="#compose">
+            <span class="affix" aria-hidden="true">+</span>
+            <span class="label">compose</span>
+          </button>
+        </div>
+
+        <div class="section" id="sec-folders">Folders</div>
+        <ul class="list" aria-labelledby="sec-folders">
+          <li class="row">
+            <a class="item active" href="#inbox" aria-current="page">
+              <svg
+                viewBox="0 0 24 24"
+                width="13"
+                height="13"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="square"
+                stroke-linejoin="miter"
+                aria-hidden="true"
+              >
+                <rect x="3" y="5" width="18" height="14" />
+                <path d="M3 7l9 6 9-6" />
+              </svg>
+              <span class="label">inbox</span>
+              <span class="badge" id="inbox-badge">3</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#starred">
+              <span class="mail-glyph" aria-hidden="true">★</span>
+              <span class="label">starred</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#sent">
+              <span data-ss-icon="arrow" data-px="13"></span>
+              <span class="label">sent</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#drafts">
+              <span data-ss-icon="note" data-px="13"></span>
+              <span class="label">drafts</span>
+              <span class="badge">2</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#archive">
+              <span data-ss-icon="folder" data-px="13"></span>
+              <span class="label">archive</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#spam">
+              <span data-ss-icon="target" data-px="13"></span>
+              <span class="label">spam</span>
+              <span class="badge">7</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#trash">
+              <svg
+                viewBox="0 0 24 24"
+                width="13"
+                height="13"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="square"
+                stroke-linejoin="miter"
+                aria-hidden="true"
+              >
+                <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" />
+              </svg>
+              <span class="label">trash</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="section" id="sec-labels">Labels</div>
+        <ul class="list" aria-labelledby="sec-labels">
+          <li class="row">
+            <a class="item" href="#label-finance">
+              <span class="label">finance</span>
+              <span class="dot" aria-hidden="true" style="background: var(--ss-yellow)"></span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#label-project">
+              <span class="label">project</span>
+              <span class="dot" aria-hidden="true" style="background: var(--ss-blue)"></span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#label-team">
+              <span class="label">team</span>
+              <span class="dot" aria-hidden="true" style="background: var(--ss-magenta)"></span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#label-legal">
+              <span class="label">legal</span>
+              <span class="dot" aria-hidden="true" style="background: var(--ss-cyan)"></span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#label-newsletters">
+              <span class="label">newsletters</span>
+              <span class="dot" aria-hidden="true" style="background: var(--ss-primary)"></span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#label-automated">
+              <span class="label">automated</span>
+              <span class="dot" aria-hidden="true" style="background: var(--ss-fg-faint)"></span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mail-storage">
+          <div class="mail-storage-head">
+            <span>storage</span>
+            <span>6.2 / 15 GB</span>
+          </div>
+          <div
+            class="mail-meter"
+            role="meter"
+            aria-label="Storage used"
+            aria-valuemin="0"
+            aria-valuemax="15"
+            aria-valuenow="6.2"
+            aria-valuetext="6.2 of 15 gigabytes"
+          >
+            <span class="mail-meter-fill" style="width: 41%"></span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ── main: list + reading pane ───────────────────────────────────── -->
+      <main id="main" class="mail-main">
+        <section class="mail-list" aria-labelledby="list-h">
+          <h2 id="list-h" class="mail-sr-only">Inbox messages</h2>
+
+          <div class="mail-toolbar">
+            <input
+              type="checkbox"
+              class="mail-check"
+              id="select-all"
+              aria-label="Select all messages"
+            />
+            <div class="mail-toolbar-group" role="group" aria-label="Message actions">
+              <button
+                class="ss-btn ghost icon-only"
+                type="button"
+                id="act-archive"
+                aria-label="Archive"
+              >
+                <span data-ss-icon="folder" data-size="sm" class="affix"></span>
+              </button>
+              <button
+                class="ss-btn ghost icon-only"
+                type="button"
+                id="act-delete"
+                aria-label="Delete"
+              >
+                <span class="affix" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                    stroke-linejoin="miter"
+                  >
+                    <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" />
+                  </svg>
+                </span>
+              </button>
+              <button
+                class="ss-btn ghost icon-only"
+                type="button"
+                id="act-read"
+                aria-label="Mark as read"
+              >
+                <span data-ss-icon="check" data-size="sm" class="affix"></span>
+              </button>
+            </div>
+
+            <div class="ss-segmented" role="radiogroup" aria-label="Filter" id="filter">
+              <button
+                type="button"
+                class="segment selected"
+                role="radio"
+                aria-checked="true"
+                tabindex="0"
+                data-value="all"
+              >
+                <span class="label">all</span>
+              </button>
+              <button
+                type="button"
+                class="segment"
+                role="radio"
+                aria-checked="false"
+                tabindex="-1"
+                data-value="unread"
+              >
+                <span class="label">unread</span>
+              </button>
+              <button
+                type="button"
+                class="segment"
+                role="radio"
+                aria-checked="false"
+                tabindex="-1"
+                data-value="starred"
+              >
+                <span class="label">starred</span>
+              </button>
+            </div>
+
+            <span class="mail-count" id="list-count">14 messages</span>
+          </div>
+
+          <div class="mail-hints" aria-label="Keyboard shortcuts">
+            <span>
+              <kbd class="ss-kbd"
+                ><kbd class="key">j</kbd><span class="sep" aria-hidden="true">/</span
+                ><kbd class="key">k</kbd></kbd
+              >
+              navigate
+            </span>
+            <span
+              ><kbd class="ss-kbd"><kbd class="key">e</kbd></kbd> archive</span
+            >
+            <span
+              ><kbd class="ss-kbd"><kbd class="key">r</kbd></kbd> reply</span
+            >
+            <span
+              ><kbd class="ss-kbd"><kbd class="key">s</kbd></kbd> star</span
+            >
+          </div>
+
+          <ul class="mail-rows" id="rows">
+            <li class="mail-row is-unread" data-unread="true" data-starred="false">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Ines Farrow"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Ines Farrow"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Ines Farrow"
+                style="--ss-avatar-bg: var(--ss-blue)"
+              >
+                <span class="initials" aria-hidden="true">IF</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Ines Farrow</span>
+                  <time class="mail-time" datetime="2026-09-06T09:41">09:41</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Q3 forecast: revised numbers attached</span>
+                  <span class="mail-snippet"
+                    >— I re-ran the model with the September pricing and the margin lands at</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge caution">finance</span></span>
+                  <span class="mail-tag"><span class="ss-badge neutral">2 files</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row is-selected" data-unread="false" data-starred="true">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Theo Marchetti"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="true"
+                aria-label="Star message from Theo Marchetti"
+              >
+                ★
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Theo Marchetti"
+                style="--ss-avatar-bg: var(--ss-magenta)"
+              >
+                <span class="initials" aria-hidden="true">TM</span>
+              </span>
+              <a class="mail-row-main" href="#reading" aria-current="true">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Theo Marchetti</span>
+                  <time class="mail-time" datetime="2026-09-06T09:12">09:12</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Re: Rooftop garden proposal — irrigation plan</span>
+                  <span class="mail-snippet"
+                    >— Drip lines on a timer beat the sprinkler idea by a wide margin; see the</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge positive">project</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row is-unread" data-unread="true" data-starred="false">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Priya Natarajan"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Priya Natarajan"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Priya Natarajan"
+                style="--ss-avatar-bg: var(--ss-cyan)"
+              >
+                <span class="initials" aria-hidden="true">PN</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Priya Natarajan</span>
+                  <time class="mail-time" datetime="2026-09-06T08:55">08:55</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Design review moved to Thursday</span>
+                  <span class="mail-snippet"
+                    >— Two people are out Wednesday, so we pushed it by a day. Same room, same</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge neutral">team</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row" data-unread="false" data-starred="false">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Build bot"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Build bot"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Build bot"
+                style="--ss-avatar-bg: var(--ss-green)"
+              >
+                <span class="initials" aria-hidden="true">BB</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Build bot</span>
+                  <time class="mail-time" datetime="2026-09-06T08:30">08:30</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">ci: pipeline #4821 passed on main</span>
+                  <span class="mail-snippet"
+                    >— 212 tests, 0 failures, 3m 41s. Artifacts expire in 7 days.</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge positive">automated</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row is-unread" data-unread="true" data-starred="false">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Rosalind Achebe"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Rosalind Achebe"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Rosalind Achebe"
+                style="--ss-avatar-bg: var(--ss-yellow)"
+              >
+                <span class="initials" aria-hidden="true">RA</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Rosalind Achebe</span>
+                  <time class="mail-time" datetime="2026-09-06T07:58">07:58</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Invoice #2044 is due next week</span>
+                  <span class="mail-snippet"
+                    >— Gentle reminder that the printing invoice falls due on the 12th. Let me</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge caution">finance</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row" data-unread="false" data-starred="true">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Hal Lindqvist"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="true"
+                aria-label="Star message from Hal Lindqvist"
+              >
+                ★
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Hal Lindqvist"
+                style="--ss-avatar-bg: var(--ss-accent)"
+              >
+                <span class="initials" aria-hidden="true">HL</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Hal Lindqvist</span>
+                  <time class="mail-time" datetime="2026-09-05T18:20">yesterday</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Weekend hike — trailhead at 7?</span>
+                  <span class="mail-snippet"
+                    >— Forecast says clear until noon. I can bring the second stove if you</span
+                  >
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row" data-unread="false" data-starred="false">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Slow Type Weekly"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Slow Type Weekly"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Slow Type Weekly"
+                style="--ss-avatar-bg: var(--ss-blue)"
+              >
+                <span class="initials" aria-hidden="true">ST</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Slow Type Weekly</span>
+                  <time class="mail-time" datetime="2026-09-05T07:00">yesterday</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Issue 118: the case for tabular numerals</span>
+                  <span class="mail-snippet"
+                    >— Why your dashboard jitters, and the one font feature that fixes it.</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge neutral">newsletter</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row" data-unread="false" data-starred="false">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Odette Brisebois"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Odette Brisebois"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Odette Brisebois"
+                style="--ss-avatar-bg: var(--ss-magenta)"
+              >
+                <span class="initials" aria-hidden="true">OB</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Odette Brisebois</span>
+                  <time class="mail-time" datetime="2026-09-05T21:14">yesterday</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Photos from the lakehouse</span>
+                  <span class="mail-snippet"
+                    >— Finally went through the roll. The one of the dock at dusk is a keeper.</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge neutral">9 files</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row" data-unread="false" data-starred="false">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Kenji Aoyama"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Kenji Aoyama"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Kenji Aoyama"
+                style="--ss-avatar-bg: var(--ss-cyan)"
+              >
+                <span class="initials" aria-hidden="true">KA</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Kenji Aoyama</span>
+                  <time class="mail-time" datetime="2026-09-03T16:02">wed</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Contract redlines, round two</span>
+                  <span class="mail-snippet"
+                    >— Clause 7.2 is still open. I'd rather cap liability than strike it.</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge critical">legal</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row" data-unread="false" data-starred="false">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Support desk"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Support desk"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Support desk"
+                style="--ss-avatar-bg: var(--ss-green)"
+              >
+                <span class="initials" aria-hidden="true">SD</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Support desk</span>
+                  <time class="mail-time" datetime="2026-09-03T11:47">wed</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">[#7719] Your ticket was updated</span>
+                  <span class="mail-snippet"
+                    >— An agent replied: "We've reproduced the sync delay and shipped a fix</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge positive">automated</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row" data-unread="false" data-starred="true">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Mira Sandoval"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="true"
+                aria-label="Star message from Mira Sandoval"
+              >
+                ★
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Mira Sandoval"
+                style="--ss-avatar-bg: var(--ss-yellow)"
+              >
+                <span class="initials" aria-hidden="true">MS</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Mira Sandoval</span>
+                  <time class="mail-time" datetime="2026-09-02T20:31">tue</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Book club: pick for October?</span>
+                  <span class="mail-snippet"
+                    >— Three nominations so far. I'm leaning toward the one with the
+                    lighthouse.</span
+                  >
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row" data-unread="false" data-starred="false">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Facilities"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Facilities"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Facilities"
+                style="--ss-avatar-bg: var(--ss-accent)"
+              >
+                <span class="initials" aria-hidden="true">FA</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Facilities</span>
+                  <time class="mail-time" datetime="2026-09-02T09:05">tue</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Elevator maintenance Friday 06:00–09:00</span>
+                  <span class="mail-snippet"
+                    >— The east lift will be out of service. Please use the stairs or the</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge neutral">team</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row" data-unread="false" data-starred="false">
+              <input
+                type="checkbox"
+                class="mail-check"
+                aria-label="Select message from Julian Osei"
+              />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Julian Osei"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Julian Osei"
+                style="--ss-avatar-bg: var(--ss-blue)"
+              >
+                <span class="initials" aria-hidden="true">JO</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Julian Osei</span>
+                  <time class="mail-time" datetime="2026-09-01T15:26">mon</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Draft agenda for the offsite</span>
+                  <span class="mail-snippet"
+                    >— Two half-days, one long walk, no slides before lunch. Thoughts?</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge positive">project</span></span>
+                </span>
+              </a>
+            </li>
+
+            <li class="mail-row" data-unread="false" data-starred="false">
+              <input type="checkbox" class="mail-check" aria-label="Select message from Payroll" />
+              <button
+                type="button"
+                class="mail-star"
+                aria-pressed="false"
+                aria-label="Star message from Payroll"
+              >
+                ☆
+              </button>
+              <span
+                class="ss-avatar"
+                data-size-variant="sm"
+                role="img"
+                aria-label="Payroll"
+                style="--ss-avatar-bg: var(--ss-magenta)"
+              >
+                <span class="initials" aria-hidden="true">PR</span>
+              </span>
+              <a class="mail-row-main" href="#reading">
+                <span class="mail-row-top">
+                  <span class="mail-sender">Payroll</span>
+                  <time class="mail-time" datetime="2026-08-29T06:00">aug 29</time>
+                </span>
+                <span class="mail-row-sub">
+                  <span class="mail-subject">Your August payslip is available</span>
+                  <span class="mail-snippet"
+                    >— Sign in to the portal to download it. No action is required.</span
+                  >
+                </span>
+                <span class="mail-row-tags">
+                  <span class="mail-tag"><span class="ss-badge caution">finance</span></span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        <!-- ── reading pane ────────────────────────────────────────────────── -->
+        <article class="mail-read" id="reading" aria-labelledby="msg-title">
+          <header class="mail-read-head">
+            <div class="mail-read-title">
+              <h1 id="msg-title">Re: Rooftop garden proposal — irrigation plan</h1>
+              <div class="mail-read-tags">
+                <span class="ss-badge positive">project</span>
+                <span class="ss-badge neutral">inbox</span>
+              </div>
+            </div>
+            <div class="mail-read-meta">
+              <span
+                class="ss-avatar"
+                role="img"
+                aria-label="Theo Marchetti"
+                style="--ss-avatar-bg: var(--ss-magenta)"
+              >
+                <span class="initials" aria-hidden="true">TM</span>
+              </span>
+              <div class="mail-from">
+                <span class="mail-from-name">Theo Marchetti</span>
+                <span class="mail-from-addr">theo@northbank.coop · to me, garden-committee</span>
+              </div>
+              <time class="mail-read-time" datetime="2026-09-06T09:12">today 09:12</time>
+              <div class="mail-read-actions">
+                <button class="ss-btn secondary" type="button" id="act-reply">
+                  <span class="affix" aria-hidden="true">↩</span>
+                  <span class="label">reply</span>
+                </button>
+                <div class="ss-menu" data-align="end" data-side="bottom" id="more-menu">
+                  <button
+                    type="button"
+                    class="trigger"
+                    aria-haspopup="menu"
+                    aria-expanded="false"
+                    aria-controls="more-menu-panel"
+                  >
+                    more <span aria-hidden="true">▾</span>
+                  </button>
+                  <div
+                    id="more-menu-panel"
+                    class="panel"
+                    role="menu"
+                    aria-label="More actions"
+                    aria-hidden="true"
+                    tabindex="-1"
+                  >
+                    <button
+                      type="button"
+                      class="item"
+                      data-mi="0"
+                      data-value="reply-all"
+                      role="menuitem"
+                      tabindex="-1"
+                    >
+                      <span data-ss-icon="arrow" data-flip="horizontal"></span>
+                      <span class="label">Reply all</span>
+                      <span class="marker" aria-hidden="true"></span>
+                    </button>
+                    <button
+                      type="button"
+                      class="item"
+                      data-mi="1"
+                      data-value="forward"
+                      role="menuitem"
+                      tabindex="-1"
+                    >
+                      <span data-ss-icon="arrow"></span>
+                      <span class="label">Forward</span>
+                      <span class="marker" aria-hidden="true"></span>
+                    </button>
+                    <button
+                      type="button"
+                      class="item"
+                      data-mi="2"
+                      data-value="print"
+                      role="menuitem"
+                      tabindex="-1"
+                    >
+                      <span data-ss-icon="note"></span>
+                      <span class="label">Print</span>
+                      <span class="marker" aria-hidden="true"></span>
+                    </button>
+                    <button
+                      type="button"
+                      class="item"
+                      data-mi="3"
+                      data-value="block"
+                      role="menuitem"
+                      tabindex="-1"
+                    >
+                      <span data-ss-icon="target"></span>
+                      <span class="label">Block sender</span>
+                      <span class="marker" aria-hidden="true"></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <div class="mail-body">
+            <p>Hi Mara,</p>
+            <p>
+              I went back through the numbers from the pilot beds and I'm now fairly convinced: drip
+              lines on a timer beat the sprinkler idea by a wide margin. We'd use roughly a third of
+              the water, the foliage stays dry (which the mildew on the squash last year was really
+              about), and the whole run can hang off the existing hose bib on the north wall. No
+              trenching, no permit.
+            </p>
+            <p>
+              I've attached a revised plan and an SVG of the bed layout so you can move things
+              around. The one open question is the timer — the cheap one needs a battery swap every
+              season, the wired one needs an outlet we don't have yet. I'd start cheap and upgrade
+              if the committee approves the second phase.
+            </p>
+            <p>Could we get ten minutes on Thursday before the design review?</p>
+            <p>— Theo</p>
+
+            <blockquote class="mail-quote">
+              <p class="mail-quote-head">On Fri, 5 Sep 2026 at 16:40, Mara Quill wrote:</p>
+              <p>
+                Thanks for taking this on. My only worry with sprinklers is the wind up there — half
+                the water ends up on the parking deck. If drip is cheaper and less fiddly I'm all
+                for it. Send the plan when you have it and I'll put it on Thursday's agenda.
+              </p>
+            </blockquote>
+          </div>
+
+          <section class="mail-attach" aria-labelledby="attach-h">
+            <h2 id="attach-h" class="mail-h2">2 attachments</h2>
+            <ul class="mail-attach-list">
+              <li>
+                <div class="ss-card">
+                  <div class="body">
+                    <div class="mail-file">
+                      <span class="mail-file-kind" aria-hidden="true">pdf</span>
+                      <span class="mail-file-name">irrigation-plan-v2.pdf</span>
+                      <span class="mail-file-size">1.8 MB</span>
+                    </div>
+                  </div>
+                  <div class="foot">
+                    <span>4 pages</span>
+                    <button class="ss-btn ghost" type="button" data-file="irrigation-plan-v2.pdf">
+                      <span class="affix" aria-hidden="true">↓</span>
+                      <span class="label">download</span>
+                    </button>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="ss-card">
+                  <div class="body">
+                    <div class="mail-file">
+                      <span class="mail-file-kind" aria-hidden="true">svg</span>
+                      <span class="mail-file-name">bed-layout.svg</span>
+                      <span class="mail-file-size">240 KB</span>
+                    </div>
+                  </div>
+                  <div class="foot">
+                    <span>vector · 1 200 × 800</span>
+                    <button class="ss-btn ghost" type="button" data-file="bed-layout.svg">
+                      <span class="affix" aria-hidden="true">↓</span>
+                      <span class="label">download</span>
+                    </button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <section class="mail-reply" aria-labelledby="reply-h">
+            <h2 id="reply-h" class="mail-h2">Reply</h2>
+            <div class="ss-textarea">
+              <label class="lbl" for="reply-body">To Theo Marchetti</label>
+              <div class="control">
+                <textarea
+                  class="field autosize"
+                  id="reply-body"
+                  placeholder="Write a reply…"
+                  rows="3"
+                  aria-describedby="reply-hint"
+                  style="max-height: calc(10 * 1lh + 2 * var(--ss-input-py))"
+                ></textarea>
+              </div>
+              <span class="msg hint" id="reply-hint"
+                >Goes to Theo only — use reply all to include garden-committee</span
+              >
+            </div>
+            <div class="mail-reply-actions">
+              <button class="ss-btn primary" type="button" id="reply-send">
+                <span class="label">send</span>
+              </button>
+              <span class="mail-reply-hint">
+                <kbd class="ss-kbd" role="img" aria-label="Command Enter"
+                  ><kbd class="key">⌘</kbd><kbd class="key">↵</kbd></kbd
+                >
+                to send
+              </span>
+              <span class="mail-spacer"></span>
+              <button class="ss-btn ghost" type="button" id="reply-attach">
+                <span class="label">attach</span>
+              </button>
+              <button class="ss-btn ghost" type="button" id="reply-discard">
+                <span class="label">discard</span>
+              </button>
+            </div>
+          </section>
+        </article>
+      </main>
+
+      <footer class="mail-status">
+        <span>14 messages · <span id="unread-foot">3</span> unread</span>
+        <span>synced 2 min ago</span>
+        <span>lettera 0.17</span>
+      </footer>
+    </div>
+
+    <!-- ── mobile bottom navigation (≤ 720px) ────────────────────────────── -->
+    <nav class="ss-bottom-nav" aria-label="Mobile">
+      <ul class="list">
+        <li class="row">
+          <a class="tab active" href="#inbox" aria-current="page" aria-label="Inbox, 3">
+            <span class="glyph">
+              <span data-ss-icon="home" data-size="md"></span>
+              <span class="badge" aria-hidden="true">3</span>
+            </span>
+            <span class="label">Inbox</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="tab" href="#starred">
+            <span class="glyph"><span class="mail-glyph" aria-hidden="true">★</span></span>
+            <span class="label">Starred</span>
+          </a>
+        </li>
+        <li class="row">
+          <button class="tab" type="button" data-ss-modal="#compose">
+            <span class="glyph"><span data-ss-icon="note" data-size="md"></span></span>
+            <span class="label">Compose</span>
+          </button>
+        </li>
+        <li class="row">
+          <button class="tab" type="button" id="search-open-mobile">
+            <span class="glyph"><span class="mail-glyph" aria-hidden="true">⌕</span></span>
+            <span class="label">Search</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- ── compose modal ──────────────────────────────────────────────────── -->
+    <dialog id="compose" class="ss-modal" aria-labelledby="compose-title">
+      <div class="panel">
+        <header class="head">
+          <h2 class="title" id="compose-title">New message</h2>
+          <button type="button" class="close" data-ss-dismiss aria-label="Close">×</button>
+        </header>
+        <div class="body">
+          <form class="mail-compose-form" id="compose-form">
+            <div class="ss-field">
+              <label class="lbl" for="compose-to">To</label>
+              <div class="control">
+                <input
+                  class="ss-input"
+                  id="compose-to"
+                  type="email"
+                  placeholder="name@example.com"
+                  autocomplete="off"
+                />
+                <button type="button" class="clear" aria-label="Clear" hidden>×</button>
+              </div>
+            </div>
+            <div class="ss-field">
+              <label class="lbl" for="compose-subject">Subject</label>
+              <div class="control">
+                <input class="ss-input" id="compose-subject" type="text" placeholder="Subject" />
+              </div>
+            </div>
+            <div class="ss-textarea">
+              <label class="lbl" for="compose-body">Message</label>
+              <div class="control">
+                <textarea
+                  class="field autosize"
+                  id="compose-body"
+                  placeholder="Write something…"
+                  rows="6"
+                  style="max-height: calc(14 * 1lh + 2 * var(--ss-input-py))"
+                ></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        <footer class="foot">
+          <button class="ss-btn ghost" type="button" data-ss-dismiss>discard</button>
+          <button class="ss-btn primary" type="button" id="compose-send">
+            <span class="label">send</span>
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
+    <!-- ── search palette (static) ────────────────────────────────────────── -->
+    <dialog id="search" class="ss-search-palette" aria-label="Search mail">
+      <div class="panel">
+        <input
+          value=""
+          class="input"
+          type="text"
+          placeholder="Search mail, people, labels…"
+          spellcheck="false"
+          autocomplete="off"
+          role="combobox"
+          aria-label="Search mail"
+          aria-autocomplete="list"
+          aria-expanded="true"
+          aria-controls="search-listbox"
+          aria-activedescendant="search-opt-0"
+        />
+        <div class="results">
+          <ul id="search-listbox" class="listbox" role="listbox" aria-label="Search mail">
+            <li class="group" role="group" aria-label="Messages">
+              <span class="group-label" aria-hidden="true">Messages</span>
+              <ul role="presentation">
+                <li role="presentation">
+                  <button
+                    id="search-opt-0"
+                    type="button"
+                    role="option"
+                    aria-selected="true"
+                    class="row active"
+                    tabindex="-1"
+                  >
+                    <span class="label">Re: Rooftop garden proposal — irrigation plan</span>
+                    <span class="hint">Theo Marchetti · today 09:12</span>
+                  </button>
+                </li>
+                <li role="presentation">
+                  <button
+                    id="search-opt-1"
+                    type="button"
+                    role="option"
+                    aria-selected="false"
+                    class="row"
+                    tabindex="-1"
+                  >
+                    <span class="label">Q3 forecast: revised numbers attached</span>
+                    <span class="hint">Ines Farrow · today 09:41</span>
+                  </button>
+                </li>
+              </ul>
+            </li>
+            <li class="group" role="group" aria-label="Actions">
+              <span class="group-label" aria-hidden="true">Actions</span>
+              <ul role="presentation">
+                <li role="presentation">
+                  <button
+                    id="search-opt-2"
+                    type="button"
+                    role="option"
+                    aria-selected="false"
+                    class="row"
+                    tabindex="-1"
+                    data-action="compose"
+                  >
+                    <span class="label">New message</span>
+                    <span class="hint">compose · c</span>
+                  </button>
+                </li>
+                <li role="presentation">
+                  <button
+                    id="search-opt-3"
+                    type="button"
+                    role="option"
+                    aria-selected="false"
+                    class="row"
+                    tabindex="-1"
+                    data-action="starred"
+                  >
+                    <span class="label">Go to starred</span>
+                    <span class="hint">folder · g s</span>
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <footer class="foot">↑↓ navigate · ↵ open · esc close</footer>
+      </div>
+    </dialog>
+
+    <div
+      class="ss-toaster"
+      role="region"
+      aria-label="Notifications"
+      data-position="bottom-right"
+    ></div>
+  </body>
+</html>

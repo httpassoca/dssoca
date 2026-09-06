@@ -27,16 +27,18 @@ describe('search index', () => {
     expect(groups).toEqual([GROUP_PAGES, GROUP_COMPONENTS, GROUP_ACTIONS])
   })
 
-  it('includes the landing page and every guide nav entry as an href item', () => {
+  it('includes the landing page and every guide nav entry (external ones as `url` items)', () => {
     const pages = pageItems()
     expect(pages[0]).toMatchObject({ label: 'Home', href: '/' })
     const guide = NAV.find((g) => g.section === 'guide')!.items
     for (const it of guide) {
-      expect(
-        pages.find((p) => p.href === it.href),
-        it.href,
-      ).toMatchObject({ label: it.label })
+      const item = pages.find((p) => (it.external ? p.url : p.href) === it.href)
+      expect(item, it.href).toMatchObject({ label: it.label })
+      expect(Boolean(item!.url) !== Boolean(item!.href), `${it.href} is url xor href`).toBe(true)
     }
+    const insp = pages.find((p) => p.label === 'Inspirations')!
+    expect(insp.url).toMatch(/^https:\/\/httpassoca\.github\.io\/dssoca\/$/)
+    expect(insp.href).toBeUndefined()
   })
 
   it('every guide nav entry carries search keywords', () => {

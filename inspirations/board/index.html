@@ -1,0 +1,1465 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trellis — Sprint 14 · Atlas Mobile</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body>
+    <a class="trl-skip" href="#main">Skip to board</a>
+
+    <header class="trl-bar">
+      <div class="trl-brand">
+        <span class="trl-logo">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="2" y="2" width="6" height="20" fill="var(--ss-primary)" />
+            <rect x="10" y="2" width="6" height="13" fill="var(--ss-primary)" opacity="0.7" />
+            <rect x="18" y="2" width="4" height="7" fill="var(--ss-primary)" opacity="0.4" />
+          </svg>
+          <span>Trellis</span>
+        </span>
+        <nav class="trl-crumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="#">Northwind Labs</a></li>
+            <li><a href="#">Atlas Mobile</a></li>
+            <li><a href="#" aria-current="page">Sprint 14</a></li>
+          </ol>
+        </nav>
+      </div>
+
+      <div class="trl-tools">
+        <div class="ss-segmented" role="radiogroup" aria-label="View" id="view">
+          <button
+            type="button"
+            class="segment selected"
+            role="radio"
+            aria-checked="true"
+            tabindex="0"
+            data-value="board"
+          >
+            <span class="label">Board</span>
+          </button>
+          <button
+            type="button"
+            class="segment"
+            role="radio"
+            aria-checked="false"
+            tabindex="-1"
+            data-value="list"
+          >
+            <span class="label">List</span>
+          </button>
+          <button
+            type="button"
+            class="segment"
+            role="radio"
+            aria-checked="false"
+            tabindex="-1"
+            data-value="timeline"
+          >
+            <span class="label">Timeline</span>
+          </button>
+        </div>
+
+        <div class="ss-field">
+          <div class="control">
+            <span class="affix prefix" aria-hidden="true">⌕</span>
+            <input
+              class="ss-input"
+              id="filter"
+              type="text"
+              placeholder="Filter issues…"
+              aria-label="Filter issues by key, title or label"
+              autocomplete="off"
+            />
+            <button type="button" class="clear" aria-label="Clear" hidden>×</button>
+          </div>
+        </div>
+
+        <div class="ss-menu" data-align="end" data-side="bottom" id="assignee-menu">
+          <button
+            type="button"
+            class="trigger"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-controls="assignee-panel"
+          >
+            <span data-ss-icon="user" data-size="sm"></span>
+            <span class="trl-menu-value" id="assignee-value">Everyone</span>
+            <span data-ss-icon="chevron" data-size="sm"></span>
+          </button>
+          <div
+            id="assignee-panel"
+            class="panel"
+            role="menu"
+            aria-label="Filter by assignee"
+            aria-hidden="true"
+            tabindex="-1"
+          >
+            <button
+              type="button"
+              class="item selected"
+              data-mi="0"
+              data-value="all"
+              role="menuitemradio"
+              aria-checked="true"
+              tabindex="-1"
+            >
+              <span data-ss-icon="user"></span>
+              <span class="label">Everyone</span>
+              <span class="marker" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                  stroke-linejoin="miter"
+                  class="ss-icon"
+                  style="width: var(--ss-icon); height: var(--ss-icon)"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path d="M5 12l4 4L19 6" />
+                </svg>
+              </span>
+            </button>
+            <button
+              type="button"
+              class="item"
+              data-mi="1"
+              data-value="mara"
+              role="menuitemradio"
+              aria-checked="false"
+              tabindex="-1"
+            >
+              <span
+                class="lead swatch"
+                style="background: var(--ss-magenta)"
+                aria-hidden="true"
+              ></span>
+              <span class="label">Mara Oyelaran</span>
+              <span class="marker" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="item"
+              data-mi="2"
+              data-value="dev"
+              role="menuitemradio"
+              aria-checked="false"
+              tabindex="-1"
+            >
+              <span
+                class="lead swatch"
+                style="background: var(--ss-blue)"
+                aria-hidden="true"
+              ></span>
+              <span class="label">Dev Castellanos</span>
+              <span class="marker" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="item"
+              data-mi="3"
+              data-value="priya"
+              role="menuitemradio"
+              aria-checked="false"
+              tabindex="-1"
+            >
+              <span
+                class="lead swatch"
+                style="background: var(--ss-cyan)"
+                aria-hidden="true"
+              ></span>
+              <span class="label">Priya Raman</span>
+              <span class="marker" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="item"
+              data-mi="4"
+              data-value="tomasz"
+              role="menuitemradio"
+              aria-checked="false"
+              tabindex="-1"
+            >
+              <span
+                class="lead swatch"
+                style="background: var(--ss-yellow)"
+                aria-hidden="true"
+              ></span>
+              <span class="label">Tomasz Nowak</span>
+              <span class="marker" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="item"
+              data-mi="5"
+              data-value="lena"
+              role="menuitemradio"
+              aria-checked="false"
+              tabindex="-1"
+            >
+              <span
+                class="lead swatch"
+                style="background: var(--ss-green)"
+                aria-hidden="true"
+              ></span>
+              <span class="label">Lena Fischer</span>
+              <span class="marker" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="item"
+              data-mi="6"
+              data-value="kofi"
+              role="menuitemradio"
+              aria-checked="false"
+              tabindex="-1"
+            >
+              <span
+                class="lead swatch"
+                style="background: var(--ss-accent)"
+                aria-hidden="true"
+              ></span>
+              <span class="label">Kofi Mensah</span>
+              <span class="marker" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <span class="ss-switch has-label" id="show-done-switch">
+          <button
+            id="show-done"
+            type="button"
+            role="switch"
+            class="track on"
+            aria-checked="true"
+            aria-labelledby="show-done-label"
+          >
+            <span class="thumb" aria-hidden="true"></span>
+          </button>
+          <span id="show-done-label" class="label" role="presentation">Show done</span>
+        </span>
+
+        <button
+          class="ss-btn ghost icon-only"
+          type="button"
+          id="theme-toggle"
+          aria-label="Toggle colour theme"
+          aria-pressed="false"
+        >
+          <span class="affix" aria-hidden="true">
+            <span data-ss-icon="color-swatch" data-size="sm"></span>
+          </span>
+        </button>
+
+        <button
+          class="ss-btn primary"
+          type="button"
+          data-ss-modal="#new-issue"
+          data-status="backlog"
+        >
+          <span class="affix" aria-hidden="true">+</span>
+          <span class="label">New issue</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="trl-main">
+      <div class="ss-pageHead">
+        <div>
+          <h1>Sprint 14 <span class="accent">board</span></h1>
+          <div class="sub">
+            <time datetime="2026-09-07">Sep 7</time> – <time datetime="2026-09-20">Sep 20</time> ·
+            <span id="visible-count">17</span> issues · 3 done
+          </div>
+        </div>
+        <div class="trl-summary">
+          <div class="trl-team" role="group" aria-label="Sprint team">
+            <span
+              class="ss-avatar"
+              data-size-variant="sm"
+              role="img"
+              aria-label="Mara Oyelaran"
+              style="--ss-avatar-bg: var(--ss-magenta)"
+              ><span class="initials" aria-hidden="true">MO</span></span
+            >
+            <span
+              class="ss-avatar"
+              data-size-variant="sm"
+              role="img"
+              aria-label="Dev Castellanos"
+              style="--ss-avatar-bg: var(--ss-blue)"
+              ><span class="initials" aria-hidden="true">DC</span></span
+            >
+            <span
+              class="ss-avatar"
+              data-size-variant="sm"
+              role="img"
+              aria-label="Priya Raman"
+              style="--ss-avatar-bg: var(--ss-cyan)"
+              ><span class="initials" aria-hidden="true">PR</span></span
+            >
+            <span
+              class="ss-avatar"
+              data-size-variant="sm"
+              role="img"
+              aria-label="Tomasz Nowak"
+              style="--ss-avatar-bg: var(--ss-yellow)"
+              ><span class="initials" aria-hidden="true">TN</span></span
+            >
+            <span
+              class="ss-avatar"
+              data-size-variant="sm"
+              role="img"
+              aria-label="Lena Fischer"
+              style="--ss-avatar-bg: var(--ss-green)"
+              ><span class="initials" aria-hidden="true">LF</span></span
+            >
+            <span
+              class="ss-avatar"
+              data-size-variant="sm"
+              role="img"
+              aria-label="Kofi Mensah"
+              style="--ss-avatar-bg: var(--ss-accent)"
+              ><span class="initials" aria-hidden="true">KM</span></span
+            >
+          </div>
+          <span class="ss-badge positive"
+            ><span class="dot" aria-hidden="true"></span>on track</span
+          >
+          <span class="ss-badge neutral">day 0 / 14</span>
+        </div>
+      </div>
+
+      <div class="trl-board" id="board" data-view="board" role="region" aria-label="Issue columns">
+        <!-- ─── Backlog ─────────────────────────────────────────────── -->
+        <section class="trl-col" data-status="backlog" aria-labelledby="col-backlog">
+          <header class="trl-col-head">
+            <h2 class="trl-col-title" id="col-backlog">Backlog</h2>
+            <span class="ss-badge neutral label-less" role="img" aria-label="4 issues"
+              ><span class="count">4</span></span
+            >
+            <button
+              class="ss-btn ghost icon-only"
+              type="button"
+              aria-label="Add issue to Backlog"
+              data-ss-modal="#new-issue"
+              data-status="backlog"
+            >
+              <span class="affix" aria-hidden="true">+</span>
+            </button>
+          </header>
+          <ul class="trl-col-list">
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i151-key i151-title"
+                data-key="TRL-151"
+                data-status="backlog"
+                data-priority="low"
+                data-assignee="lena"
+                data-due="2026-10-03"
+                data-desc="Riders should be able to open a saved route with no connectivity. Cache the route manifest and the tiles along the polyline at save time, and show a stale banner when the cache is older than 7 days."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i151-key">TRL-151</div></div>
+                  <div class="actions"><span class="ss-badge neutral">low</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i151-title" role="heading" aria-level="3">
+                    Offline mode for saved routes
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge brand">feature</span>
+                    <span class="ss-badge neutral">mobile</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Lena Fischer"
+                    style="--ss-avatar-bg: var(--ss-green)"
+                    ><span class="initials" aria-hidden="true">LF</span></span
+                  >
+                  <time datetime="2026-10-03">Oct 3</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i149-key i149-title"
+                data-key="TRL-149"
+                data-status="backlog"
+                data-priority="medium"
+                data-assignee="dev"
+                data-due="2026-10-10"
+                data-desc="The v1 event schema still sends free-text screen names. Move every screen_view and tap event to the typed v2 envelope and drop the legacy fields once the dashboard is migrated."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i149-key">TRL-149</div></div>
+                  <div class="actions"><span class="ss-badge info">medium</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i149-title" role="heading" aria-level="3">
+                    Migrate analytics events to the v2 schema
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">infra</span>
+                    <span class="ss-badge neutral">analytics</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Dev Castellanos"
+                    style="--ss-avatar-bg: var(--ss-blue)"
+                    ><span class="initials" aria-hidden="true">DC</span></span
+                  >
+                  <time datetime="2026-10-10">Oct 10</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i147-key i147-title"
+                data-key="TRL-147"
+                data-status="backlog"
+                data-priority="low"
+                data-assignee="priya"
+                data-due="2026-09-30"
+                data-desc="Run the contrast checker over every dark-theme screen. Anything under 4.5:1 for body text or 3:1 for UI chrome gets a ticket; the map overlay labels are the known offenders."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i147-key">TRL-147</div></div>
+                  <div class="actions"><span class="ss-badge neutral">low</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i147-title" role="heading" aria-level="3">
+                    Dark mode contrast audit
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">design</span>
+                    <span class="ss-badge neutral">a11y</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Priya Raman"
+                    style="--ss-avatar-bg: var(--ss-cyan)"
+                    ><span class="initials" aria-hidden="true">PR</span></span
+                  >
+                  <time datetime="2026-09-30">Sep 30</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i145-key i145-title"
+                data-key="TRL-145"
+                data-status="backlog"
+                data-priority="medium"
+                data-assignee="tomasz"
+                data-due="2026-09-26"
+                data-desc="Timebox: two days. Compare WorkManager periodic sync against a push-triggered sync for trip uploads. Output is a one-page recommendation with battery numbers from the test fleet."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i145-key">TRL-145</div></div>
+                  <div class="actions"><span class="ss-badge info">medium</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i145-title" role="heading" aria-level="3">
+                    Spike: background sync strategy
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">research</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Tomasz Nowak"
+                    style="--ss-avatar-bg: var(--ss-yellow)"
+                    ><span class="initials" aria-hidden="true">TN</span></span
+                  >
+                  <time datetime="2026-09-26">Sep 26</time>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="ss-empty no-results compact" role="status" aria-atomic="true" hidden>
+            <p class="title">No matching issues</p>
+          </div>
+        </section>
+
+        <!-- ─── Todo ────────────────────────────────────────────────── -->
+        <section class="trl-col" data-status="todo" aria-labelledby="col-todo">
+          <header class="trl-col-head">
+            <h2 class="trl-col-title" id="col-todo">Todo</h2>
+            <span class="ss-badge neutral label-less" role="img" aria-label="4 issues"
+              ><span class="count">4</span></span
+            >
+            <button
+              class="ss-btn ghost icon-only"
+              type="button"
+              aria-label="Add issue to Todo"
+              data-ss-modal="#new-issue"
+              data-status="todo"
+            >
+              <span class="affix" aria-hidden="true">+</span>
+            </button>
+          </header>
+          <ul class="trl-col-list">
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i142-key i142-title"
+                data-key="TRL-142"
+                data-status="todo"
+                data-priority="critical"
+                data-assignee="mara"
+                data-due="2026-09-12"
+                data-desc="The app crashes within two seconds of a cold start when the device has been offline since boot and the trip cache is empty. Reproduced on iOS 19.1 (iPhone 12, 14). Crash rate is 1.8% of daily sessions — the top crash in the last release."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i142-key">TRL-142</div></div>
+                  <div class="actions">
+                    <span class="ss-badge critical"
+                      ><span class="dot" aria-hidden="true"></span>critical</span
+                    >
+                  </div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i142-title" role="heading" aria-level="3">
+                    Crash on cold start when offline
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge caution">bug</span>
+                    <span class="ss-badge neutral">ios</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Mara Oyelaran"
+                    style="--ss-avatar-bg: var(--ss-magenta)"
+                    ><span class="initials" aria-hidden="true">MO</span></span
+                  >
+                  <time datetime="2026-09-12">Sep 12</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i140-key i140-title"
+                data-key="TRL-140"
+                data-status="todo"
+                data-priority="high"
+                data-assignee="dev"
+                data-due="2026-09-15"
+                data-desc="Sharing a trip as GPX from the Android share sheet writes a zero-byte file when the trip has more than 5,000 points. The stream is closed before the writer flushes."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i140-key">TRL-140</div></div>
+                  <div class="actions"><span class="ss-badge caution">high</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i140-title" role="heading" aria-level="3">
+                    Share sheet exports an empty GPX file
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge caution">bug</span>
+                    <span class="ss-badge neutral">android</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Dev Castellanos"
+                    style="--ss-avatar-bg: var(--ss-blue)"
+                    ><span class="initials" aria-hidden="true">DC</span></span
+                  >
+                  <time datetime="2026-09-15">Sep 15</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i138-key i138-title"
+                data-key="TRL-138"
+                data-status="todo"
+                data-priority="medium"
+                data-assignee="priya"
+                data-due="2026-09-18"
+                data-desc="The Skip control on onboarding step 2 is a styled div, so keyboard and switch-access users cannot reach it. Replace it with a real button and keep it in the natural tab order."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i138-key">TRL-138</div></div>
+                  <div class="actions"><span class="ss-badge info">medium</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i138-title" role="heading" aria-level="3">
+                    Onboarding: skip button is not focusable
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">a11y</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Priya Raman"
+                    style="--ss-avatar-bg: var(--ss-cyan)"
+                    ><span class="initials" aria-hidden="true">PR</span></span
+                  >
+                  <time datetime="2026-09-18">Sep 18</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i136-key i136-title"
+                data-key="TRL-136"
+                data-status="todo"
+                data-priority="medium"
+                data-assignee="kofi"
+                data-due="2026-09-19"
+                data-desc="Add a per-device token bucket (30 req/min) in front of /v2/search. Return 429 with Retry-After and make sure the client backs off instead of hammering the endpoint from the type-ahead."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i136-key">TRL-136</div></div>
+                  <div class="actions"><span class="ss-badge info">medium</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i136-title" role="heading" aria-level="3">
+                    Rate-limit the search endpoint
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">backend</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Kofi Mensah"
+                    style="--ss-avatar-bg: var(--ss-accent)"
+                    ><span class="initials" aria-hidden="true">KM</span></span
+                  >
+                  <time datetime="2026-09-19">Sep 19</time>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="ss-empty no-results compact" role="status" aria-atomic="true" hidden>
+            <p class="title">No matching issues</p>
+          </div>
+        </section>
+
+        <!-- ─── In progress ─────────────────────────────────────────── -->
+        <section class="trl-col" data-status="progress" aria-labelledby="col-progress">
+          <header class="trl-col-head">
+            <h2 class="trl-col-title" id="col-progress">In progress</h2>
+            <span class="ss-badge neutral label-less" role="img" aria-label="3 issues"
+              ><span class="count">3</span></span
+            >
+            <button
+              class="ss-btn ghost icon-only"
+              type="button"
+              aria-label="Add issue to In progress"
+              data-ss-modal="#new-issue"
+              data-status="progress"
+            >
+              <span class="affix" aria-hidden="true">+</span>
+            </button>
+          </header>
+          <ul class="trl-col-list">
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i133-key i133-title"
+                data-key="TRL-133"
+                data-status="progress"
+                data-priority="high"
+                data-assignee="lena"
+                data-due="2026-09-16"
+                data-desc="Ship the new route detail screen from the June research round: elevation profile above the fold, surface breakdown as a segmented bar, and the start button pinned to the bottom. Five subtasks; the elevation chart and the surface bar are done."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i133-key">TRL-133</div></div>
+                  <div class="actions"><span class="ss-badge caution">high</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i133-title" role="heading" aria-level="3">
+                    Route detail redesign
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">design</span>
+                    <span class="ss-badge neutral">mobile</span>
+                  </div>
+                  <div
+                    class="trl-progress"
+                    role="progressbar"
+                    aria-label="Subtasks"
+                    aria-valuemin="0"
+                    aria-valuemax="5"
+                    aria-valuenow="3"
+                    aria-valuetext="3 of 5 subtasks done"
+                  >
+                    <span class="trl-progress-fill" style="width: 60%"></span>
+                  </div>
+                  <span class="trl-progress-text" aria-hidden="true">3 / 5 subtasks</span>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Lena Fischer"
+                    style="--ss-avatar-bg: var(--ss-green)"
+                    ><span class="initials" aria-hidden="true">LF</span></span
+                  >
+                  <time datetime="2026-09-16">Sep 16</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i131-key i131-title"
+                data-key="TRL-131"
+                data-status="progress"
+                data-priority="medium"
+                data-assignee="tomasz"
+                data-due="2026-09-17"
+                data-desc="Ask for push permission after the first completed trip instead of on first launch, with a pre-prompt explaining what we send. Blocked: the pre-prompt copy needs the search rate-limit (TRL-136) so the preview does not trip the quota."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i131-key">TRL-131</div></div>
+                  <div class="actions"><span class="ss-badge info">medium</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i131-title" role="heading" aria-level="3">
+                    Push notification opt-in flow
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge critical"
+                      ><span class="dot" aria-hidden="true"></span>blocked by TRL-136</span
+                    >
+                    <span class="ss-badge brand">feature</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Tomasz Nowak"
+                    style="--ss-avatar-bg: var(--ss-yellow)"
+                    ><span class="initials" aria-hidden="true">TN</span></span
+                  >
+                  <time datetime="2026-09-17">Sep 17</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i129-key i129-title"
+                data-key="TRL-129"
+                data-status="progress"
+                data-priority="high"
+                data-assignee="dev"
+                data-due="2026-09-20"
+                data-desc="4.x drops the deprecated tile provider we rely on for offline packs. Upgrade both platforms, move to the vector tile API and re-run the offline pack size benchmark."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i129-key">TRL-129</div></div>
+                  <div class="actions"><span class="ss-badge caution">high</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i129-title" role="heading" aria-level="3">
+                    Upgrade the map SDK to 4.x
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">infra</span>
+                    <span class="ss-badge neutral">mobile</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Dev Castellanos"
+                    style="--ss-avatar-bg: var(--ss-blue)"
+                    ><span class="initials" aria-hidden="true">DC</span></span
+                  >
+                  <time datetime="2026-09-20">Sep 20</time>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="ss-empty no-results compact" role="status" aria-atomic="true" hidden>
+            <p class="title">No matching issues</p>
+          </div>
+        </section>
+
+        <!-- ─── Review ──────────────────────────────────────────────── -->
+        <section class="trl-col" data-status="review" aria-labelledby="col-review">
+          <header class="trl-col-head">
+            <h2 class="trl-col-title" id="col-review">Review</h2>
+            <span class="ss-badge neutral label-less" role="img" aria-label="3 issues"
+              ><span class="count">3</span></span
+            >
+            <button
+              class="ss-btn ghost icon-only"
+              type="button"
+              aria-label="Add issue to Review"
+              data-ss-modal="#new-issue"
+              data-status="review"
+            >
+              <span class="affix" aria-hidden="true">+</span>
+            </button>
+          </header>
+          <ul class="trl-col-list">
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i127-key i127-title"
+                data-key="TRL-127"
+                data-status="review"
+                data-priority="medium"
+                data-assignee="mara"
+                data-due="2026-09-11"
+                data-desc="The trip list re-measures every row on scroll because the thumbnail loads late. Reserve the thumbnail box up front and memoise the row height. PR is up, waiting on a second review."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i127-key">TRL-127</div></div>
+                  <div class="actions"><span class="ss-badge info">medium</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i127-title" role="heading" aria-level="3">
+                    Fix jittery scroll on the trip list
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge caution">bug</span>
+                    <span class="ss-badge neutral">performance</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Mara Oyelaran"
+                    style="--ss-avatar-bg: var(--ss-magenta)"
+                    ><span class="initials" aria-hidden="true">MO</span></span
+                  >
+                  <time datetime="2026-09-11">Sep 11</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i125-key i125-title"
+                data-key="TRL-125"
+                data-status="review"
+                data-priority="low"
+                data-assignee="priya"
+                data-due="2026-09-13"
+                data-desc="Dates on the trip summary are hard-coded to en-US. Format them with the device locale for de, fr and pt and add the three locales to the screenshot tests."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i125-key">TRL-125</div></div>
+                  <div class="actions"><span class="ss-badge neutral">low</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i125-title" role="heading" aria-level="3">
+                    Localise date formats (de, fr, pt)
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">i18n</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Priya Raman"
+                    style="--ss-avatar-bg: var(--ss-cyan)"
+                    ><span class="initials" aria-hidden="true">PR</span></span
+                  >
+                  <time datetime="2026-09-13">Sep 13</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i122-key i122-title"
+                data-key="TRL-122"
+                data-status="review"
+                data-priority="critical"
+                data-assignee="kofi"
+                data-due="2026-09-10"
+                data-desc="Refresh tokens are currently reusable until expiry. Rotate on every refresh, revoke the whole family on reuse, and add the audit log entry. Security review sign-off is the last step."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i122-key">TRL-122</div></div>
+                  <div class="actions">
+                    <span class="ss-badge critical"
+                      ><span class="dot" aria-hidden="true"></span>critical</span
+                    >
+                  </div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i122-title" role="heading" aria-level="3">
+                    Session refresh token rotation
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">security</span>
+                    <span class="ss-badge neutral">backend</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Kofi Mensah"
+                    style="--ss-avatar-bg: var(--ss-accent)"
+                    ><span class="initials" aria-hidden="true">KM</span></span
+                  >
+                  <time datetime="2026-09-10">Sep 10</time>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="ss-empty no-results compact" role="status" aria-atomic="true" hidden>
+            <p class="title">No matching issues</p>
+          </div>
+        </section>
+
+        <!-- ─── Done ────────────────────────────────────────────────── -->
+        <section
+          class="trl-col"
+          data-status="done"
+          aria-labelledby="col-done"
+          id="col-done-section"
+        >
+          <header class="trl-col-head">
+            <h2 class="trl-col-title" id="col-done">Done</h2>
+            <span class="ss-badge neutral label-less" role="img" aria-label="3 issues"
+              ><span class="count">3</span></span
+            >
+            <button
+              class="ss-btn ghost icon-only"
+              type="button"
+              aria-label="Add issue to Done"
+              data-ss-modal="#new-issue"
+              data-status="done"
+            >
+              <span class="affix" aria-hidden="true">+</span>
+            </button>
+          </header>
+          <ul class="trl-col-list">
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i120-key i120-title"
+                data-key="TRL-120"
+                data-status="done"
+                data-priority="low"
+                data-assignee="lena"
+                data-due="2026-09-08"
+                data-desc="First-run users saw a blank list. Added an illustrated empty state with a Record your first trip call to action. Shipped in 3.8.1."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i120-key">TRL-120</div></div>
+                  <div class="actions"><span class="ss-badge neutral">low</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i120-title" role="heading" aria-level="3">
+                    Empty state for the trip list
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">design</span>
+                    <span class="ss-badge positive">shipped</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Lena Fischer"
+                    style="--ss-avatar-bg: var(--ss-green)"
+                    ><span class="initials" aria-hidden="true">LF</span></span
+                  >
+                  <time datetime="2026-09-08">Sep 8</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i118-key i118-title"
+                data-key="TRL-118"
+                data-status="done"
+                data-priority="high"
+                data-assignee="kofi"
+                data-due="2026-09-05"
+                data-desc="Crash reports included the account e-mail in the breadcrumb trail. Scrub e-mail, device name and GPS fixes before upload; verified against the last 200 reports."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i118-key">TRL-118</div></div>
+                  <div class="actions"><span class="ss-badge caution">high</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i118-title" role="heading" aria-level="3">
+                    Crash reporter PII scrub
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">security</span>
+                    <span class="ss-badge positive">shipped</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Kofi Mensah"
+                    style="--ss-avatar-bg: var(--ss-accent)"
+                    ><span class="initials" aria-hidden="true">KM</span></span
+                  >
+                  <time datetime="2026-09-05">Sep 5</time>
+                </div>
+              </div>
+            </li>
+            <li class="trl-issue">
+              <div
+                class="ss-card interactive"
+                role="button"
+                tabindex="0"
+                data-ss-modal="#issue"
+                aria-labelledby="i115-key i115-title"
+                data-key="TRL-115"
+                data-status="done"
+                data-priority="low"
+                data-assignee="tomasz"
+                data-due="2026-09-04"
+                data-desc="Actions from the sprint 13 retro: split the release checklist into platform lanes, add a flaky-test owner rotation, and move stand-up to 09:30."
+              >
+                <div class="head">
+                  <div class="heading"><div class="title" id="i115-key">TRL-115</div></div>
+                  <div class="actions"><span class="ss-badge neutral">low</span></div>
+                </div>
+                <div class="body">
+                  <p class="trl-issue-title" id="i115-title" role="heading" aria-level="3">
+                    Sprint 13 retro actions
+                  </p>
+                  <div class="trl-labels">
+                    <span class="ss-badge neutral">chore</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Tomasz Nowak"
+                    style="--ss-avatar-bg: var(--ss-yellow)"
+                    ><span class="initials" aria-hidden="true">TN</span></span
+                  >
+                  <time datetime="2026-09-04">Sep 4</time>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="ss-empty no-results compact" role="status" aria-atomic="true" hidden>
+            <p class="title">No matching issues</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="trl-footer">
+      <span>Trellis · Northwind Labs · Atlas Mobile</span>
+      <span>
+        Cards open with <kbd>Enter</kbd> · synced
+        <time datetime="2026-09-06T09:41:00">09:41</time>
+      </span>
+    </footer>
+
+    <!-- ─── Issue detail modal ─────────────────────────────────────── -->
+    <dialog id="issue" class="ss-modal" aria-labelledby="issue-title" style="--ss-modal-w: 52rem">
+      <div class="panel">
+        <header class="head">
+          <h2 class="title" id="issue-title">
+            <span class="trl-key" id="issue-key">TRL-142</span>
+            <span id="issue-name">Crash on cold start when offline</span>
+          </h2>
+          <button type="button" class="close" data-ss-dismiss aria-label="Close">×</button>
+        </header>
+        <div class="body">
+          <div class="trl-detail">
+            <div class="trl-detail-main">
+              <h3 class="trl-h">Description</h3>
+              <p class="trl-desc" id="issue-desc">
+                The app crashes within two seconds of a cold start when the device has been offline
+                since boot and the trip cache is empty.
+              </p>
+
+              <h3 class="trl-h">Comments <span id="comment-count">(3)</span></h3>
+              <ul class="trl-comments" id="issue-comments">
+                <li class="trl-comment">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Dev Castellanos"
+                    style="--ss-avatar-bg: var(--ss-blue)"
+                    ><span class="initials" aria-hidden="true">DC</span></span
+                  >
+                  <div class="trl-comment-text">
+                    <div class="trl-comment-meta">
+                      <strong>Dev Castellanos</strong>
+                      <time datetime="2026-09-04T16:20:00">2 days ago</time>
+                    </div>
+                    <p>
+                      Reproduced on iPhone 12 and 14, iOS 19.1 — only when the trip cache is empty
+                      and the device has been offline since boot.
+                    </p>
+                  </div>
+                </li>
+                <li class="trl-comment">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Mara Oyelaran"
+                    style="--ss-avatar-bg: var(--ss-magenta)"
+                    ><span class="initials" aria-hidden="true">MO</span></span
+                  >
+                  <div class="trl-comment-text">
+                    <div class="trl-comment-meta">
+                      <strong>Mara Oyelaran</strong>
+                      <time datetime="2026-09-05T11:02:00">yesterday</time>
+                    </div>
+                    <p>
+                      Stack trace points at <code>RouteStore.hydrate()</code> dereferencing a nil
+                      manifest. Adding a guard plus a regression test.
+                    </p>
+                  </div>
+                </li>
+                <li class="trl-comment">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Kofi Mensah"
+                    style="--ss-avatar-bg: var(--ss-accent)"
+                    ><span class="initials" aria-hidden="true">KM</span></span
+                  >
+                  <div class="trl-comment-text">
+                    <div class="trl-comment-meta">
+                      <strong>Kofi Mensah</strong>
+                      <time datetime="2026-09-06T06:40:00">3 hours ago</time>
+                    </div>
+                    <p>Backend side is fine — the manifest endpoint 304s correctly. Client-only.</p>
+                  </div>
+                </li>
+              </ul>
+
+              <form class="trl-comment-form" id="comment-form">
+                <div class="ss-textarea">
+                  <label class="lbl" for="comment">Add a comment</label>
+                  <div class="control">
+                    <textarea
+                      class="field autosize"
+                      id="comment"
+                      rows="2"
+                      placeholder="Write a comment…"
+                      style="max-height: calc(6 * 1lh + 2 * var(--ss-input-py))"
+                    ></textarea>
+                  </div>
+                </div>
+                <button class="ss-btn secondary" type="submit">
+                  <span class="label">Comment</span>
+                </button>
+              </form>
+            </div>
+
+            <div class="trl-detail-side">
+              <div class="ss-select">
+                <label class="lbl" for="issue-status">Status</label>
+                <div class="control">
+                  <select class="select" id="issue-status">
+                    <option value="backlog">Backlog</option>
+                    <option value="todo" selected>Todo</option>
+                    <option value="progress">In progress</option>
+                    <option value="review">Review</option>
+                    <option value="done">Done</option>
+                  </select>
+                  <span class="chevron" aria-hidden="true"></span>
+                </div>
+              </div>
+
+              <div class="ss-select">
+                <label class="lbl" for="issue-priority">Priority</label>
+                <div class="control">
+                  <select class="select" id="issue-priority">
+                    <option value="critical" selected>Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                  <span class="chevron" aria-hidden="true"></span>
+                </div>
+              </div>
+
+              <div class="ss-datefield">
+                <label class="lbl" for="issue-due">Due date</label>
+                <div class="control">
+                  <input
+                    class="field"
+                    type="date"
+                    id="issue-due"
+                    value="2026-09-12"
+                    min="2026-09-07"
+                    max="2026-12-31"
+                    aria-describedby="issue-due-hint"
+                  />
+                </div>
+                <span class="msg hint" id="issue-due-hint">Sprint ends Sep 20</span>
+              </div>
+
+              <div class="trl-prop">
+                <span class="trl-prop-label" id="issue-assignee-label">Assignee</span>
+                <div class="trl-assignee">
+                  <span
+                    class="ss-avatar"
+                    data-size-variant="sm"
+                    role="img"
+                    aria-label="Mara Oyelaran"
+                    id="issue-avatar"
+                    style="--ss-avatar-bg: var(--ss-magenta)"
+                    ><span class="initials" aria-hidden="true">MO</span></span
+                  >
+                  <span id="issue-assignee">Mara Oyelaran</span>
+                </div>
+              </div>
+
+              <div class="trl-prop">
+                <span class="trl-prop-label">Labels</span>
+                <div class="trl-labels" id="issue-labels">
+                  <span class="ss-badge caution">bug</span>
+                  <span class="ss-badge neutral">ios</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">
+          <button class="ss-btn ghost" type="button" data-ss-dismiss>
+            <span class="label">Cancel</span>
+          </button>
+          <button class="ss-btn primary" type="button" id="issue-save" data-ss-dismiss>
+            <span class="label">Save changes</span>
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
+    <!-- ─── New issue modal ────────────────────────────────────────── -->
+    <dialog id="new-issue" class="ss-modal" aria-labelledby="new-issue-title">
+      <div class="panel">
+        <header class="head">
+          <h2 class="title" id="new-issue-title">New issue</h2>
+          <button type="button" class="close" data-ss-dismiss aria-label="Close">×</button>
+        </header>
+        <div class="body">
+          <form class="trl-form" id="new-issue-form">
+            <div class="ss-field">
+              <label class="lbl" for="ni-title"
+                >Title <span class="req" aria-hidden="true">*</span></label
+              >
+              <div class="control">
+                <input
+                  class="ss-input"
+                  id="ni-title"
+                  type="text"
+                  required
+                  maxlength="120"
+                  placeholder="Short, imperative summary"
+                  aria-describedby="ni-title-hint"
+                />
+              </div>
+              <span class="msg hint" id="ni-title-hint">Gets the next key in the TRL series</span>
+            </div>
+
+            <div class="trl-form-row">
+              <div class="ss-select">
+                <label class="lbl" for="ni-status">Column</label>
+                <div class="control">
+                  <select class="select" id="ni-status">
+                    <option value="backlog" selected>Backlog</option>
+                    <option value="todo">Todo</option>
+                    <option value="progress">In progress</option>
+                    <option value="review">Review</option>
+                    <option value="done">Done</option>
+                  </select>
+                  <span class="chevron" aria-hidden="true"></span>
+                </div>
+              </div>
+              <div class="ss-select">
+                <label class="lbl" for="ni-priority">Priority</label>
+                <div class="control">
+                  <select class="select" id="ni-priority">
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                  <span class="chevron" aria-hidden="true"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ss-datefield">
+              <label class="lbl" for="ni-due">Due date</label>
+              <div class="control">
+                <input class="field" type="date" id="ni-due" value="2026-09-20" min="2026-09-07" />
+              </div>
+            </div>
+
+            <div class="ss-textarea">
+              <label class="lbl" for="ni-desc">Description</label>
+              <div class="control">
+                <textarea
+                  class="field autosize"
+                  id="ni-desc"
+                  rows="3"
+                  placeholder="What needs to happen, and how we know it is done"
+                  style="max-height: calc(8 * 1lh + 2 * var(--ss-input-py))"
+                ></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        <footer class="foot">
+          <button class="ss-btn ghost" type="button" data-ss-dismiss>
+            <span class="label">Cancel</span>
+          </button>
+          <button class="ss-btn primary" type="submit" form="new-issue-form">
+            <span class="label">Create issue</span>
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
+    <!-- Card skeleton cloned by site.js when an issue is created -->
+    <template id="issue-template">
+      <li class="trl-issue">
+        <div class="ss-card interactive" role="button" tabindex="0" data-ss-modal="#issue">
+          <div class="head">
+            <div class="heading"><div class="title"></div></div>
+            <div class="actions"><span class="ss-badge"></span></div>
+          </div>
+          <div class="body">
+            <p class="trl-issue-title" role="heading" aria-level="3"></p>
+            <div class="trl-labels"><span class="ss-badge neutral">new</span></div>
+          </div>
+          <div class="foot">
+            <span class="ss-avatar" data-size-variant="sm" role="img"
+              ><span class="initials" aria-hidden="true"></span
+            ></span>
+            <time></time>
+          </div>
+        </div>
+      </li>
+    </template>
+  </body>
+</html>

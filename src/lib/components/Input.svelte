@@ -213,6 +213,11 @@
       &:hover {
         color: var(--ss-fg);
       }
+      // vanilla.js hides the button with the `hidden` attribute (Svelte drops it entirely);
+      // an author `display` beats the UA `[hidden]` rule, so restate it (DS-0150).
+      &[hidden] {
+        display: none;
+      }
       &:focus-visible {
         outline: none;
         color: var(--ss-fg);

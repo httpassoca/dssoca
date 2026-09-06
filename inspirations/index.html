@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>dssoca · Inspirations</title>
+    <meta
+      name="description"
+      content="Example websites built with the dssoca design system on plain HTML: dashboards, feeds, chats, storefronts and more."
+    />
+    <link rel="stylesheet" href="./vendor/theme.css" />
+    <link rel="stylesheet" href="./vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="./assets/axes.js"></script>
+    <script type="module" src="./vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body class="insp-page">
+    <header class="insp-header">
+      <a class="insp-brand" href="./">
+        <svg class="mark" viewBox="0 0 103 89" fill="currentColor" aria-hidden="true">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M51.5 0L0 89H103L51.5 0ZM23.8643 80.151H87.6468L71.6884 52.5724L23.8643 80.151ZM65.5911 42.0354L60.7383 33.649L46.1956 42.0354H65.5911ZM56.14 25.7024L51.5 17.6837L42.2125 33.7339L56.14 25.7024ZM32.0977 51.2138L20.2949 71.6111L55.6656 51.2138H32.0977Z"
+          />
+        </svg>
+        dssoca <span class="of">/ inspirations</span>
+      </a>
+      <nav class="insp-nav" aria-label="Site">
+        <a href="https://dssoca.vercel.app/vanilla/">plain HTML guide</a>
+        <a href="https://www.npmjs.com/package/dssoca">npm</a>
+        <a
+          href="https://github.com/httpassoca/dssoca"
+          class="ss-link inline external"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span class="label gh-label">GitHub</span>
+          <span data-ss-icon="github" data-size="sm" data-title="GitHub repository"></span>
+        </a>
+      </nav>
+    </header>
+
+    <main class="insp-main" id="main">
+      <section class="insp-hero" aria-labelledby="insp-title">
+        <div>
+          <h1 class="ss-heading accent" id="insp-title"><span class="txt">Inspirations</span></h1>
+          <p class="lede">
+            Twelve kinds of website, each written by hand in plain HTML with
+            <code>dssoca/vanilla.css</code> and <code>dssoca/vanilla.js</code> — no framework, no
+            build step. Open one, view its source, copy what you like. Every page follows the two
+            design axes: flip them below and the pages you open follow.
+          </p>
+        </div>
+        <pre
+          class="insp-snippet"
+        ><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/theme.css" /&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla.css" /&gt;
+&lt;script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla/index.js"&gt;&lt;/script&gt;</code></pre>
+      </section>
+
+      <div class="insp-axes">
+        <div class="axis">
+          <span class="axis-label" id="insp-theme-label">theme</span>
+          <div
+            class="ss-segmented"
+            role="radiogroup"
+            aria-labelledby="insp-theme-label"
+            data-axis="theme"
+          >
+            <button
+              type="button"
+              class="segment selected"
+              role="radio"
+              aria-checked="true"
+              tabindex="0"
+              data-value="dark"
+            >
+              <span class="label">dark</span>
+            </button>
+            <button
+              type="button"
+              class="segment"
+              role="radio"
+              aria-checked="false"
+              tabindex="-1"
+              data-value="light"
+            >
+              <span class="label">light</span>
+            </button>
+          </div>
+        </div>
+        <div class="axis">
+          <span class="axis-label" id="insp-size-label">size</span>
+          <div
+            class="ss-segmented"
+            role="radiogroup"
+            aria-labelledby="insp-size-label"
+            data-axis="size"
+          >
+            <button
+              type="button"
+              class="segment"
+              role="radio"
+              aria-checked="false"
+              tabindex="-1"
+              data-value="sm"
+            >
+              <span class="label">sm</span>
+            </button>
+            <button
+              type="button"
+              class="segment selected"
+              role="radio"
+              aria-checked="true"
+              tabindex="0"
+              data-value="md"
+            >
+              <span class="label">md</span>
+            </button>
+            <button
+              type="button"
+              class="segment"
+              role="radio"
+              aria-checked="false"
+              tabindex="-1"
+              data-value="lg"
+            >
+              <span class="label">lg</span>
+            </button>
+          </div>
+        </div>
+        <span class="hint"
+          >data-theme · data-size-variant on &lt;html&gt; — remembered for every page you open from
+          here</span
+        >
+      </div>
+
+      <ul class="insp-grid" aria-label="Example sites">
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-dashboard">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/dashboard.png"
+                  alt="Screenshot of the ops console example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">dashboard</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-dashboard" role="heading" aria-level="2">
+                  Ops console
+                </div>
+                <div class="desc">dashboard</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                Metrics, charts, a deploy table and a live-looking log stream inside the app shell.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Topbar</span>
+                <span class="ss-badge neutral">Sidebar</span>
+                <span class="ss-badge neutral">MetricTile</span>
+                <span class="ss-badge neutral">Chart</span>
+                <span class="ss-badge neutral">Table</span>
+                <span class="ss-badge neutral">LogStream</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./dashboard/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="dashboard"
+              aria-labelledby="insp-dashboard"
+            >
+              <span class="sr-only">Ops console (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-social">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/social.png"
+                  alt="Screenshot of the social feed example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">social</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-social" role="heading" aria-level="2">Social feed</div>
+                <div class="desc">social network</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                A three-column timeline with a composer, post cards, menus and a mobile bottom nav.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Card</span>
+                <span class="ss-badge neutral">Avatar</span>
+                <span class="ss-badge neutral">Textarea</span>
+                <span class="ss-badge neutral">BottomNav</span>
+                <span class="ss-badge neutral">Menu</span>
+                <span class="ss-badge neutral">Tooltip</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./social/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="social"
+              aria-labelledby="insp-social"
+            >
+              <span class="sr-only">Social feed (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-dating">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/dating.png"
+                  alt="Screenshot of the swipe profiles example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">dating</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-dating" role="heading" aria-level="2">
+                  Swipe profiles
+                </div>
+                <div class="desc">dating app</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                A phone-shaped card stack with like / skip actions, keyboard hints and a match
+                dialog.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Card</span>
+                <span class="ss-badge neutral">Badge</span>
+                <span class="ss-badge neutral">Button</span>
+                <span class="ss-badge neutral">Modal</span>
+                <span class="ss-badge neutral">BottomNav</span>
+                <span class="ss-badge neutral">Kbd</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./dating/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="dating"
+              aria-labelledby="insp-dating"
+            >
+              <span class="sr-only">Swipe profiles (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-chat">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/chat.png"
+                  alt="Screenshot of the team chat example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">chat</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-chat" role="heading" aria-level="2">Team chat</div>
+                <div class="desc">messaging</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                Server rail, channel sidebar, grouped messages, reactions and an autosizing
+                composer.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Sidebar</span>
+                <span class="ss-badge neutral">Avatar</span>
+                <span class="ss-badge neutral">Input</span>
+                <span class="ss-badge neutral">Textarea</span>
+                <span class="ss-badge neutral">Menu</span>
+                <span class="ss-badge neutral">EmptyState</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./chat/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="chat"
+              aria-labelledby="insp-chat"
+            >
+              <span class="sr-only">Team chat (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-landing">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/landing.png"
+                  alt="Screenshot of the product landing example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">landing</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-landing" role="heading" aria-level="2">
+                  Product landing
+                </div>
+                <div class="desc">marketing site</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                Hero, feature grid, a product shot built from real components, pricing tiers and a
+                FAQ.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Heading</span>
+                <span class="ss-badge neutral">Container</span>
+                <span class="ss-badge neutral">Card</span>
+                <span class="ss-badge neutral">Accordion</span>
+                <span class="ss-badge neutral">SegmentedControl</span>
+                <span class="ss-badge neutral">Button</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./landing/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="landing"
+              aria-labelledby="insp-landing"
+            >
+              <span class="sr-only">Product landing (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-blog">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/blog.png"
+                  alt="Screenshot of the personal blog example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">blog</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-blog" role="heading" aria-level="2">Personal blog</div>
+                <div class="desc">publishing</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                A narrow reading column with post list, prose, code blocks, tags and pagination.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Heading</span>
+                <span class="ss-badge neutral">Link</span>
+                <span class="ss-badge neutral">Badge</span>
+                <span class="ss-badge neutral">Pagination</span>
+                <span class="ss-badge neutral">Kbd</span>
+                <span class="ss-badge neutral">Input</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./blog/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="blog"
+              aria-labelledby="insp-blog"
+            >
+              <span class="sr-only">Personal blog (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-tracker">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/tracker.png"
+                  alt="Screenshot of the media tracker example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">tracker</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-tracker" role="heading" aria-level="2">
+                  Media tracker
+                </div>
+                <div class="desc">list & save</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                Poster grid or table of everything you watched, with filters, scores and a rating
+                dialog.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Card</span>
+                <span class="ss-badge neutral">Table</span>
+                <span class="ss-badge neutral">SegmentedControl</span>
+                <span class="ss-badge neutral">Select</span>
+                <span class="ss-badge neutral">Pagination</span>
+                <span class="ss-badge neutral">Modal</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./tracker/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="tracker"
+              aria-labelledby="insp-tracker"
+            >
+              <span class="sr-only">Media tracker (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-store">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/store.png"
+                  alt="Screenshot of the storefront example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">store</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-store" role="heading" aria-level="2">Storefront</div>
+                <div class="desc">e-commerce</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                A product page with gallery, variant pickers, quantity stepper, cart toasts and
+                related items.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">NumberField</span>
+                <span class="ss-badge neutral">Select</span>
+                <span class="ss-badge neutral">Accordion</span>
+                <span class="ss-badge neutral">Badge</span>
+                <span class="ss-badge neutral">Card</span>
+                <span class="ss-badge neutral">Button</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./store/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="store"
+              aria-labelledby="insp-store"
+            >
+              <span class="sr-only">Storefront (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-mail">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/mail.png"
+                  alt="Screenshot of the mail client example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">mail</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-mail" role="heading" aria-level="2">Mail client</div>
+                <div class="desc">productivity</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                Folders, a triage list with keyboard hints, a reading pane, compose dialog and
+                search palette.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Sidebar</span>
+                <span class="ss-badge neutral">Kbd</span>
+                <span class="ss-badge neutral">Menu</span>
+                <span class="ss-badge neutral">Modal</span>
+                <span class="ss-badge neutral">SearchPalette</span>
+                <span class="ss-badge neutral">Textarea</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./mail/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="mail"
+              aria-labelledby="insp-mail"
+            >
+              <span class="sr-only">Mail client (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-board">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/board.png"
+                  alt="Screenshot of the project board example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">board</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-board" role="heading" aria-level="2">Project board</div>
+                <div class="desc">kanban</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                Columns of issue cards with priorities, assignees, an issue dialog and a show-done
+                switch.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Card</span>
+                <span class="ss-badge neutral">Badge</span>
+                <span class="ss-badge neutral">Avatar</span>
+                <span class="ss-badge neutral">Modal</span>
+                <span class="ss-badge neutral">Switch</span>
+                <span class="ss-badge neutral">DateField</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./board/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="board"
+              aria-labelledby="insp-board"
+            >
+              <span class="sr-only">Project board (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-music">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/music.png"
+                  alt="Screenshot of the music player example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">music</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-music" role="heading" aria-level="2">Music player</div>
+                <div class="desc">streaming</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                A playlist page with a track table, a now-playing row and a fixed transport bar.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Sidebar</span>
+                <span class="ss-badge neutral">Table</span>
+                <span class="ss-badge neutral">Button</span>
+                <span class="ss-badge neutral">Spinner</span>
+                <span class="ss-badge neutral">Menu</span>
+                <span class="ss-badge neutral">BottomNav</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./music/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="music"
+              aria-labelledby="insp-music"
+            >
+              <span class="sr-only">Music player (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="ss-card interactive" aria-labelledby="insp-settings">
+            <div class="media">
+              <div class="insp-thumb">
+                <img
+                  src="./thumbs/settings.png"
+                  alt="Screenshot of the account settings example"
+                  loading="lazy"
+                  width="1280"
+                  height="800"
+                />
+                <span class="placeholder" aria-hidden="true">settings</span>
+              </div>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="insp-settings" role="heading" aria-level="2">
+                  Account settings
+                </div>
+                <div class="desc">forms & auth</div>
+              </div>
+              <div class="actions">
+                <div class="meta">↗</div>
+              </div>
+            </div>
+            <div class="body">
+              <p>
+                Every form control in one place: profile, notifications, security, API keys — plus a
+                sign-in screen.
+              </p>
+              <div class="insp-chips">
+                <span class="ss-badge neutral">Input</span>
+                <span class="ss-badge neutral">Switch</span>
+                <span class="ss-badge neutral">Select</span>
+                <span class="ss-badge neutral">FileDrop</span>
+                <span class="ss-badge neutral">Modal</span>
+                <span class="ss-badge neutral">Table</span>
+              </div>
+            </div>
+            <a
+              class="overlay"
+              href="./settings/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-inspiration="settings"
+              aria-labelledby="insp-settings"
+            >
+              <span class="sr-only">Account settings (opens in a new tab)</span>
+            </a>
+          </div>
+        </li>
+      </ul>
+    </main>
+
+    <footer class="insp-footer">
+      <div class="ss-footer">
+        <span>dssoca · inspirations</span>
+        <span>MIT · built from the current source on every deploy</span>
+      </div>
+    </footer>
+  </body>
+</html>

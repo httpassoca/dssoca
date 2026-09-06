@@ -15,6 +15,7 @@ export default tseslint.config(
       'build/',
       '.svelte-kit/',
       'storybook-static/',
+      'inspirations-dist/',
       'coverage/',
       'node_modules/',
       'documentation/build/',

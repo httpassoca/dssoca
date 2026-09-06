@@ -40,7 +40,7 @@ export const sidebar: ComponentDoc = {
     {
       name: 'groups',
       type: 'SideGroup[]',
-      desc: 'Sections of items ({ id, label, icon?, status?, href?, badge?, children? }); has a built-in default.',
+      desc: 'Sections of items ({ id, label, icon?, status?, href?, external?, badge?, children? }); has a built-in default. `external` (with `href`) opens in a new tab with `rel="noopener noreferrer"`, a trailing external glyph and an "(opens in a new tab)" announcement.',
     },
     { name: 'onSelect', type: '(id: string) => void', desc: 'Selection handler.' },
     {
@@ -57,5 +57,5 @@ export const sidebar: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Exports the `SideItem`, `SideGroup`, and `SideStatus` types from `dssoca`. `SideItem` gains `href`, `badge`, optional `icon` (omit for a text-only item), and one level of nested `children`. The rail stretches to fill its host container’s height (`min-height: 100%`), so the border/background span the full screen or column; it still grows past the viewport when the nav is long.',
+    'Exports the `SideItem`, `SideGroup`, and `SideStatus` types from `dssoca`. `SideItem` gains `href`, `external` (off-site `href`: new tab, safe `rel`, external glyph, announced — the docs nav uses it for the Inspirations site), `badge`, optional `icon` (omit for a text-only item), and one level of nested `children`. The rail stretches to fill its host container’s height (`min-height: 100%`), so the border/background span the full screen or column; it still grows past the viewport when the nav is long.',
 }

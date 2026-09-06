@@ -98,6 +98,7 @@
 
 <div
   class="ss-toaster"
+  role="region"
   aria-label="Notifications"
   data-position={position}
   data-size-variant={resolveComponentSize('Toaster', size)}

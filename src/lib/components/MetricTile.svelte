@@ -107,7 +107,8 @@
       font-variant-numeric: tabular-nums;
       .small {
         font-size: 0.5em;
-        opacity: 0.5;
+        // A muted colour, not opacity: half-transparent fg fails AA on the tile (DS-0150).
+        color: var(--ss-fg-muted);
       }
     }
     .delta {
@@ -140,9 +141,15 @@
         }
         &.negative {
           background: var(--ss-danger-soft);
+          // Pure danger on its own wash is 4.3:1 on the dark tile — lift it toward fg (DS-0150).
+          color: color-mix(in oklab, var(--ss-danger) 70%, var(--ss-fg));
         }
         &.neutral {
           background: var(--ss-hover);
+        }
+        // Inside a chip the faint period label sits on the wash: inherit the chip colour.
+        .period {
+          color: inherit;
         }
       }
     }

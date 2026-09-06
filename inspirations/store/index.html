@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Keycap Co. — KC-75 Aluminium Keyboard</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body>
+    <!-- Shared paint servers for the product placeholders (referenced by url(#…) below). -->
+    <svg class="store-defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id="store-keys" width="26" height="26" patternUnits="userSpaceOnUse">
+          <rect
+            x="2"
+            y="2"
+            width="22"
+            height="22"
+            fill="var(--ss-bg-elev)"
+            stroke="var(--ss-line-strong)"
+          />
+        </pattern>
+        <pattern id="store-keys-sm" width="14" height="14" patternUnits="userSpaceOnUse">
+          <rect
+            x="1"
+            y="1"
+            width="12"
+            height="12"
+            fill="var(--ss-bg-elev)"
+            stroke="var(--ss-line-strong)"
+          />
+        </pattern>
+        <linearGradient id="store-plate" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--ss-bg-elev-hover)" />
+          <stop offset="1" stop-color="var(--ss-bg)" />
+        </linearGradient>
+        <linearGradient id="store-glow" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="var(--ss-primary)" stop-opacity="0.25" />
+          <stop offset="1" stop-color="var(--ss-primary)" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <header class="store-header">
+      <a class="store-logo" href="#" aria-label="Keycap Co. home">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+          <rect x="2" y="2" width="20" height="20" fill="var(--ss-primary)" />
+          <rect x="6" y="6" width="12" height="12" fill="var(--ss-bg)" />
+          <rect x="9" y="9" width="6" height="6" fill="var(--ss-primary)" />
+        </svg>
+        <span class="store-wordmark">keycap co.</span>
+      </a>
+
+      <nav class="store-nav" aria-label="Shop">
+        <a class="ss-link inline" href="#" aria-current="page"
+          ><span class="label">keyboards</span></a
+        >
+        <a class="ss-link inline" href="#"><span class="label">switches</span></a>
+        <a class="ss-link inline" href="#"><span class="label">keycaps</span></a>
+        <a class="ss-link inline" href="#"><span class="label">support</span></a>
+      </nav>
+
+      <div class="store-search">
+        <div class="ss-field">
+          <div class="control">
+            <span class="affix prefix" aria-hidden="true">⌕</span>
+            <input
+              class="ss-input"
+              id="store-q"
+              type="search"
+              placeholder="Search keyboards, switches, keycaps…"
+              aria-label="Search products"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="store-tools">
+        <button
+          type="button"
+          class="ss-btn ghost icon-only"
+          id="store-theme"
+          aria-label="Switch to light theme"
+        >
+          <span class="affix" aria-hidden="true"
+            ><span data-ss-icon="color-swatch" data-size="sm"></span
+          ></span>
+        </button>
+        <button
+          type="button"
+          class="ss-btn ghost icon-only store-cart"
+          id="store-cart"
+          aria-label="Cart, 2 items"
+        >
+          <span class="affix" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="square"
+              stroke-linejoin="miter"
+              focusable="false"
+            >
+              <path d="M3 4h3l2.4 11h10.2L21 8H7" />
+              <rect x="8" y="18" width="3" height="3" />
+              <rect x="15" y="18" width="3" height="3" />
+            </svg>
+          </span>
+          <span class="ss-badge brand" id="store-cart-count" aria-hidden="true"
+            ><span class="count">2</span></span
+          >
+        </button>
+      </div>
+    </header>
+
+    <aside class="store-promo" aria-label="Promotion">
+      <span class="ss-badge brand"><span class="dot" aria-hidden="true"></span>drop 04</span>
+      <span>Free shipping on orders over $120 · KC-75 ships in 2–3 business days</span>
+      <a class="ss-link inline" href="#"><span class="label">see what's new</span></a>
+    </aside>
+
+    <main class="store-main" id="main">
+      <nav class="store-crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li>
+            <a class="ss-link inline" href="#"><span class="label">home</span></a>
+          </li>
+          <li>
+            <a class="ss-link inline" href="#"><span class="label">keyboards</span></a>
+          </li>
+          <li>
+            <a class="ss-link inline" href="#"><span class="label">75%</span></a>
+          </li>
+          <li aria-current="page">KC-75 Aluminium</li>
+        </ol>
+      </nav>
+
+      <section class="store-product" aria-labelledby="store-title">
+        <!-- Gallery -->
+        <div class="store-gallery">
+          <div
+            class="store-stage"
+            id="store-stage"
+            role="img"
+            aria-label="KC-75 keyboard, front view"
+          >
+            <svg viewBox="0 0 640 400" data-view="front" aria-hidden="true" focusable="false">
+              <rect width="640" height="400" fill="var(--ss-bg-elev)" />
+              <rect width="640" height="400" fill="url(#store-glow)" />
+              <rect
+                x="70"
+                y="106"
+                width="500"
+                height="196"
+                fill="url(#store-plate)"
+                stroke="var(--ss-line-strong)"
+              />
+              <rect x="86" y="120" width="468" height="168" fill="url(#store-keys)" />
+              <rect x="86" y="120" width="468" height="168" fill="none" stroke="var(--ss-line)" />
+              <rect x="502" y="120" width="26" height="26" fill="var(--ss-primary)" />
+              <rect
+                x="86"
+                y="262"
+                width="156"
+                height="26"
+                fill="var(--ss-bg-elev-hover)"
+                stroke="var(--ss-line-strong)"
+              />
+              <rect
+                x="70"
+                y="302"
+                width="500"
+                height="12"
+                fill="var(--ss-bg)"
+                stroke="var(--ss-line-strong)"
+              />
+              <text
+                x="70"
+                y="352"
+                font-family="var(--ss-font-mono)"
+                font-size="14"
+                fill="var(--ss-fg-faint)"
+              >
+                KC-75 · aluminium · front
+              </text>
+            </svg>
+            <svg viewBox="0 0 640 400" data-view="top" aria-hidden="true" focusable="false" hidden>
+              <rect width="640" height="400" fill="var(--ss-bg-elev)" />
+              <rect
+                x="120"
+                y="60"
+                width="400"
+                height="280"
+                fill="url(#store-plate)"
+                stroke="var(--ss-line-strong)"
+              />
+              <rect x="136" y="76" width="368" height="248" fill="url(#store-keys)" />
+              <rect x="136" y="76" width="368" height="248" fill="none" stroke="var(--ss-line)" />
+              <rect x="474" y="76" width="26" height="26" fill="var(--ss-primary)" />
+              <text
+                x="120"
+                y="372"
+                font-family="var(--ss-font-mono)"
+                font-size="14"
+                fill="var(--ss-fg-faint)"
+              >
+                KC-75 · top-down
+              </text>
+            </svg>
+            <svg viewBox="0 0 640 400" data-view="side" aria-hidden="true" focusable="false" hidden>
+              <rect width="640" height="400" fill="var(--ss-bg-elev)" />
+              <rect width="640" height="400" fill="url(#store-glow)" />
+              <polygon
+                points="60,250 580,250 580,290 60,290"
+                fill="var(--ss-bg)"
+                stroke="var(--ss-line-strong)"
+              />
+              <polygon
+                points="60,250 580,250 560,212 80,226"
+                fill="url(#store-plate)"
+                stroke="var(--ss-line-strong)"
+              />
+              <rect x="100" y="196" width="440" height="24" fill="url(#store-keys)" />
+              <rect x="100" y="196" width="440" height="24" fill="none" stroke="var(--ss-line)" />
+              <line
+                x1="60"
+                y1="290"
+                x2="580"
+                y2="290"
+                stroke="var(--ss-primary)"
+                stroke-width="3"
+              />
+              <text
+                x="60"
+                y="340"
+                font-family="var(--ss-font-mono)"
+                font-size="14"
+                fill="var(--ss-fg-faint)"
+              >
+                KC-75 · 6° typing angle
+              </text>
+            </svg>
+            <svg
+              viewBox="0 0 640 400"
+              data-view="keycaps"
+              aria-hidden="true"
+              focusable="false"
+              hidden
+            >
+              <rect width="640" height="400" fill="var(--ss-bg-elev)" />
+              <rect
+                x="150"
+                y="90"
+                width="120"
+                height="120"
+                fill="var(--ss-bg-elev-hover)"
+                stroke="var(--ss-line-strong)"
+              />
+              <rect
+                x="170"
+                y="104"
+                width="80"
+                height="80"
+                fill="var(--ss-bg)"
+                stroke="var(--ss-line)"
+              />
+              <rect x="300" y="90" width="120" height="120" fill="var(--ss-primary)" />
+              <rect x="320" y="104" width="80" height="80" fill="var(--ss-bg)" opacity="0.35" />
+              <rect
+                x="450"
+                y="90"
+                width="120"
+                height="120"
+                fill="var(--ss-bg-elev-hover)"
+                stroke="var(--ss-line-strong)"
+              />
+              <rect
+                x="470"
+                y="104"
+                width="80"
+                height="80"
+                fill="var(--ss-bg)"
+                stroke="var(--ss-line)"
+              />
+              <rect x="150" y="230" width="420" height="80" fill="url(#store-keys)" />
+              <rect x="150" y="230" width="420" height="80" fill="none" stroke="var(--ss-line)" />
+              <text
+                x="150"
+                y="352"
+                font-family="var(--ss-font-mono)"
+                font-size="14"
+                fill="var(--ss-fg-faint)"
+              >
+                PBT dye-sub keycaps · cherry profile
+              </text>
+            </svg>
+          </div>
+
+          <div class="store-thumbs" role="group" aria-label="Product views">
+            <button
+              type="button"
+              class="store-thumb"
+              data-view="front"
+              aria-label="Front view"
+              aria-pressed="true"
+            >
+              <svg viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+                <rect width="120" height="80" fill="var(--ss-bg-elev)" />
+                <rect
+                  x="14"
+                  y="22"
+                  width="92"
+                  height="38"
+                  fill="url(#store-plate)"
+                  stroke="var(--ss-line-strong)"
+                />
+                <rect x="18" y="26" width="84" height="30" fill="url(#store-keys-sm)" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="store-thumb"
+              data-view="top"
+              aria-label="Top-down view"
+              aria-pressed="false"
+            >
+              <svg viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+                <rect width="120" height="80" fill="var(--ss-bg-elev)" />
+                <rect
+                  x="24"
+                  y="10"
+                  width="72"
+                  height="60"
+                  fill="url(#store-plate)"
+                  stroke="var(--ss-line-strong)"
+                />
+                <rect x="28" y="14" width="64" height="52" fill="url(#store-keys-sm)" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="store-thumb"
+              data-view="side"
+              aria-label="Side profile view"
+              aria-pressed="false"
+            >
+              <svg viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+                <rect width="120" height="80" fill="var(--ss-bg-elev)" />
+                <polygon
+                  points="10,52 110,52 110,60 10,60"
+                  fill="var(--ss-bg)"
+                  stroke="var(--ss-line-strong)"
+                />
+                <polygon
+                  points="10,52 110,52 106,42 14,46"
+                  fill="url(#store-plate)"
+                  stroke="var(--ss-line-strong)"
+                />
+                <line
+                  x1="10"
+                  y1="60"
+                  x2="110"
+                  y2="60"
+                  stroke="var(--ss-primary)"
+                  stroke-width="2"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="store-thumb"
+              data-view="keycaps"
+              aria-label="Keycap close-up"
+              aria-pressed="false"
+            >
+              <svg viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+                <rect width="120" height="80" fill="var(--ss-bg-elev)" />
+                <rect
+                  x="16"
+                  y="20"
+                  width="26"
+                  height="26"
+                  fill="var(--ss-bg-elev-hover)"
+                  stroke="var(--ss-line-strong)"
+                />
+                <rect x="47" y="20" width="26" height="26" fill="var(--ss-primary)" />
+                <rect
+                  x="78"
+                  y="20"
+                  width="26"
+                  height="26"
+                  fill="var(--ss-bg-elev-hover)"
+                  stroke="var(--ss-line-strong)"
+                />
+                <rect x="16" y="52" width="88" height="14" fill="url(#store-keys-sm)" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Buy box -->
+        <div class="store-buy">
+          <div class="store-badges">
+            <span class="ss-badge brand">new</span>
+            <span class="ss-badge positive"
+              ><span class="dot" aria-hidden="true"></span>in stock</span
+            >
+            <span class="ss-badge neutral">75% · gasket mount</span>
+          </div>
+
+          <h1 id="store-title">KC-75 Aluminium Keyboard</h1>
+          <p class="store-tagline">
+            CNC-milled 6063 case, gasket-mounted FR4 plate, hot-swap PCB with south-facing LEDs.
+            Ships fully assembled with our Linear 55g switches and cherry-profile PBT keycaps.
+          </p>
+
+          <p class="store-price">
+            <span class="store-price-now">$159</span>
+            <s class="store-price-old"><span class="store-sr-only">was </span>$189</s>
+            <span class="ss-badge caution">save 16%</span>
+          </p>
+
+          <p class="store-rating">
+            <span class="store-stars" aria-hidden="true">★★★★☆</span>
+            <span class="store-sr-only">Rated 4.6 out of 5.</span>
+            <span class="store-rating-num" aria-hidden="true">4.6</span>
+            <a class="ss-link inline" href="#reviews"><span class="label">128 reviews</span></a>
+          </p>
+
+          <form class="store-form" id="store-form" novalidate>
+            <div class="ss-select">
+              <label class="lbl" for="store-layout">Layout</label>
+              <div class="control">
+                <select class="select" id="store-layout" name="layout">
+                  <option value="ansi" selected>ANSI · US</option>
+                  <option value="iso-uk">ISO · UK</option>
+                  <option value="iso-de">ISO · DE</option>
+                  <option value="jis">JIS</option>
+                </select>
+                <span class="chevron" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <fieldset class="store-swatches">
+              <legend>
+                Colour <span class="store-swatch-name" id="store-swatch-name">— graphite</span>
+              </legend>
+              <div class="store-swatch-row">
+                <label class="store-swatch">
+                  <input
+                    type="radio"
+                    name="colour"
+                    value="graphite"
+                    checked
+                    class="store-sr-only"
+                  />
+                  <span
+                    class="store-swatch-chip"
+                    style="--store-swatch: var(--ss-bright-black)"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="store-sr-only">Graphite</span>
+                </label>
+                <label class="store-swatch">
+                  <input type="radio" name="colour" value="moss" class="store-sr-only" />
+                  <span
+                    class="store-swatch-chip"
+                    style="--store-swatch: var(--ss-green)"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="store-sr-only">Moss</span>
+                </label>
+                <label class="store-swatch">
+                  <input type="radio" name="colour" value="cobalt" class="store-sr-only" />
+                  <span
+                    class="store-swatch-chip"
+                    style="--store-swatch: var(--ss-blue)"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="store-sr-only">Cobalt</span>
+                </label>
+                <label class="store-swatch">
+                  <input type="radio" name="colour" value="sand" class="store-sr-only" />
+                  <span
+                    class="store-swatch-chip"
+                    style="--store-swatch: var(--ss-yellow)"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="store-sr-only">Sand</span>
+                </label>
+                <label class="store-swatch">
+                  <input type="radio" name="colour" value="chalk" class="store-sr-only" />
+                  <span
+                    class="store-swatch-chip"
+                    style="--store-swatch: var(--ss-bright-white)"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="store-sr-only">Chalk</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="ss-numberfield">
+              <label class="lbl" for="store-qty">Quantity</label>
+              <div class="control">
+                <button type="button" class="step dec" aria-label="Decrease">−</button>
+                <input
+                  class="ss-input"
+                  id="store-qty"
+                  name="qty"
+                  type="number"
+                  inputmode="numeric"
+                  value="1"
+                  min="1"
+                  max="10"
+                  step="1"
+                />
+                <button type="button" class="step inc" aria-label="Increase">+</button>
+              </div>
+              <span class="msg hint" id="store-qty-hint">Max 10 per order</span>
+            </div>
+
+            <div class="store-actions">
+              <button class="ss-btn primary full-width" type="submit" id="store-add">
+                <span class="label">Add to cart</span>
+              </button>
+              <button class="ss-btn secondary full-width" type="button" id="store-wish">
+                <span class="affix" aria-hidden="true">♥</span>
+                <span class="label">Add to wishlist</span>
+              </button>
+            </div>
+          </form>
+
+          <ul class="store-notes">
+            <li>
+              <span data-ss-icon="check" data-size="sm"></span>Free shipping over $120 · arrives in
+              2–3 business days
+            </li>
+            <li>
+              <span data-ss-icon="check" data-size="sm"></span>30-day returns, no questions asked
+            </li>
+            <li>
+              <span data-ss-icon="check" data-size="sm"></span>2-year warranty on case, PCB and
+              plate
+            </li>
+          </ul>
+
+          <div class="ss-accordion" data-overflow="wrap">
+            <div class="item">
+              <div role="heading" aria-level="2" class="heading">
+                <button
+                  type="button"
+                  class="head"
+                  id="store-acc-h-details"
+                  aria-expanded="true"
+                  aria-controls="store-acc-p-details"
+                >
+                  <span class="title">Details</span>
+                  <span class="chevron" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="square"
+                      stroke-linejoin="miter"
+                      class="ss-icon"
+                      style="width: var(--ss-icon); height: var(--ss-icon)"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d="M8 10l4 4 4-4" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="panel"
+                id="store-acc-p-details"
+                role="region"
+                aria-labelledby="store-acc-h-details"
+              >
+                <div class="panel-clip">
+                  <div class="panel-inner">
+                    <p>
+                      The KC-75 is our compact daily driver: a 75% layout that keeps the function
+                      row and arrow cluster in a footprint that fits next to a trackpad. The case is
+                      machined from a single billet, bead-blasted and anodised, with a brass weight
+                      in the base for a planted feel.
+                    </p>
+                    <p>
+                      Every board is hand-lubed and sound-tested before it leaves the bench.
+                      Includes a braided USB-C cable, keycap and switch puller, and spare gaskets.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <div role="heading" aria-level="2" class="heading">
+                <button
+                  type="button"
+                  class="head"
+                  id="store-acc-h-specs"
+                  aria-expanded="false"
+                  aria-controls="store-acc-p-specs"
+                >
+                  <span class="title">Specs</span>
+                  <span class="hint">weight, layout, connectivity</span>
+                  <span class="chevron" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="square"
+                      stroke-linejoin="miter"
+                      class="ss-icon"
+                      style="width: var(--ss-icon); height: var(--ss-icon)"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d="M8 10l4 4 4-4" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="panel"
+                id="store-acc-p-specs"
+                role="region"
+                aria-labelledby="store-acc-h-specs"
+                hidden
+              >
+                <div class="panel-clip">
+                  <div class="panel-inner">
+                    <dl class="store-specs">
+                      <div>
+                        <dt>Layout</dt>
+                        <dd>75% · 84 keys</dd>
+                      </div>
+                      <div>
+                        <dt>Mount</dt>
+                        <dd>Gasket, FR4 plate</dd>
+                      </div>
+                      <div>
+                        <dt>Case</dt>
+                        <dd>6063 aluminium, anodised</dd>
+                      </div>
+                      <div>
+                        <dt>Switches</dt>
+                        <dd>Hot-swap, 5-pin, MX</dd>
+                      </div>
+                      <div>
+                        <dt>Connectivity</dt>
+                        <dd>USB-C, 2.4 GHz, Bluetooth 5.3</dd>
+                      </div>
+                      <div>
+                        <dt>Battery</dt>
+                        <dd>4000 mAh · ~6 weeks</dd>
+                      </div>
+                      <div>
+                        <dt>Weight</dt>
+                        <dd>1.9 kg assembled</dd>
+                      </div>
+                      <div>
+                        <dt>Firmware</dt>
+                        <dd>QMK / VIA</dd>
+                      </div>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <div role="heading" aria-level="2" class="heading">
+                <button
+                  type="button"
+                  class="head"
+                  id="store-acc-h-shipping"
+                  aria-expanded="false"
+                  aria-controls="store-acc-p-shipping"
+                >
+                  <span class="title">Shipping</span>
+                  <span class="chevron" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="square"
+                      stroke-linejoin="miter"
+                      class="ss-icon"
+                      style="width: var(--ss-icon); height: var(--ss-icon)"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d="M8 10l4 4 4-4" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="panel"
+                id="store-acc-p-shipping"
+                role="region"
+                aria-labelledby="store-acc-h-shipping"
+                hidden
+              >
+                <div class="panel-clip">
+                  <div class="panel-inner">
+                    <p>
+                      Orders placed before 14:00 ship the same day from our Rotterdam warehouse. EU
+                      delivery takes 2–3 business days, UK and US 4–6, rest of world 6–10. Duties
+                      for non-EU destinations are calculated at checkout — no surprises at the door.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <div role="heading" aria-level="2" class="heading">
+                <button
+                  type="button"
+                  class="head"
+                  id="store-acc-h-returns"
+                  aria-expanded="false"
+                  aria-controls="store-acc-p-returns"
+                >
+                  <span class="title">Returns</span>
+                  <span class="chevron" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="square"
+                      stroke-linejoin="miter"
+                      class="ss-icon"
+                      style="width: var(--ss-icon); height: var(--ss-icon)"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d="M8 10l4 4 4-4" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="panel"
+                id="store-acc-p-returns"
+                role="region"
+                aria-labelledby="store-acc-h-returns"
+                hidden
+              >
+                <div class="panel-clip">
+                  <div class="panel-inner">
+                    <p>
+                      Not for you? Send it back within 30 days in its original packaging for a full
+                      refund. Boards that have been modded (foam, tape, switch swaps) are still
+                      accepted — we just ask that you put the stock switches back in.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related products -->
+      <section class="store-related" aria-labelledby="store-related-title">
+        <div class="store-section-head">
+          <h2 id="store-related-title">You might also like</h2>
+          <a class="ss-link inline" href="#"><span class="label">browse all keyboards</span></a>
+        </div>
+        <div class="store-grid">
+          <div class="ss-card interactive" aria-labelledby="store-rel-1">
+            <div class="media">
+              <svg viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+                <rect width="320" height="180" fill="var(--ss-bg)" />
+                <rect
+                  x="40"
+                  y="52"
+                  width="240"
+                  height="88"
+                  fill="url(#store-plate)"
+                  stroke="var(--ss-line-strong)"
+                />
+                <rect x="48" y="60" width="224" height="72" fill="url(#store-keys)" />
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="store-rel-1" role="heading" aria-level="3">KC-65 Poly</div>
+                <div class="desc">Polycarbonate · 65%</div>
+              </div>
+              <div class="actions"><span class="ss-badge brand">new</span></div>
+            </div>
+            <div class="body">
+              <p class="store-card-price">$119</p>
+            </div>
+            <a class="overlay" href="#" aria-labelledby="store-rel-1"
+              ><span class="sr-only">KC-65 Poly</span></a
+            >
+          </div>
+
+          <div class="ss-card interactive" aria-labelledby="store-rel-2">
+            <div class="media">
+              <svg viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+                <rect width="320" height="180" fill="var(--ss-bg)" />
+                <rect
+                  x="112"
+                  y="42"
+                  width="96"
+                  height="96"
+                  fill="var(--ss-bg-elev-hover)"
+                  stroke="var(--ss-line-strong)"
+                />
+                <rect x="140" y="30" width="40" height="18" fill="var(--ss-primary)" />
+                <rect
+                  x="152"
+                  y="48"
+                  width="16"
+                  height="70"
+                  fill="var(--ss-bg)"
+                  stroke="var(--ss-line)"
+                />
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="store-rel-2" role="heading" aria-level="3">
+                  Linear 55g switches
+                </div>
+                <div class="desc">Pack of 90 · factory lubed</div>
+              </div>
+              <div class="actions"><span class="ss-badge caution">sale</span></div>
+            </div>
+            <div class="body">
+              <p class="store-card-price">$39 <s>$49</s></p>
+            </div>
+            <a class="overlay" href="#" aria-labelledby="store-rel-2"
+              ><span class="sr-only">Linear 55g switches</span></a
+            >
+          </div>
+
+          <div class="ss-card interactive" aria-labelledby="store-rel-3">
+            <div class="media">
+              <svg viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+                <rect width="320" height="180" fill="var(--ss-bg)" />
+                <rect x="30" y="40" width="260" height="100" fill="url(#store-keys)" />
+                <rect x="212" y="40" width="26" height="26" fill="var(--ss-primary)" />
+                <rect x="30" y="40" width="260" height="100" fill="none" stroke="var(--ss-line)" />
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="store-rel-3" role="heading" aria-level="3">
+                  Terminal keycap set
+                </div>
+                <div class="desc">PBT dye-sub · 156 keys</div>
+              </div>
+              <div class="actions"><span class="ss-badge brand">new</span></div>
+            </div>
+            <div class="body">
+              <p class="store-card-price">$89</p>
+            </div>
+            <a class="overlay" href="#" aria-labelledby="store-rel-3"
+              ><span class="sr-only">Terminal keycap set</span></a
+            >
+          </div>
+
+          <div class="ss-card interactive" aria-labelledby="store-rel-4">
+            <div class="media">
+              <svg viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+                <rect width="320" height="180" fill="var(--ss-bg)" />
+                <rect
+                  x="60"
+                  y="70"
+                  width="200"
+                  height="40"
+                  fill="var(--ss-bg-elev-hover)"
+                  stroke="var(--ss-line-strong)"
+                />
+                <rect x="60" y="110" width="200" height="8" fill="var(--ss-primary)" />
+              </svg>
+            </div>
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="store-rel-4" role="heading" aria-level="3">
+                  Walnut wrist rest
+                </div>
+                <div class="desc">75% · oiled walnut</div>
+              </div>
+              <div class="actions"><span class="ss-badge caution">sale</span></div>
+            </div>
+            <div class="body">
+              <p class="store-card-price">$29 <s>$36</s></p>
+            </div>
+            <a class="overlay" href="#" aria-labelledby="store-rel-4"
+              ><span class="sr-only">Walnut wrist rest</span></a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="store-footer">
+      <div class="store-footer-cols">
+        <nav aria-label="Shop categories">
+          <h2>Shop</h2>
+          <ul>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">keyboards</span></a>
+            </li>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">switches</span></a>
+            </li>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">keycaps</span></a>
+            </li>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">accessories</span></a>
+            </li>
+          </ul>
+        </nav>
+        <nav aria-label="Support">
+          <h2>Support</h2>
+          <ul>
+            <li>
+              <a class="ss-link inline" href="#"
+                ><span class="label">shipping &amp; returns</span></a
+              >
+            </li>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">warranty</span></a>
+            </li>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">firmware downloads</span></a>
+            </li>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">contact</span></a>
+            </li>
+          </ul>
+        </nav>
+        <nav aria-label="Company">
+          <h2>Company</h2>
+          <ul>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">about</span></a>
+            </li>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">journal</span></a>
+            </li>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">careers</span></a>
+            </li>
+            <li>
+              <a class="ss-link inline" href="#"><span class="label">privacy</span></a>
+            </li>
+          </ul>
+        </nav>
+        <form class="store-newsletter" id="store-newsletter" novalidate>
+          <h2>Newsletter</h2>
+          <p>Drops, restocks and firmware updates. One email a month, no fluff.</p>
+          <div class="store-newsletter-row">
+            <div class="ss-field">
+              <label class="lbl" for="store-email">Email</label>
+              <div class="control">
+                <input
+                  class="ss-input"
+                  id="store-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                />
+              </div>
+            </div>
+            <button class="ss-btn primary" type="submit">
+              <span class="label">Subscribe</span>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="ss-footer">
+        <span>© 2026 Keycap Co. · Rotterdam</span>
+        <span>built with dssoca</span>
+      </div>
+    </footer>
+
+    <div
+      class="ss-toaster"
+      role="region"
+      aria-label="Notifications"
+      data-position="bottom-right"
+    ></div>
+  </body>
+</html>

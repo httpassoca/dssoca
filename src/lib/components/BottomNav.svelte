@@ -283,4 +283,11 @@
       }
     }
   }
+
+  // theme.css draws an animated underline under every <a> (`a::before`). These anchors are
+  // component chrome, not prose links — cancel it here so the reset also ships in vanilla.css
+  // (DS-0150; the specificity of a scoped class beats the global element rule).
+  .tab::before {
+    content: none;
+  }
 </style>

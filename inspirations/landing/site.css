@@ -1,0 +1,486 @@
+/* Ledgerline landing — page layout only. Components style themselves (vanilla.css);
+   everything here is grids, bands, spacing, and responsive rules, on --ss-* tokens. */
+
+.ll {
+  background: var(--ss-bg);
+  color: var(--ss-fg);
+}
+
+/* A landing page wants a wider column than the app-content default; the token is the
+   Container's own API, so widening it here keeps the gutters and centring intact. */
+.ss-container.ll-wide {
+  --ss-container-max-w: 1140px;
+}
+
+.ll-skip {
+  position: absolute;
+  left: var(--ss-s-4);
+  top: calc(-1 * var(--ss-s-16));
+  z-index: 100;
+  padding: var(--ss-s-2) var(--ss-s-4);
+  background: var(--ss-primary);
+  color: var(--ss-fg-on-primary);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  text-decoration: none;
+}
+.ll-skip:focus-visible {
+  top: var(--ss-s-4);
+}
+
+/* ---- header ------------------------------------------------------------------------ */
+
+.ll-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--ss-bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--ss-line);
+}
+.ll-header-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-s-6);
+  min-height: var(--ss-shell-top-h, 56px);
+}
+.ll-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ss-s-2);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-lg);
+  letter-spacing: 0.04em;
+  color: var(--ss-fg);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ll-brand-mark {
+  color: var(--ss-primary);
+}
+.ll-nav {
+  display: flex;
+  gap: var(--ss-s-5);
+  margin-inline-start: var(--ss-s-4);
+}
+.ll-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-s-2);
+  margin-inline-start: auto;
+}
+
+/* ---- hero -------------------------------------------------------------------------- */
+
+.ll-hero {
+  padding-block: var(--ss-s-14) var(--ss-s-12);
+  background:
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--ss-primary) 7%, transparent),
+      transparent 60%
+    ),
+    var(--ss-bg);
+}
+.ll-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: var(--ss-s-12);
+  align-items: center;
+}
+.ll-hero-copy > .ss-badge {
+  margin-bottom: var(--ss-s-5);
+}
+.ll-lede {
+  max-width: 52ch;
+  font-size: var(--ss-size-body);
+  color: var(--ss-fg-muted);
+  margin: 0 0 var(--ss-s-6);
+}
+.ll-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ss-s-3);
+}
+.ll-hint {
+  margin: var(--ss-s-5) 0 0;
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  color: var(--ss-fg-faint);
+}
+
+/* The product shot: a mock browser window around real components. */
+.ll-window {
+  border: 1px solid var(--ss-line-strong);
+  background: var(--ss-bg-elev);
+  box-shadow: var(--ss-shadow-2), var(--ss-shadow-glow);
+  overflow: hidden;
+}
+.ll-window-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-s-3);
+  padding: var(--ss-s-2) var(--ss-s-3);
+  border-bottom: 1px solid var(--ss-line);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-xs);
+  color: var(--ss-fg-faint);
+}
+.ll-window-dots {
+  display: inline-flex;
+  gap: 5px;
+}
+.ll-window-dots span {
+  width: 9px;
+  height: 9px;
+  background: var(--ss-line-strong);
+}
+.ll-window-url {
+  flex: 1;
+  padding: 2px var(--ss-s-2);
+  background: var(--ss-bg);
+  border: 1px solid var(--ss-line);
+}
+.ll-window-body {
+  padding: var(--ss-s-3);
+  display: grid;
+  gap: var(--ss-s-3);
+  min-width: 0;
+}
+.ll-window-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ss-s-2);
+}
+.ll-window-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+.ll-window .ss-table {
+  width: 100%;
+}
+.ll-event {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: nowrap;
+}
+.ll-res {
+  font-family: var(--ss-font-mono);
+  color: var(--ss-fg-faint);
+}
+.ll-actor {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ss-s-2);
+  white-space: nowrap;
+}
+
+/* ---- trusted-by --------------------------------------------------------------------- */
+
+.ll-logos {
+  padding-block: var(--ss-s-8);
+  border-block: 1px solid var(--ss-line);
+}
+.ll-eyebrow {
+  margin: 0 0 var(--ss-s-3);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ss-fg-faint);
+}
+.ll-logo-row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--ss-s-4) var(--ss-s-8);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-lg);
+  letter-spacing: 0.06em;
+  color: var(--ss-fg-muted);
+}
+
+/* ---- sections ------------------------------------------------------------------------ */
+
+.ll-section {
+  padding-block: var(--ss-s-16);
+}
+.ll-section-alt {
+  background: var(--ss-bg-elev);
+  border-block: 1px solid var(--ss-line);
+}
+.ll-section-head {
+  max-width: 62ch;
+  margin-bottom: var(--ss-s-10);
+}
+.ll-section-head h2,
+.ll-cta h2 {
+  margin: 0 0 var(--ss-s-3);
+}
+.ll-sub {
+  margin: 0;
+  color: var(--ss-fg-muted);
+}
+
+.ll-features,
+.ll-plans,
+.ll-quotes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ss-gap);
+}
+.ll-features .ss-card,
+.ll-plans .ss-card,
+.ll-quotes .ss-card {
+  display: flex;
+  flex-direction: column;
+}
+.ll-features .ss-card .body,
+.ll-plans .ss-card .body,
+.ll-quotes .ss-card .body {
+  flex: 1;
+}
+.ll-glyph {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--ss-s-3);
+  fill: none;
+  stroke: var(--ss-primary);
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+.ll-features p {
+  margin: 0;
+  color: var(--ss-fg-muted);
+}
+
+/* ---- integrate ------------------------------------------------------------------------ */
+
+.ll-integrate {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: var(--ss-s-12);
+  align-items: center;
+}
+.ll-integrate .ll-sub {
+  margin-bottom: var(--ss-s-5);
+}
+.ll-integrate .ll-checks {
+  margin-bottom: var(--ss-s-5);
+}
+.ll-code {
+  margin: 0;
+  overflow-x: auto;
+}
+
+/* ---- pricing --------------------------------------------------------------------------- */
+
+.ll-billing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ss-s-3);
+  margin-top: var(--ss-s-6);
+}
+.ll-price {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ss-s-1);
+  margin: 0;
+  font-family: var(--ss-font-display);
+}
+.ll-price-cur {
+  font-size: var(--ss-size-h2);
+  color: var(--ss-fg-muted);
+}
+.ll-price-num {
+  font-size: var(--ss-size-h1);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.ll-price-per {
+  margin-inline-start: var(--ss-s-2);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  color: var(--ss-fg-faint);
+}
+.ll-price-note {
+  margin: var(--ss-s-2) 0 var(--ss-s-5);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  color: var(--ss-fg-faint);
+}
+.ll-checks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--ss-s-2);
+}
+.ll-checks li {
+  display: flex;
+  gap: var(--ss-s-2);
+  align-items: baseline;
+}
+.ll-checks li > span[aria-hidden] {
+  color: var(--ss-primary);
+  font-family: var(--ss-font-mono);
+}
+.ll-plan-hot {
+  outline: 1px solid var(--ss-primary);
+  outline-offset: 0;
+}
+.ll-plans .ss-card .title .ss-badge {
+  margin-inline-start: var(--ss-s-2);
+  vertical-align: middle;
+}
+
+/* ---- quotes --------------------------------------------------------------------------- */
+
+.ll-quote {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ss-s-5);
+  height: 100%;
+}
+.ll-quote blockquote {
+  margin: 0;
+  flex: 1;
+}
+.ll-quote blockquote p {
+  margin: 0;
+}
+.ll-quote-by {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-s-3);
+}
+.ll-quote-by > span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+.ll-quote-name {
+  color: var(--ss-fg);
+}
+.ll-quote-role {
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  color: var(--ss-fg-faint);
+}
+
+/* ---- CTA band + footer ---------------------------------------------------------------- */
+
+.ll-cta {
+  padding-block: var(--ss-s-14);
+  background: color-mix(in oklab, var(--ss-primary) 10%, var(--ss-bg));
+  border-top: 1px solid var(--ss-line);
+}
+.ll-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ss-s-8);
+  flex-wrap: wrap;
+}
+
+.ll-footer {
+  padding-block: var(--ss-s-12) var(--ss-s-8);
+  border-top: 1px solid var(--ss-line);
+  background: var(--ss-bg-elev);
+}
+.ll-footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(3, 1fr);
+  gap: var(--ss-s-8);
+  margin-bottom: var(--ss-s-8);
+}
+.ll-footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ss-s-3);
+}
+.ll-footer-tag {
+  margin: 0;
+  color: var(--ss-fg-muted);
+}
+.ll-footer-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ss-s-2);
+}
+.ll-footer-col h2 {
+  margin: 0 0 var(--ss-s-2);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ss-fg-faint);
+}
+.ll-footer .ss-footer {
+  flex-wrap: wrap;
+  gap: var(--ss-s-2);
+}
+
+/* ---- responsive ----------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  .ll-hero-grid {
+    grid-template-columns: 1fr;
+    gap: var(--ss-s-10);
+  }
+  .ll-window {
+    max-width: 720px;
+  }
+  .ll-integrate {
+    grid-template-columns: 1fr;
+  }
+  .ll-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .ll-header-row {
+    gap: var(--ss-s-3);
+  }
+  .ll-nav {
+    display: none;
+  }
+  .ll-hero {
+    padding-block: var(--ss-s-10) var(--ss-s-8);
+  }
+  .ll-section,
+  .ll-cta {
+    padding-block: var(--ss-s-10);
+  }
+  .ll-features,
+  .ll-plans,
+  .ll-quotes {
+    grid-template-columns: 1fr;
+  }
+  .ll-window-metrics {
+    grid-template-columns: 1fr;
+  }
+  .ll-logo-row {
+    justify-content: flex-start;
+  }
+  .ll-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .ll-header-actions .ss-btn.ghost:not(.icon-only) {
+    display: none;
+  }
+}
