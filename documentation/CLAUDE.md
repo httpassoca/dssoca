@@ -112,7 +112,10 @@ documentation/
       +page.svelte                 landing
       introduction|installation|theming/+page.svx   guide pages (Markdown)
       tokens/+page.svelte          live token gallery
-      components/[slug]/+page.{ts,svelte}  one config-driven page per component (entries() prerender)
+      vanilla/+page.svx            "Plain HTML & CSS" guide (DS-0148)
+      components/[slug]/+page.{server.ts,svelte}  one config-driven page per component; the
+                       SERVER load renders the component's `htmlExample` with svelte/server
+                       (lib/server/html-example.ts) into the page's HTML section
   test/                Vitest: docs.config invariants + highlighter
 ```
 
@@ -130,10 +133,14 @@ build of the library is needed first — the docs track the working tree.
 ## House rules
 
 - **Content = what exists today.** No speculative/future components or APIs.
-- **Add a component →** add an entry to `src/lib/docs.config.ts` (`COMPONENTS`): set its `storyId`
-  to the real Storybook id (`components-<name>--<story>`; confirm against
-  `../storybook-static/index.json` or a running Storybook). The nav, the page, and the prerender
-  `entries()` all derive from that array.
+- **Add a component →** add a file under `src/lib/component-docs/` (collected into `COMPONENTS`):
+  set its `storyId` to the real Storybook id (`components-<name>--<story>`; confirm against
+  `../storybook-static/index.json` or a running Storybook) and an **`htmlExample`** (plain,
+  serialisable props + raw-HTML snippets) — the build server-renders it into the page's HTML
+  section and `test/html-examples.test.ts` renders all of them. The nav, the page, and the
+  prerender `entries()` all derive from that array.
+- **`lib/server/html-example.ts` is server-only** (`svelte/server`); never import it from client
+  code. Vanilla-only markup hooks (`data-ss-*`, empty spinner frame) are added by its `FIXUPS`.
 - **Mdsvex `.svx`** compiles in **legacy** mode (it emits `$$props`); the `runes` override in
   `svelte.config.js` exempts `.svx`. Don't author runes in `.svx`.
 - **Code highlighting** is Prism, themed via `--ss-code-*` in `styles/code.css`. The mdsvex

@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const input: ComponentDoc = {
   name: 'Input',
   slug: 'input',
+  htmlExample: {
+    props: { label: 'Search', id: 'q', clearable: true, value: 'query', placeholder: 'Search…' },
+    behaviour: 'js',
+    note: 'vanilla.js wires the clear button (empties, refocuses, hides itself until you type).',
+  },
   tagline: 'Labelled text input with validation affordances.',
   description:
     'A text input with an optional label and auto-wired id. Supports `hint` and `error` helper text (error implies aria-invalid and is announced), prefix/suffix snippets inside the field, a `clearable` button, readonly/disabled styling, and native attribute forwarding (`autocomplete`, `inputmode`, `maxlength`, …).',

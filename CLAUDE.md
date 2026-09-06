@@ -47,7 +47,14 @@ src/lib/
   index.ts         barrel export (components + config + toast)
   dssoca.config.ts manifest (exported as `dssocaConfig`): axes/values/defaults — config source of truth
   config.ts        applyDesignConfig / designAttributes / getDesignConfig (derives types+defaults from the manifest)
-  toast.svelte.ts  reactive toast store + imperative `toast` API
+  toast.svelte.ts  reactive toast store + imperative `toast` API (types + timer in toast-core.ts)
+  icons.ts         BUILTIN_PATHS + registerIcon (shared by Icon.svelte and vanilla.js)
+  spinner-frames.ts SPINNER_VARIANTS (shared by Spinner.svelte and the vanilla CSS generator)
+  vanilla/         dssoca/vanilla.js — framework-free behaviours for plain HTML (no runes, no
+                   Svelte imports, relative .js imports only; DS-0148)
+scripts/
+  build-vanilla.mjs + lib/vanilla-css.mjs  generate dist/vanilla.css in prepack from the
+                   components' compiled <style> blocks (ROOT_CLASSES manifest lives there)
 src/styles/        Sass source (@use partials) → compiled to dist/theme.css; not published
   theme.scss       entry; _tokens / _base / _layout / _components partials
                    (the --ss-* / .ss-* prefix lives here — token + base-style source of truth)
@@ -57,8 +64,9 @@ docs/              themes.md, tokens.md
 agile/             work tracker (board = index.html). Slug: DS
 ```
 
-Published surface (`exports`): `dssoca` (components + config) and `dssoca/theme.css`. Only `dist/`
-ships (`files` field); `src/`, `test/`, `docs/` do not.
+Published surface (`exports`): `dssoca` (components + config), `dssoca/theme.css`,
+`dssoca/tokens.css`, and the plain-HTML path `dssoca/vanilla.css` + `dssoca/vanilla.js`
+(DS-0148). Only `dist/` ships (`files` field); `src/`, `test/`, `docs/` do not.
 
 ## House rules — non-negotiable
 
@@ -70,6 +78,11 @@ ships (`files` field); `src/`, `test/`, `docs/` do not.
 - **Styling is scoped**: component CSS lives in that component's `<style lang="scss">`. Only
   tokens, base/element styles, and app-shell/layout belong in `src/styles/` (global `theme.css`).
 - **New chrome reads size tokens** (`--ss-*`), not hardcoded px, or it won't rescale.
+- **`vanilla.css` is generated — never hand-edit it.** `scripts/build-vanilla.mjs` derives it from
+  the components' `<style>` blocks in `prepack`; the markup contract for plain HTML is the exact
+  DOM a component renders. `@keyframes` names must be `ss-`-prefixed (the generator throws
+  otherwise). A behaviour that must work in plain HTML goes in `src/lib/vanilla/` (no runes, no
+  Svelte imports, relative `.js` specifiers — guarded by `vanilla-purity.test.ts`).
 - **Tests are a RULE**: run `pnpm test` and add/extend tests for any change before calling it done.
   A11y is covered by `vitest-axe` (unit) + `@storybook/addon-a11y` (Storybook); target WCAG 2.2 AA.
 - **Docs are a RULE**: every user-facing change ships its docs. Update the component page in
@@ -92,8 +105,9 @@ pnpm lint               # ESLint (flat config, svelte + ts; severity baseline in
 pnpm format             # Prettier --write (no-semi, single quotes, 2-space, 100 cols)
 pnpm format:check       # Prettier --check (CI gate)
 pnpm check              # svelte-check (type-checks src + test under the SvelteKit tsconfig)
-pnpm pack               # build dist/ via prepack (sync → svelte-package → build:css → publint), make tarball
+pnpm pack               # build dist/ via prepack (sync → svelte-package → build:css → build:vanilla → publint), make tarball
 pnpm build:css          # compile src/styles/theme.scss → dist/theme.css (Dart Sass)
+pnpm build:vanilla      # generate dist/vanilla.css from dist/components/*.svelte (run after svelte-package)
 pnpm storybook          # Storybook dev server (port 6006): component pages + axis toolbar
 pnpm build-storybook    # static Storybook build → storybook-static/ (gitignored)
 pnpm release            # release helper: validates bump/branch, drafts changelog stub, prints git-flow steps
@@ -119,11 +133,13 @@ and CI enforces it as a blocking step.
 1. Add `src/lib/components/Foo.svelte` — style it in a scoped `<style lang="scss">` using `--ss-*`
    tokens; `.ss-foo` for the root identity, plain unprefixed names for internals. Don't add
    component rules to global `theme.css`.
-2. Export it from `src/lib/index.ts`.
+2. Export it from `src/lib/index.ts`, and register its root class in `ROOT_CLASSES`
+   (`scripts/lib/vanilla-css.mjs`) — the drift test fails otherwise.
 3. Add a Vitest test under `test/unit/` (mirror an existing one; harness in `test/harness/` if needed).
 4. `pnpm test` green; `pnpm pack` clean (publint).
-5. Update the docs: the component's entry in `documentation/src/lib/docs.config.ts` (props/usage/
-   description/notes) and `docs/tokens.md` / `docs/themes.md` for any new/changed tokens; keep
+5. Update the docs: the component's entry in `documentation/src/lib/component-docs/` (props/usage/
+   description/notes **and an `htmlExample`** — the docs build server-renders it into the page's
+   HTML section) and `docs/tokens.md` / `docs/themes.md` for any new/changed tokens; keep
    `pnpm docs:test` green.
 6. Update `agile/` + rebuild board.
 

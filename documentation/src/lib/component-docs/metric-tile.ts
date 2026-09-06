@@ -3,6 +3,10 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const metricTile: ComponentDoc = {
   name: 'MetricTile',
   slug: 'metric-tile',
+  htmlExample: {
+    props: { label: 'Requests', value: '1,204', delta: '+4.2%', trend: 'positive' },
+    behaviour: 'css',
+  },
   tagline: 'Single KPI value with delta.',
   description:
     'A labelled metric with optional prefix/suffix units and a directional delta. `trend` colours the delta by sentiment independently of the arrow `dir` (a rising error rate is negative), with an optional `deltaLabel`, an emphasis chip, a `loading` skeleton, and a `chart` snippet slot for hosting a <Sparkline>.',

@@ -1,0 +1,148 @@
+# Plain HTML & CSS
+
+dssoca is a Svelte 5 library, but its look and most of its behaviour are available to **any HTML
+page** — a static site, a quick demo, a CodePen — through two extra package entries:
+
+| Entry               | What it is                                                                                                                                                   |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `dssoca/vanilla.css` | Every component's styles, **generated at build time from the components' own `<style>` blocks** (never hand-written, so it cannot drift). Load it after `theme.css`. |
+| `dssoca/vanilla.js`  | A small, dependency-free ES module that wires the interactive components over the same markup, plus a `toast` API and icon hydration. Optional.               |
+
+The **markup contract is the exact DOM the Svelte components render**. Every component page on
+this site has an **HTML** section with that markup, produced by server-rendering the real
+component during the docs build — copy it as-is.
+
+## 1. Load the files
+
+From npm (`pnpm add dssoca`) or straight from a CDN, in this order:
+
+```html
+<html data-theme="dark" data-size-variant="md">
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/theme.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla/index.js"></script>
+  </head>
+  <body>
+    <button class="ss-btn primary" type="button">deploy</button>
+  </body>
+</html>
+```
+
+- **Order matters.** `vanilla.css` contains only component rules and relies on the tokens from
+  `theme.css` (or [`tokens.css`](/installation) if you own your global styles). It must come
+  _after_ them.
+- **The module is optional.** Static components (Button, Badge, Card, …) need only the CSS.
+- With a bundler: `import 'dssoca/theme.css'`, `import 'dssoca/vanilla.css'`, and
+  `import { toast, mount } from 'dssoca/vanilla.js'` (importing the module wires the behaviours).
+
+## Browser support
+
+`vanilla.css` isolates every component with a CSS
+[`@scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/@scope) block:
+
+```css
+@scope (.ss-card) to (.ss-btn, .ss-badge, /* …every other component root… */) {
+  :where(:scope).ss-card { … } /* the root itself (zero-specificity anchor) */
+  :where(:scope).ss-card .head { … } /* only Card's own .head, never a nested Button's */
+}
+```
+
+That is what lets the components keep their short internal class names (`.head`, `.label`,
+`.item`) in a global stylesheet without leaking into each other. It is also the **hard floor**:
+`@scope` needs **Chrome/Edge 118+, Safari 17.4+, or Firefox from early 2026**. Older browsers
+drop the scoped rules entirely — there is no fallback. The token layer and `theme.css` work
+everywhere.
+
+## The two axes
+
+Exactly as in Svelte: put `data-theme="dark|light"` and `data-size-variant="sm|md|lg"` on any
+ancestor (usually `<html>`), or on a single component root to override it locally. From JS,
+`applyDesignConfig` is re-exported by the module:
+
+```js
+import { applyDesignConfig } from 'dssoca/vanilla.js'
+applyDesignConfig({ theme: 'light', sizeVariant: 'sm' })
+```
+
+Custom palettes work the same way: paste the CSS block from the
+[Theme Builder](/theme-builder) after `theme.css`.
+
+## 2. Interactive components
+
+Importing `vanilla.js` installs **one set of delegated listeners on `document`** — nothing is
+scanned or observed, so markup you inject later just works. Behaviour is keyed on the classes and
+ARIA attributes the components already render; only hooks that have no natural home in the markup
+use a `data-ss-*` attribute.
+
+| Component                                      | Markup hook                                                          | What the module does                                                                                                     |
+| ---------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [Modal](/components/modal)                     | `<button data-ss-modal="#id">` opener, `data-ss-dismiss` inside      | Native `<dialog>`: `showModal()` / `close()`, backdrop click closes. `data-ss-static` keeps it open, `data-ss-no-esc` blocks Escape. |
+| [Accordion](/components/accordion)             | `.head[aria-controls]` (as rendered)                                 | Toggles the panel, single-open by default (`data-ss-multiple` on the root allows several), Arrow/Home/End. Emits `ss:change`. |
+| [Menu](/components/menu)                       | `.trigger` + `.panel[role=menu]` (as rendered)                       | Open/close, roving focus, Escape, outside click, focus return; radio items move the check. Emits `ss:select`.            |
+| [Tooltip](/components/tooltip)                 | `.ss-tooltip[data-placement]` (as rendered)                          | Shows on hover/focus, hides on leave/blur/Escape. Placement is used as-is (no collision flipping).                        |
+| [Switch](/components/switch)                   | `.track[role=switch]` (as rendered)                                  | Toggles `aria-checked` / `.on` from the track or the label. Emits `ss:change`.                                           |
+| [SegmentedControl](/components/segmented-control) | `.segment[role=radio]`, optional `data-value`                     | Click / arrows / Home / End select; emits `ss:change` with the `data-value`.                                             |
+| [Input](/components/input)                     | `.clear` button (as rendered when `clearable`)                       | Empties, refocuses, hides itself until you type.                                                                         |
+| [NumberField](/components/number-field)        | `.step.dec` / `.step.inc` (as rendered)                              | Nudges by `step`, clamps to `min`/`max`, disables at the bounds.                                                          |
+| [Textarea](/components/textarea)               | `.field.autosize` (as rendered)                                      | CSS `field-sizing: content` where supported; `scrollHeight` fallback otherwise.                                            |
+| [Spinner](/components/spinner)                 | empty `.frame` + `data-variant="pipe"` on the root                   | **CSS only**: `steps()` keyframes generated from the same frame tables; honours reduced motion.                           |
+| [Toaster](/components/toaster)                 | optional `.ss-toaster[data-position]` container                      | `toast.success(…)` etc. render into it (or into one the module creates).                                                  |
+| [Icon](/components/icon)                       | `<span data-ss-icon="check" data-size="sm">`                         | Replaced by the exact `<svg class="ss-icon">` the component renders (`mount()` for late markup).                          |
+
+Custom events bubble, so a single listener on a container works:
+
+```js
+document.addEventListener('ss:change', (e) => console.log(e.target, e.detail))
+```
+
+### Toasts
+
+```js
+import { toast, toasts } from 'dssoca/vanilla.js'
+
+toast.success('saved')
+toast.error('failed', { action: { label: 'retry', onClick: () => retry() } }) // sticky
+const id = toast.loading('uploading…')
+toasts.update(id, { kind: 'success', message: 'done' })
+toast.promise(fetch('/api'), { loading: 'saving…', success: 'saved', error: 'failed' })
+toasts.max = 5 // visible cap; extra toasts queue
+```
+
+Same names and defaults as the Svelte `toast` API. Swipe-to-dismiss is not ported.
+
+### Icons and late markup
+
+```js
+import { mount, iconSvg, registerIcon } from 'dssoca/vanilla.js'
+
+mount(container) // hydrate [data-ss-icon] + init autosize textareas you just inserted
+iconSvg('arrow', { size: 'sm' }) // the SVG markup as a string
+registerIcon('heart', '<path d="…"/>') // shared with the Svelte Icon registry
+```
+
+Placeholders support `data-size` (`xs|sm|md|lg`), `data-px`, `data-variant="solid"`, `data-spin`,
+`data-rotate`, `data-flip` and `data-title`. For a no-JS page, paste the rendered `<svg>` from the
+[Icon](/components/icon) page instead.
+
+## 3. Static components
+
+Everything else is **CSS only** — the markup renders correctly with `vanilla.css` alone, and any
+behaviour is yours to add: Button, Badge, Card, Link, Avatar, Kbd, Heading, Container, MetricTile,
+EmptyState, ServiceCard, Sparkline, DateField, Select, Pagination, Table (sorting), BottomNav,
+FileDrop, Image (lightbox), LogStream, Sidebar, Topbar, SearchPalette, ShortcutsHelp and the
+charts (Chart, ScatterPlot, BoxPlot, BumpChart, Heatmap — copy their rendered SVG).
+
+## Caveats
+
+- **Internal class names are reserved inside a component.** Under `@scope`, any `.label`, `.head`,
+  `.item`, `.title` … element inside a component root is styled as that component's part — unless
+  it sits under a nested component root. Wrap your own content or use different class names.
+- **IDs.** The Svelte components generate their `id` / `for` / `aria-controls` wiring. In plain
+  HTML you author those yourself (the snippets show working values).
+- **`.ss-table` in `theme.css` is deprecated.** The legacy layout class shares its name with the
+  Table component's root. It is unchanged in 0.17 and removed in 0.18; loading `vanilla.css`
+  after `theme.css` makes the component rules win in the meantime.
+- **Not ported:** Tooltip collision avoidance, Toaster swipe-to-dismiss, and the JS of the
+  components listed as static.
+- A live HTML playground on this site is a planned follow-up.

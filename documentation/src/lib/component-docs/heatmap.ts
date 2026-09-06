@@ -3,6 +3,18 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const heatmap: ComponentDoc = {
   name: 'Heatmap',
   slug: 'heatmap',
+  htmlExample: {
+    props: {
+      rows: ['api', 'db'],
+      columns: ['mon', 'tue', 'wed'],
+      values: [
+        [3, 7, 2],
+        [5, 1, 8],
+      ],
+    },
+    behaviour: 'css',
+    note: 'Rendered geometry: copy as-is. Hover tooltips are not wired by vanilla.js.',
+  },
   tagline: 'Token-driven matrix where cell colour intensity encodes value.',
   description:
     "A token-driven matrix/grid where each cell's colour intensity encodes its value, with row and column headers. Every cell is filled with `--ss-primary` and varies its opacity across a linear scale over the value domain, so the brightest cells are the strongest. `null` values render a blank cell that is excluded from the scale — ideal for a head-to-head win matrix where the diagonal (self) is empty. Every value cell is keyboard-focusable with an accessible tooltip, and empty input shows an em-dash placeholder.",

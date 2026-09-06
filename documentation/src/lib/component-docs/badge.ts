@@ -3,6 +3,7 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const badge: ComponentDoc = {
   name: 'Badge',
   slug: 'badge',
+  htmlExample: { props: { tone: 'positive', dot: true }, children: 'up', behaviour: 'css' },
   tagline: 'Compact status/label pill (square, of course).',
   description:
     'A small, non-interactive inline label with a semantic `tone` that backs the fill, border, foreground, and an optional leading `dot`. Also does numeric counts (clamped to `max`) and a live status region. Content is optional for dot- or count-only badges. Need a removable chip? That is a Tag/Chip concern, not a Badge.',

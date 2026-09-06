@@ -4,6 +4,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const switchDoc: ComponentDoc = {
   name: 'Switch',
   slug: 'switch',
+  htmlExample: {
+    props: { label: 'Wi-Fi', id: 'wifi' },
+    behaviour: 'js',
+    note: 'vanilla.js toggles aria-checked / .on from the track or the label and emits ss:change.',
+  },
   tagline: 'Accessible on/off toggle.',
   description:
     'A binary toggle built on a native `<button role="switch">`, so Space and Enter activate it for free. Bindable `checked`, an optional adjacent `label` (clicking it toggles too) that becomes the accessible name, and `disabled` for inert state. Square track and square thumb (house rule — no rounded pill); the track fills with the brand colour when on, transitions respect reduced-motion.',

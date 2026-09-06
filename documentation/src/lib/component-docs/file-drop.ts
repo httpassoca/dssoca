@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const fileDrop: ComponentDoc = {
   name: 'FileDrop',
   slug: 'file-drop',
+  htmlExample: {
+    props: { label: 'Upload', hint: 'PNG or JPG, up to 5 MB', accept: 'image/*' },
+    behaviour: 'css',
+    note: 'Static zone + hidden input: wire drag/drop and the file list yourself.',
+  },
   tagline: 'Drag-and-drop file upload with click-to-browse.',
   description:
     'A focusable drop zone that wraps a visually-hidden file input. Drag files in, or activate it with click / Enter / Space to open the native picker. Selections honour `accept` and `multiple`, render each file name with a human-readable size, and expose per-file remove plus a Clear control. Two-way `bind:files` and an `onfiles` callback keep callers in sync; `hint`/`error` provide field chrome and the error is announced to assistive tech.',

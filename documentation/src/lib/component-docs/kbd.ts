@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const kbd: ComponentDoc = {
   name: 'Kbd',
   slug: 'kbd',
+  htmlExample: {
+    props: { keys: 'mod+k' },
+    behaviour: 'css',
+    note: "Rendered for the platform at build time; the Svelte component adapts to the visitor's OS.",
+  },
   tagline: 'Display-only key-cap chip for shortcut hints.',
   description:
     'Renders a key combo from the shortcut grammar (`mod+k`, `?, mod+/`) as nested `<kbd>` key caps — correct per-platform glyphs (⌘K on Apple, Ctrl+K elsewhere), mono font, zero radius. Purely visual: it registers nothing and handles no events. Register the actual binding through `shortcuts.add()` / the `shortcut()` attachment, and use `<Kbd>` for the hint in buttons, menus, tooltips, and help overlays.',
