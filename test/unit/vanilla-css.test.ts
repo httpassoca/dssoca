@@ -43,22 +43,6 @@ const opts = {
 }
 const css = buildVanillaCss(compiled, opts)
 
-/** Rough selector specificity (a, b, c) — enough to compare against theme.css's layout rules. */
-function specificity(selector: string): [number, number, number] {
-  let s = selector.replace(/::?[a-z-]+\([^)]*\)/g, (m) => (m.startsWith('::') ? 'x' : m))
-  // :where() contributes nothing; :not()/:is() are approximated by their content class count.
-  s = s.replace(/:where\([^)]*\)/g, '')
-  const ids = (s.match(/#[\w-]+/g) ?? []).length
-  const classes =
-    (s.match(/\.[\w-]+/g) ?? []).length +
-    (s.match(/\[[^\]]+\]/g) ?? []).length +
-    (s.match(/(?<!:):[a-z-]+/g) ?? []).length
-  const elements =
-    (s.match(/(^|[\s>+~])[a-z][\w-]*/g) ?? []).length + (s.match(/::[a-z-]+/g) ?? []).length
-  return [ids, classes, elements]
-}
-const cmp = (a: number[], b: number[]) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]
-
 describe('vanilla css — hidden attribute survives component display rules', () => {
   it("Input's clear button honours [hidden] (vanilla.js toggles it instead of removing it)", () => {
     const rule = css.split('}').find((r) => /\.clear\[hidden\]/.test(r))
@@ -274,24 +258,6 @@ describe('vanilla.css — output', () => {
     void _drop
     expect(() => buildVanillaCss(rest, opts)).toThrow(/missing: \[Badge\]/)
     expect(() => buildVanillaCss({ ...compiled, Nope: '.x{}' }, opts)).toThrow(/unknown: \[Nope\]/)
-  })
-})
-
-describe('vanilla.css — Table vs the deprecated theme.css layout .ss-table', () => {
-  it('component rules for th/td/.head/.cell are more specific than the layout rules', () => {
-    // theme.css (loaded first) has `.ss-table th, .ss-table td` at (0,1,1). Every Table rule
-    // that styles those cells must be ≥ (0,2,0) so it wins regardless of tie-breaks.
-    const { scoped } = extractComponentCss('Table', compiled.Table)
-    const preludes = scoped
-      .filter((r) => !r.trimStart().startsWith('@'))
-      .map((r) => r.slice(0, r.indexOf('{')).trim())
-    const cellRules = preludes.filter((p) => /\b(th|td|\.head|\.cell)\b/.test(p))
-    expect(cellRules.length).toBeGreaterThan(0)
-    for (const p of cellRules) {
-      for (const sel of p.split(',')) {
-        expect(cmp(specificity(sel.trim()), [0, 2, 0]), sel).toBeGreaterThanOrEqual(0)
-      }
-    }
   })
 })
 

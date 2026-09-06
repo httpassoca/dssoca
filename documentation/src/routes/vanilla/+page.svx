@@ -150,9 +150,6 @@ every deploy, and their theme/size toggles use `applyDesignConfig`-equivalent at
   it sits under a nested component root. Wrap your own content or use different class names.
 - **IDs.** The Svelte components generate their `id` / `for` / `aria-controls` wiring. In plain
   HTML you author those yourself (the snippets show working values).
-- **`.ss-table` in `theme.css` is deprecated.** The legacy layout class shares its name with the
-  Table component's root. It is unchanged in 0.17 and removed in 0.18; loading `vanilla.css`
-  after `theme.css` makes the component rules win in the meantime.
 - **Not ported:** Tooltip collision avoidance, Toaster swipe-to-dismiss, and the JS of the
   components listed as static.
 - A live HTML playground on this site is a planned follow-up.
