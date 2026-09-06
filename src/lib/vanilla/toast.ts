@@ -63,6 +63,7 @@ class VanillaToastStore {
     if (!el) {
       el = document.createElement('div')
       el.className = 'ss-toaster'
+      el.setAttribute('role', 'region')
       el.setAttribute('aria-label', 'Notifications')
       el.dataset.position = 'top-right'
       document.body.appendChild(el)

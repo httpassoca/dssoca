@@ -1,0 +1,80 @@
+name: pages
+
+# Deploys the Inspirations site (DS-0150) — the example websites under `inspirations/`, built
+# on dssoca's plain-HTML path — to GitHub Pages at https://httpassoca.github.io/dssoca/.
+# Fires on every push to `main` (released code) and by hand from any branch that carries this
+# file (`gh workflow run pages.yml --ref <branch>`). The site is assembled from the CURRENT
+# source (`dist/` is rebuilt here, then vendored), and the gallery thumbnails are captured in
+# this run with the Playwright CLI — nothing generated is committed.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+  PLAYWRIGHT: playwright@1.63.0 # keep in sync with scripts/screenshot-inspirations.mjs
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24 # matches package.json#engines
+          package-manager-cache: false # see ci.yml — corepack activates pnpm below
+
+      - name: Enable pnpm via corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The same pipeline as `prepack` minus publint: the examples vendor these outputs.
+      - name: Build dist (svelte-package + theme.css + vanilla.css)
+        run: pnpm exec svelte-kit sync && pnpm exec svelte-package && pnpm build:css && pnpm build:vanilla
+
+      - name: Assemble the site
+        run: pnpm build:inspirations
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-${{ env.PLAYWRIGHT }}-headless-shell
+
+      - name: Install Chromium headless shell
+        run: pnpm dlx ${{ env.PLAYWRIGHT }} install --with-deps --only-shell chromium
+
+      - name: Capture gallery thumbnails
+        run: pnpm inspirations:shots
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: inspirations-dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

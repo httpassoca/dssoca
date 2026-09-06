@@ -19,9 +19,9 @@ From npm (`pnpm add dssoca`) or straight from a CDN, in this order:
 ```html
 <html data-theme="dark" data-size-variant="md">
   <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/theme.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla.css" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/theme.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla/index.js"></script>
   </head>
   <body>
     <button class="ss-btn primary" type="button">deploy</button>
@@ -133,6 +133,16 @@ EmptyState, ServiceCard, Sparkline, DateField, Select, Pagination, Table (sortin
 FileDrop, Image (lightbox), LogStream, Sidebar, Topbar, SearchPalette, ShortcutsHelp and the
 charts (Chart, ScatterPlot, BoxPlot, BumpChart, Heatmap — copy their rendered SVG).
 
+## See it composed into whole sites
+
+The [Inspirations](https://httpassoca.github.io/dssoca/) site is twelve example websites — an
+ops dashboard, a social feed, a dating app, a team chat, a landing page, a blog, a media tracker,
+a storefront, a mail client, a kanban board, a music player and an account-settings screen —
+each written by hand in plain HTML on exactly this path. Open one, view its source, copy what
+you like. They live in the repo under `inspirations/`, are rebuilt from the current source on
+every deploy, and their theme/size toggles use `applyDesignConfig`-equivalent attributes on
+`<html>`, so they double as a test of the two axes at page scale.
+
 ## Caveats
 
 - **Internal class names are reserved inside a component.** Under `@scope`, any `.label`, `.head`,
@@ -140,9 +150,6 @@ charts (Chart, ScatterPlot, BoxPlot, BumpChart, Heatmap — copy their rendered 
   it sits under a nested component root. Wrap your own content or use different class names.
 - **IDs.** The Svelte components generate their `id` / `for` / `aria-controls` wiring. In plain
   HTML you author those yourself (the snippets show working values).
-- **`.ss-table` in `theme.css` is deprecated.** The legacy layout class shares its name with the
-  Table component's root. It is unchanged in 0.17 and removed in 0.18; loading `vanilla.css`
-  after `theme.css` makes the component rules win in the meantime.
 - **Not ported:** Tooltip collision avoidance, Toaster swipe-to-dismiss, and the JS of the
   components listed as static.
 - A live HTML playground on this site is a planned follow-up.

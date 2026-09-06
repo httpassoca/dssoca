@@ -142,39 +142,6 @@
   }
 }
 
-// ---------- table ----------
-// DEPRECATED in 0.17.0 (DS-0148), removed in 0.18.0 (DS-0149): this global layout class
-// predates the Table component, whose root is also `.ss-table`. Use `<Table>` or, in plain
-// HTML, its markup + `dssoca/vanilla.css` (which must load after this sheet so the component
-// rules win). `//` comments are dropped by Sass, so theme.css output is unchanged.
-.ss-table {
-  width: 100%;
-  border-collapse: collapse;
-
-  th,
-  td {
-    text-align: left;
-    padding: var(--ss-row-py) var(--ss-row-px);
-    font-size: var(--ss-ui-md);
-    border-bottom: 1px solid var(--ss-line);
-    font-family: var(--ss-font-mono);
-  }
-  th {
-    font-size: var(--ss-ui-xs);
-    color: var(--ss-fg-faint);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 400;
-    padding: var(--ss-row-py) var(--ss-row-px);
-  }
-  tr:hover td {
-    background: var(--ss-hover);
-  }
-  .mono {
-    color: var(--ss-fg-muted);
-  }
-}
-
 // ---------- footer ----------
 .ss-footer {
   margin-top: var(--ss-s-3);

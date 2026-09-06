@@ -1,0 +1,209 @@
+/* Reelog — page layout only. Components style themselves (vanilla.css); tokens only here. */
+
+.rl-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.rl-page > .ss-main {
+  flex: 1;
+}
+
+.rl-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.rl-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- header ---- */
+.rl-user {
+  font-family: var(--ss-font-mono);
+  color: var(--ss-fg);
+}
+
+/* ---- hero: page title on the left, three metric tiles on the right ---- */
+.rl-hero {
+  flex-wrap: wrap;
+}
+.rl-hero-text {
+  flex: 1 1 240px;
+}
+.rl-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(140px, 1fr));
+  gap: var(--ss-gap);
+  flex: 0 1 560px;
+}
+
+/* ---- toolbar ---- */
+.rl-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ss-gap);
+  margin-bottom: var(--ss-gap-sm);
+}
+.rl-search {
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+.rl-sort {
+  flex: 0 0 auto;
+}
+.rl-count {
+  margin: 0 0 var(--ss-gap);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  color: var(--ss-fg-faint);
+}
+
+/* ---- views ---- */
+.rl-view[hidden],
+.rl-empty[hidden] {
+  display: none;
+}
+
+.rl-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--ss-gap);
+}
+.rl-grid .ss-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.rl-grid .ss-card > .foot {
+  margin-top: auto;
+}
+.rl-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ss-gap-xs);
+  align-items: center;
+}
+
+/* Poster placeholders (own SVG, coloured with tokens) */
+.rl-poster {
+  aspect-ratio: 2 / 3;
+  height: auto;
+}
+.rl-shape {
+  fill: var(--ss-bg);
+  opacity: 0.2;
+}
+.rl-ring {
+  fill: none;
+  stroke: var(--ss-bg);
+  stroke-width: 4;
+  opacity: 0.25;
+}
+.rl-line {
+  stroke: var(--ss-bg);
+  stroke-width: 3;
+  opacity: 0.25;
+}
+.rl-stroke {
+  fill: none;
+  stroke: var(--ss-bg);
+  stroke-width: 5;
+  opacity: 0.3;
+}
+.rl-band {
+  fill: var(--ss-bg);
+  opacity: 0.82;
+}
+.rl-poster-title {
+  fill: var(--ss-fg);
+  font-family: var(--ss-font-display);
+  font-size: 17px;
+  letter-spacing: 0.02em;
+}
+
+.rl-table {
+  overflow-x: auto;
+}
+.rl-empty {
+  padding: var(--ss-block-gap) 0;
+}
+.rl-pagination {
+  margin-top: var(--ss-block-gap);
+  justify-content: center;
+}
+
+/* ---- rate dialog ---- */
+.rl-rate-for {
+  margin: 0 0 var(--ss-gap);
+  color: var(--ss-fg-muted);
+}
+.rl-rate-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ss-gap);
+  align-items: start;
+}
+
+/* ---- footer + mobile nav ---- */
+.rl-footer {
+  margin: 0 var(--ss-main-px) var(--ss-s-8);
+}
+.rl-mobile-nav {
+  display: none;
+}
+
+/* ---- responsive ---- */
+@media (max-width: 1100px) {
+  .rl-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .rl-stats {
+    flex-basis: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .rl-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .rl-rate-form {
+    grid-template-columns: 1fr;
+  }
+  .rl-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 520px) {
+  .rl-mobile-nav {
+    display: block;
+  }
+  .rl-page {
+    padding-bottom: var(--ss-s-16);
+  }
+  .rl-footer {
+    margin-bottom: var(--ss-s-16);
+  }
+}
+
+/* Long segmented strips scroll instead of overflowing the toolbar on narrow screens. */
+.rl-toolbar .ss-segmented {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.rl-added {
+  white-space: nowrap;
+}

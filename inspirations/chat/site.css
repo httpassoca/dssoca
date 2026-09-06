@@ -1,0 +1,505 @@
+/* Relay — page layout only (tokens, zero radius). Component styling comes from vanilla.css. */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+.relay-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Shell: rail | channels | main | members ─────────────────────────────── */
+
+.relay {
+  --relay-rail-w: var(--ss-s-16);
+  --relay-members-w: calc(var(--ss-s-16) * 4);
+
+  display: grid;
+  grid-template-columns: var(--relay-rail-w) var(--ss-side-w) minmax(0, 1fr) var(--relay-members-w);
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ── Server rail ─────────────────────────────────────────────────────────── */
+
+.relay-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ss-s-2);
+  padding: var(--ss-s-2) 0;
+  background: var(--ss-bg-elev);
+  border-right: 1px solid var(--ss-line);
+  overflow-y: auto;
+}
+
+.relay-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ss-s-9);
+  height: var(--ss-s-9);
+  margin-bottom: var(--ss-s-1);
+  font: 700 var(--ss-size-h3) var(--ss-font-display, var(--ss-font-mono));
+  color: var(--ss-fg-on-primary);
+  background: var(--ss-primary);
+  text-decoration: none;
+}
+
+.relay-brand:focus-visible {
+  outline: 2px solid var(--ss-fg);
+  outline-offset: 2px;
+}
+
+.relay-servers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ss-s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relay-server {
+  display: block;
+  margin: 0;
+  padding: var(--ss-s-1);
+  border: 0;
+  border-left: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  transition: border-color var(--ss-dur-fast) var(--ss-ease);
+}
+
+.relay-server:hover,
+.relay-server[aria-current='true'] {
+  border-left-color: var(--ss-primary);
+}
+
+.relay-server:focus-visible {
+  outline: 2px solid var(--ss-primary);
+  outline-offset: 2px;
+}
+
+.relay-rail-tail {
+  margin-top: auto;
+}
+
+/* ── Channel sidebar ─────────────────────────────────────────────────────── */
+
+.relay-channels {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--ss-bg);
+}
+
+.relay-ws {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ss-s-2);
+  padding: var(--ss-s-3) var(--ss-s-4);
+  border-bottom: 1px solid var(--ss-line);
+  border-right: 1px solid var(--ss-line);
+}
+
+.relay-ws-name {
+  font: 600 var(--ss-ui-md) var(--ss-font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relay-channels .ss-side {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.relay-me {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--ss-s-2);
+  padding: var(--ss-s-2) var(--ss-s-3);
+  border-top: 1px solid var(--ss-line);
+  border-right: 1px solid var(--ss-line);
+  background: var(--ss-bg-elev);
+}
+
+.relay-me-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.relay-me-name {
+  font: 600 var(--ss-ui-sm) var(--ss-font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relay-me-handle {
+  font-size: var(--ss-size-xs);
+  color: var(--ss-fg-faint);
+}
+
+/* ── Main column ─────────────────────────────────────────────────────────── */
+
+.relay-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.relay-chan {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-gap-sm);
+  padding: var(--ss-s-2) var(--ss-s-4);
+  border-bottom: 1px solid var(--ss-line);
+  background: var(--ss-bg-elev);
+}
+
+.relay-chan .relay-nav-toggle {
+  display: none;
+}
+
+.relay-chan-name {
+  margin: 0;
+  font-size: var(--ss-size-h3);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.relay-topic {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding-left: var(--ss-s-3);
+  border-left: 1px solid var(--ss-line);
+  font-size: var(--ss-size-sm);
+  color: var(--ss-fg-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relay-search {
+  flex: 0 0 auto;
+  width: calc(var(--ss-s-16) * 3.5);
+}
+
+.relay-search .ss-input {
+  width: 100%;
+  min-width: 0;
+}
+
+/* vanilla.js toggles `hidden` on the clear button, but the component sheet's display rule
+   would otherwise win over the attribute (Input.svelte removes the button instead). */
+.relay-search .clear[hidden] {
+  display: none;
+}
+
+/* Count badges in the chrome must stay on one line. */
+.relay-ws .ss-badge,
+.relay-chan .ss-badge {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* ── Message log ─────────────────────────────────────────────────────────── */
+
+.relay-log {
+  overflow-y: auto;
+  padding: var(--ss-s-4) var(--ss-s-4) var(--ss-s-2);
+  /* Elevated surface: badge washes inside messages keep AA contrast on it in both themes. */
+  background: var(--ss-bg-elev);
+  scroll-behavior: smooth;
+}
+
+/* Scrollable regions are keyboard-focusable (tabindex="0"); show where focus is. */
+.relay-log:focus-visible,
+.relay-members:focus-visible {
+  outline: 2px solid var(--ss-primary);
+  outline-offset: -2px;
+}
+
+.relay-msgs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ss-s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relay-group {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--ss-s-3);
+  align-items: start;
+}
+
+.relay-group-body {
+  min-width: 0;
+}
+
+.relay-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ss-s-2);
+}
+
+.relay-author {
+  font: 600 var(--ss-ui-md) var(--ss-font-mono);
+}
+
+.relay-msgs time {
+  font: var(--ss-ui-xs) var(--ss-font-mono);
+  color: var(--ss-fg-faint);
+}
+
+.relay-msg {
+  margin: var(--ss-s-1) 0 0;
+  overflow-wrap: anywhere;
+}
+
+/* Messages typed into the composer keep their line breaks. */
+.relay-msg.relay-live {
+  white-space: pre-wrap;
+}
+
+.relay-group-body pre {
+  margin: var(--ss-s-2) 0 0;
+  max-width: 72ch;
+  overflow-x: auto;
+}
+
+.relay-sys {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-s-2);
+  padding-left: calc(var(--ss-avatar-size-md, 36px) + var(--ss-s-3));
+  font-size: var(--ss-size-sm);
+  color: var(--ss-fg-muted);
+}
+
+.relay-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-s-2);
+  font: 600 var(--ss-ui-xs) var(--ss-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ss-danger);
+}
+
+.relay-divider::before,
+.relay-divider::after {
+  content: '';
+  flex: 1 1 auto;
+  border-top: 1px solid var(--ss-danger);
+}
+
+.relay-reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ss-s-1);
+  margin: var(--ss-s-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ── Composer ────────────────────────────────────────────────────────────── */
+
+.relay-composer-wrap {
+  padding: var(--ss-s-2) var(--ss-s-4) var(--ss-s-3);
+  border-top: 1px solid var(--ss-line);
+  /* Plain page background: the Kbd key caps' translucent wash must stay AA on this surface. */
+  background: var(--ss-bg);
+}
+
+.relay-composer {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--ss-s-2);
+  margin: 0;
+}
+
+.relay-composer-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-s-1);
+}
+
+.relay-draft {
+  min-width: 0;
+}
+
+.relay-hint {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ss-s-2);
+  margin: 0;
+  font-size: var(--ss-size-xs);
+  color: var(--ss-fg-faint);
+}
+
+/* ── Members panel ───────────────────────────────────────────────────────── */
+
+.relay-members {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ss-s-5);
+  min-height: 0;
+  padding: var(--ss-s-4) var(--ss-s-3);
+  border-left: 1px solid var(--ss-line);
+  background: var(--ss-bg-elev);
+  overflow-y: auto;
+}
+
+.relay-members h2 {
+  margin: 0 0 var(--ss-s-2);
+  font: 600 var(--ss-ui-sm) var(--ss-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ss-fg-muted);
+}
+
+.relay-members h3 {
+  margin: var(--ss-s-3) 0 var(--ss-s-1);
+  font: 500 var(--ss-ui-xs) var(--ss-font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ss-fg-faint);
+}
+
+.relay-member-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relay-member {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--ss-s-2);
+  padding: var(--ss-s-1) 0;
+}
+
+.relay-member-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.relay-member-name {
+  font: 500 var(--ss-ui-sm) var(--ss-font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relay-member-role {
+  font-size: var(--ss-size-xs);
+  color: var(--ss-fg-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Offline members read muted by colour only — no opacity, so avatars/badges keep AA contrast. */
+.relay-offline .relay-member-name {
+  color: var(--ss-fg-muted);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .relay {
+    grid-template-columns: var(--relay-rail-w) var(--ss-side-w) minmax(0, 1fr);
+  }
+
+  .relay-members {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .relay {
+    grid-template-columns: var(--relay-rail-w) minmax(0, 1fr);
+  }
+
+  .relay-channels {
+    display: none;
+    position: fixed;
+    inset: 0 auto 0 var(--relay-rail-w);
+    z-index: 5;
+    width: var(--ss-side-w);
+    box-shadow: var(--ss-shadow-pop);
+  }
+
+  .relay.channels-open .relay-channels {
+    display: flex;
+  }
+
+  .relay-chan .relay-nav-toggle {
+    display: inline-flex;
+  }
+
+  .relay-topic {
+    display: none;
+  }
+
+  .relay-sys {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .relay-chan .relay-search,
+  .relay-hint {
+    display: none;
+  }
+
+  .relay-chan {
+    padding-inline: var(--ss-s-2);
+  }
+
+  .relay-log,
+  .relay-composer-wrap {
+    padding-inline: var(--ss-s-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relay-log {
+    scroll-behavior: auto;
+  }
+}

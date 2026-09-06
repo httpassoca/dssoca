@@ -10,6 +10,11 @@
     status?: SideStatus
     /** Optional URL — when set the item renders as a real `<a href>`. */
     href?: string
+    /**
+     * Off-site link (needs `href`): opens in a new tab with `rel="noopener noreferrer"`, shows
+     * a trailing external glyph and announces "(opens in a new tab)".
+     */
+    external?: boolean
     /** Optional count/label rendered as a square badge near the status dot. */
     badge?: string | number
     /** One level of nested sub-items, rendered with the Disclosure pattern. */
@@ -79,6 +84,7 @@
     const parts = [item.label]
     if (item.status && STATUS_WORD[item.status]) parts.push(STATUS_WORD[item.status])
     if (item.badge != null && item.badge !== '') parts.push(`${item.badge}`)
+    if (item.external) parts.push('opens in a new tab')
     return parts.join(', ')
   }
 
@@ -169,6 +175,8 @@
                     <a
                       class="item child {isActive(child) ? 'active' : ''}"
                       href={child.href}
+                      target={child.external ? '_blank' : undefined}
+                      rel={child.external ? 'noopener noreferrer' : undefined}
                       aria-current={isActive(child) ? 'page' : undefined}
                       aria-label={collapsed ? accessibleName(child) : undefined}
                       title={collapsed ? accessibleName(child) : undefined}
@@ -176,6 +184,10 @@
                     >
                       {#if child.icon}<Icon name={child.icon} px={13} />{/if}
                       <span class="label">{child.label}</span>
+                      {#if child.external}
+                        <span class="ext" aria-hidden="true"><Icon name="external" px={11} /></span>
+                        <span class="sr-only">(opens in a new tab)</span>
+                      {/if}
                       {#if child.badge != null && child.badge !== ''}
                         <span class="badge">{child.badge}</span>
                       {/if}
@@ -230,6 +242,8 @@
             <a
               class="item {isActive(item) ? 'active' : ''}"
               href={item.href}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noopener noreferrer' : undefined}
               aria-current={isActive(item) ? 'page' : undefined}
               aria-label={collapsed ? accessibleName(item) : undefined}
               title={collapsed ? accessibleName(item) : undefined}
@@ -237,6 +251,10 @@
             >
               {#if item.icon}<Icon name={item.icon} px={13} />{/if}
               <span class="label">{item.label}</span>
+              {#if item.external}
+                <span class="ext" aria-hidden="true"><Icon name="external" px={11} /></span>
+                <span class="sr-only">(opens in a new tab)</span>
+              {/if}
               {#if item.badge != null && item.badge !== ''}
                 <span class="badge">{item.badge}</span>
               {/if}
@@ -402,6 +420,24 @@
         min-width: 0;
       }
 
+      /* Off-site glyph (external items) — muted, never steals the row's colour. */
+      .ext {
+        flex: 0 0 auto;
+        display: inline-flex;
+        color: var(--ss-fg-faint);
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
       .badge {
         flex: 0 0 auto;
         margin-left: auto;
@@ -458,5 +494,12 @@
         color: var(--ss-fg);
       }
     }
+  }
+
+  // theme.css draws an animated underline under every <a> (`a::before`). These anchors are
+  // component chrome, not prose links — cancel it here so the reset also ships in vanilla.css
+  // (DS-0150; the specificity of a scoped class beats the global element rule).
+  .item::before {
+    content: none;
   }
 </style>

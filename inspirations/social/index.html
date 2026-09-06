@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Signal — Home</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body>
+    <a class="sig-skip" href="#sig-main">Skip to timeline</a>
+
+    <header class="sig-top">
+      <div class="sig-top-inner">
+        <a class="sig-brand" href="#sig-main" aria-label="Signal home">
+          <svg class="sig-brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="2" y="14" width="4" height="8" fill="var(--ss-primary)" />
+            <rect x="8" y="9" width="4" height="13" fill="var(--ss-primary)" />
+            <rect x="14" y="4" width="4" height="18" fill="var(--ss-primary)" />
+            <rect x="20" y="2" width="2" height="20" fill="var(--ss-fg-faint)" />
+          </svg>
+          <span class="sig-brand-name">signal</span>
+        </a>
+        <div class="sig-top-status">
+          <span class="ss-badge positive">
+            <span class="dot" aria-hidden="true"></span>
+            live
+          </span>
+          <span class="sig-top-meta">127 online · federated</span>
+        </div>
+        <div class="sig-top-actions">
+          <button
+            class="ss-btn ghost icon-only"
+            type="button"
+            id="sig-theme"
+            aria-label="Switch to light theme"
+          >
+            <span class="affix" aria-hidden="true">
+              <span data-ss-icon="color-swatch" data-size="sm"></span>
+            </span>
+          </button>
+          <span
+            class="ss-avatar"
+            role="img"
+            aria-label="Mira Okafor"
+            style="--ss-avatar-bg: var(--ss-cyan)"
+          >
+            <span class="initials" aria-hidden="true">MO</span>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <div class="sig-shell">
+      <!-- ============ left column: primary navigation (Sidebar) ============ -->
+      <div class="sig-left">
+        <nav class="ss-side" aria-label="Primary">
+          <div class="section" id="sig-side-sec-0">Timeline</div>
+          <ul class="list" aria-labelledby="sig-side-sec-0">
+            <li class="row">
+              <a class="item active" href="#sig-main" aria-current="page">
+                <span data-ss-icon="home" data-px="13"></span>
+                <span class="label">Home</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#explore">
+                <span data-ss-icon="grid" data-px="13"></span>
+                <span class="label">Explore</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#notifications">
+                <span data-ss-icon="activity" data-px="13"></span>
+                <span class="label">Notifications</span>
+                <span class="badge">4</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#messages">
+                <span data-ss-icon="note" data-px="13"></span>
+                <span class="label">Messages</span>
+                <span class="badge">2</span>
+                <span class="dot" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#profile">
+                <span data-ss-icon="user" data-px="13"></span>
+                <span class="label">Profile</span>
+              </a>
+            </li>
+          </ul>
+          <div class="section" id="sig-side-sec-1">You</div>
+          <ul class="list" aria-labelledby="sig-side-sec-1">
+            <li class="row">
+              <a class="item" href="#bookmarks">
+                <span data-ss-icon="book" data-px="13"></span>
+                <span class="label">Bookmarks</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#lists">
+                <span data-ss-icon="folder" data-px="13"></span>
+                <span class="label">Lists</span>
+              </a>
+            </li>
+            <li class="row">
+              <a class="item" href="#settings">
+                <span data-ss-icon="settings" data-px="13"></span>
+                <span class="label">Settings</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <div class="sig-left-cta">
+          <button class="ss-btn primary full-width" type="button" id="sig-compose-jump">
+            <span class="label">new post</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============ centre column: the timeline ============ -->
+      <main class="sig-main" id="sig-main">
+        <div class="sig-main-head">
+          <h1 class="sig-h1">Home</h1>
+          <span class="sig-main-sub">following · 214 accounts</span>
+        </div>
+
+        <!-- composer -->
+        <section class="sig-composer" aria-labelledby="sig-composer-title">
+          <h2 id="sig-composer-title" class="sig-sr-only">Compose a post</h2>
+          <span
+            class="ss-avatar"
+            role="img"
+            aria-label="Mira Okafor"
+            style="--ss-avatar-bg: var(--ss-cyan)"
+          >
+            <span class="initials" aria-hidden="true">MO</span>
+          </span>
+          <div class="sig-composer-form">
+            <div class="ss-textarea">
+              <div class="control">
+                <textarea
+                  class="field autosize"
+                  id="sig-compose"
+                  aria-label="What is happening?"
+                  placeholder="What is happening?"
+                  rows="2"
+                  maxlength="500"
+                  style="max-height: calc(8 * 1lh + 2 * var(--ss-input-py))"
+                ></textarea>
+              </div>
+            </div>
+            <div class="sig-composer-row">
+              <div class="sig-composer-tools">
+                <button class="ss-btn ghost icon-only" type="button" aria-label="Attach an image">
+                  <span class="affix" aria-hidden="true">
+                    <span data-ss-icon="film" data-size="sm"></span>
+                  </span>
+                </button>
+                <button class="ss-btn ghost icon-only" type="button" aria-label="Add a poll">
+                  <span class="affix" aria-hidden="true">
+                    <span data-ss-icon="logs" data-size="sm"></span>
+                  </span>
+                </button>
+                <button class="ss-btn ghost icon-only" type="button" aria-label="Set post language">
+                  <span class="affix" aria-hidden="true">
+                    <span data-ss-icon="language" data-size="sm"></span>
+                  </span>
+                </button>
+              </div>
+              <span class="ss-badge neutral" id="sig-count" role="status" aria-live="polite"
+                >0 / 500</span
+              >
+              <button class="ss-btn primary" type="button" id="sig-post" disabled>
+                <span class="label">post</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- feed -->
+        <section class="sig-feed" aria-labelledby="sig-feed-title">
+          <h2 id="sig-feed-title" class="sig-sr-only">Timeline</h2>
+
+          <!-- post 1 -->
+          <article class="sig-post" id="post-1" data-post>
+            <div class="ss-card">
+              <div class="body">
+                <div class="sig-post-head">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Tomas Lindqvist"
+                    style="--ss-avatar-bg: var(--ss-green)"
+                  >
+                    <span class="initials" aria-hidden="true">TL</span>
+                  </span>
+                  <div class="sig-post-who">
+                    <span class="sig-post-name">
+                      Tomas Lindqvist
+                      <span class="ss-tooltip" data-placement="top">
+                        <span class="trigger">
+                          <span
+                            class="ss-badge brand label-less"
+                            role="img"
+                            aria-label="Verified account"
+                            tabindex="0"
+                            >✓</span
+                          >
+                        </span>
+                        <span class="tip" role="tooltip" hidden
+                          >Verified · identity confirmed 2025</span
+                        >
+                      </span>
+                    </span>
+                    <span class="sig-post-handle">@tomas@signal.net</span>
+                  </div>
+                  <span class="ss-tooltip" data-placement="bottom">
+                    <span class="trigger">
+                      <a class="sig-post-time" href="#post-1">12m</a>
+                    </span>
+                    <span class="tip" role="tooltip" hidden>Sep 6, 2026 · 09:41 UTC</span>
+                  </span>
+                </div>
+                <p class="sig-post-text">
+                  Rewrote the whole notification pipeline in a weekend. Zero queues, one cron, and a
+                  sqlite file that has never once let me down. Sometimes the boring stack wins.
+                </p>
+              </div>
+              <div class="foot">
+                <div class="sig-actions">
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="reply"
+                    aria-label="Reply (14 replies)"
+                  >
+                    <span class="affix" aria-hidden="true">↩</span>
+                    <span class="label">14</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="boost"
+                    aria-label="Boost (32 boosts)"
+                  >
+                    <span class="affix" aria-hidden="true">⇄</span>
+                    <span class="label">32</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="like"
+                    aria-pressed="false"
+                    aria-label="Like (118 likes)"
+                  >
+                    <span class="affix" aria-hidden="true">♡</span>
+                    <span class="label">118</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="share"
+                    aria-label="Share post"
+                  >
+                    <span class="affix" aria-hidden="true">↗</span>
+                    <span class="label">share</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- post 2: media + overflow menu -->
+          <article class="sig-post" id="post-2" data-post>
+            <div class="ss-card">
+              <div class="media">
+                <svg viewBox="0 0 640 300" aria-hidden="true" focusable="false" class="sig-media">
+                  <defs>
+                    <linearGradient id="sig-g1" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="var(--ss-bg-elev-hover)" />
+                      <stop offset="1" stop-color="var(--ss-bg)" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="640" height="300" fill="url(#sig-g1)" />
+                  <g fill="none" stroke="var(--ss-line)" stroke-width="1">
+                    <path d="M0 60H640M0 120H640M0 180H640M0 240H640" />
+                    <path
+                      d="M80 0V300M160 0V300M240 0V300M320 0V300M400 0V300M480 0V300M560 0V300"
+                    />
+                  </g>
+                  <polyline
+                    points="0,230 80,210 160,225 240,150 320,170 400,90 480,110 560,60 640,80"
+                    fill="none"
+                    stroke="var(--ss-primary)"
+                    stroke-width="3"
+                  />
+                  <polyline
+                    points="0,260 80,255 160,240 240,235 320,220 400,200 480,190 560,170 640,160"
+                    fill="none"
+                    stroke="var(--ss-cyan)"
+                    stroke-width="2"
+                  />
+                  <rect
+                    x="24"
+                    y="24"
+                    width="150"
+                    height="26"
+                    fill="var(--ss-bg)"
+                    stroke="var(--ss-line-strong)"
+                  />
+                  <text x="36" y="42" font-family="monospace" font-size="14" fill="var(--ss-fg)">
+                    fediverse growth, 2026
+                  </text>
+                </svg>
+              </div>
+              <div class="body">
+                <div class="sig-post-head">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Priya Raghunathan"
+                    style="--ss-avatar-bg: var(--ss-magenta)"
+                  >
+                    <span class="initials" aria-hidden="true">PR</span>
+                  </span>
+                  <div class="sig-post-who">
+                    <span class="sig-post-name">Priya Raghunathan</span>
+                    <span class="sig-post-handle">@priya@data.social</span>
+                  </div>
+                  <span class="ss-tooltip" data-placement="bottom">
+                    <span class="trigger">
+                      <a class="sig-post-time" href="#post-2">38m</a>
+                    </span>
+                    <span class="tip" role="tooltip" hidden>Sep 6, 2026 · 09:15 UTC</span>
+                  </span>
+                  <div class="ss-menu" data-align="end" data-side="bottom">
+                    <button
+                      type="button"
+                      class="trigger"
+                      aria-haspopup="menu"
+                      aria-expanded="false"
+                      aria-controls="sig-menu-2"
+                      aria-label="More options for this post"
+                    >
+                      ···
+                    </button>
+                    <div
+                      id="sig-menu-2"
+                      class="panel"
+                      role="menu"
+                      aria-label="Post options"
+                      aria-hidden="true"
+                      tabindex="-1"
+                    >
+                      <button
+                        type="button"
+                        class="item"
+                        data-mi="0"
+                        data-value="mute"
+                        role="menuitem"
+                        tabindex="-1"
+                      >
+                        <span class="label">Mute @priya</span>
+                        <span class="marker" aria-hidden="true"></span>
+                      </button>
+                      <button
+                        type="button"
+                        class="item"
+                        data-mi="1"
+                        data-value="block"
+                        role="menuitem"
+                        tabindex="-1"
+                      >
+                        <span class="label">Block @priya</span>
+                        <span class="marker" aria-hidden="true"></span>
+                      </button>
+                      <button
+                        type="button"
+                        class="item"
+                        data-mi="2"
+                        data-value="report"
+                        role="menuitem"
+                        tabindex="-1"
+                      >
+                        <span class="label">Report post</span>
+                        <span class="marker" aria-hidden="true"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <p class="sig-post-text">
+                  Monthly actives across the open network, Jan → Aug. The green line is the number
+                  everyone quotes; the cyan one (accounts posting weekly) is the one that matters.
+                  Thread with the method below.
+                </p>
+              </div>
+              <div class="foot">
+                <div class="sig-actions">
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="reply"
+                    aria-label="Reply (41 replies)"
+                  >
+                    <span class="affix" aria-hidden="true">↩</span>
+                    <span class="label">41</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="boost"
+                    aria-label="Boost (203 boosts)"
+                  >
+                    <span class="affix" aria-hidden="true">⇄</span>
+                    <span class="label">203</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="like"
+                    aria-pressed="false"
+                    aria-label="Like (516 likes)"
+                  >
+                    <span class="affix" aria-hidden="true">♡</span>
+                    <span class="label">516</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="share"
+                    aria-label="Share post"
+                  >
+                    <span class="affix" aria-hidden="true">↗</span>
+                    <span class="label">share</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- post 3 -->
+          <article class="sig-post" id="post-3" data-post>
+            <div class="ss-card">
+              <div class="body">
+                <div class="sig-post-head">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Hollow Pines Library"
+                    style="--ss-avatar-bg: var(--ss-yellow)"
+                  >
+                    <span class="initials" aria-hidden="true">HP</span>
+                  </span>
+                  <div class="sig-post-who">
+                    <span class="sig-post-name">Hollow Pines Library</span>
+                    <span class="sig-post-handle">@library@hollowpines.town</span>
+                  </div>
+                  <span class="ss-tooltip" data-placement="bottom">
+                    <span class="trigger">
+                      <a class="sig-post-time" href="#post-3">1h</a>
+                    </span>
+                    <span class="tip" role="tooltip" hidden>Sep 6, 2026 · 08:52 UTC</span>
+                  </span>
+                </div>
+                <p class="sig-post-text">
+                  The reading room is open late tonight until 22:00. Bring a mug. We have a kettle,
+                  a shelf of stray paperbacks, and absolutely no notifications.
+                </p>
+                <div class="sig-post-tags">
+                  <span class="ss-badge neutral">#hollowpines</span>
+                  <span class="ss-badge neutral">#quiethours</span>
+                </div>
+              </div>
+              <div class="foot">
+                <div class="sig-actions">
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="reply"
+                    aria-label="Reply (3 replies)"
+                  >
+                    <span class="affix" aria-hidden="true">↩</span>
+                    <span class="label">3</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="boost"
+                    aria-label="Boost (27 boosts)"
+                  >
+                    <span class="affix" aria-hidden="true">⇄</span>
+                    <span class="label">27</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="like"
+                    aria-pressed="false"
+                    aria-label="Like (64 likes)"
+                  >
+                    <span class="affix" aria-hidden="true">♡</span>
+                    <span class="label">64</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="share"
+                    aria-label="Share post"
+                  >
+                    <span class="affix" aria-hidden="true">↗</span>
+                    <span class="label">share</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- post 4: boosted -->
+          <article class="sig-post" id="post-4" data-post>
+            <p class="sig-post-context">
+              <span aria-hidden="true">⇄</span> boosted by Kenji Watanabe
+            </p>
+            <div class="ss-card">
+              <div class="body">
+                <div class="sig-post-head">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Ines Duarte"
+                    style="--ss-avatar-bg: var(--ss-blue)"
+                  >
+                    <span class="initials" aria-hidden="true">ID</span>
+                  </span>
+                  <div class="sig-post-who">
+                    <span class="sig-post-name">Ines Duarte</span>
+                    <span class="sig-post-handle">@ines@type.foundry</span>
+                  </div>
+                  <span class="ss-tooltip" data-placement="bottom">
+                    <span class="trigger">
+                      <a class="sig-post-time" href="#post-4">2h</a>
+                    </span>
+                    <span class="tip" role="tooltip" hidden>Sep 6, 2026 · 07:30 UTC</span>
+                  </span>
+                </div>
+                <p class="sig-post-text">
+                  Hot take: a monospace UI with zero rounded corners reads faster than any
+                  “friendly” interface I have shipped in ten years. The eye likes a grid.
+                </p>
+                <blockquote class="sig-post-quote">
+                  <span class="sig-post-quote-who">Tomas Lindqvist · @tomas@signal.net</span>
+                  Sometimes the boring stack wins.
+                </blockquote>
+              </div>
+              <div class="foot">
+                <div class="sig-actions">
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="reply"
+                    aria-label="Reply (87 replies)"
+                  >
+                    <span class="affix" aria-hidden="true">↩</span>
+                    <span class="label">87</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="boost"
+                    aria-label="Boost (149 boosts)"
+                  >
+                    <span class="affix" aria-hidden="true">⇄</span>
+                    <span class="label">149</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="like"
+                    aria-pressed="false"
+                    aria-label="Like (402 likes)"
+                  >
+                    <span class="affix" aria-hidden="true">♡</span>
+                    <span class="label">402</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="share"
+                    aria-label="Share post"
+                  >
+                    <span class="affix" aria-hidden="true">↗</span>
+                    <span class="label">share</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- post 5: media -->
+          <article class="sig-post" id="post-5" data-post>
+            <div class="ss-card">
+              <div class="media">
+                <svg viewBox="0 0 640 260" aria-hidden="true" focusable="false" class="sig-media">
+                  <defs>
+                    <linearGradient id="sig-g2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="var(--ss-bg)" />
+                      <stop offset="1" stop-color="var(--ss-bg-elev-hover)" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="640" height="260" fill="url(#sig-g2)" />
+                  <g fill="var(--ss-fg-faint)" opacity="0.35">
+                    <rect x="60" y="120" width="70" height="140" />
+                    <rect x="150" y="80" width="50" height="180" />
+                    <rect x="220" y="140" width="90" height="120" />
+                    <rect x="330" y="60" width="60" height="200" />
+                    <rect x="410" y="110" width="80" height="150" />
+                    <rect x="510" y="150" width="90" height="110" />
+                  </g>
+                  <circle cx="540" cy="60" r="26" fill="var(--ss-yellow)" />
+                  <g stroke="var(--ss-primary)" stroke-width="2" fill="none">
+                    <path d="M0 200 Q160 130 320 190 T640 170" />
+                  </g>
+                  <text
+                    x="24"
+                    y="240"
+                    font-family="monospace"
+                    font-size="13"
+                    fill="var(--ss-fg-muted)"
+                  >
+                    rooftop, 06:12 — long exposure
+                  </text>
+                </svg>
+              </div>
+              <div class="body">
+                <div class="sig-post-head">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Kenji Watanabe"
+                    style="--ss-avatar-bg: var(--ss-accent)"
+                  >
+                    <span class="initials" aria-hidden="true">KW</span>
+                  </span>
+                  <div class="sig-post-who">
+                    <span class="sig-post-name">Kenji Watanabe</span>
+                    <span class="sig-post-handle">@kenji@photo.club</span>
+                  </div>
+                  <span class="ss-tooltip" data-placement="bottom">
+                    <span class="trigger">
+                      <a class="sig-post-time" href="#post-5">3h</a>
+                    </span>
+                    <span class="tip" role="tooltip" hidden>Sep 6, 2026 · 06:14 UTC</span>
+                  </span>
+                </div>
+                <p class="sig-post-text">
+                  First light over the east district. Shot on the old rangefinder, no edits except
+                  the crop. The city looks like a bar chart at this hour.
+                </p>
+              </div>
+              <div class="foot">
+                <div class="sig-actions">
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="reply"
+                    aria-label="Reply (9 replies)"
+                  >
+                    <span class="affix" aria-hidden="true">↩</span>
+                    <span class="label">9</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="boost"
+                    aria-label="Boost (58 boosts)"
+                  >
+                    <span class="affix" aria-hidden="true">⇄</span>
+                    <span class="label">58</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="like"
+                    aria-pressed="false"
+                    aria-label="Like (271 likes)"
+                  >
+                    <span class="affix" aria-hidden="true">♡</span>
+                    <span class="label">271</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="share"
+                    aria-label="Share post"
+                  >
+                    <span class="affix" aria-hidden="true">↗</span>
+                    <span class="label">share</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- post 6: content warning style -->
+          <article class="sig-post" id="post-6" data-post>
+            <div class="ss-card">
+              <div class="body">
+                <div class="sig-post-head">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Sable Moreau"
+                    style="--ss-avatar-bg: var(--ss-magenta)"
+                  >
+                    <span class="initials" aria-hidden="true">SM</span>
+                  </span>
+                  <div class="sig-post-who">
+                    <span class="sig-post-name">Sable Moreau</span>
+                    <span class="sig-post-handle">@sable@signal.net</span>
+                  </div>
+                  <span class="ss-tooltip" data-placement="bottom">
+                    <span class="trigger">
+                      <a class="sig-post-time" href="#post-6">5h</a>
+                    </span>
+                    <span class="tip" role="tooltip" hidden>Sep 6, 2026 · 04:03 UTC</span>
+                  </span>
+                </div>
+                <p class="sig-post-text">
+                  <span class="ss-badge caution">
+                    <span class="dot" aria-hidden="true"></span>
+                    spoilers
+                  </span>
+                  Finished the last episode of <em>Low Orbit</em>. I need to talk about the airlock
+                  scene with someone who has also seen it. Replies hidden behind a warning, be kind.
+                </p>
+              </div>
+              <div class="foot">
+                <div class="sig-actions">
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="reply"
+                    aria-label="Reply (22 replies)"
+                  >
+                    <span class="affix" aria-hidden="true">↩</span>
+                    <span class="label">22</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="boost"
+                    aria-label="Boost (5 boosts)"
+                  >
+                    <span class="affix" aria-hidden="true">⇄</span>
+                    <span class="label">5</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="like"
+                    aria-pressed="false"
+                    aria-label="Like (39 likes)"
+                  >
+                    <span class="affix" aria-hidden="true">♡</span>
+                    <span class="label">39</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="share"
+                    aria-label="Share post"
+                  >
+                    <span class="affix" aria-hidden="true">↗</span>
+                    <span class="label">share</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- post 7 -->
+          <article class="sig-post" id="post-7" data-post>
+            <div class="ss-card">
+              <div class="body">
+                <div class="sig-post-head">
+                  <span
+                    class="ss-avatar"
+                    role="img"
+                    aria-label="Orbital Weather"
+                    style="--ss-avatar-bg: var(--ss-green)"
+                  >
+                    <span class="initials" aria-hidden="true">OW</span>
+                  </span>
+                  <div class="sig-post-who">
+                    <span class="sig-post-name">
+                      Orbital Weather
+                      <span
+                        class="ss-badge info label-less"
+                        role="img"
+                        aria-label="Automated account"
+                        >bot</span
+                      >
+                    </span>
+                    <span class="sig-post-handle">@wx@bots.signal.net</span>
+                  </div>
+                  <span class="ss-tooltip" data-placement="bottom">
+                    <span class="trigger">
+                      <a class="sig-post-time" href="#post-7">6h</a>
+                    </span>
+                    <span class="tip" role="tooltip" hidden>Sep 6, 2026 · 03:00 UTC</span>
+                  </span>
+                </div>
+                <p class="sig-post-text">
+                  Aurora forecast for tonight: Kp 6, visible down to 52° N between 22:00 and 02:00
+                  local. Clear skies over the north coast. Look up.
+                </p>
+              </div>
+              <div class="foot">
+                <div class="sig-actions">
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="reply"
+                    aria-label="Reply (2 replies)"
+                  >
+                    <span class="affix" aria-hidden="true">↩</span>
+                    <span class="label">2</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="boost"
+                    aria-label="Boost (311 boosts)"
+                  >
+                    <span class="affix" aria-hidden="true">⇄</span>
+                    <span class="label">311</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="like"
+                    aria-pressed="false"
+                    aria-label="Like (188 likes)"
+                  >
+                    <span class="affix" aria-hidden="true">♡</span>
+                    <span class="label">188</span>
+                  </button>
+                  <button
+                    class="ss-btn ghost"
+                    type="button"
+                    data-action="share"
+                    aria-label="Share post"
+                  >
+                    <span class="affix" aria-hidden="true">↗</span>
+                    <span class="label">share</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <div class="sig-more">
+            <button class="ss-btn secondary full-width" type="button" id="sig-load-more">
+              <span class="label">load older posts</span>
+            </button>
+            <span class="ss-spinner" data-variant="line" role="status">
+              <span class="frame" aria-hidden="true"></span>
+              <span class="lbl">streaming live posts</span>
+            </span>
+          </div>
+        </section>
+      </main>
+
+      <!-- ============ right column: discovery ============ -->
+      <aside class="sig-right" aria-label="Discover">
+        <div class="ss-card" aria-labelledby="sig-follow-title">
+          <div class="head">
+            <div class="heading">
+              <div class="title" id="sig-follow-title" role="heading" aria-level="2">
+                Who to follow
+              </div>
+            </div>
+            <div class="actions">
+              <div class="meta">suggested</div>
+            </div>
+          </div>
+          <div class="body">
+            <ul class="sig-people">
+              <li class="sig-person">
+                <span
+                  class="ss-avatar"
+                  role="img"
+                  aria-label="Ravi Anand"
+                  style="--ss-avatar-bg: var(--ss-blue)"
+                >
+                  <span class="initials" aria-hidden="true">RA</span>
+                </span>
+                <div class="sig-person-who">
+                  <span class="sig-person-name">Ravi Anand</span>
+                  <span class="sig-person-handle">@ravi@kernel.dev</span>
+                </div>
+                <button
+                  class="ss-btn secondary"
+                  type="button"
+                  data-follow
+                  aria-label="Follow Ravi Anand"
+                  aria-pressed="false"
+                >
+                  <span class="label">follow</span>
+                </button>
+              </li>
+              <li class="sig-person">
+                <span
+                  class="ss-avatar"
+                  role="img"
+                  aria-label="Greta Holm"
+                  style="--ss-avatar-bg: var(--ss-yellow)"
+                >
+                  <span class="initials" aria-hidden="true">GH</span>
+                </span>
+                <div class="sig-person-who">
+                  <span class="sig-person-name">Greta Holm</span>
+                  <span class="sig-person-handle">@greta@garden.social</span>
+                </div>
+                <button
+                  class="ss-btn secondary"
+                  type="button"
+                  data-follow
+                  aria-label="Follow Greta Holm"
+                  aria-pressed="false"
+                >
+                  <span class="label">follow</span>
+                </button>
+              </li>
+              <li class="sig-person">
+                <span
+                  class="ss-avatar"
+                  role="img"
+                  aria-label="Night Bus Records"
+                  style="--ss-avatar-bg: var(--ss-magenta)"
+                >
+                  <span class="initials" aria-hidden="true">NB</span>
+                </span>
+                <div class="sig-person-who">
+                  <span class="sig-person-name">Night Bus Records</span>
+                  <span class="sig-person-handle">@nightbus@music.fm</span>
+                </div>
+                <button
+                  class="ss-btn secondary"
+                  type="button"
+                  data-follow
+                  aria-label="Follow Night Bus Records"
+                  aria-pressed="false"
+                >
+                  <span class="label">follow</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div class="foot">
+            <a class="ss-link inline" href="#explore">
+              <span class="label">show more</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="ss-card" aria-labelledby="sig-trend-title">
+          <div class="head">
+            <div class="heading">
+              <div class="title" id="sig-trend-title" role="heading" aria-level="2">Trending</div>
+              <div class="desc">Across the network, last 24h</div>
+            </div>
+          </div>
+          <div class="body">
+            <ol class="sig-trends">
+              <li class="sig-trend">
+                <a class="ss-link inline" href="#tag-aurora"><span class="label">#aurora</span></a>
+                <span class="ss-badge brand label-less" role="img" aria-label="12,400 posts"
+                  >12.4k</span
+                >
+              </li>
+              <li class="sig-trend">
+                <a class="ss-link inline" href="#tag-lowOrbit"
+                  ><span class="label">#LowOrbit</span></a
+                >
+                <span class="ss-badge neutral label-less" role="img" aria-label="8,100 posts"
+                  >8.1k</span
+                >
+              </li>
+              <li class="sig-trend">
+                <a class="ss-link inline" href="#tag-fediverse"
+                  ><span class="label">#fediverse</span></a
+                >
+                <span class="ss-badge neutral label-less" role="img" aria-label="5,700 posts"
+                  >5.7k</span
+                >
+              </li>
+              <li class="sig-trend">
+                <a class="ss-link inline" href="#tag-monospace"
+                  ><span class="label">#monospace</span></a
+                >
+                <span class="ss-badge neutral label-less" role="img" aria-label="3,200 posts"
+                  >3.2k</span
+                >
+              </li>
+              <li class="sig-trend">
+                <a class="ss-link inline" href="#tag-quiethours"
+                  ><span class="label">#quiethours</span></a
+                >
+                <span class="ss-badge neutral label-less" role="img" aria-label="940 posts"
+                  >940</span
+                >
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="ss-card elevated" aria-labelledby="sig-server-title">
+          <div class="head">
+            <div class="heading">
+              <div class="title" id="sig-server-title" role="heading" aria-level="2">
+                signal.net
+              </div>
+            </div>
+            <div class="actions">
+              <span class="ss-badge positive">
+                <span class="dot" aria-hidden="true"></span>
+                healthy
+              </span>
+            </div>
+          </div>
+          <div class="body">
+            <dl class="sig-stats">
+              <div class="sig-stat">
+                <dt>members</dt>
+                <dd>4,812</dd>
+              </div>
+              <div class="sig-stat">
+                <dt>posts today</dt>
+                <dd>2,309</dd>
+              </div>
+              <div class="sig-stat">
+                <dt>peers</dt>
+                <dd>1,177</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="sig-footer">
+      <span>signal · an example community, not a real service</span>
+      <span>
+        <a class="ss-link inline" href="#about"><span class="label">about</span></a>
+        ·
+        <a class="ss-link inline" href="#rules"><span class="label">rules</span></a>
+        ·
+        <a class="ss-link inline" href="#privacy"><span class="label">privacy</span></a>
+      </span>
+    </footer>
+
+    <!-- mobile navigation (shown below 720px by site.css) -->
+    <nav class="ss-bottom-nav sig-bottom" aria-label="Primary, mobile">
+      <ul class="list">
+        <li class="row">
+          <a class="tab active" href="#sig-main" aria-current="page">
+            <span class="glyph"><span data-ss-icon="home" data-size="md"></span></span>
+            <span class="label">Home</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="tab" href="#explore">
+            <span class="glyph"><span data-ss-icon="grid" data-size="md"></span></span>
+            <span class="label">Explore</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="tab" href="#notifications" aria-label="Notifications, 4">
+            <span class="glyph">
+              <span data-ss-icon="activity" data-size="md"></span>
+              <span class="badge" aria-hidden="true">4</span>
+            </span>
+            <span class="label">Alerts</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="tab" href="#messages" aria-label="Messages, 2">
+            <span class="glyph">
+              <span data-ss-icon="note" data-size="md"></span>
+              <span class="badge" aria-hidden="true">2</span>
+            </span>
+            <span class="label">Messages</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="tab" href="#profile">
+            <span class="glyph"><span data-ss-icon="user" data-size="md"></span></span>
+            <span class="label">Profile</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </body>
+</html>

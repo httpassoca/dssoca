@@ -141,6 +141,57 @@ describe('Sidebar', () => {
     expect(a).not.toHaveAttribute('role', 'button')
   })
 
+  it('renders an external href item as a new-tab link with a glyph and an announcement', () => {
+    const { container, getByRole } = render(Sidebar, {
+      groups: [
+        {
+          section: 's',
+          items: [
+            {
+              id: 'ext',
+              label: 'Inspirations',
+              icon: 'film',
+              href: 'https://x.test/',
+              external: true,
+            },
+            { id: 'in', label: 'Docs', href: '/docs' },
+          ],
+        },
+      ],
+    })
+    const a = getByRole('link', { name: /Inspirations \(opens in a new tab\)/ })
+    expect(a).toHaveAttribute('href', 'https://x.test/')
+    expect(a).toHaveAttribute('target', '_blank')
+    expect(a).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(a.querySelector('.ext svg.ss-icon')).not.toBeNull()
+    expect(a.querySelector('.ext')).toHaveAttribute('aria-hidden', 'true')
+    // Same-site links are untouched.
+    const local = container.querySelector('a[href="/docs"]')!
+    expect(local).not.toHaveAttribute('target')
+    expect(local.querySelector('.ext')).toBeNull()
+  })
+
+  it('folds "opens in a new tab" into the collapsed accessible name of an external item', () => {
+    const { getByRole } = render(Sidebar, {
+      collapsed: true,
+      groups: [
+        {
+          section: 's',
+          items: [
+            {
+              id: 'ext',
+              label: 'Inspirations',
+              icon: 'film',
+              href: 'https://x.test/',
+              external: true,
+            },
+          ],
+        },
+      ],
+    })
+    expect(getByRole('link', { name: 'Inspirations, opens in a new tab' })).toBeInTheDocument()
+  })
+
   it('marks an active href item with aria-current=page', () => {
     const { container } = render(Sidebar, {
       active: 'docs',

@@ -24,6 +24,12 @@ export type { PropDoc, ComponentDoc } from './component-docs/types'
  */
 export const STORYBOOK_URL: string = import.meta.env.VITE_STORYBOOK_URL ?? 'http://localhost:6006'
 
+/**
+ * The Inspirations site (DS-0150): example websites built on the plain-HTML path, deployed to
+ * GitHub Pages by `.github/workflows/pages.yml` — a fixed URL, so no env var.
+ */
+export const INSPIRATIONS_URL = 'https://httpassoca.github.io/dssoca/'
+
 /** Live-story iframe URL for a given Storybook story id. */
 export function storyUrl(id: string): string {
   return `${STORYBOOK_URL}/iframe.html?id=${id}&viewMode=story`
@@ -45,6 +51,8 @@ export interface NavItem {
   icon?: string
   /** Extra search terms for the site palette (DS-0147); labels are always matched. */
   keywords?: string[]
+  /** Off-site link: rendered as a real new-tab anchor (Sidebar `external`), never routed. */
+  external?: boolean
 }
 export interface NavGroup {
   section: string
@@ -132,6 +140,26 @@ export const NAV: NavGroup[] = [
           'plain html',
           'data-ss-modal',
           'toast',
+        ],
+      },
+      {
+        label: 'Inspirations',
+        href: INSPIRATIONS_URL,
+        icon: 'film',
+        external: true,
+        keywords: [
+          'examples',
+          'example sites',
+          'templates',
+          'showcase',
+          'demo',
+          'gallery',
+          'dashboard',
+          'landing page',
+          'blog',
+          'chat',
+          'store',
+          'github pages',
         ],
       },
       {

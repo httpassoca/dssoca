@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nimbus Ops — Overview</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <link rel="icon" href="data:," />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body>
+    <div class="ss-app ops-app">
+      <header class="ss-topbar sticky">
+        <a class="skip" href="#main">Skip to content</a>
+        <div class="seg logo">
+          <svg
+            class="mark"
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            fill="var(--ss-primary)"
+            aria-hidden="true"
+          >
+            <path d="M2 4h20v4H2zM2 10h14v4H2zM2 16h8v4H2z" />
+          </svg>
+          <span class="nm">nimbus ops</span>
+        </div>
+        <nav class="ws" aria-label="Primary">
+          <a class="tab active" href="#main" aria-current="page"
+            ><span class="n" aria-hidden="true">1</span>overview</a
+          >
+          <a class="tab" href="#card-services"
+            ><span class="n" aria-hidden="true">2</span>services</a
+          >
+          <a class="tab" href="#card-logs"><span class="n" aria-hidden="true">3</span>logs</a>
+          <a class="tab" href="#settings"><span class="n" aria-hidden="true">4</span>settings</a>
+        </nav>
+        <div class="grow"></div>
+        <div class="seg right" title="services">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="stat"><span class="v">10</span><span class="k">/12 up</span></span>
+        </div>
+        <div class="seg right stat collapsible" title="cluster cpu">
+          <span class="k">cpu</span><span class="v">41%</span>
+        </div>
+        <div class="seg right stat collapsible" title="cluster memory">
+          <span class="k">mem</span><span class="v">21.4G</span>
+        </div>
+        <button class="seg right click user-btn" type="button">m.okafor</button>
+      </header>
+
+      <nav class="ss-side" aria-label="Sidebar">
+        <div class="section" id="ops-side-sec-0">Monitor</div>
+        <ul class="list" aria-labelledby="ops-side-sec-0">
+          <li class="row">
+            <a class="item active" href="#main" aria-current="page">
+              <span data-ss-icon="grid" data-px="13"></span>
+              <span class="label">Overview</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#card-services" aria-label="Services, degraded, 1">
+              <span data-ss-icon="activity" data-px="13"></span>
+              <span class="label">Services</span>
+              <span class="badge">1</span>
+              <span class="dot warn" aria-hidden="true"></span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#card-logs" aria-label="Logs, 12">
+              <span data-ss-icon="logs" data-px="13"></span>
+              <span class="label">Logs</span>
+              <span class="badge">12</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#svc-postgres">
+              <span data-ss-icon="database" data-px="13"></span>
+              <span class="label">Database</span>
+              <span class="dot" aria-hidden="true"></span>
+            </a>
+          </li>
+        </ul>
+        <div class="section" id="ops-side-sec-1">Deploy</div>
+        <ul class="list" aria-labelledby="ops-side-sec-1">
+          <li class="row">
+            <a class="item" href="#card-deploys" aria-label="Pipelines, 2">
+              <span data-ss-icon="terminal" data-px="13"></span>
+              <span class="label">Pipelines</span>
+              <span class="badge">2</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#card-deploys">
+              <span data-ss-icon="folder" data-px="13"></span>
+              <span class="label">Environments</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#svc-search" aria-label="Search index, down">
+              <span data-ss-icon="target" data-px="13"></span>
+              <span class="label">Search index</span>
+              <span class="dot err" aria-hidden="true"></span>
+            </a>
+          </li>
+        </ul>
+        <div class="section" id="ops-side-sec-2">Account</div>
+        <ul class="list" aria-labelledby="ops-side-sec-2">
+          <li class="row">
+            <a class="item" href="#settings">
+              <span data-ss-icon="user" data-px="13"></span>
+              <span class="label">Team</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="item" href="#settings">
+              <span data-ss-icon="settings" data-px="13"></span>
+              <span class="label">Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <main class="ss-main" id="main">
+        <div class="ss-pageHead">
+          <div>
+            <h1>Overview</h1>
+            <div class="sub">prod-eu-west · last 24h · refreshed 12s ago</div>
+          </div>
+          <div class="ops-head-actions">
+            <div class="ss-menu" id="ops-actions" data-align="end" data-side="bottom">
+              <button
+                type="button"
+                class="trigger"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-controls="ops-actions-panel"
+              >
+                Actions
+                <span data-ss-icon="chevron" data-size="sm"></span>
+              </button>
+              <div
+                id="ops-actions-panel"
+                class="panel"
+                role="menu"
+                aria-label="Page actions"
+                aria-hidden="true"
+                tabindex="-1"
+              >
+                <button
+                  type="button"
+                  class="item"
+                  data-mi="0"
+                  data-value="export"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  <span data-ss-icon="database"></span>
+                  <span class="label">Export CSV</span>
+                  <span class="marker" aria-hidden="true"></span>
+                </button>
+                <button
+                  type="button"
+                  class="item"
+                  data-mi="1"
+                  data-value="share"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  <span data-ss-icon="external"></span>
+                  <span class="label">Share link</span>
+                  <span class="marker" aria-hidden="true"></span>
+                </button>
+                <button
+                  type="button"
+                  class="item"
+                  data-mi="2"
+                  data-value="refresh"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  <span data-ss-icon="activity"></span>
+                  <span class="label">Refresh data</span>
+                  <span class="marker" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <button class="ss-btn primary" type="button">
+              <span class="label">deploy</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="ss-metrics">
+          <div class="ss-metric">
+            <div class="label">Requests</div>
+            <div class="val" role="status" aria-live="polite">1.84<span class="small">M</span></div>
+            <div class="delta positive" role="img" aria-label="increased +4.2% vs 24h">
+              <span aria-hidden="true">↑ +4.2%</span>
+              <span class="period" aria-hidden="true">vs 24h</span>
+            </div>
+            <div class="chart">
+              <div
+                class="ss-spark fluid"
+                data-variant="line"
+                role="img"
+                aria-label="Requests per minute, last 14 hours: rising from 61k to 91k"
+              >
+                <svg
+                  class="chart"
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <polyline
+                    class="line"
+                    points="0,90.909 7.692,81.818 15.385,100 23.077,75.758 30.769,60.606 38.462,66.667 46.154,51.515 53.846,39.394 61.538,54.545 69.231,33.333 76.923,21.212 84.615,27.273 92.308,9.091 100,0"
+                    style="stroke: var(--ss-primary)"
+                  ></polyline>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="ss-metric">
+            <div class="label">Error rate</div>
+            <div class="val" role="status" aria-live="polite">0.42<span class="small">%</span></div>
+            <div
+              class="delta negative emphasis"
+              role="img"
+              aria-label="increased +0.08pt vs 24h, negative"
+            >
+              <span aria-hidden="true">↑ +0.08pt</span>
+              <span class="period" aria-hidden="true">vs 24h</span>
+            </div>
+          </div>
+          <div class="ss-metric">
+            <div class="label">p95 latency</div>
+            <div class="val" role="status" aria-live="polite">212<span class="small">ms</span></div>
+            <div class="delta positive" role="img" aria-label="decreased −18ms vs 24h, positive">
+              <span aria-hidden="true">↓ −18ms</span>
+              <span class="period" aria-hidden="true">vs 24h</span>
+            </div>
+          </div>
+          <div class="ss-metric">
+            <div class="label">Uptime</div>
+            <div class="val" role="status" aria-live="polite">
+              99.97<span class="small">%</span>
+            </div>
+            <div class="delta neutral" role="img" aria-label="unchanged 0.00pt vs 30d">
+              <span aria-hidden="true">↑ 0.00pt</span>
+              <span class="period" aria-hidden="true">vs 30d</span>
+            </div>
+          </div>
+          <div class="ss-metric">
+            <div class="label">Active tenants</div>
+            <div class="val" role="status" aria-live="polite">1,296</div>
+            <div class="delta positive" role="img" aria-label="increased +31 vs 7d">
+              <span aria-hidden="true">↑ +31</span>
+              <span class="period" aria-hidden="true">vs 7d</span>
+            </div>
+          </div>
+          <div class="ss-metric">
+            <div class="label">MRR</div>
+            <div class="val" role="status" aria-live="polite">
+              <span class="small">$</span>48.2<span class="small">k</span>
+            </div>
+            <div class="delta positive" role="img" aria-label="increased +2.1% vs Aug">
+              <span aria-hidden="true">↑ +2.1%</span>
+              <span class="period" aria-hidden="true">vs Aug</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ss-grid-2">
+          <div class="ss-card" aria-labelledby="card-traffic">
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="card-traffic" role="heading" aria-level="2">Latency</div>
+                <div class="desc">Edge response time across all regions, ms</div>
+              </div>
+              <div class="actions">
+                <div class="meta">24h · 2h buckets</div>
+              </div>
+            </div>
+            <div class="body">
+              <div
+                class="ss-chart fluid"
+                data-variant="line"
+                role="group"
+                aria-label="Line chart with 2 series (p50 latency, p95 latency); 26 data points. Latency in milliseconds over the last 24 hours."
+              >
+                <div class="plot">
+                  <svg
+                    class="canvas"
+                    viewBox="0 0 480 240"
+                    preserveAspectRatio="xMidYMid meet"
+                    role="presentation"
+                  >
+                    <g transform="translate(40,8)">
+                      <line class="grid" x1="0" x2="428" y1="208" y2="208"></line>
+                      <text class="tick y" x="-6" y="208" dy="0.32em" text-anchor="end">0</text>
+                      <line class="grid" x1="0" x2="428" y1="166.4" y2="166.4"></line>
+                      <text class="tick y" x="-6" y="166.4" dy="0.32em" text-anchor="end">50</text>
+                      <line class="grid" x1="0" x2="428" y1="124.8" y2="124.8"></line>
+                      <text class="tick y" x="-6" y="124.8" dy="0.32em" text-anchor="end">100</text>
+                      <line class="grid" x1="0" x2="428" y1="83.2" y2="83.2"></line>
+                      <text class="tick y" x="-6" y="83.2" dy="0.32em" text-anchor="end">150</text>
+                      <line class="grid" x1="0" x2="428" y1="41.6" y2="41.6"></line>
+                      <text class="tick y" x="-6" y="41.6" dy="0.32em" text-anchor="end">200</text>
+                      <line class="grid" x1="0" x2="428" y1="0" y2="0"></line>
+                      <text class="tick y" x="-6" y="0" dy="0.32em" text-anchor="end">250</text>
+                      <line class="axis" x1="0" x2="0" y1="0" y2="208"></line>
+                      <line class="axis" x1="0" x2="428" y1="208" y2="208"></line>
+                      <text class="tick x" x="0" y="224" text-anchor="middle">00:00</text>
+                      <text class="tick x" x="107" y="224" text-anchor="middle">06:00</text>
+                      <text class="tick x" x="214" y="224" text-anchor="middle">12:00</text>
+                      <text class="tick x" x="321" y="224" text-anchor="middle">18:00</text>
+                      <text class="tick x" x="428" y="224" text-anchor="middle">24:00</text>
+                      <path
+                        class="line"
+                        d="M0,131.456L35.667,134.784L71.333,138.112L107,136.448L142.667,121.472L178.333,107.328L214,93.184L249.667,99.008L285.333,103.168L321,89.856L356.667,109.824L392.333,123.968L428,128.96"
+                        style="stroke: var(--ss-accent)"
+                      ></path>
+                      <path
+                        class="line"
+                        d="M0,71.552L35.667,76.544L71.333,82.368L107,74.88L142.667,50.752L178.333,29.952L214,11.648L249.667,17.472L285.333,24.128L321,5.824L356.667,37.44L392.333,57.408L428,66.56"
+                        style="stroke: var(--ss-blue)"
+                      ></path>
+                      <circle
+                        class="point"
+                        cx="0"
+                        cy="131.456"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 00:00, 92 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="35.667"
+                        cy="134.784"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 02:00, 88 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="71.333"
+                        cy="138.112"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 04:00, 84 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="107"
+                        cy="136.448"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 06:00, 86 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="142.667"
+                        cy="121.472"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 08:00, 104 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="178.333"
+                        cy="107.328"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 10:00, 121 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="214"
+                        cy="93.184"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 12:00, 138 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="249.667"
+                        cy="99.008"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 14:00, 131 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="285.333"
+                        cy="103.168"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 16:00, 126 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="321"
+                        cy="89.856"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 18:00, 142 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="356.667"
+                        cy="109.824"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 20:00, 118 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="392.333"
+                        cy="123.968"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 22:00, 101 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="428"
+                        cy="128.96"
+                        r="4"
+                        style="fill: var(--ss-accent)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p50 latency: 24:00, 95 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="0"
+                        cy="71.552"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 00:00, 164 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="35.667"
+                        cy="76.544"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 02:00, 158 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="71.333"
+                        cy="82.368"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 04:00, 151 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="107"
+                        cy="74.88"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 06:00, 160 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="142.667"
+                        cy="50.752"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 08:00, 189 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="178.333"
+                        cy="29.952"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 10:00, 214 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="214"
+                        cy="11.648"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 12:00, 236 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="249.667"
+                        cy="17.472"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 14:00, 229 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="285.333"
+                        cy="24.128"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 16:00, 221 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="321"
+                        cy="5.824"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 18:00, 243 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="356.667"
+                        cy="37.44"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 20:00, 205 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="392.333"
+                        cy="57.408"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 22:00, 181 ms"
+                      ></circle>
+                      <circle
+                        class="point"
+                        cx="428"
+                        cy="66.56"
+                        r="4"
+                        style="fill: var(--ss-blue)"
+                        tabindex="0"
+                        role="button"
+                        aria-label="p95 latency: 24:00, 170 ms"
+                      ></circle>
+                    </g>
+                  </svg>
+                </div>
+                <ul class="legend">
+                  <li class="legend-item">
+                    <span
+                      class="swatch"
+                      style="background: var(--ss-accent)"
+                      aria-hidden="true"
+                    ></span>
+                    <span class="legend-label">p50 latency</span>
+                  </li>
+                  <li class="legend-item">
+                    <span
+                      class="swatch"
+                      style="background: var(--ss-blue)"
+                      aria-hidden="true"
+                    ></span>
+                    <span class="legend-label">p95 latency</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-card" id="card-services" aria-labelledby="card-services-title">
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="card-services-title" role="heading" aria-level="2">
+                  Services
+                </div>
+                <div class="desc">Health checks every 30s</div>
+              </div>
+              <div class="actions">
+                <span class="ss-badge caution"
+                  ><span class="dot" aria-hidden="true"></span>1 degraded</span
+                >
+                <span class="ss-badge critical"
+                  ><span class="dot" aria-hidden="true"></span>1 down</span
+                >
+              </div>
+            </div>
+            <div class="body">
+              <div class="ss-svc-grid">
+                <a class="ss-svc" id="svc-gateway" href="#svc-gateway" aria-label="gateway, up">
+                  <div class="head">
+                    <div>
+                      <div class="name">gateway</div>
+                      <div class="host">10.4.0.12</div>
+                    </div>
+                  </div>
+                  <div class="status">
+                    <span class="ss-badge positive">up</span>
+                    <div class="latency">12ms</div>
+                  </div>
+                  <div class="meta">v2.14.3 · 6 pods</div>
+                  <div class="footer">
+                    <div
+                      class="ss-spark"
+                      data-variant="bars"
+                      role="img"
+                      aria-label="Trend flat: 12 to 12 over 8 points, range 11 to 15."
+                    >
+                      <i aria-hidden="true" style="height: 25%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 75%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 8%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 50%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 25%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 100%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 50%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 25%; background: var(--ss-primary)"></i>
+                    </div>
+                    <div class="foot-meta">
+                      <time class="updated" datetime="2026-09-06T09:41:30Z">12s ago</time>
+                      <span class="latency open"><span aria-hidden="true">▸</span> open</span>
+                    </div>
+                  </div>
+                </a>
+                <a class="ss-svc" id="svc-worker" href="#svc-worker" aria-label="worker, degraded">
+                  <div class="head">
+                    <div>
+                      <div class="name">worker</div>
+                      <div class="host">10.4.1.7</div>
+                    </div>
+                  </div>
+                  <div class="status">
+                    <span class="ss-badge caution">degraded</span>
+                    <div class="latency">171ms</div>
+                  </div>
+                  <div class="meta">v1.9.0 · backlog 4.2k</div>
+                  <div class="footer">
+                    <div
+                      class="ss-spark"
+                      data-variant="bars"
+                      role="img"
+                      aria-label="Trend rising: 40 to 171 over 8 points, range 40 to 171."
+                    >
+                      <i aria-hidden="true" style="height: 8%; background: var(--ss-yellow)"></i>
+                      <i aria-hidden="true" style="height: 9.16%; background: var(--ss-yellow)"></i>
+                      <i
+                        aria-hidden="true"
+                        style="height: 16.031%; background: var(--ss-yellow)"
+                      ></i>
+                      <i
+                        aria-hidden="true"
+                        style="height: 36.641%; background: var(--ss-yellow)"
+                      ></i>
+                      <i
+                        aria-hidden="true"
+                        style="height: 71.756%; background: var(--ss-yellow)"
+                      ></i>
+                      <i
+                        aria-hidden="true"
+                        style="height: 93.13%; background: var(--ss-yellow)"
+                      ></i>
+                      <i
+                        aria-hidden="true"
+                        style="height: 83.206%; background: var(--ss-yellow)"
+                      ></i>
+                      <i aria-hidden="true" style="height: 100%; background: var(--ss-yellow)"></i>
+                    </div>
+                    <div class="foot-meta">
+                      <time class="updated" datetime="2026-09-06T09:41:12Z">30s ago</time>
+                      <span class="latency open"><span aria-hidden="true">▸</span> open</span>
+                    </div>
+                  </div>
+                </a>
+                <a class="ss-svc" id="svc-postgres" href="#svc-postgres" aria-label="postgres, up">
+                  <div class="head">
+                    <div>
+                      <div class="name">postgres</div>
+                      <div class="host">10.4.2.3</div>
+                    </div>
+                  </div>
+                  <div class="status">
+                    <span class="ss-badge positive">up</span>
+                    <div class="latency">4ms</div>
+                  </div>
+                  <div class="meta">pg 16.3 · 2 replicas</div>
+                  <div class="footer">
+                    <div
+                      class="ss-spark"
+                      data-variant="bars"
+                      role="img"
+                      aria-label="Trend rising: 4 to 5 over 8 points, range 4 to 6."
+                    >
+                      <i aria-hidden="true" style="height: 8%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 8%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 50%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 8%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 100%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 50%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 8%; background: var(--ss-primary)"></i>
+                      <i aria-hidden="true" style="height: 50%; background: var(--ss-primary)"></i>
+                    </div>
+                    <div class="foot-meta">
+                      <time class="updated" datetime="2026-09-06T09:41:28Z">14s ago</time>
+                      <span class="latency open"><span aria-hidden="true">▸</span> open</span>
+                    </div>
+                  </div>
+                </a>
+                <a class="ss-svc" id="svc-search" href="#svc-search" aria-label="search, down">
+                  <div class="head">
+                    <div>
+                      <div class="name">search</div>
+                      <div class="host">10.4.1.19</div>
+                    </div>
+                  </div>
+                  <div class="status">
+                    <span class="ss-badge critical">down</span>
+                    <div class="latency">—</div>
+                  </div>
+                  <div class="meta">v0.31.2 · rollback pending</div>
+                  <div class="footer">
+                    <div
+                      class="ss-spark"
+                      data-variant="bars"
+                      role="img"
+                      aria-label="Trend falling: 22 to 0 over 8 points, range 0 to 120."
+                    >
+                      <i aria-hidden="true" style="height: 18.333%; background: var(--ss-red)"></i>
+                      <i aria-hidden="true" style="height: 21.667%; background: var(--ss-red)"></i>
+                      <i aria-hidden="true" style="height: 25.833%; background: var(--ss-red)"></i>
+                      <i aria-hidden="true" style="height: 100%; background: var(--ss-red)"></i>
+                      <i aria-hidden="true" style="height: 8%; background: var(--ss-red)"></i>
+                      <i aria-hidden="true" style="height: 8%; background: var(--ss-red)"></i>
+                      <i aria-hidden="true" style="height: 8%; background: var(--ss-red)"></i>
+                      <i aria-hidden="true" style="height: 8%; background: var(--ss-red)"></i>
+                    </div>
+                    <div class="foot-meta">
+                      <time class="updated" datetime="2026-09-06T08:52:10Z">49m ago</time>
+                      <span class="latency open"><span aria-hidden="true">▸</span> open</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ops-stack">
+          <div class="ss-card" id="card-deploys" aria-labelledby="card-deploys-title">
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="card-deploys-title" role="heading" aria-level="2">
+                  Recent deploys
+                </div>
+                <div class="desc">Last 6 of 42 this week</div>
+              </div>
+              <div class="actions">
+                <div class="meta">2 pipelines running</div>
+                <button class="ss-btn ghost" type="button">
+                  <span class="label">view all</span>
+                </button>
+              </div>
+            </div>
+            <div class="body">
+              <div class="ops-scroll">
+                <table class="ss-table" id="ops-deploys">
+                  <caption>
+                    Deploys across all environments, newest first
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col" class="head" data-align="left">
+                        <span class="label">Service</span>
+                      </th>
+                      <th scope="col" class="head" data-align="left">
+                        <span class="label">Version</span>
+                      </th>
+                      <th scope="col" class="head" data-align="left">
+                        <span class="label">Environment</span>
+                      </th>
+                      <th scope="col" class="head" data-align="left">
+                        <span class="label">Status</span>
+                      </th>
+                      <th scope="col" class="head numeric" data-align="right">
+                        <span class="label">Pods</span>
+                      </th>
+                      <th scope="col" class="head numeric" data-align="right" aria-sort="none">
+                        <button type="button" class="sort">
+                          <span class="label">Duration</span>
+                          <span class="indicator" aria-hidden="true">↕</span>
+                        </button>
+                      </th>
+                      <th scope="col" class="head" data-align="left" aria-sort="descending">
+                        <button type="button" class="sort">
+                          <span class="label">Deployed</span>
+                          <span class="indicator" aria-hidden="true">↓</span>
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="row">
+                      <td class="cell" data-align="left">gateway</td>
+                      <td class="cell" data-align="left"><code>v2.14.3</code></td>
+                      <td class="cell" data-align="left">production</td>
+                      <td class="cell ops-status" data-align="left">
+                        <span class="ss-badge positive"
+                          ><span class="dot" aria-hidden="true"></span>live</span
+                        >
+                      </td>
+                      <td class="cell numeric" data-align="right">6</td>
+                      <td class="cell numeric" data-align="right" data-sort="192">3m 12s</td>
+                      <td class="cell" data-align="left" data-sort="2026-09-06T09:41">
+                        today 09:41
+                      </td>
+                    </tr>
+                    <tr class="row">
+                      <td class="cell" data-align="left">queue-worker</td>
+                      <td class="cell" data-align="left"><code>v1.9.0</code></td>
+                      <td class="cell" data-align="left">production</td>
+                      <td class="cell ops-status" data-align="left">
+                        <span class="ss-badge info"
+                          ><span class="dot" aria-hidden="true"></span>rolling</span
+                        >
+                      </td>
+                      <td class="cell numeric" data-align="right">4</td>
+                      <td class="cell numeric" data-align="right" data-sort="108">1m 48s</td>
+                      <td class="cell" data-align="left" data-sort="2026-09-06T09:37">
+                        today 09:37
+                      </td>
+                    </tr>
+                    <tr class="row">
+                      <td class="cell" data-align="left">search-index</td>
+                      <td class="cell" data-align="left"><code>v0.31.2</code></td>
+                      <td class="cell" data-align="left">production</td>
+                      <td class="cell ops-status" data-align="left">
+                        <span class="ss-badge critical"
+                          ><span class="dot" aria-hidden="true"></span>failed</span
+                        >
+                      </td>
+                      <td class="cell numeric" data-align="right">2</td>
+                      <td class="cell numeric" data-align="right" data-sort="365">6m 05s</td>
+                      <td class="cell" data-align="left" data-sort="2026-09-06T08:52">
+                        today 08:52
+                      </td>
+                    </tr>
+                    <tr class="row">
+                      <td class="cell" data-align="left">billing</td>
+                      <td class="cell" data-align="left"><code>v3.2.1</code></td>
+                      <td class="cell" data-align="left">staging</td>
+                      <td class="cell ops-status" data-align="left">
+                        <span class="ss-badge caution"
+                          ><span class="dot" aria-hidden="true"></span>canary 10%</span
+                        >
+                      </td>
+                      <td class="cell numeric" data-align="right">3</td>
+                      <td class="cell numeric" data-align="right" data-sort="150">2m 30s</td>
+                      <td class="cell" data-align="left" data-sort="2026-09-06T08:10">
+                        today 08:10
+                      </td>
+                    </tr>
+                    <tr class="row">
+                      <td class="cell" data-align="left">auth</td>
+                      <td class="cell" data-align="left"><code>v2.14.3</code></td>
+                      <td class="cell" data-align="left">production</td>
+                      <td class="cell ops-status" data-align="left">
+                        <span class="ss-badge positive"
+                          ><span class="dot" aria-hidden="true"></span>live</span
+                        >
+                      </td>
+                      <td class="cell numeric" data-align="right">3</td>
+                      <td class="cell numeric" data-align="right" data-sort="177">2m 57s</td>
+                      <td class="cell" data-align="left" data-sort="2026-09-05T22:15">
+                        yesterday 22:15
+                      </td>
+                    </tr>
+                    <tr class="row">
+                      <td class="cell" data-align="left">web</td>
+                      <td class="cell" data-align="left"><code>v5.0.0-rc.4</code></td>
+                      <td class="cell" data-align="left">preview</td>
+                      <td class="cell ops-status" data-align="left">
+                        <span class="ss-badge neutral"
+                          ><span class="dot" aria-hidden="true"></span>preview</span
+                        >
+                      </td>
+                      <td class="cell numeric" data-align="right">1</td>
+                      <td class="cell numeric" data-align="right" data-sort="261">4m 21s</td>
+                      <td class="cell" data-align="left" data-sort="2026-09-05T18:03">
+                        yesterday 18:03
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-card" id="card-logs" aria-labelledby="card-logs-title">
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="card-logs-title" role="heading" aria-level="2">
+                  Live logs
+                </div>
+                <div class="desc">Tail of the production log stream</div>
+              </div>
+              <div class="actions">
+                <span class="ss-badge brand" role="status" aria-label="12 new lines">
+                  <span class="dot" aria-hidden="true"></span>12 new
+                </span>
+              </div>
+            </div>
+            <div class="body">
+              <div class="ss-logs" id="ops-logs">
+                <div class="bar">
+                  <div class="filters" role="group" aria-label="Filter by level">
+                    <button type="button" class="chip info" aria-pressed="true">INFO</button>
+                    <button type="button" class="chip warn" aria-pressed="true">WARN</button>
+                    <button type="button" class="chip err" aria-pressed="true">ERR</button>
+                    <button type="button" class="chip ok" aria-pressed="true">OK</button>
+                  </div>
+                  <input
+                    class="search"
+                    type="text"
+                    placeholder="Filter…"
+                    aria-label="Filter log text"
+                    value=""
+                  />
+                  <button type="button" class="chip" aria-pressed="true" data-ops="wrap">
+                    WRAP
+                  </button>
+                  <button type="button" class="chip" data-ops="copy">COPY</button>
+                </div>
+                <div class="viewport">
+                  <div
+                    class="scroll"
+                    role="log"
+                    aria-label="Log output"
+                    aria-live="polite"
+                    aria-busy="false"
+                  >
+                    <div class="ln">
+                      <span class="t">09:41:02</span>
+                      <span class="lvl info">INFO</span>
+                      <span class="svc">deploy</span>
+                      <span class="msg">gateway v2.14.3 rollout complete (6/6 pods ready)</span>
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:04</span>
+                      <span class="lvl ok">OK</span>
+                      <span class="svc">gateway</span>
+                      <span class="msg">health check passed in 11ms</span>
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:09</span>
+                      <span class="lvl warn">WARN</span>
+                      <span class="svc">worker</span>
+                      <span class="msg"
+                        >queue depth 4,213 exceeds soft limit (2,000) — scaling to 6 replicas</span
+                      >
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:11</span>
+                      <span class="lvl info">INFO</span>
+                      <span class="svc">auth</span>
+                      <span class="msg">token cache warmed (18,402 sessions)</span>
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:15</span>
+                      <span class="lvl err">ERR</span>
+                      <span class="svc">search</span>
+                      <span class="msg">connection refused 10.4.1.19:9200 — retry 3/5 in 8s</span>
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:17</span>
+                      <span class="lvl warn">WARN</span>
+                      <span class="svc">postgres</span>
+                      <span class="msg"
+                        >slow query 412ms: SELECT … FROM invoices WHERE tenant_id = $1</span
+                      >
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:20</span>
+                      <span class="lvl info">INFO</span>
+                      <span class="svc">billing</span>
+                      <span class="msg">canary 10% — 0 errors over 1,204 requests</span>
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:23</span>
+                      <span class="lvl err">ERR</span>
+                      <span class="svc">search</span>
+                      <span class="msg">connection refused 10.4.1.19:9200 — retry 4/5 in 16s</span>
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:26</span>
+                      <span class="lvl ok">OK</span>
+                      <span class="svc">worker</span>
+                      <span class="msg">replica 5/6 ready, draining backlog at 380/s</span>
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:28</span>
+                      <span class="lvl info">INFO</span>
+                      <span class="svc">gateway</span>
+                      <span class="msg"
+                        >rate limit applied to tenant acme-corp (burst 1,200 rpm)</span
+                      >
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:31</span>
+                      <span class="lvl info">INFO</span>
+                      <span class="svc">deploy</span>
+                      <span class="msg">queue-worker v1.9.0 rolling: 4/6 pods on new revision</span>
+                    </div>
+                    <div class="ln">
+                      <span class="t">09:41:33</span>
+                      <span class="lvl ok">OK</span>
+                      <span class="svc">postgres</span>
+                      <span class="msg">replication lag 0.2s on replica-2</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="ss-footer" id="settings">
+          <span>Nimbus Ops v2.14.3 · eu-west-1 · build 8f3a1c</span>
+          <div class="ops-foot-right">
+            <span>status.nimbus.example</span>
+            <button class="ss-btn ghost" type="button" id="ops-theme" aria-pressed="false">
+              <span class="label">theme: dark</span>
+            </button>
+          </div>
+        </footer>
+      </main>
+
+      <nav class="ss-bottom-nav" aria-label="Mobile">
+        <ul class="list">
+          <li class="row">
+            <a class="tab active" href="#main" aria-current="page">
+              <span class="glyph"><span data-ss-icon="grid" data-size="md"></span></span>
+              <span class="label">Overview</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="tab" href="#card-services" aria-label="Services, 2">
+              <span class="glyph">
+                <span data-ss-icon="activity" data-size="md"></span>
+                <span class="badge" aria-hidden="true">2</span>
+              </span>
+              <span class="label">Services</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="tab" href="#card-logs" aria-label="Logs, 12">
+              <span class="glyph">
+                <span data-ss-icon="logs" data-size="md"></span>
+                <span class="badge" aria-hidden="true">12</span>
+              </span>
+              <span class="label">Logs</span>
+            </a>
+          </li>
+          <li class="row">
+            <a class="tab" href="#settings">
+              <span class="glyph"><span data-ss-icon="settings" data-size="md"></span></span>
+              <span class="label">Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </body>
+</html>

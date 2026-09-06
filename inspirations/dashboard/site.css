@@ -1,0 +1,101 @@
+/* Nimbus Ops — page layout only. Component styling comes from dssoca (theme.css + vanilla.css). */
+
+.ops-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Page-head right side: overflow menu + primary action. */
+.ops-head-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-gap-sm);
+  flex: 0 0 auto;
+}
+
+/* Section stack below the two-column band. */
+.ops-stack {
+  display: grid;
+  gap: var(--ss-gap);
+  margin-bottom: var(--ss-gap);
+}
+
+/* Wide tables scroll inside their card instead of the page. */
+.ops-scroll {
+  overflow-x: auto;
+}
+.ops-scroll .ss-table {
+  min-width: 720px;
+}
+
+/* Table cells that hold a badge keep it on one line. */
+.ops-status {
+  white-space: nowrap;
+}
+
+.ops-foot-right {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-gap-sm);
+}
+
+/* The mobile tab bar only exists once the sidebar is gone. */
+.ops-app > .ss-bottom-nav {
+  display: none;
+}
+
+/* The content column must be allowed to shrink below its min-content width, otherwise a
+   long topbar (tabs + stats + user chip) widens the whole shell and the page scrolls sideways. */
+.ops-app {
+  grid-template-columns: var(--ss-shell-side-w) minmax(0, 1fr);
+}
+
+/* Six KPI tiles only fit at md on a wide screen; the lg size axis needs the same fallback. */
+html[data-size-variant='lg'] .ops-app .ss-metrics {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 1200px) {
+  .ops-app .ss-metrics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .ops-app .ss-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .ops-app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ops-app > .ss-side {
+    display: none;
+  }
+  .ops-app > .ss-bottom-nav {
+    display: block;
+  }
+  .ops-app .ss-main {
+    padding-bottom: calc(var(--ss-bottom-nav-h, var(--ss-shell-top-h)) + var(--ss-s-8));
+  }
+}
+
+@media (max-width: 640px) {
+  .ops-app .ss-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ops-app .ss-svc-grid {
+    grid-template-columns: 1fr;
+  }
+  .ops-app .ss-pageHead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ss-gap-sm);
+  }
+}

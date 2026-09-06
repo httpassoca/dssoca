@@ -1,0 +1,274 @@
+/* Orbit — account settings. Page LAYOUT only; every visual comes from dssoca tokens/components. */
+
+/* ---- view toggling (the sign-in screen swaps in for the app) ---- */
+.stg-app[hidden],
+.ss-login[hidden] {
+  display: none;
+}
+
+.stg-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- app shell ---- */
+.stg-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ss-bg);
+}
+
+.stg-top {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: var(--ss-gap);
+  height: var(--ss-shell-top-h);
+  padding: 0 var(--ss-main-px);
+  border-bottom: 1px solid var(--ss-line);
+  background: var(--ss-bg);
+}
+
+.stg-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ss-s-2);
+  color: var(--ss-fg);
+  text-decoration: none;
+  font-family: var(--ss-font-display);
+  font-size: var(--ss-size-h3);
+  letter-spacing: 0.02em;
+}
+
+.stg-logo-mark {
+  width: var(--ss-icon);
+  height: var(--ss-icon);
+  flex: none;
+}
+
+.stg-top-crumb {
+  color: var(--ss-fg-faint);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+}
+
+.stg-top-grow {
+  flex: 1;
+}
+
+.stg-top-name {
+  font-family: var(--ss-font-body);
+}
+
+.stg-shell {
+  flex: 1;
+  display: grid;
+  grid-template-columns: var(--ss-side-w) minmax(0, 1fr);
+  align-items: start;
+}
+
+/* Pin the rail under the header; it scrolls on its own if the nav outgrows the viewport. */
+.stg-shell > .ss-side {
+  position: sticky;
+  top: var(--ss-shell-top-h);
+  height: calc(100vh - var(--ss-shell-top-h));
+  min-height: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Compact section strip — only shown below the breakpoint. */
+.stg-strip {
+  display: none;
+}
+
+.stg-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ss-block-gap);
+  max-width: 920px;
+}
+
+/* Anchor targets land below the sticky header. */
+.stg-section {
+  scroll-margin-top: calc(var(--ss-shell-top-h) + var(--ss-gap));
+}
+
+/* ---- forms inside cards ---- */
+.stg-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ss-gap);
+}
+
+.stg-span {
+  grid-column: 1 / -1;
+}
+
+.stg-avatar-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--ss-gap);
+  align-items: start;
+  margin-bottom: var(--ss-gap);
+}
+
+.stg-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-gap-sm);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ---- setting rows (switch + description) ---- */
+.stg-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ss-gap);
+  padding: var(--ss-s-3) 0;
+  border-top: 1px solid var(--ss-line);
+}
+
+.stg-rows > .stg-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.stg-row-2fa {
+  margin-top: var(--ss-gap);
+  margin-bottom: var(--ss-gap);
+  border-top: 1px solid var(--ss-line);
+  border-bottom: 1px solid var(--ss-line);
+}
+
+.stg-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ss-s-1);
+  min-width: 0;
+}
+
+.stg-row-title {
+  font-weight: 500;
+}
+
+.stg-row-desc {
+  margin: 0;
+  color: var(--ss-fg-muted);
+  font-size: var(--ss-size-sm);
+}
+
+.stg-table-wrap {
+  overflow-x: auto;
+}
+
+/* ---- billing ---- */
+.stg-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ss-gap);
+  margin-bottom: var(--ss-gap);
+}
+
+.stg-note {
+  margin: 0;
+  color: var(--ss-fg-muted);
+  font-size: var(--ss-size-sm);
+}
+
+/* ---- dialogs ---- */
+.stg-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ss-gap);
+}
+
+/* ---- sign-in ---- */
+.stg-login-links {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ss-gap);
+  flex-wrap: wrap;
+}
+
+/* ---- responsive ---- */
+@media (max-width: 960px) {
+  .stg-form,
+  .stg-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .stg-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stg-shell > .ss-side {
+    display: none;
+  }
+
+  .stg-strip {
+    position: sticky;
+    top: var(--ss-shell-top-h);
+    z-index: 4;
+    display: flex;
+    gap: var(--ss-gap);
+    padding: var(--ss-s-2) var(--ss-main-px);
+    overflow-x: auto;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--ss-line);
+    background: var(--ss-bg);
+    scrollbar-width: thin;
+  }
+
+  .stg-section {
+    scroll-margin-top: calc(var(--ss-shell-top-h) * 2);
+  }
+
+  .stg-top .stg-top-crumb,
+  .stg-top .stg-top-docs,
+  .stg-top .stg-top-name,
+  .stg-sync {
+    display: none;
+  }
+
+  .stg-avatar-row {
+    grid-template-columns: 1fr;
+  }
+
+  .stg-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stg-row > .ss-switch,
+  .stg-row > .ss-btn,
+  .stg-row > .ss-badge {
+    align-self: flex-end;
+  }
+}
+
+/* Row-trailing controls never shrink below their label. */
+.stg-row > .ss-btn,
+.stg-row > .ss-badge {
+  flex: none;
+}

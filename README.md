@@ -84,15 +84,17 @@ wires the interactive parts (modal, menu, accordion, tooltip, switch, toasts, ic
 **after** `theme.css`; it needs CSS `@scope` (Chrome/Edge 118+, Safari 17.4+, Firefox 2026+).
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/theme.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla.css" />
-<script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla/index.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/theme.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla/index.js"></script>
 
 <button class="ss-btn primary" type="button" data-ss-modal="#confirm">deploy</button>
 ```
 
 Every component page in the docs has an **HTML** section with copy-paste markup; the full contract
-is in the _Plain HTML & CSS_ guide.
+is in the _Plain HTML & CSS_ guide. For whole pages, see **[Inspirations](https://httpassoca.github.io/dssoca/)**
+— twelve example websites (dashboard, social feed, chat, storefront, blog, …) written in plain
+HTML on this path, deployed from `inspirations/` to GitHub Pages.
 
 ## What's in the box
 

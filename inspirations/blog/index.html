@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>notes by Mara Quill</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body class="blog">
+    <div class="ss-container blog-page">
+      <header class="blog-header">
+        <a href="./" class="ss-link inline blog-brand" aria-label="notes by Mara Quill — home">
+          <span class="label">notes by mara quill</span>
+        </a>
+        <nav class="blog-nav" aria-label="Site">
+          <ul class="blog-nav-list">
+            <li>
+              <a href="./" class="ss-link inline" aria-current="page"
+                ><span class="label">posts</span></a
+              >
+            </li>
+            <li>
+              <a href="./about/" class="ss-link inline"><span class="label">about</span></a>
+            </li>
+            <li>
+              <a href="./now/" class="ss-link inline"><span class="label">now</span></a>
+            </li>
+            <li>
+              <a href="./feed.xml" class="ss-link inline"><span class="label">rss</span></a>
+            </li>
+          </ul>
+          <button
+            class="ss-btn ghost icon-only"
+            type="button"
+            id="theme-toggle"
+            aria-label="Switch to light theme"
+          >
+            <span class="affix" aria-hidden="true">
+              <span data-ss-icon="color-swatch" data-size="sm"></span>
+            </span>
+          </button>
+        </nav>
+      </header>
+
+      <main id="main">
+        <section class="blog-intro" aria-labelledby="page-title">
+          <h1 class="ss-heading accent" id="page-title">
+            <span class="txt">Recent posts</span>
+          </h1>
+          <p class="blog-lede">
+            I'm Mara, a backend engineer who keeps a small notebook here. Mostly Postgres, HTTP
+            plumbing, and the boring parts of shipping software — written up once I've been burnt by
+            them twice.
+          </p>
+          <ul class="blog-topics" aria-label="Topics">
+            <li><span class="ss-badge brand">postgres</span></li>
+            <li><span class="ss-badge brand">http</span></li>
+            <li><span class="ss-badge brand">observability</span></li>
+            <li><span class="ss-badge brand">process</span></li>
+            <li><span class="ss-badge brand">tooling</span></li>
+          </ul>
+        </section>
+
+        <section class="blog-list" aria-labelledby="posts-title">
+          <h2 class="blog-sr-only" id="posts-title">Posts</h2>
+          <ol class="blog-posts">
+            <li>
+              <article class="blog-post blog-post-expanded" aria-labelledby="post-1-title">
+                <div class="blog-post-side">
+                  <time class="blog-date" datetime="2026-08-28">2026-08-28</time>
+                  <span class="blog-read">7 min read</span>
+                </div>
+                <div class="blog-post-main">
+                  <h2 class="blog-post-title" id="post-1-title">
+                    <a href="./posts/caching-is-a-naming-problem/" class="ss-link inline">
+                      <span class="label">Caching is a naming problem</span>
+                    </a>
+                  </h2>
+                  <p class="blog-excerpt">
+                    Every cache bug I have shipped was really a cache <em>key</em> bug. Here is the
+                    checklist I now run before adding one.
+                  </p>
+                  <ul class="blog-tags" aria-label="Tags">
+                    <li><span class="ss-badge neutral">http</span></li>
+                    <li><span class="ss-badge neutral">caching</span></li>
+                    <li><span class="ss-badge neutral">backend</span></li>
+                  </ul>
+
+                  <div class="blog-prose">
+                    <p>
+                      A cache is a dictionary with a deadline. The deadline gets all the attention —
+                      <code>Cache-Control</code>, <code>max-age</code>, stale-while-revalidate — but
+                      the dictionary half is where things go wrong. If two requests that should see
+                      different responses hash to the same key, no TTL will save you.
+                    </p>
+
+                    <h3>Start from the response, not the URL</h3>
+                    <p>
+                      The key has to name everything the response depends on. The path is the
+                      obvious part; the <code>Vary</code> headers, the tenant, the feature flags in
+                      play and the API version are the parts that get forgotten. Write them down
+                      first, then build the key from that list:
+                    </p>
+                    <pre><code>const key = [
+  req.method,
+  url.pathname + url.search,
+  tenant.id,
+  vary.map((h) =&gt; req.headers.get(h) ?? '').join('|'),
+].join(' ')
+
+const hit = await cache.match(key)
+if (hit &amp;&amp; ageOf(hit) &lt; maxAge) return hit
+return fetchOrigin(req)</code></pre>
+
+                    <blockquote>
+                      <p>
+                        If you cannot explain in one sentence why two requests share a key, they
+                        should not share a key.
+                      </p>
+                    </blockquote>
+
+                    <h3>The checklist</h3>
+                    <ul>
+                      <li>Does the key include everything in <code>Vary</code>?</li>
+                      <li>
+                        Does it include the identity of whoever is asking, if the answer differs?
+                      </li>
+                      <li>Is the key stable across deploys, or does a build hash sneak into it?</li>
+                      <li>Can you list the keys for one user and purge them all?</li>
+                    </ul>
+
+                    <figure class="blog-figure">
+                      <svg
+                        viewBox="0 0 640 180"
+                        role="img"
+                        aria-labelledby="fig-1-title"
+                        class="blog-figure-svg"
+                      >
+                        <title id="fig-1-title">
+                          Request flows into a cache keyed by method, path, tenant and vary headers;
+                          a miss continues to the origin.
+                        </title>
+                        <defs>
+                          <linearGradient id="fig-1-wash" x1="0" y1="0" x2="1" y2="0">
+                            <stop
+                              offset="0"
+                              style="stop-color: var(--ss-primary); stop-opacity: 0.18"
+                            />
+                            <stop
+                              offset="1"
+                              style="stop-color: var(--ss-primary); stop-opacity: 0.02"
+                            />
+                          </linearGradient>
+                        </defs>
+                        <rect x="0" y="0" width="640" height="180" fill="url(#fig-1-wash)" />
+                        <g
+                          fill="none"
+                          stroke="var(--ss-line-strong)"
+                          stroke-width="1.5"
+                          font-family="var(--ss-font-mono)"
+                          font-size="14"
+                        >
+                          <rect x="24" y="60" width="140" height="60" />
+                          <rect
+                            x="250"
+                            y="40"
+                            width="140"
+                            height="100"
+                            stroke="var(--ss-primary)"
+                          />
+                          <rect x="476" y="60" width="140" height="60" />
+                          <path d="M164 90h86M390 90h86" stroke="var(--ss-fg-muted)" />
+                          <path d="M244 84l6 6-6 6M470 84l6 6-6 6" stroke="var(--ss-fg-muted)" />
+                        </g>
+                        <g
+                          fill="var(--ss-fg)"
+                          font-family="var(--ss-font-mono)"
+                          font-size="14"
+                          text-anchor="middle"
+                        >
+                          <text x="94" y="95">request</text>
+                          <text x="320" y="72" fill="var(--ss-primary)">cache</text>
+                          <text x="320" y="96" font-size="11" fill="var(--ss-fg-muted)">
+                            method · path
+                          </text>
+                          <text x="320" y="114" font-size="11" fill="var(--ss-fg-muted)">
+                            tenant · vary
+                          </text>
+                          <text x="546" y="95">origin</text>
+                        </g>
+                      </svg>
+                      <figcaption>
+                        Figure 1 — the key is the contract between the request and the response.
+                      </figcaption>
+                    </figure>
+
+                    <p>
+                      One more thing I do on every project now: a debug palette that shows the
+                      computed key for the current page. Press
+                      <kbd class="ss-kbd" role="img" aria-label="Command K">
+                        <kbd class="key">⌘</kbd>
+                        <kbd class="key">K</kbd>
+                      </kbd>
+                      in the staging build and it lists the key, the age and the TTL. It has caught
+                      more bugs than any test I have written for caching.
+                    </p>
+                    <p>
+                      <a href="./posts/caching-is-a-naming-problem/" class="ss-link inline">
+                        <span class="label">Continue reading →</span>
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </article>
+            </li>
+
+            <li>
+              <article class="blog-post" aria-labelledby="post-2-title">
+                <div class="blog-post-side">
+                  <time class="blog-date" datetime="2026-08-11">2026-08-11</time>
+                  <span class="blog-read">9 min read</span>
+                </div>
+                <div class="blog-post-main">
+                  <h2 class="blog-post-title" id="post-2-title">
+                    <a href="./posts/tiny-job-queue-in-sql/" class="ss-link inline">
+                      <span class="label">A tiny job queue in 120 lines of SQL</span>
+                    </a>
+                  </h2>
+                  <p class="blog-excerpt">
+                    You probably do not need a broker. <code>SELECT … FOR UPDATE SKIP LOCKED</code>
+                    and a cron-shaped worker got me further than I expected.
+                  </p>
+                  <ul class="blog-tags" aria-label="Tags">
+                    <li><span class="ss-badge neutral">postgres</span></li>
+                    <li><span class="ss-badge neutral">sql</span></li>
+                  </ul>
+                </div>
+              </article>
+            </li>
+
+            <li>
+              <article class="blog-post" aria-labelledby="post-3-title">
+                <div class="blog-post-side">
+                  <time class="blog-date" datetime="2026-07-30">2026-07-30</time>
+                  <span class="blog-read">5 min read</span>
+                </div>
+                <div class="blog-post-main">
+                  <h2 class="blog-post-title" id="post-3-title">
+                    <a href="./posts/feature-flags-wrong/" class="ss-link inline">
+                      <span class="label">What I got wrong about feature flags</span>
+                    </a>
+                  </h2>
+                  <p class="blog-excerpt">
+                    Flags are cheap to add and expensive to forget. A retrospective on a year of
+                    them, and the two rules that finally kept the count under twenty.
+                  </p>
+                  <ul class="blog-tags" aria-label="Tags">
+                    <li><span class="ss-badge neutral">process</span></li>
+                    <li><span class="ss-badge neutral">backend</span></li>
+                  </ul>
+                </div>
+              </article>
+            </li>
+
+            <li>
+              <article class="blog-post" aria-labelledby="post-4-title">
+                <div class="blog-post-side">
+                  <time class="blog-date" datetime="2026-07-14">2026-07-14</time>
+                  <span class="blog-read">6 min read</span>
+                </div>
+                <div class="blog-post-main">
+                  <h2 class="blog-post-title" id="post-4-title">
+                    <a href="./posts/reading-logs-like-a-detective/" class="ss-link inline">
+                      <span class="label">Reading logs like a detective</span>
+                    </a>
+                  </h2>
+                  <p class="blog-excerpt">
+                    Structured logs are only half the story. How I lay out a request's timeline from
+                    three services and one very confused load balancer.
+                  </p>
+                  <ul class="blog-tags" aria-label="Tags">
+                    <li><span class="ss-badge neutral">observability</span></li>
+                    <li><span class="ss-badge neutral">ops</span></li>
+                  </ul>
+                </div>
+              </article>
+            </li>
+
+            <li>
+              <article class="blog-post" aria-labelledby="post-5-title">
+                <div class="blog-post-side">
+                  <time class="blog-date" datetime="2026-06-26">2026-06-26</time>
+                  <span class="blog-read">4 min read</span>
+                </div>
+                <div class="blog-post-main">
+                  <h2 class="blog-post-title" id="post-5-title">
+                    <a href="./posts/rewriting-my-dotfiles/" class="ss-link inline">
+                      <span class="label">Notes from rewriting my dotfiles</span>
+                    </a>
+                  </h2>
+                  <p class="blog-excerpt">
+                    Ten years of accumulated aliases, deleted in an afternoon. What survived, what I
+                    actually use, and why the shell prompt is now three characters.
+                  </p>
+                  <ul class="blog-tags" aria-label="Tags">
+                    <li><span class="ss-badge neutral">tooling</span></li>
+                    <li><span class="ss-badge neutral">shell</span></li>
+                  </ul>
+                </div>
+              </article>
+            </li>
+
+            <li>
+              <article class="blog-post" aria-labelledby="post-6-title">
+                <div class="blog-post-side">
+                  <time class="blog-date" datetime="2026-06-09">2026-06-09</time>
+                  <span class="blog-read">8 min read</span>
+                </div>
+                <div class="blog-post-main">
+                  <h2 class="blog-post-title" id="post-6-title">
+                    <a href="./posts/boring-migrations/" class="ss-link inline">
+                      <span class="label">The case for boring migrations</span>
+                    </a>
+                  </h2>
+                  <p class="blog-excerpt">
+                    Expand, backfill, contract. Three deploys instead of one, and I have not locked
+                    a table in production since.
+                  </p>
+                  <ul class="blog-tags" aria-label="Tags">
+                    <li><span class="ss-badge neutral">postgres</span></li>
+                    <li><span class="ss-badge neutral">process</span></li>
+                  </ul>
+                </div>
+              </article>
+            </li>
+          </ol>
+
+          <nav class="ss-pagination blog-pagination" aria-label="Pagination">
+            <button type="button" class="page nav-btn" aria-label="Previous page" disabled>
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button type="button" class="page active" aria-current="page" aria-label="Page 1">
+              1
+            </button>
+            <button type="button" class="page" aria-label="Page 2">2</button>
+            <button type="button" class="page" aria-label="Page 3">3</button>
+            <span class="ellipsis" aria-hidden="true">…</span>
+            <button type="button" class="page" aria-label="Page 5">5</button>
+            <button type="button" class="page nav-btn" aria-label="Next page">
+              <span aria-hidden="true">›</span>
+            </button>
+          </nav>
+        </section>
+
+        <section class="blog-subscribe" aria-labelledby="subscribe-title">
+          <div class="ss-card" aria-labelledby="subscribe-title">
+            <div class="head">
+              <div class="heading">
+                <div class="title" id="subscribe-title" role="heading" aria-level="2">
+                  Subscribe
+                </div>
+                <div class="desc">
+                  New posts by email, roughly once a month. No tracking, unsubscribe in one click.
+                </div>
+              </div>
+            </div>
+            <div class="body">
+              <form class="blog-subscribe-form" id="subscribe-form" novalidate>
+                <div class="ss-field">
+                  <label class="lbl" for="subscribe-email">Email</label>
+                  <div class="control">
+                    <input
+                      class="ss-input"
+                      id="subscribe-email"
+                      name="email"
+                      type="email"
+                      autocomplete="email"
+                      inputmode="email"
+                      placeholder="you@example.com"
+                    />
+                    <button type="button" class="clear" aria-label="Clear" hidden>×</button>
+                  </div>
+                </div>
+                <button class="ss-btn primary" type="submit">
+                  <span class="label">subscribe</span>
+                </button>
+              </form>
+            </div>
+            <div class="foot">
+              <span>or grab the feed:</span>
+              <a href="./feed.xml" class="ss-link inline"><span class="label">rss</span></a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="ss-footer blog-footer">
+        <span>© 2026 Mara Quill · written by hand, no tracking</span>
+        <nav aria-label="Footer">
+          <ul class="blog-footer-links">
+            <li>
+              <a href="./colophon/" class="ss-link inline"><span class="label">colophon</span></a>
+            </li>
+            <li>
+              <a href="./archive/" class="ss-link inline"><span class="label">archive</span></a>
+            </li>
+            <li>
+              <a href="./feed.xml" class="ss-link inline"><span class="label">rss</span></a>
+            </li>
+          </ul>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>
