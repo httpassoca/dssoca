@@ -84,9 +84,9 @@ wires the interactive parts (modal, menu, accordion, tooltip, switch, toasts, ic
 **after** `theme.css`; it needs CSS `@scope` (Chrome/Edge 118+, Safari 17.4+, Firefox 2026+).
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/theme.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla.css" />
-<script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla/index.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/theme.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla/index.js"></script>
 
 <button class="ss-btn primary" type="button" data-ss-modal="#confirm">deploy</button>
 ```

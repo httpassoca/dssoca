@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
-## [Unreleased]
+## [0.18.0] — Inspirations & plain-HTML polish — 2026-09-06
 
 ### Added
 
@@ -628,7 +628,8 @@ Docs-site only (the published library is unchanged from `0.8.0`).
   component set (`DS-0002`), toast notifications (`DS-0003`), and empty/error-state affordances
   (`DS-0004`).
 
-[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.17.0...HEAD
+[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.18.0...HEAD
+[0.18.0]: https://github.com/httpassoca/dssoca/compare/v0.17.0...v0.18.0
 [0.9.0]: https://github.com/httpassoca/dssoca/compare/v0.8.2...v0.9.0
 [0.2.0]: https://github.com/httpassoca/dssoca/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/httpassoca/dssoca/releases/tag/v0.1.0
