@@ -1,0 +1,210 @@
+/* Inspirations gallery — page layout only (components come from vanilla.css). */
+
+.insp-page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.insp-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--ss-gap);
+  padding: var(--ss-s-3) var(--ss-main-px);
+  border-bottom: 1px solid var(--ss-line);
+  background: color-mix(in oklab, var(--ss-bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+}
+.insp-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-s-2);
+  font-family: var(--ss-font-display);
+  font-size: var(--ss-size-h3);
+  letter-spacing: 0.01em;
+  color: var(--ss-fg);
+  text-decoration: none;
+}
+.insp-brand::before {
+  display: none;
+}
+.insp-brand .mark {
+  width: 14px;
+  height: 14px;
+  color: var(--ss-primary);
+}
+.insp-brand .of {
+  color: var(--ss-fg-faint);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+}
+.insp-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-gap-sm);
+  margin-left: auto;
+}
+.insp-nav a {
+  font-weight: 400;
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  color: var(--ss-fg-muted);
+}
+.insp-nav a:hover {
+  color: var(--ss-fg);
+}
+
+.insp-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--ss-block-gap) var(--ss-main-px) var(--ss-s-16);
+}
+
+.insp-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--ss-block-gap);
+  align-items: end;
+  margin-bottom: var(--ss-block-gap);
+}
+.insp-hero .lede {
+  max-width: 60ch;
+  color: var(--ss-fg-muted);
+}
+.insp-snippet {
+  margin: 0;
+  font-size: var(--ss-ui-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.insp-axes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ss-gap);
+  align-items: center;
+  padding: var(--ss-s-3) 0;
+  border-top: 1px solid var(--ss-line);
+  border-bottom: 1px solid var(--ss-line);
+  margin-bottom: var(--ss-block-gap);
+}
+.insp-axes .axis {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-s-2);
+}
+.insp-axes .axis-label {
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ss-fg-faint);
+}
+.insp-axes .hint {
+  margin-left: auto;
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-xs);
+  color: var(--ss-fg-faint);
+}
+
+.insp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ss-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.insp-grid > li {
+  display: contents;
+}
+.insp-grid .ss-card {
+  display: flex;
+  flex-direction: column;
+}
+.insp-thumb {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--ss-bg);
+  border-bottom: 1px solid var(--ss-line);
+}
+.insp-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform var(--ss-dur-slow) var(--ss-ease);
+}
+.insp-grid .ss-card:hover .insp-thumb img {
+  transform: scale(1.02);
+}
+/* Shown when the screenshot is missing (local builds without Chromium). */
+.insp-thumb .placeholder {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ss-fg-faint);
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--ss-primary) 8%, transparent) 0 8px,
+    transparent 8px 16px
+  );
+}
+.insp-thumb.missing img {
+  display: none;
+}
+.insp-thumb.missing .placeholder {
+  display: grid;
+}
+.insp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ss-gap-xs);
+  margin-top: var(--ss-s-2);
+}
+.insp-grid .ss-card .body p {
+  margin: 0;
+  color: var(--ss-fg-muted);
+  font-size: var(--ss-ui-md);
+}
+
+.insp-footer {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--ss-main-px) var(--ss-s-8);
+  width: 100%;
+}
+
+@media (max-width: 1000px) {
+  .insp-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .insp-hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+@media (max-width: 600px) {
+  .insp-grid {
+    grid-template-columns: 1fr;
+  }
+  .insp-nav .gh-label {
+    display: none;
+  }
+  .insp-axes .hint {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+}
