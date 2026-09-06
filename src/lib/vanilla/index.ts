@@ -3,9 +3,9 @@
  * consumption path. Importing this module wires every behaviour once via document-level event
  * delegation (so markup added later just works) and runs `mount()` when the DOM is ready.
  *
- *   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/theme.css">
- *   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla.css">
- *   <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.17/dist/vanilla/index.js"></script>
+ *   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/theme.css">
+ *   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla.css">
+ *   <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla/index.js"></script>
  *
  * Call `mount(root)` after injecting HTML that contains `[data-ss-icon]` placeholders or
  * autosizing textareas. Nothing here imports Svelte or a `.svelte` module.
