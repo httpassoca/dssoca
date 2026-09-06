@@ -240,6 +240,14 @@ describe('inspirations: build helpers', () => {
     )
   })
 
+  it('the screenshot script never blocks its own server (async child processes only)', () => {
+    // The server lives in the script's process; a synchronous child would starve the event loop
+    // and the browser's first request would never be answered (the first Pages run hung).
+    const src = readFileSync(resolve(process.cwd(), 'scripts/screenshot-inspirations.mjs'), 'utf8')
+    expect(src).not.toMatch(/execFileSync|execSync|spawnSync/)
+    expect(src).toMatch(/timeout:\s*\d/)
+  })
+
   it('vendorFiles fails loudly when dist is incomplete', () => {
     const dist = mkdtempSync(join(tmpdir(), 'dssoca-dist-'))
     expect(() => vendorFiles(dist)).toThrow(/pnpm pack/)
