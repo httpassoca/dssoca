@@ -28,3 +28,6 @@ vite.config.ts.timestamp-*
 
 # packaged tarballs (pnpm pack / npm pack artifacts)
 *.tgz
+
+# Inspirations site build (DS-0150)
+/inspirations-dist

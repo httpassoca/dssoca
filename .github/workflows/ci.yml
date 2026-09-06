@@ -83,5 +83,10 @@ jobs:
       - name: Build + validate package (release dry-run)
         run: pnpm pack
 
+      # Inspirations site (DS-0150): assembles inspirations/ + the vendored dist files the
+      # pages link. Deployed to GitHub Pages by pages.yml; here it only has to build.
+      - name: Build Inspirations site
+        run: pnpm build:inspirations
+
       - name: Build Storybook
         run: pnpm build-storybook
