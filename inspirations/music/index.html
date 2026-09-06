@@ -1,0 +1,2022 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Late Night Signals — Waveform</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body>
+    <!-- Icon + cover-art symbol sheet (all art is generated inline; no external images). -->
+    <svg class="music-defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="music-g-hero" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" style="stop-color: var(--ss-magenta)" />
+          <stop offset="0.55" style="stop-color: var(--ss-blue)" />
+          <stop offset="1" style="stop-color: var(--ss-accent)" />
+        </linearGradient>
+        <linearGradient id="music-g-1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" style="stop-color: var(--ss-magenta)" />
+          <stop offset="1" style="stop-color: var(--ss-blue)" />
+        </linearGradient>
+        <linearGradient id="music-g-2" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" style="stop-color: var(--ss-accent)" />
+          <stop offset="1" style="stop-color: var(--ss-cyan)" />
+        </linearGradient>
+        <linearGradient id="music-g-3" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color: var(--ss-yellow)" />
+          <stop offset="1" style="stop-color: var(--ss-red)" />
+        </linearGradient>
+        <linearGradient id="music-g-4" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" style="stop-color: var(--ss-blue)" />
+          <stop offset="1" style="stop-color: var(--ss-cyan)" />
+        </linearGradient>
+        <linearGradient id="music-g-5" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color: var(--ss-red)" />
+          <stop offset="1" style="stop-color: var(--ss-magenta)" />
+        </linearGradient>
+        <linearGradient id="music-g-6" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" style="stop-color: var(--ss-green)" />
+          <stop offset="1" style="stop-color: var(--ss-yellow)" />
+        </linearGradient>
+
+        <!-- Album covers: gradient + one generative shape each -->
+        <symbol id="music-cover-1" viewBox="0 0 40 40">
+          <rect width="40" height="40" fill="url(#music-g-1)" />
+          <path
+            d="M6 30h4V14H6zm8 0h4V8h-4zm8 0h4V18h-4zm8 0h4V11h-4z"
+            fill="var(--ss-bg)"
+            opacity="0.5"
+          />
+        </symbol>
+        <symbol id="music-cover-2" viewBox="0 0 40 40">
+          <rect width="40" height="40" fill="url(#music-g-2)" />
+          <path
+            d="M8 8h24v24H8z M14 14h12v12H14z"
+            fill="var(--ss-bg)"
+            fill-rule="evenodd"
+            opacity="0.45"
+          />
+        </symbol>
+        <symbol id="music-cover-3" viewBox="0 0 40 40">
+          <rect width="40" height="40" fill="url(#music-g-3)" />
+          <path d="M4 36L20 6l16 30z" fill="var(--ss-bg)" opacity="0.45" />
+        </symbol>
+        <symbol id="music-cover-4" viewBox="0 0 40 40">
+          <rect width="40" height="40" fill="url(#music-g-4)" />
+          <path d="M4 12h32M4 20h32M4 28h32" stroke="var(--ss-bg)" stroke-width="3" opacity="0.5" />
+        </symbol>
+        <symbol id="music-cover-5" viewBox="0 0 40 40">
+          <rect width="40" height="40" fill="url(#music-g-5)" />
+          <path d="M20 4l16 16-16 16L4 20z" fill="var(--ss-bg)" opacity="0.45" />
+        </symbol>
+        <symbol id="music-cover-6" viewBox="0 0 40 40">
+          <rect width="40" height="40" fill="url(#music-g-6)" />
+          <path
+            d="M6 6h8v8H6zm20 0h8v8h-8zM16 16h8v8h-8zM6 26h8v8H6zm20 0h8v8h-8z"
+            fill="var(--ss-bg)"
+            opacity="0.5"
+          />
+        </symbol>
+
+        <!-- Glyphs (square-cap, miter — matches the built-in icon set) -->
+        <symbol id="music-i-play" viewBox="0 0 24 24">
+          <path d="M7 4l13 8-13 8z" fill="currentColor" />
+        </symbol>
+        <symbol id="music-i-pause" viewBox="0 0 24 24">
+          <path d="M6 4h4v16H6zm8 0h4v16h-4z" fill="currentColor" />
+        </symbol>
+        <symbol id="music-i-prev" viewBox="0 0 24 24">
+          <path d="M5 4h3v16H5zm15 0L9 12l11 8z" fill="currentColor" />
+        </symbol>
+        <symbol id="music-i-next" viewBox="0 0 24 24">
+          <path d="M16 4h3v16h-3zM4 4l11 8-11 8z" fill="currentColor" />
+        </symbol>
+        <symbol
+          id="music-i-shuffle"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M3 6h4l10 12h4M17 6h4l-4 5M3 18h4l4-5M21 18l-4-4M18 3l3 3-3 3M18 15l3 3-3 3" />
+        </symbol>
+        <symbol
+          id="music-i-repeat"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M3 10V6h14M17 2l4 4-4 4M21 14v4H7M7 22l-4-4 4-4" />
+        </symbol>
+        <symbol
+          id="music-i-heart"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M12 21L3 12V6l3-3h3l3 3 3-3h3l3 3v6z" />
+        </symbol>
+        <symbol id="music-i-heart-fill" viewBox="0 0 24 24">
+          <path d="M12 21L3 12V6l3-3h3l3 3 3-3h3l3 3v6z" fill="currentColor" />
+        </symbol>
+        <symbol
+          id="music-i-download"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M12 3v12M6 9l6 6 6-6M4 21h16" />
+        </symbol>
+        <symbol id="music-i-more" viewBox="0 0 24 24">
+          <path d="M3 10h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4z" fill="currentColor" />
+        </symbol>
+        <symbol
+          id="music-i-search"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M4 4h11v11H4zM15 15l5 5" />
+        </symbol>
+        <symbol
+          id="music-i-volume"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M4 9h4l5-4v14l-5-4H4zM16 9v6M20 6v12" />
+        </symbol>
+        <symbol
+          id="music-i-plus"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M12 5v14M5 12h14" />
+        </symbol>
+        <symbol
+          id="music-i-theme"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M4 4h16v16H4z" />
+          <path d="M12 4v16h8V4z" fill="currentColor" />
+        </symbol>
+        <symbol
+          id="music-i-queue"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M4 6h10M4 12h10M4 18h16M18 5v8M15 9l3-3 3 3" />
+        </symbol>
+        <symbol
+          id="music-i-share"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M12 15V3M7 8l5-5 5 5M4 13v8h16v-8" />
+        </symbol>
+        <symbol
+          id="music-i-edit"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M4 20h16M4 16l10-10 4 4L8 20H4zM12 8l4 4" />
+        </symbol>
+        <symbol
+          id="music-i-trash"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="square"
+          stroke-linejoin="miter"
+        >
+          <path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6M14 11v6" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="music-shell">
+      <!-- Sidebar (hidden below 760px; the BottomNav takes over) -->
+      <nav class="ss-side" aria-label="Sidebar">
+        <div class="music-brand">
+          <svg class="music-brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M2 14h3V10H2zm5 4h3V6H7zm5 3h3V3h-3zm5-6h3V9h-3z" fill="var(--ss-primary)" />
+          </svg>
+          <span class="music-brand-name">Waveform</span>
+        </div>
+
+        <div class="section" id="music-sec-nav">Browse</div>
+        <ul class="list" aria-labelledby="music-sec-nav">
+          <li class="row">
+            <div class="item" role="button" tabindex="0">
+              <span data-ss-icon="home" data-px="13"></span>
+              <span class="label">Home</span>
+            </div>
+          </li>
+          <li class="row">
+            <div class="item" role="button" tabindex="0">
+              <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <use href="#music-i-search" />
+              </svg>
+              <span class="label">Search</span>
+            </div>
+          </li>
+          <li class="row">
+            <div class="item" role="button" tabindex="0">
+              <span data-ss-icon="book" data-px="13"></span>
+              <span class="label">Your Library</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="section" id="music-sec-yours">Your music</div>
+        <ul class="list" aria-labelledby="music-sec-yours">
+          <li class="row">
+            <div class="item" role="button" tabindex="0">
+              <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <use href="#music-i-heart-fill" />
+              </svg>
+              <span class="label">Liked Songs</span>
+              <span class="ss-badge positive" data-size-variant="sm"
+                ><span class="count" id="music-liked-count">142</span></span
+              >
+            </div>
+          </li>
+          <li class="row">
+            <div class="item" role="button" tabindex="0">
+              <span data-ss-icon="activity" data-px="13"></span>
+              <span class="label">Recently played</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="section" id="music-sec-playlists">Playlists</div>
+        <ul class="list" aria-labelledby="music-sec-playlists">
+          <li class="row">
+            <div class="item active" role="button" tabindex="0" aria-current="page">
+              <span class="label">Late Night Signals</span>
+              <span class="dot" aria-hidden="true"></span>
+            </div>
+          </li>
+          <li class="row">
+            <div class="item" role="button" tabindex="0">
+              <span class="label">Focus Loops</span>
+            </div>
+          </li>
+          <li class="row">
+            <div class="item" role="button" tabindex="0">
+              <span class="label">Tape Hiss Sundays</span>
+            </div>
+          </li>
+          <li class="row">
+            <div class="item" role="button" tabindex="0">
+              <span class="label">Commute, 07:40</span>
+            </div>
+          </li>
+          <li class="row">
+            <div class="item" role="button" tabindex="0">
+              <span class="label">Heavy rotation</span>
+            </div>
+          </li>
+          <li class="row">
+            <div class="item" role="button" tabindex="0">
+              <span class="label">Cold Open (mix)</span>
+            </div>
+          </li>
+        </ul>
+        <div class="music-side-actions">
+          <button class="ss-btn ghost" type="button" id="music-new-playlist">
+            <span class="affix" aria-hidden="true"
+              ><svg width="1em" height="1em" viewBox="0 0 24 24"><use href="#music-i-plus" /></svg
+            ></span>
+            <span class="label">New playlist</span>
+          </button>
+        </div>
+
+        <div class="music-side-foot">
+          <button
+            class="ss-btn ghost icon-only"
+            type="button"
+            id="music-theme"
+            aria-label="Toggle light and dark theme"
+          >
+            <span class="label" aria-hidden="true"
+              ><svg width="1em" height="1em" viewBox="0 0 24 24"><use href="#music-i-theme" /></svg
+            ></span>
+          </button>
+          <span class="music-side-user">
+            <span
+              class="ss-avatar"
+              data-size-variant="sm"
+              role="img"
+              aria-label="Rae Okonkwo"
+              style="--ss-avatar-bg: var(--ss-cyan)"
+              ><span class="initials" aria-hidden="true">RO</span></span
+            >
+          </span>
+        </div>
+      </nav>
+
+      <div class="music-main">
+        <main id="main">
+          <!-- Playlist hero -->
+          <header class="music-hero">
+            <svg
+              class="music-hero-cover"
+              viewBox="0 0 200 200"
+              role="img"
+              aria-label="Late Night Signals cover art: a waveform over a magenta-to-green gradient"
+            >
+              <rect width="200" height="200" fill="url(#music-g-hero)" />
+              <g fill="var(--ss-bg)" opacity="0.55">
+                <rect x="14" y="112" width="8" height="30" />
+                <rect x="26" y="96" width="8" height="62" />
+                <rect x="38" y="80" width="8" height="94" />
+                <rect x="50" y="104" width="8" height="46" />
+                <rect x="62" y="60" width="8" height="134" />
+                <rect x="74" y="88" width="8" height="78" />
+                <rect x="86" y="40" width="8" height="174" />
+                <rect x="98" y="72" width="8" height="110" />
+                <rect x="110" y="96" width="8" height="62" />
+                <rect x="122" y="52" width="8" height="150" />
+                <rect x="134" y="84" width="8" height="86" />
+                <rect x="146" y="108" width="8" height="38" />
+                <rect x="158" y="68" width="8" height="118" />
+                <rect x="170" y="100" width="8" height="54" />
+                <rect x="182" y="120" width="8" height="14" />
+              </g>
+              <path
+                d="M14 22h60v60H14z M22 30h44v44H22z"
+                fill="var(--ss-bg)"
+                fill-rule="evenodd"
+                opacity="0.7"
+              />
+              <text
+                x="16"
+                y="190"
+                font-family="var(--ss-font-mono)"
+                font-size="9"
+                letter-spacing="1.5"
+                fill="var(--ss-bg)"
+                opacity="0.9"
+              >
+                LATE NIGHT SIGNALS
+              </text>
+            </svg>
+            <div class="music-hero-meta">
+              <p class="music-eyebrow">Playlist</p>
+              <h1 class="music-title">Late Night Signals</h1>
+              <p class="music-desc">
+                Slow synths, tape hiss and long fades for the hours after midnight. Updated every
+                Friday, sequenced to fade out around 2 am.
+              </p>
+              <p class="music-stats">
+                <span
+                  class="ss-avatar"
+                  data-size-variant="sm"
+                  role="img"
+                  aria-label="Rae Okonkwo"
+                  style="--ss-avatar-bg: var(--ss-cyan)"
+                  ><span class="initials" aria-hidden="true">RO</span></span
+                >
+                <a class="ss-link inline" href="#profile"><span class="label">Rae Okonkwo</span></a>
+                <span class="music-stats-sep" aria-hidden="true">·</span>
+                <span>24 songs</span>
+                <span class="music-stats-sep" aria-hidden="true">·</span>
+                <span>1 hr 32 min</span>
+              </p>
+            </div>
+          </header>
+
+          <!-- Action row -->
+          <div class="music-actions">
+            <button
+              class="ss-btn primary icon-only"
+              type="button"
+              data-size-variant="lg"
+              data-play-toggle
+              aria-label="Pause"
+            >
+              <span class="label" aria-hidden="true"
+                ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                  <use href="#music-i-pause" data-glyph /></svg
+              ></span>
+            </button>
+            <button
+              class="ss-btn ghost icon-only"
+              type="button"
+              data-shuffle
+              aria-label="Shuffle"
+              aria-pressed="false"
+            >
+              <span class="label" aria-hidden="true"
+                ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                  <use href="#music-i-shuffle" /></svg
+              ></span>
+            </button>
+            <button
+              class="ss-btn ghost icon-only"
+              type="button"
+              id="music-download"
+              aria-label="Download playlist"
+            >
+              <span class="label" aria-hidden="true"
+                ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                  <use href="#music-i-download" /></svg
+              ></span>
+            </button>
+            <div class="ss-menu" data-align="start" data-side="bottom" id="music-more">
+              <button
+                type="button"
+                class="trigger"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-controls="music-more-panel"
+                aria-label="More options for Late Night Signals"
+              >
+                <svg
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <use href="#music-i-more" />
+                </svg>
+              </button>
+              <div
+                id="music-more-panel"
+                class="panel"
+                role="menu"
+                aria-label="Playlist actions"
+                aria-hidden="true"
+                tabindex="-1"
+              >
+                <button
+                  type="button"
+                  class="item"
+                  data-mi="0"
+                  data-value="queue"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  <span class="lead" aria-hidden="true"
+                    ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                      <use href="#music-i-queue" /></svg
+                  ></span>
+                  <span class="label">Add to queue</span>
+                  <span class="marker" aria-hidden="true"></span>
+                </button>
+                <button
+                  type="button"
+                  class="item"
+                  data-mi="1"
+                  data-value="share"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  <span class="lead" aria-hidden="true"
+                    ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                      <use href="#music-i-share" /></svg
+                  ></span>
+                  <span class="label">Share</span>
+                  <span class="marker" aria-hidden="true"></span>
+                </button>
+                <button
+                  type="button"
+                  class="item"
+                  data-mi="2"
+                  data-value="edit"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  <span class="lead" aria-hidden="true"
+                    ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                      <use href="#music-i-edit" /></svg
+                  ></span>
+                  <span class="label">Edit details</span>
+                  <span class="marker" aria-hidden="true"></span>
+                </button>
+                <button
+                  type="button"
+                  class="item"
+                  data-mi="3"
+                  data-value="delete"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  <span class="lead" aria-hidden="true"
+                    ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                      <use href="#music-i-trash" /></svg
+                  ></span>
+                  <span class="label">Delete playlist</span>
+                  <span class="marker" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <span class="music-actions-note">Playing from <strong>Late Night Signals</strong></span>
+          </div>
+
+          <!-- Track list -->
+          <div class="music-tracks">
+            <table class="ss-table" id="music-table">
+              <caption class="music-sr-only">
+                Tracks in Late Night Signals
+              </caption>
+              <thead>
+                <tr>
+                  <th
+                    scope="col"
+                    class="head numeric"
+                    data-align="right"
+                    aria-sort="ascending"
+                    data-sort="index"
+                  >
+                    <button type="button" class="sort">
+                      <span class="label">#</span
+                      ><span class="indicator" aria-hidden="true">↑</span>
+                    </button>
+                  </th>
+                  <th scope="col" class="head" data-align="left" aria-sort="none" data-sort="title">
+                    <button type="button" class="sort">
+                      <span class="label">Title</span
+                      ><span class="indicator" aria-hidden="true">↕</span>
+                    </button>
+                  </th>
+                  <th
+                    scope="col"
+                    class="head"
+                    data-align="left"
+                    aria-sort="none"
+                    data-sort="album"
+                    data-col="album"
+                  >
+                    <button type="button" class="sort">
+                      <span class="label">Album</span
+                      ><span class="indicator" aria-hidden="true">↕</span>
+                    </button>
+                  </th>
+                  <th
+                    scope="col"
+                    class="head"
+                    data-align="left"
+                    aria-sort="none"
+                    data-sort="added"
+                    data-col="added"
+                  >
+                    <button type="button" class="sort">
+                      <span class="label">Date added</span
+                      ><span class="indicator" aria-hidden="true">↕</span>
+                    </button>
+                  </th>
+                  <th scope="col" class="head" data-align="center">
+                    <span class="label music-sr-only">Liked</span>
+                  </th>
+                  <th
+                    scope="col"
+                    class="head numeric"
+                    data-align="right"
+                    aria-sort="none"
+                    data-sort="duration"
+                  >
+                    <button type="button" class="sort">
+                      <span class="label">Time</span
+                      ><span class="indicator" aria-hidden="true">↕</span>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="row"
+                  data-index="1"
+                  data-title="Static Bloom"
+                  data-album="Low Orbit"
+                  data-added="2026-08-29"
+                  data-duration="221"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">1</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-1" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Static Bloom</span
+                        ><span class="music-track-artist">Vela Norte</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Low Orbit</td>
+                  <td class="cell" data-align="left" data-col="added">Aug 29, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Static Bloom"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:41</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="2"
+                  data-title="Copper Wire"
+                  data-album="Signal / Noise"
+                  data-added="2026-08-29"
+                  data-duration="245"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">2</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-2" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Copper Wire</span
+                        ><span class="music-track-artist">The Halfmoons</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Signal / Noise</td>
+                  <td class="cell" data-align="left" data-col="added">Aug 29, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Copper Wire"
+                      aria-pressed="true"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart-fill" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">4:05</td>
+                </tr>
+                <tr
+                  class="row music-playing"
+                  data-index="3"
+                  data-title="Neon Tidewater"
+                  data-album="Tidewater"
+                  data-added="2026-08-22"
+                  data-duration="207"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num" hidden>3</span
+                    ><span class="music-eq"
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-3" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Neon Tidewater</span
+                        ><span class="music-track-artist">Ilse Marrow</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Tidewater</td>
+                  <td class="cell" data-align="left" data-col="added">Aug 22, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Neon Tidewater"
+                      aria-pressed="true"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart-fill" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:27</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="4"
+                  data-title="Slow Hexagon"
+                  data-album="Geometry for Sleepers"
+                  data-added="2026-08-22"
+                  data-duration="312"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">4</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-4" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Slow Hexagon</span
+                        ><span class="music-track-artist">Paper Satellites</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Geometry for Sleepers</td>
+                  <td class="cell" data-align="left" data-col="added">Aug 22, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Slow Hexagon"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">5:12</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="5"
+                  data-title="Late Frequencies"
+                  data-album="Late Frequencies"
+                  data-added="2026-08-15"
+                  data-duration="238"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">5</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-5" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Late Frequencies</span
+                        ><span class="music-track-artist">Ada &amp; the Relays</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Late Frequencies</td>
+                  <td class="cell" data-align="left" data-col="added">Aug 15, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Late Frequencies"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:58</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="6"
+                  data-title="Glass Harbor"
+                  data-album="Low Orbit"
+                  data-added="2026-08-15"
+                  data-duration="262"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">6</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-1" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Glass Harbor</span
+                        ><span class="music-track-artist">Vela Norte</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Low Orbit</td>
+                  <td class="cell" data-align="left" data-col="added">Aug 15, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Glass Harbor"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">4:22</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="7"
+                  data-title="Ferrite"
+                  data-album="Magnetic North"
+                  data-added="2026-08-08"
+                  data-duration="176"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">7</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-6" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Ferrite</span
+                        ><span class="music-track-artist">Kestrel Dye</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Magnetic North</td>
+                  <td class="cell" data-align="left" data-col="added">Aug 8, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Ferrite"
+                      aria-pressed="true"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart-fill" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">2:56</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="8"
+                  data-title="Ultraviolet Rain"
+                  data-album="Night Garden"
+                  data-added="2026-08-08"
+                  data-duration="229"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">8</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-5" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Ultraviolet Rain</span
+                        ><span class="music-track-artist">Mira Solstice</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Night Garden</td>
+                  <td class="cell" data-align="left" data-col="added">Aug 8, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Ultraviolet Rain"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:49</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="9"
+                  data-title="Analog Ghost"
+                  data-album="Signal / Noise"
+                  data-added="2026-08-01"
+                  data-duration="254"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">9</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-2" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Analog Ghost</span
+                        ><span class="music-track-artist">The Halfmoons</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Signal / Noise</td>
+                  <td class="cell" data-align="left" data-col="added">Aug 1, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Analog Ghost"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">4:14</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="10"
+                  data-title="Cold Open"
+                  data-album="Cold Open"
+                  data-added="2026-08-01"
+                  data-duration="183"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">10</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-4" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Cold Open</span
+                        ><span class="music-track-artist">Rooftop Cinema</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Cold Open</td>
+                  <td class="cell" data-align="left" data-col="added">Aug 1, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Cold Open"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:03</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="11"
+                  data-title="Quiet Machine"
+                  data-album="Tidewater"
+                  data-added="2026-07-25"
+                  data-duration="281"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">11</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-3" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Quiet Machine</span
+                        ><span class="music-track-artist">Ilse Marrow</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Tidewater</td>
+                  <td class="cell" data-align="left" data-col="added">Jul 25, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Quiet Machine"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">4:41</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="12"
+                  data-title="Meridian Lines"
+                  data-album="Geometry for Sleepers"
+                  data-added="2026-07-25"
+                  data-duration="216"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">12</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-4" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Meridian Lines</span
+                        ><span class="music-track-artist">Paper Satellites</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Geometry for Sleepers</td>
+                  <td class="cell" data-align="left" data-col="added">Jul 25, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Meridian Lines"
+                      aria-pressed="true"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart-fill" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:36</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="13"
+                  data-title="Half Life"
+                  data-album="Magnetic North"
+                  data-added="2026-07-18"
+                  data-duration="199"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">13</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-6" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Half Life</span
+                        ><span class="music-track-artist">Kestrel Dye</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Magnetic North</td>
+                  <td class="cell" data-align="left" data-col="added">Jul 18, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Half Life"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:19</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="14"
+                  data-title="Fog Signal"
+                  data-album="Late Frequencies"
+                  data-added="2026-07-18"
+                  data-duration="230"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">14</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-5" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Fog Signal</span
+                        ><span class="music-track-artist">Ada &amp; the Relays</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Late Frequencies</td>
+                  <td class="cell" data-align="left" data-col="added">Jul 18, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Fog Signal"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:50</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="15"
+                  data-title="Small Hours"
+                  data-album="Night Garden"
+                  data-added="2026-07-11"
+                  data-duration="192"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">15</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-5" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Small Hours</span
+                        ><span class="music-track-artist">Mira Solstice</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Night Garden</td>
+                  <td class="cell" data-align="left" data-col="added">Jul 11, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Small Hours"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:12</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="16"
+                  data-title="Cathode"
+                  data-album="Cold Open"
+                  data-added="2026-07-11"
+                  data-duration="168"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">16</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-4" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Cathode</span
+                        ><span class="music-track-artist">Rooftop Cinema</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Cold Open</td>
+                  <td class="cell" data-align="left" data-col="added">Jul 11, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Cathode"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">2:48</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="17"
+                  data-title="Undertow"
+                  data-album="Low Orbit"
+                  data-added="2026-07-04"
+                  data-duration="273"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">17</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-1" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Undertow</span
+                        ><span class="music-track-artist">Vela Norte</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Low Orbit</td>
+                  <td class="cell" data-align="left" data-col="added">Jul 4, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Undertow"
+                      aria-pressed="true"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart-fill" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">4:33</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="18"
+                  data-title="Second Skyline"
+                  data-album="Signal / Noise"
+                  data-added="2026-07-04"
+                  data-duration="237"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">18</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-2" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Second Skyline</span
+                        ><span class="music-track-artist">The Halfmoons</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Signal / Noise</td>
+                  <td class="cell" data-align="left" data-col="added">Jul 4, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Second Skyline"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:57</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="19"
+                  data-title="Blue Shift"
+                  data-album="Magnetic North"
+                  data-added="2026-06-27"
+                  data-duration="224"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">19</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-6" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Blue Shift</span
+                        ><span class="music-track-artist">Kestrel Dye</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Magnetic North</td>
+                  <td class="cell" data-align="left" data-col="added">Jun 27, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Blue Shift"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:44</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="20"
+                  data-title="Paper Lanterns"
+                  data-album="Tidewater"
+                  data-added="2026-06-27"
+                  data-duration="210"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">20</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-3" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Paper Lanterns</span
+                        ><span class="music-track-artist">Ilse Marrow</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Tidewater</td>
+                  <td class="cell" data-align="left" data-col="added">Jun 27, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Paper Lanterns"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:30</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="21"
+                  data-title="Ninety Percent Static"
+                  data-album="Geometry for Sleepers"
+                  data-added="2026-06-20"
+                  data-duration="248"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">21</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-4" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Ninety Percent Static</span
+                        ><span class="music-track-artist">Paper Satellites</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Geometry for Sleepers</td>
+                  <td class="cell" data-align="left" data-col="added">Jun 20, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Ninety Percent Static"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">4:08</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="22"
+                  data-title="Salt &amp; Circuit"
+                  data-album="Late Frequencies"
+                  data-added="2026-06-20"
+                  data-duration="201"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">22</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-5" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Salt &amp; Circuit</span
+                        ><span class="music-track-artist">Ada &amp; the Relays</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Late Frequencies</td>
+                  <td class="cell" data-align="left" data-col="added">Jun 20, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Salt &amp; Circuit"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">3:21</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="23"
+                  data-title="Terminal Velocity"
+                  data-album="Cold Open"
+                  data-added="2026-06-13"
+                  data-duration="259"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">23</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-4" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Terminal Velocity</span
+                        ><span class="music-track-artist">Rooftop Cinema</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Cold Open</td>
+                  <td class="cell" data-align="left" data-col="added">Jun 13, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Terminal Velocity"
+                      aria-pressed="false"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">4:19</td>
+                </tr>
+                <tr
+                  class="row"
+                  data-index="24"
+                  data-title="Long Wave Goodbye"
+                  data-album="Night Garden"
+                  data-added="2026-06-13"
+                  data-duration="255"
+                >
+                  <td class="cell numeric" data-align="right">
+                    <span class="music-num">24</span
+                    ><span class="music-eq" hidden
+                      ><span class="ss-spinner" data-variant="growVertical" role="status"
+                        ><span class="frame" aria-hidden="true"></span
+                        ><span class="lbl sr-only">Now playing</span></span
+                      ></span
+                    >
+                  </td>
+                  <td class="cell" data-align="left">
+                    <div class="music-track">
+                      <svg
+                        class="music-thumb"
+                        viewBox="0 0 40 40"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <use href="#music-cover-5" />
+                      </svg>
+                      <div class="music-track-text">
+                        <span class="music-track-title">Long Wave Goodbye</span
+                        ><span class="music-track-artist">Mira Solstice</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell" data-align="left" data-col="album">Night Garden</td>
+                  <td class="cell" data-align="left" data-col="added">Jun 13, 2026</td>
+                  <td class="cell" data-align="center">
+                    <button
+                      class="ss-btn ghost icon-only"
+                      type="button"
+                      data-like
+                      aria-label="Like Long Wave Goodbye"
+                      aria-pressed="true"
+                    >
+                      <span class="label" aria-hidden="true"
+                        ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                          <use href="#music-i-heart-fill" /></svg
+                      ></span>
+                    </button>
+                  </td>
+                  <td class="cell numeric" data-align="right">4:15</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </main>
+
+        <footer class="ss-footer">
+          <span>Waveform — a fictional service; every artist and album here is made up.</span>
+          <span>24 tracks · 1 hr 32 min</span>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Player bar (fixed, full width) -->
+    <div class="music-player" role="region" aria-label="Player">
+      <div class="music-now">
+        <svg class="music-now-cover" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+          <use href="#music-cover-3" />
+        </svg>
+        <div class="music-now-text">
+          <span class="music-now-title" id="music-now-title">Neon Tidewater</span>
+          <span class="music-now-artist" id="music-now-artist">Ilse Marrow</span>
+        </div>
+        <button
+          class="ss-btn ghost icon-only"
+          type="button"
+          id="music-now-like"
+          aria-label="Like Neon Tidewater"
+          aria-pressed="true"
+        >
+          <span class="label" aria-hidden="true"
+            ><svg width="1em" height="1em" viewBox="0 0 24 24">
+              <use href="#music-i-heart-fill" /></svg
+          ></span>
+        </button>
+      </div>
+
+      <div class="music-transport">
+        <div class="music-transport-row">
+          <button
+            class="ss-btn ghost icon-only"
+            type="button"
+            data-shuffle
+            aria-label="Shuffle"
+            aria-pressed="false"
+          >
+            <span class="label" aria-hidden="true"
+              ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                <use href="#music-i-shuffle" /></svg
+            ></span>
+          </button>
+          <button
+            class="ss-btn ghost icon-only"
+            type="button"
+            id="music-prev"
+            aria-label="Previous track"
+          >
+            <span class="label" aria-hidden="true"
+              ><svg width="1em" height="1em" viewBox="0 0 24 24"><use href="#music-i-prev" /></svg
+            ></span>
+          </button>
+          <button
+            class="ss-btn primary icon-only"
+            type="button"
+            data-play-toggle
+            aria-label="Pause"
+          >
+            <span class="label" aria-hidden="true"
+              ><svg width="1em" height="1em" viewBox="0 0 24 24">
+                <use href="#music-i-pause" data-glyph /></svg
+            ></span>
+          </button>
+          <button
+            class="ss-btn ghost icon-only"
+            type="button"
+            id="music-next"
+            aria-label="Next track"
+          >
+            <span class="label" aria-hidden="true"
+              ><svg width="1em" height="1em" viewBox="0 0 24 24"><use href="#music-i-next" /></svg
+            ></span>
+          </button>
+          <button
+            class="ss-btn ghost icon-only"
+            type="button"
+            id="music-repeat"
+            aria-label="Repeat"
+            aria-pressed="false"
+          >
+            <span class="label" aria-hidden="true"
+              ><svg width="1em" height="1em" viewBox="0 0 24 24"><use href="#music-i-repeat" /></svg
+            ></span>
+          </button>
+        </div>
+        <div class="music-progress">
+          <span class="music-time" id="music-elapsed">1:12</span>
+          <input
+            class="music-range"
+            type="range"
+            id="music-seek"
+            min="0"
+            max="207"
+            value="72"
+            step="1"
+            aria-label="Seek"
+            aria-valuetext="1:12 of 3:27"
+            style="--music-fill: 35%"
+          />
+          <span class="music-time" id="music-total">3:27</span>
+        </div>
+      </div>
+
+      <div class="music-volume">
+        <svg
+          class="music-volume-icon"
+          width="1em"
+          height="1em"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <use href="#music-i-volume" />
+        </svg>
+        <input
+          class="music-range"
+          type="range"
+          id="music-vol"
+          min="0"
+          max="100"
+          value="72"
+          step="1"
+          aria-label="Volume"
+          style="--music-fill: 72%"
+        />
+        <span class="music-time" id="music-vol-value">72%</span>
+      </div>
+    </div>
+
+    <!-- Mobile navigation (visible below 760px) -->
+    <nav class="ss-bottom-nav music-bottom-nav" aria-label="Primary">
+      <ul class="list">
+        <li class="row">
+          <a class="tab" href="#home">
+            <span class="glyph"><span data-ss-icon="home" data-px="20"></span></span>
+            <span class="label">Home</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="tab" href="#search">
+            <span class="glyph"
+              ><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <use href="#music-i-search" /></svg
+            ></span>
+            <span class="label">Search</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="tab active" href="#library" aria-current="page">
+            <span class="glyph"><span data-ss-icon="book" data-px="20"></span></span>
+            <span class="label">Library</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </body>
+</html>

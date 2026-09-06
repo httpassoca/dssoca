@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-size-variant="md">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spark — discover</title>
+    <link rel="stylesheet" href="../vendor/theme.css" />
+    <link rel="stylesheet" href="../vendor/vanilla.css" />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="../assets/axes.js"></script>
+    <script type="module" src="../vendor/vanilla/index.js"></script>
+    <script type="module" src="./site.js"></script>
+  </head>
+  <body class="dating">
+    <div class="dating-stage">
+      <!-- Off-phone caption: only visible when the frame floats on a wide viewport. -->
+      <aside class="dating-aside" aria-label="About this preview">
+        <p class="dating-aside-kicker">Spark · preview build</p>
+        <p class="dating-aside-copy">
+          A swipe deck on the plain-HTML path — every element is dssoca markup, the deck is static
+          profiles toggled with <code>hidden</code>.
+        </p>
+        <p class="dating-aside-keys">
+          <kbd class="ss-kbd" role="img" aria-label="Left arrow"><kbd class="key">←</kbd></kbd>
+          skip &nbsp;
+          <kbd class="ss-kbd" role="img" aria-label="Right arrow"><kbd class="key">→</kbd></kbd>
+          like &nbsp;
+          <kbd class="ss-kbd" role="img" aria-label="Up arrow"><kbd class="key">↑</kbd></kbd>
+          super like
+        </p>
+      </aside>
+
+      <div class="dating-phone">
+        <header class="dating-top">
+          <h1 class="dating-brand">
+            <span class="dating-brand-mark" aria-hidden="true">✦</span>Spark
+          </h1>
+          <p class="dating-counter" aria-live="polite">
+            <span id="dating-pos">1</span> / <span id="dating-total">5</span>
+          </p>
+          <button
+            class="ss-btn ghost icon-only"
+            type="button"
+            aria-label="Settings"
+            data-ss-modal="#dating-settings"
+          >
+            <span class="affix" aria-hidden="true">
+              <span data-ss-icon="settings" data-size="sm"></span>
+            </span>
+          </button>
+        </header>
+
+        <main id="main" class="dating-main">
+          <section class="dating-deck" aria-label="Profiles near you">
+            <!-- 1 · Maya -->
+            <article
+              class="ss-card elevated dating-profile"
+              aria-labelledby="dating-p1-title"
+              data-name="Maya"
+              data-initials="MR"
+              data-color="var(--ss-magenta)"
+            >
+              <div class="media">
+                <svg viewBox="0 0 390 300" aria-hidden="true" focusable="false">
+                  <defs>
+                    <linearGradient id="dating-g1" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" style="stop-color: var(--ss-magenta)" />
+                      <stop offset="1" style="stop-color: var(--ss-bg)" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="390" height="300" style="fill: url(#dating-g1)" />
+                  <g style="fill: var(--ss-bg); opacity: 0.35">
+                    <rect x="0" y="0" width="390" height="16" />
+                    <rect x="0" y="48" width="390" height="16" />
+                    <rect x="0" y="96" width="390" height="16" />
+                  </g>
+                  <polygon points="80,300 195,190 310,300" style="fill: var(--ss-bright-black)" />
+                  <rect
+                    x="150"
+                    y="90"
+                    width="90"
+                    height="100"
+                    style="fill: var(--ss-bright-white)"
+                  />
+                  <rect x="150" y="90" width="90" height="34" style="fill: var(--ss-magenta)" />
+                  <rect x="30" y="30" width="60" height="60" style="fill: var(--ss-bg-elev)" />
+                  <text
+                    x="60"
+                    y="68"
+                    text-anchor="middle"
+                    style="fill: var(--ss-fg); font: 600 24px var(--ss-font-mono)"
+                  >
+                    01
+                  </text>
+                </svg>
+              </div>
+              <div class="head">
+                <div class="heading">
+                  <div class="title" id="dating-p1-title" role="heading" aria-level="2">
+                    Maya, 27
+                  </div>
+                  <div class="desc">Product designer · Greenpoint</div>
+                </div>
+                <div class="actions">
+                  <div class="meta">2 km away</div>
+                </div>
+              </div>
+              <div class="body">
+                <div class="dating-tags">
+                  <span class="ss-badge positive">Climbing</span>
+                  <span class="ss-badge info">Film photography</span>
+                  <span class="ss-badge caution">Ramen</span>
+                  <span class="ss-badge brand">Techno</span>
+                  <span class="ss-badge neutral">Ceramics</span>
+                </div>
+                <p class="dating-bio">
+                  Designs onboarding flows by day, throws lopsided bowls by night. Looking for
+                  someone who will argue about typefaces on a chairlift.
+                </p>
+                <div class="dating-shared">
+                  <span class="dating-shared-label">Shared</span>
+                  <span class="ss-badge positive" data-size-variant="sm">
+                    <span class="dot" aria-hidden="true"></span>
+                    Climbing
+                  </span>
+                  <span class="ss-badge brand" data-size-variant="sm">
+                    <span class="dot" aria-hidden="true"></span>
+                    Techno
+                  </span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2 · Theo -->
+            <article
+              class="ss-card elevated dating-profile"
+              aria-labelledby="dating-p2-title"
+              data-name="Theo"
+              data-initials="TA"
+              data-color="var(--ss-blue)"
+              hidden
+            >
+              <div class="media">
+                <svg viewBox="0 0 390 300" aria-hidden="true" focusable="false">
+                  <defs>
+                    <linearGradient id="dating-g2" x1="0" y1="1" x2="1" y2="0">
+                      <stop offset="0" style="stop-color: var(--ss-bg)" />
+                      <stop offset="1" style="stop-color: var(--ss-blue)" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="390" height="300" style="fill: url(#dating-g2)" />
+                  <g style="fill: var(--ss-bright-blue); opacity: 0.5">
+                    <rect x="40" y="200" width="24" height="100" />
+                    <rect x="88" y="150" width="24" height="150" />
+                    <rect x="136" y="220" width="24" height="80" />
+                    <rect x="326" y="180" width="24" height="120" />
+                  </g>
+                  <polygon points="120,300 195,210 270,300" style="fill: var(--ss-bright-black)" />
+                  <polygon
+                    points="150,110 240,110 240,210 150,210"
+                    style="fill: var(--ss-bright-white)"
+                  />
+                  <rect x="150" y="110" width="90" height="26" style="fill: var(--ss-blue)" />
+                  <rect x="300" y="30" width="60" height="60" style="fill: var(--ss-bg-elev)" />
+                  <text
+                    x="330"
+                    y="68"
+                    text-anchor="middle"
+                    style="fill: var(--ss-fg); font: 600 24px var(--ss-font-mono)"
+                  >
+                    02
+                  </text>
+                </svg>
+              </div>
+              <div class="head">
+                <div class="heading">
+                  <div class="title" id="dating-p2-title" role="heading" aria-level="2">
+                    Theo, 31
+                  </div>
+                  <div class="desc">Sound engineer · Crown Heights</div>
+                </div>
+                <div class="actions">
+                  <div class="meta">5 km away</div>
+                </div>
+              </div>
+              <div class="body">
+                <div class="dating-tags">
+                  <span class="ss-badge brand">Vinyl</span>
+                  <span class="ss-badge positive">Cycling</span>
+                  <span class="ss-badge info">Sci-fi</span>
+                  <span class="ss-badge caution">Cooking</span>
+                </div>
+                <p class="dating-bio">
+                  Mixes records for people you have heard of. Will cook you a three-course meal and
+                  then make you rate the playlist.
+                </p>
+                <div class="dating-shared">
+                  <span class="dating-shared-label">Shared</span>
+                  <span class="ss-badge positive" data-size-variant="sm">
+                    <span class="dot" aria-hidden="true"></span>
+                    Cycling
+                  </span>
+                  <span class="ss-badge info" data-size-variant="sm">
+                    <span class="dot" aria-hidden="true"></span>
+                    Sci-fi
+                  </span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3 · Priya -->
+            <article
+              class="ss-card elevated dating-profile"
+              aria-labelledby="dating-p3-title"
+              data-name="Priya"
+              data-initials="PN"
+              data-color="var(--ss-cyan)"
+              hidden
+            >
+              <div class="media">
+                <svg viewBox="0 0 390 300" aria-hidden="true" focusable="false">
+                  <defs>
+                    <linearGradient id="dating-g3" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" style="stop-color: var(--ss-cyan)" />
+                      <stop offset="1" style="stop-color: var(--ss-bg-elev)" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="390" height="300" style="fill: url(#dating-g3)" />
+                  <g style="fill: var(--ss-bg); opacity: 0.3">
+                    <polygon points="0,0 130,0 0,130" />
+                    <polygon points="390,300 260,300 390,170" />
+                  </g>
+                  <polygon points="95,300 195,200 295,300" style="fill: var(--ss-bright-black)" />
+                  <rect
+                    x="152"
+                    y="96"
+                    width="86"
+                    height="104"
+                    style="fill: var(--ss-bright-white)"
+                  />
+                  <polygon
+                    points="152,96 238,96 238,140 195,120 152,140"
+                    style="fill: var(--ss-cyan)"
+                  />
+                  <rect x="30" y="210" width="60" height="60" style="fill: var(--ss-bg-elev)" />
+                  <text
+                    x="60"
+                    y="248"
+                    text-anchor="middle"
+                    style="fill: var(--ss-fg); font: 600 24px var(--ss-font-mono)"
+                  >
+                    03
+                  </text>
+                </svg>
+              </div>
+              <div class="head">
+                <div class="heading">
+                  <div class="title" id="dating-p3-title" role="heading" aria-level="2">
+                    Priya, 29
+                  </div>
+                  <div class="desc">Veterinarian · Fort Greene</div>
+                </div>
+                <div class="actions">
+                  <div class="meta">1 km away</div>
+                </div>
+              </div>
+              <div class="body">
+                <div class="dating-tags">
+                  <span class="ss-badge positive">Dogs</span>
+                  <span class="ss-badge positive">Trail running</span>
+                  <span class="ss-badge info">Board games</span>
+                  <span class="ss-badge brand">Jazz</span>
+                  <span class="ss-badge caution">Baking</span>
+                </div>
+                <p class="dating-bio">
+                  Two greyhounds, one sourdough starter, zero patience for people who skip the rules
+                  booklet. Sunday runs start at seven.
+                </p>
+                <div class="dating-shared">
+                  <span class="dating-shared-label">Shared</span>
+                  <span class="ss-badge info" data-size-variant="sm">
+                    <span class="dot" aria-hidden="true"></span>
+                    Board games
+                  </span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4 · Jonas -->
+            <article
+              class="ss-card elevated dating-profile"
+              aria-labelledby="dating-p4-title"
+              data-name="Jonas"
+              data-initials="JW"
+              data-color="var(--ss-yellow)"
+              hidden
+            >
+              <div class="media">
+                <svg viewBox="0 0 390 300" aria-hidden="true" focusable="false">
+                  <defs>
+                    <linearGradient id="dating-g4" x1="1" y1="0" x2="0" y2="1">
+                      <stop offset="0" style="stop-color: var(--ss-yellow)" />
+                      <stop offset="1" style="stop-color: var(--ss-bg)" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="390" height="300" style="fill: url(#dating-g4)" />
+                  <g style="fill: none; stroke: var(--ss-bg); stroke-width: 2; opacity: 0.4">
+                    <rect x="20" y="20" width="350" height="260" />
+                    <rect x="40" y="40" width="310" height="220" />
+                    <rect x="60" y="60" width="270" height="180" />
+                  </g>
+                  <polygon points="105,300 195,215 285,300" style="fill: var(--ss-bright-black)" />
+                  <rect
+                    x="150"
+                    y="104"
+                    width="90"
+                    height="110"
+                    style="fill: var(--ss-bright-white)"
+                  />
+                  <rect x="150" y="104" width="90" height="20" style="fill: var(--ss-yellow)" />
+                  <rect
+                    x="164"
+                    y="150"
+                    width="62"
+                    height="10"
+                    style="fill: var(--ss-bright-black)"
+                  />
+                  <rect x="300" y="210" width="60" height="60" style="fill: var(--ss-bg-elev)" />
+                  <text
+                    x="330"
+                    y="248"
+                    text-anchor="middle"
+                    style="fill: var(--ss-fg); font: 600 24px var(--ss-font-mono)"
+                  >
+                    04
+                  </text>
+                </svg>
+              </div>
+              <div class="head">
+                <div class="heading">
+                  <div class="title" id="dating-p4-title" role="heading" aria-level="2">
+                    Jonas, 34
+                  </div>
+                  <div class="desc">Architect · Astoria</div>
+                </div>
+                <div class="actions">
+                  <div class="meta">8 km away</div>
+                </div>
+              </div>
+              <div class="body">
+                <div class="dating-tags">
+                  <span class="ss-badge info">Sailing</span>
+                  <span class="ss-badge neutral">Chess</span>
+                  <span class="ss-badge caution">Espresso</span>
+                  <span class="ss-badge brand">Brutalism</span>
+                  <span class="ss-badge positive">Bouldering</span>
+                </div>
+                <p class="dating-bio">
+                  Draws buildings that mostly stay up. Owns too many concrete coasters. Happy to
+                  lose at chess if the coffee is good.
+                </p>
+                <div class="dating-shared">
+                  <span class="dating-shared-label">Shared</span>
+                  <span class="ss-badge positive" data-size-variant="sm">
+                    <span class="dot" aria-hidden="true"></span>
+                    Bouldering
+                  </span>
+                  <span class="ss-badge caution" data-size-variant="sm">
+                    <span class="dot" aria-hidden="true"></span>
+                    Espresso
+                  </span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5 · Lena -->
+            <article
+              class="ss-card elevated dating-profile"
+              aria-labelledby="dating-p5-title"
+              data-name="Lena"
+              data-initials="LK"
+              data-color="var(--ss-green)"
+              hidden
+            >
+              <div class="media">
+                <svg viewBox="0 0 390 300" aria-hidden="true" focusable="false">
+                  <defs>
+                    <linearGradient id="dating-g5" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0" style="stop-color: var(--ss-bg-elev)" />
+                      <stop offset="1" style="stop-color: var(--ss-green)" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="390" height="300" style="fill: url(#dating-g5)" />
+                  <g style="fill: var(--ss-bright-green); opacity: 0.35">
+                    <rect x="0" y="240" width="390" height="60" />
+                    <rect x="0" y="0" width="390" height="30" />
+                  </g>
+                  <polygon points="110,300 195,205 280,300" style="fill: var(--ss-bright-black)" />
+                  <rect
+                    x="152"
+                    y="92"
+                    width="86"
+                    height="112"
+                    style="fill: var(--ss-bright-white)"
+                  />
+                  <polygon
+                    points="152,92 238,92 238,150 195,110 152,150"
+                    style="fill: var(--ss-green)"
+                  />
+                  <rect x="30" y="30" width="60" height="60" style="fill: var(--ss-bg-elev)" />
+                  <text
+                    x="60"
+                    y="68"
+                    text-anchor="middle"
+                    style="fill: var(--ss-fg); font: 600 24px var(--ss-font-mono)"
+                  >
+                    05
+                  </text>
+                </svg>
+              </div>
+              <div class="head">
+                <div class="heading">
+                  <div class="title" id="dating-p5-title" role="heading" aria-level="2">
+                    Lena, 26
+                  </div>
+                  <div class="desc">PhD student · Bushwick</div>
+                </div>
+                <div class="actions">
+                  <div class="meta">3 km away</div>
+                </div>
+              </div>
+              <div class="body">
+                <div class="dating-tags">
+                  <span class="ss-badge brand">Poetry</span>
+                  <span class="ss-badge info">Swimming</span>
+                  <span class="ss-badge caution">Thrifting</span>
+                  <span class="ss-badge positive">Cats</span>
+                  <span class="ss-badge critical">Spicy food</span>
+                </div>
+                <p class="dating-bio">
+                  Writing a thesis on rivers, mostly from the pool. Will trade a poem for a good
+                  hot-sauce recommendation.
+                </p>
+                <div class="dating-shared">
+                  <span class="dating-shared-label">Shared</span>
+                  <span class="ss-badge info" data-size-variant="sm">
+                    <span class="dot" aria-hidden="true"></span>
+                    Swimming
+                  </span>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <div class="dating-actions" role="group" aria-label="Decide on this profile">
+            <button
+              class="ss-btn danger icon-only dating-act"
+              data-size-variant="lg"
+              type="button"
+              aria-label="Skip"
+              aria-keyshortcuts="ArrowLeft"
+              data-action="skip"
+            >
+              <span class="affix" aria-hidden="true">✕</span>
+            </button>
+            <button
+              class="ss-btn secondary icon-only dating-act"
+              data-size-variant="lg"
+              type="button"
+              aria-label="Super like"
+              aria-keyshortcuts="ArrowUp"
+              data-action="super"
+            >
+              <span class="affix" aria-hidden="true">★</span>
+            </button>
+            <button
+              class="ss-btn primary icon-only dating-act"
+              data-size-variant="lg"
+              type="button"
+              aria-label="Like"
+              aria-keyshortcuts="ArrowRight"
+              data-action="like"
+            >
+              <span class="affix" aria-hidden="true">♥</span>
+            </button>
+          </div>
+
+          <p class="dating-keys">
+            <kbd class="ss-kbd" role="img" aria-label="Left arrow"><kbd class="key">←</kbd></kbd>
+            skip
+            <span class="dating-keys-sep" aria-hidden="true">·</span>
+            <kbd class="ss-kbd" role="img" aria-label="Right arrow"><kbd class="key">→</kbd></kbd>
+            like
+            <span class="dating-keys-sep" aria-hidden="true">·</span>
+            <kbd class="ss-kbd" role="img" aria-label="Up arrow"><kbd class="key">↑</kbd></kbd>
+            super like
+          </p>
+        </main>
+
+        <nav class="ss-bottom-nav" aria-label="Primary">
+          <ul class="list">
+            <li class="row">
+              <button type="button" class="tab active" aria-current="page" data-tab="Discover">
+                <span class="glyph"><span data-ss-icon="target" data-px="20"></span></span>
+                <span class="label">Discover</span>
+              </button>
+            </li>
+            <li class="row">
+              <button type="button" class="tab" aria-label="Likes, 12" data-tab="Likes">
+                <span class="glyph">
+                  <span data-ss-icon="activity" data-px="20"></span>
+                  <span class="badge" aria-hidden="true">12</span>
+                </span>
+                <span class="label">Likes</span>
+              </button>
+            </li>
+            <li class="row">
+              <button type="button" class="tab" data-tab="Matches">
+                <span class="glyph"><span data-ss-icon="cup" data-px="20"></span></span>
+                <span class="label">Matches</span>
+              </button>
+            </li>
+            <li class="row">
+              <button type="button" class="tab" aria-label="Chat, 3" data-tab="Chat">
+                <span class="glyph">
+                  <span data-ss-icon="note" data-px="20"></span>
+                  <span class="badge" aria-hidden="true">3</span>
+                </span>
+                <span class="label">Chat</span>
+              </button>
+            </li>
+            <li class="row">
+              <button type="button" class="tab" data-tab="Profile">
+                <span class="glyph"><span data-ss-icon="user" data-px="20"></span></span>
+                <span class="label">Profile</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- It's a match! — opened by site.js on every third like -->
+    <dialog
+      id="dating-match"
+      class="ss-modal"
+      data-size-variant="sm"
+      aria-labelledby="dating-match-title"
+    >
+      <div class="panel">
+        <header class="head">
+          <h2 class="title" id="dating-match-title">It's a match!</h2>
+          <button type="button" class="close" data-ss-dismiss aria-label="Close">×</button>
+        </header>
+        <div class="body">
+          <div class="dating-pair">
+            <span
+              class="ss-avatar"
+              data-size-variant="lg"
+              role="img"
+              aria-label="You"
+              style="--ss-avatar-bg: var(--ss-accent)"
+            >
+              <span class="initials" aria-hidden="true">AK</span>
+            </span>
+            <span class="dating-pair-heart" aria-hidden="true">♥</span>
+            <span
+              class="ss-avatar"
+              data-size-variant="lg"
+              role="img"
+              aria-label="Maya"
+              id="dating-match-avatar"
+              style="--ss-avatar-bg: var(--ss-magenta)"
+            >
+              <span class="initials" aria-hidden="true">MR</span>
+            </span>
+          </div>
+          <p class="dating-pair-copy">
+            You and <strong id="dating-match-name">Maya</strong> liked each other. Say hi before the
+            moment passes.
+          </p>
+        </div>
+        <footer class="foot">
+          <button class="ss-btn secondary" type="button" data-ss-dismiss>Keep swiping</button>
+          <button class="ss-btn primary" type="button" data-ss-dismiss data-action="message">
+            Send a message
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
+    <!-- Settings — theme + text size, wired to the gallery's axes helper -->
+    <dialog
+      id="dating-settings"
+      class="ss-modal"
+      data-size-variant="sm"
+      aria-labelledby="dating-settings-title"
+    >
+      <div class="panel">
+        <header class="head">
+          <h2 class="title" id="dating-settings-title">Settings</h2>
+          <button type="button" class="close" data-ss-dismiss aria-label="Close">×</button>
+        </header>
+        <div class="body">
+          <div class="dating-setting">
+            <span class="ss-switch has-label" id="dating-theme">
+              <button
+                id="dating-theme-track"
+                type="button"
+                role="switch"
+                class="track"
+                aria-checked="false"
+                aria-labelledby="dating-theme-label"
+              >
+                <span class="thumb" aria-hidden="true"></span>
+              </button>
+              <span id="dating-theme-label" class="label" role="presentation">Light theme</span>
+            </span>
+          </div>
+          <div class="dating-setting">
+            <span class="dating-setting-label" id="dating-size-label">Text size</span>
+            <div
+              class="ss-segmented"
+              id="dating-size"
+              role="radiogroup"
+              aria-labelledby="dating-size-label"
+            >
+              <button
+                type="button"
+                class="segment"
+                role="radio"
+                aria-checked="false"
+                tabindex="-1"
+                data-value="sm"
+              >
+                <span class="label">Small</span>
+              </button>
+              <button
+                type="button"
+                class="segment selected"
+                role="radio"
+                aria-checked="true"
+                tabindex="0"
+                data-value="md"
+              >
+                <span class="label">Medium</span>
+              </button>
+              <button
+                type="button"
+                class="segment"
+                role="radio"
+                aria-checked="false"
+                tabindex="-1"
+                data-value="lg"
+              >
+                <span class="label">Large</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">
+          <button class="ss-btn primary" type="button" data-ss-dismiss>Done</button>
+        </footer>
+      </div>
+    </dialog>
+
+    <div
+      class="ss-toaster"
+      role="region"
+      aria-label="Notifications"
+      data-position="top-center"
+    ></div>
+  </body>
+</html>
