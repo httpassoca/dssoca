@@ -3,6 +3,22 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const sidebar: ComponentDoc = {
   name: 'Sidebar',
   slug: 'sidebar',
+  htmlExample: {
+    props: {
+      active: 'hub',
+      groups: [
+        {
+          section: 'Main',
+          items: [
+            { id: 'hub', label: 'Hub', icon: 'home' },
+            { id: 'logs', label: 'Logs', icon: 'logs', status: 'up', badge: 3 },
+          ],
+        },
+      ],
+    },
+    behaviour: 'css',
+    note: 'Static navigation; disclosures need your own JS.',
+  },
   tagline: 'App-shell navigation sidebar.',
   description:
     'The application sidebar: grouped, icon-led navigation rendered as proper `<nav>` + `<ul>/<li>`. Items can link (`href`), carry a status dot and a square `badge`, and nest one level of children with the disclosure pattern. Collapses to an icon-only rail.',

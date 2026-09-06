@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const textarea: ComponentDoc = {
   name: 'Textarea',
   slug: 'textarea',
+  htmlExample: {
+    props: { label: 'Notes', id: 'notes', autosize: true, rows: 2 },
+    behaviour: 'js',
+    note: 'Grows with content via CSS field-sizing; vanilla.js adds a scrollHeight fallback where unsupported.',
+  },
   tagline: 'Multiline twin of Input with an autosize option.',
   description:
     'A multiline text field that mirrors `Input`’s anatomy — label with auto-wired id, `hint`/`error` helper text (error implies aria-invalid and is announced), readonly/disabled styling, and native attribute forwarding — so the two sit side by side in a form without visual drift. Adds `rows` for the minimum height and an `autosize` mode that grows with content (`field-sizing: content` where supported, a scrollHeight fallback elsewhere) capped by `maxRows`.',

@@ -3,6 +3,7 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const avatar: ComponentDoc = {
   name: 'Avatar',
   slug: 'avatar',
+  htmlExample: { props: { name: 'Ada Lovelace' }, behaviour: 'css' },
   tagline: 'Square initials- or image-based identity tile.',
   description:
     'A compact square tile (zero radius — house rule) representing a person or entity. Pass a `src` to render an image; it falls back to initials if the image fails to load. Initials are the first letters of up to the first two words of `name`, uppercased, on a deterministic colour derived from a hash of the name — the same name always reads the same. The tile carries `role="img"` + `aria-label={name}` so the name is exposed once to assistive tech.',

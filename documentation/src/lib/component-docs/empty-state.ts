@@ -3,6 +3,10 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const emptyState: ComponentDoc = {
   name: 'EmptyState',
   slug: 'empty-state',
+  htmlExample: {
+    props: { title: 'No results', message: 'Try another query.', icon: '⌕' },
+    behaviour: 'css',
+  },
   tagline: 'Empty / error / no-results placeholder.',
   description:
     'A centred placeholder for empty, error, or no-results states, with a decorative glyph or `visual` snippet, a message, and primary/secondary actions plus a low-emphasis footer. `compact` and `fullWidth` density options; the title heading level is configurable (or `false` for a plain paragraph). Errors announce assertively, others politely.',

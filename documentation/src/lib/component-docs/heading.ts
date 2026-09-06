@@ -3,6 +3,7 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const heading: ComponentDoc = {
   name: 'Heading',
   slug: 'heading',
+  htmlExample: { props: { level: 2 }, children: 'Section title', behaviour: 'css' },
   tagline: 'Display title, with the accent underline.',
   description:
     'The display/page-title recipe as a component: display font, oversized clamp() sizing, a primary accent underline behind the lower third of the text, and a background-coloured text-shadow so the glyphs cut into the highlight. The `level` prop picks the rendered `h1`…`h6` independently of the styling, `accent` toggles the underline, and `centered` centres it. Self-contained — usable without importing `theme.css` (the recipe ships in the component, not the global stylesheet).',

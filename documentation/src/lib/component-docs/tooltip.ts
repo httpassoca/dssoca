@@ -3,6 +3,12 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const tooltip: ComponentDoc = {
   name: 'Tooltip',
   slug: 'tooltip',
+  htmlExample: {
+    props: { text: 'Copy to clipboard' },
+    children: '<button class="ss-btn secondary" type="button">copy</button>',
+    behaviour: 'js',
+    note: 'vanilla.js shows the tip on hover/focus and hides on leave/blur/Escape; data-placement is used as-is (no collision flipping).',
+  },
   tagline: 'Hover/focus hint for a trigger.',
   description:
     'A lightweight tooltip that wraps any trigger and shows a short hint on hover or focus. It follows the WAI-ARIA tooltip pattern: the popup has `role="tooltip"`, the trigger wrapper gets `aria-describedby` only while open, and it dismisses on Escape. `placement` (top/bottom/left/right) is the preferred side: when it has no room the tooltip flips and shifts to stay visible. The transition respects `prefers-reduced-motion`. `text` takes a plain string or a snippet, so the tip can hold a small rendered template (a `<code>` path, a `Kbd` chip, an emphasised word).',

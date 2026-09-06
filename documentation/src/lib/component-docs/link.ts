@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const link: ComponentDoc = {
   name: 'Link',
   slug: 'link',
+  htmlExample: {
+    props: { href: 'https://example.com' },
+    children: 'external docs',
+    behaviour: 'css',
+  },
   tagline: 'Navigation, with an animated underline.',
   description:
     'A semantic `<a>` for navigation. The default `inline` variant draws an animated underline that reveals on hover/focus with a primary-tinted glow; the `button` variant styles the link as a solid primary action (no underline) without duplicating Button’s API. Off-site `http(s)` URLs are auto-detected as external — they open in a new tab with `rel="noopener noreferrer"`, gain a trailing external-link glyph, and announce “opens in a new tab”. Forwards any remaining native anchor attributes.',

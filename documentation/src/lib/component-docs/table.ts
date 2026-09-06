@@ -3,6 +3,21 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const table: ComponentDoc = {
   name: 'Table',
   slug: 'table',
+  htmlExample: {
+    props: {
+      caption: 'Services',
+      columns: [
+        { key: 'name', label: 'Name' },
+        { key: 'cpu', label: 'CPU %', numeric: true, sortable: true },
+      ],
+      rows: [
+        { name: 'api', cpu: 12 },
+        { name: 'db', cpu: 40 },
+      ],
+    },
+    behaviour: 'css',
+    note: 'Static table; sorting needs your own JS. Load vanilla.css after theme.css (its legacy .ss-table layout class is deprecated).',
+  },
   tagline: 'Generic data table with sortable, numeric-aware columns.',
   description:
     'A semantic data table built on real `<table>`/`<thead>`/`<tbody>` markup. Columns are declared once (`label`, `align`, `numeric`, `sortable`, plus an optional `format` or custom `cell` snippet); numeric columns right-align and use the mono font. Sortable headers are real `<button>`s that toggle `asc`/`desc` and re-sort rows (numeric-aware), driving the `aria-sort` on each `<th>`. Bind `sort` to control or observe ordering, and supply an `empty` snippet for the no-data state.',

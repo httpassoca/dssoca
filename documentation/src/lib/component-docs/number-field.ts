@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const numberField: ComponentDoc = {
   name: 'NumberField',
   slug: 'number-field',
+  htmlExample: {
+    props: { label: 'Quantity', id: 'qty', min: 0, max: 10, step: 1, value: 2 },
+    behaviour: 'js',
+    note: 'vanilla.js wires the − / + steppers (clamped to min/max, disabled at the bounds).',
+  },
   tagline: 'Numeric input with steppers.',
   description:
     'A numeric text field built on a native `<input type="number">` with monospace value display and a pair of − / + stepper buttons. Steppers increment/decrement by `step`, clamp to `min`/`max`, and disable at their bound. Clearing the field yields `null`. Mirrors the Input chrome — label, hint/error text, focus ring on the wrapper, and `aria-describedby` ordering (error → hint → describedby).',

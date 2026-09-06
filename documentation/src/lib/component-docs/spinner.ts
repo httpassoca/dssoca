@@ -3,6 +3,11 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const spinner: ComponentDoc = {
   name: 'Spinner',
   slug: 'spinner',
+  htmlExample: {
+    props: { variant: 'pipe', label: 'Loading' },
+    behaviour: 'css',
+    note: 'Pure CSS in vanilla.css: leave .frame empty and pick the glyph set with data-variant (steps() keyframes; honours prefers-reduced-motion).',
+  },
   tagline: 'Text-frame loading indicator with squared cli-spinners glyphs.',
   description:
     'A standalone loading indicator that animates monospace text frames — ten squared/blocky glyph sequences embedded from cli-spinners (MIT) — instead of a drawn arc, so it matches the DS’s zero-radius terminal look. Announced via `role="status"` with a visually-hidden (or visible) label; the glyph itself is `aria-hidden`. Under `prefers-reduced-motion` a static first frame renders with no cycling.',

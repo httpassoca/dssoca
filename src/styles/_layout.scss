@@ -143,6 +143,10 @@
 }
 
 // ---------- table ----------
+// DEPRECATED in 0.17.0 (DS-0148), removed in 0.18.0 (DS-0149): this global layout class
+// predates the Table component, whose root is also `.ss-table`. Use `<Table>` or, in plain
+// HTML, its markup + `dssoca/vanilla.css` (which must load after this sheet so the component
+// rules win). `//` comments are dropped by Sass, so theme.css output is unchanged.
 .ss-table {
   width: 100%;
   border-collapse: collapse;

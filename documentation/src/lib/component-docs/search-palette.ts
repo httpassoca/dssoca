@@ -3,6 +3,17 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const searchPalette: ComponentDoc = {
   name: 'SearchPalette',
   slug: 'search-palette',
+  htmlExample: {
+    props: {
+      open: false,
+      items: [
+        { id: 'home', label: 'Home', href: '/' },
+        { id: 'logs', label: 'Logs', href: '/logs', group: 'Pages' },
+      ],
+    },
+    behaviour: 'css',
+    note: 'The combobox keyboard model and filtering need the Svelte component; the markup is shown for styling reference.',
+  },
   tagline: 'Cmd/Ctrl+K search & command palette.',
   description:
     'A keyboard-first search palette: a modal combobox over a grouped listbox, built on the native `<dialog>` like Modal. Bind `open` (the default `mod+k` shortcut toggles it globally), hand it `items`, and it filters, groups and keyboard-navigates them — focus stays on the input the whole time (`aria-activedescendant` pattern). Items with `href` render as real anchors, so Enter and click take the exact same native navigation path your router already intercepts. For async/external search, set `filter={false}` and bind `query`: the palette renders exactly the pre-filtered `items` you pass.',

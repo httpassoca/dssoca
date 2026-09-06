@@ -3,6 +3,17 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const image: ComponentDoc = {
   name: 'Image',
   slug: 'image',
+  htmlExample: {
+    props: {
+      src: '/images/hero.jpg',
+      alt: 'Server rack',
+      width: 640,
+      height: 360,
+      caption: 'Rack A',
+    },
+    behaviour: 'css',
+    note: 'Loading/error states and the lightbox need the Svelte component.',
+  },
   tagline: 'Responsive image with skeleton and optional lightbox.',
   description:
     'A responsive `<picture>` with `srcset`/`sizes`, lazy + async decoding, an aspect-ratio box that reserves space before load (no layout shift), a token-driven loading skeleton, an error fallback, and an optional lightbox. The lightbox is a lightweight built-in dialog overlay — dssoca depends on no image/lightbox runtime (e.g. PhotoSwipe) and stays zero-runtime-dependency.',

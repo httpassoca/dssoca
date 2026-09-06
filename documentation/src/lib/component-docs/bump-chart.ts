@@ -3,6 +3,17 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const bumpChart: ComponentDoc = {
   name: 'BumpChart',
   slug: 'bump-chart',
+  htmlExample: {
+    props: {
+      series: [
+        { label: 'api', ranks: [1, 2, 1] },
+        { label: 'db', ranks: [2, 1, 2] },
+      ],
+      stages: ['q1', 'q2', 'q3'],
+    },
+    behaviour: 'css',
+    note: 'Charts are rendered geometry: copy the SVG as-is. Hover tooltips are not wired by vanilla.js.',
+  },
   tagline: 'Ranking-over-stages chart that shows who led and who overtook whom.',
   description:
     'A token-driven bump chart for tracking finishing rank across an ordered sequence of stages (e.g. the four games of one Friday). Each series is a competitor; its 1-based `ranks` are plotted with rank 1 drawn at the top, connected by lines so crossings reveal overtakes. The x-axis uses a `scalePoint` over `stages`, the y-axis runs integer rank ticks top-down, and `showLabels` puts each series name at its last node (direct labelling). Every node is keyboard-focusable with an accessible tooltip, series absent from a stage (non-finite rank) are skipped while the line still connects present nodes, and empty input shows an em-dash placeholder.',

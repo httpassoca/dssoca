@@ -4,7 +4,7 @@
   import CodeBlock from './CodeBlock.svelte'
   import PropsTable from './PropsTable.svelte'
 
-  let { doc }: { doc: ComponentDoc } = $props()
+  let { doc, html }: { doc: ComponentDoc; html: string } = $props()
 </script>
 
 <article>
@@ -27,6 +27,25 @@
     {/if}
     {#if doc.guide}
       <p class="notes">Guide: <a href={doc.guide.href}>{doc.guide.label}</a>.</p>
+    {/if}
+  </section>
+
+  <section>
+    <h2>HTML</h2>
+    <p class="notes">
+      {#if doc.htmlExample.behaviour === 'js'}
+        <span class="ss-badge brand">interactive with vanilla.js</span>
+      {:else}
+        <span class="ss-badge neutral">CSS only — static markup</span>
+      {/if}
+      The exact markup the component renders, generated at build time. Use it with
+      <code>dssoca/vanilla.css</code>{#if doc.htmlExample.behaviour === 'js'}
+        +
+        <code>dssoca/vanilla.js</code>{/if} — see <a href="/vanilla">Plain HTML &amp; CSS</a>.
+    </p>
+    <CodeBlock code={html} lang="html" />
+    {#if doc.htmlExample.note}
+      <p class="notes">{doc.htmlExample.note}</p>
     {/if}
   </section>
 
@@ -73,6 +92,12 @@
     font-size: var(--ss-size-h2);
     color: var(--ss-fg-shine);
     margin: 0;
+  }
+  .notes .ss-badge {
+    margin-right: var(--ss-s-2);
+  }
+  .notes code {
+    font-size: 0.9em;
   }
   .notes {
     font-family: var(--ss-font-body);

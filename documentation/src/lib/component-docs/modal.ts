@@ -3,6 +3,16 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const modal: ComponentDoc = {
   name: 'Modal',
   slug: 'modal',
+  htmlExample: {
+    props: { open: false, title: 'Delete item' },
+    children: '<p>This cannot be undone.</p>',
+    snippets: {
+      footer:
+        '<button class="ss-btn secondary" type="button" data-ss-dismiss>cancel</button><button class="ss-btn danger" type="button" data-ss-dismiss>delete</button>',
+    },
+    behaviour: 'js',
+    note: 'A native <dialog>. vanilla.js opens it from any [data-ss-modal="#id"] element and closes it from [data-ss-dismiss] or a backdrop click (add data-ss-static to keep it open; data-ss-no-esc blocks Escape).',
+  },
   tagline: 'Accessible overlay dialog built on native <dialog>.',
   description:
     'A modal dialog built on the native `<dialog>` element, so the platform supplies the focus trap, Esc-to-close and an inert backdrop. Bind `open` to your state; the dialog opens/closes in lock-step. Optional `header`/`footer` snippets frame the body, `closeOnBackdrop`/`closeOnEsc` tune dismissal, and `danger` flags destructive dialogs. Sets `aria-labelledby` to the `title` automatically, or accepts an `aria-label` when untitled.',

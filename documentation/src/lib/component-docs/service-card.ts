@@ -3,6 +3,16 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const serviceCard: ComponentDoc = {
   name: 'ServiceCard',
   slug: 'service-card',
+  htmlExample: {
+    props: {
+      name: 'api',
+      host: '10.0.0.2',
+      status: 'up',
+      latency: '12ms',
+      spark: [3, 5, 4, 8, 6, 9, 7],
+    },
+    behaviour: 'css',
+  },
   tagline: 'Service status row with latency + sparkline.',
   description:
     'A service tile showing name, host, status tone, latency, and a sparkline. Renders as a real `<a>` when given an `href`, supports `loading` skeletons and a `disabled` inert state, an optional relative "last checked" footer, and an extra metadata snippet. Interactive by default with a visible focus ring.',

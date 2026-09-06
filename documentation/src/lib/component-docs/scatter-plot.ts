@@ -3,6 +3,19 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const scatterPlot: ComponentDoc = {
   name: 'ScatterPlot',
   slug: 'scatter-plot',
+  htmlExample: {
+    props: {
+      points: [
+        { label: 'api', x: 12, y: 98 },
+        { label: 'db', x: 40, y: 91 },
+        { label: 'cache', x: 3, y: 99 },
+      ],
+      xLabel: 'latency ms',
+      yLabel: 'uptime %',
+    },
+    behaviour: 'css',
+    note: 'Rendered geometry: copy as-is. Hover tooltips are not wired by vanilla.js.',
+  },
   tagline: 'Two-axis scatter with optional quadrants and bubble sizing.',
   description:
     'A token-driven scatter plot for comparing entities on two metrics at once. Each datum is a dot positioned by `x`/`y`, optionally sized by `size` (sqrt-scaled so area is true) and tinted by `color`. Pass `xRef`/`yRef` to split the plane into quadrants and `quadrantLabels` to caption them — ideal for "high score vs low wins"-style comparisons. Axes use the padded data extent (not forced to zero), every point is keyboard-focusable with an accessible tooltip, and empty input shows an em-dash placeholder.',

@@ -3,6 +3,7 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const container: ComponentDoc = {
   name: 'Container',
   slug: 'container',
+  htmlExample: { props: { page: true }, children: '<p>Page content.</p>', behaviour: 'css' },
   tagline: 'Centered, max-width page-content wrapper.',
   description:
     'A layout primitive that centres page content in a token-driven max-width column (~875px at md) with the standard horizontal page gutters. Full-bleed by default at narrow viewports — below the max-width it simply spans the screen, keeping its side padding. The `page` mode makes it behave like a route page: it fills the viewport height and adds vertical page padding. Self-contained — usable without importing `theme.css` (the width/padding tokens ship in the component).',

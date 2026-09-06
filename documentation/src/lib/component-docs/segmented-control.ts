@@ -3,6 +3,19 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const segmentedControl: ComponentDoc = {
   name: 'SegmentedControl',
   slug: 'segmented-control',
+  htmlExample: {
+    props: {
+      options: [
+        { value: 'day', label: 'Day' },
+        { value: 'week', label: 'Week' },
+        { value: 'month', label: 'Month' },
+      ],
+      value: 'day',
+      label: 'Range',
+    },
+    behaviour: 'js',
+    note: "vanilla.js moves the selection (click, arrows, Home/End) and emits ss:change with the segment's data-value.",
+  },
   tagline: 'Compact row of mutually-exclusive options.',
   description:
     'A compact, inline toggle for picking one of a few options (view, mode, locale). The selected segment is highlighted with a token-driven fill (zero radius), and the group behaves as a single radiogroup: one tab stop, arrow / Home / End keys move and select, disabled options are skipped.',

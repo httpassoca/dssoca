@@ -6,6 +6,59 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
+## [0.17.0] — plain HTML & CSS consumption — 2026-09-04
+
+### Added
+
+- **`dssoca/vanilla.css` — every component's styles for plain-HTML pages** (`DS-0148`). A new
+  stylesheet **generated in `prepack`** (`scripts/build-vanilla.mjs`) from the components' own
+  compiled `<style>` blocks — never hand-written, so it cannot drift from the Svelte components.
+  Each component is wrapped in a donut `@scope (.ss-root) to (<every other root>)` block so the
+  unprefixed internal class names stay isolated in a global sheet (root-led selectors get a
+  zero-specificity `:where(:scope)` prefix so they still match the root); `@keyframes` are hoisted; the
+  four `:global()` rules are emitted root-anchored. The markup contract is the exact DOM the Svelte
+  components render. Load it **after** `theme.css` / `tokens.css`. Requires CSS `@scope`
+  (Chrome/Edge 118+, Safari 17.4+, Firefox 2026+) — no fallback.
+- **`dssoca/vanilla.js` — small, dependency-free behaviours for that markup** (`DS-0148`). An ES
+  module (relative imports only, loads straight from jsDelivr) that wires, via document-level
+  event delegation: Modal (`data-ss-modal="#id"` openers, `data-ss-dismiss`, backdrop click,
+  `data-ss-static` / `data-ss-no-esc`), Accordion (`data-ss-multiple`), Menu, Tooltip (basic
+  placement, no collision engine), Switch, SegmentedControl (`data-value`), Input clear,
+  NumberField steppers and Textarea autosize fallback; bubbling `ss:change` / `ss:select` events;
+  a framework-free `toast` / `toasts` API with the same names and defaults as the Svelte one
+  (renders the Toaster DOM; swipe-to-dismiss not ported); `iconSvg` / `hydrateIcons` for
+  `<span data-ss-icon="name">` placeholders; `mount(root)`; and re-exports of
+  `applyDesignConfig` & friends.
+- **CSS-only Spinner** in `vanilla.css`: `steps()` keyframes generated from `SPINNER_VARIANTS`
+  drive `.frame:empty::before`; pick the glyph set with `data-variant` on the root.
+- **`src/lib/icons.ts` and `src/lib/spinner-frames.ts`** now hold `BUILTIN_PATHS` / `registerIcon`
+  and `SPINNER_VARIANTS`; `Icon.svelte` / `Spinner.svelte` re-export them, and `toast-core.ts`
+  holds the toast types + timer shared by both stores. Public API unchanged.
+
+### Changed
+
+- The three unprefixed component `@keyframes` (`pulse`, `skeleton-pulse`, `sk-shimmer`) are now
+  `ss-logs-pulse`, `ss-metric-skeleton-pulse`, `ss-svc-shimmer` so they are safe in a global
+  sheet (Svelte hash-scoped them before; no visual change).
+
+### Deprecated
+
+- **The global `.ss-table` layout class in `theme.css`** (`DS-0148`) — it predates the `Table`
+  component, whose root shares the name. Unchanged in 0.17.0, **removed in 0.18.0** (`DS-0149`).
+  Use `<Table>` or its markup + `vanilla.css` (loaded after `theme.css`).
+
+### Docs
+
+- **New guide: Plain HTML & CSS** (`/vanilla`) — install (npm + CDN), load order, the `@scope`
+  browser floor, the `data-ss-*` contract, the `toast` API, icons, the CSS-only list, caveats.
+- **Every component page gains an HTML section** whose markup is produced at docs build time by
+  server-rendering the real component (`+page.server.ts` + `svelte/server`), with the scoping
+  hashes stripped and the vanilla hooks added — so snippets can never drift. Each component doc
+  declares an `htmlExample` (props + snippets + `behaviour: 'js' | 'css'`), enforced by
+  `pnpm docs:test`. README, `DESIGN.md` and `CLAUDE.md` replace the 0.3.0 "hand-rolling
+  `.ss-btn` no longer works" policy with the vanilla policy. A live HTML playground is a planned
+  follow-up.
+
 ## [0.16.0] — collision-aware tooltips, keyboard-friendly docs — 2026-08-30
 
 ### Added

@@ -3,6 +3,11 @@ import { type ComponentDoc } from './types'
 export const shortcutsHelp: ComponentDoc = {
   name: 'ShortcutsHelp',
   slug: 'shortcuts-help',
+  htmlExample: {
+    props: { open: false },
+    behaviour: 'css',
+    note: 'Lists the live shortcut registry — Svelte only. Shown for styling reference.',
+  },
   tagline: 'Registry-backed "?" keyboard-shortcuts overlay.',
   description:
     'The GitHub/Slack/Linear-style shortcuts dialog, always in sync with the live shortcut registry: a section per group, `<Kbd>` key caps per binding, remaps shown as their effective combo, and disabled shortcuts struck through with a visible "(off)". Composes `Modal`, so the native `<dialog>` provides the focus trap, Esc-to-close, backdrop, and focus return. Its own hotkey (default `?, mod+/`) is registered through the registry under `ss:shortcuts-help` — it lists itself and can be disabled or remapped like any other shortcut.',

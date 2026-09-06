@@ -3,6 +3,17 @@ import { type ComponentDoc, SIZE_PROP } from './types'
 export const bottomNav: ComponentDoc = {
   name: 'BottomNav',
   slug: 'bottom-nav',
+  htmlExample: {
+    props: {
+      items: [
+        { id: 'home', label: 'Home', icon: 'home', href: '#home' },
+        { id: 'logs', label: 'Logs', icon: 'logs', href: '#logs', badge: 3 },
+      ],
+      active: 'home',
+    },
+    behaviour: 'css',
+    note: 'Static markup: set aria-current="page" on the active tab yourself.',
+  },
   tagline: 'Fixed, thumb-reachable bottom tab bar.',
   description:
     'A fixed, bottom-anchored row of equal-width icon+label tabs for mobile/compact app shells: a blurred, elevated `<nav>` + `<ul>/<li>` list with an active highlight, optional per-tab count badges, and safe-area inset padding. Tabs can be real links (`href`) or selection buttons. Ported from a mobile bottom-nav pattern.',
