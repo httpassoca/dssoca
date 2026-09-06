@@ -16,7 +16,7 @@ export const table: ComponentDoc = {
       ],
     },
     behaviour: 'css',
-    note: 'Static table; sorting needs your own JS. Load vanilla.css after theme.css (its legacy .ss-table layout class is deprecated).',
+    note: 'Static table; sorting needs your own JS.',
   },
   tagline: 'Generic data table with sortable, numeric-aware columns.',
   description:

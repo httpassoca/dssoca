@@ -34,6 +34,12 @@ may include breaking changes (flagged **BREAKING**).
 - Docs: "Inspirations" entry in the guide nav and the search palette (opens in a new tab), a
   pointer at the end of the _Plain HTML & CSS_ guide, README.
 
+### Removed
+
+- **BREAKING — the legacy `.ss-table` layout class in `theme.css`** (`DS-0149`), deprecated in
+  0.17.0. It predated the `Table` component (whose root is also `.ss-table`) and shared its name.
+  Use `<Table>` — or, in plain HTML, its markup with `dssoca/vanilla.css`.
+
 ### Fixed
 
 Found while building the Inspirations pages (`DS-0150`):

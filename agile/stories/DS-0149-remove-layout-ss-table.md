@@ -2,14 +2,14 @@
 id: DS-0149
 type: story
 title: "Remove the deprecated theme.css layout .ss-table class"
-status: todo
+status: done
 priority: low
 tags: [css, breaking, cleanup]
 depends_on: [DS-0148]
 parent: null
 epic: null
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-06
 ---
 
 ## Description
@@ -21,13 +21,13 @@ deleted in 0.18.0, with the removal called out in the CHANGELOG.
 
 ## Acceptance criteria
 
-- [ ] `.ss-table { … }` block removed from `src/styles/_layout.scss` (the `.ss-*` layout list in
+- [x] `.ss-table { … }` block removed from `src/styles/_layout.scss` (the `.ss-*` layout list in
   `CLAUDE.md`/docs updated if it is mentioned).
-- [ ] `test/unit/vanilla-css.test.ts` Table-specificity guard retired or re-scoped (it exists only
+- [x] `test/unit/vanilla-css.test.ts` Table-specificity guard retired or re-scoped (it exists only
   to beat the layout rules).
-- [ ] CHANGELOG `### Removed` entry flagged **BREAKING**; `docs/themes.md` untouched unless it lists
+- [x] CHANGELOG `### Removed` entry flagged **BREAKING**; `docs/themes.md` untouched unless it lists
   layout classes.
-- [ ] `pnpm test`, `pnpm docs:test`, `pnpm pack` green.
+- [x] `pnpm test`, `pnpm docs:test`, `pnpm pack` green.
 
 ## Notes
 
