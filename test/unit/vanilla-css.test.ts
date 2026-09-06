@@ -59,6 +59,14 @@ function specificity(selector: string): [number, number, number] {
 }
 const cmp = (a: number[], b: number[]) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]
 
+describe('vanilla css — hidden attribute survives component display rules', () => {
+  it("Input's clear button honours [hidden] (vanilla.js toggles it instead of removing it)", () => {
+    const rule = css.split('}').find((r) => /\.clear\[hidden\]/.test(r))
+    expect(rule, '.clear[hidden] rule').toBeDefined()
+    expect(rule).toMatch(/display:\s*none/)
+  })
+})
+
 describe('vanilla.css — manifest', () => {
   it('ROOT_CLASSES covers exactly the component files on disk', () => {
     const onDisk = files.map((f) => f.slice(0, -'.svelte'.length))

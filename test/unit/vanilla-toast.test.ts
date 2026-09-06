@@ -31,6 +31,7 @@ describe('vanilla — toast', () => {
     const id = toast.success('saved')
     const container = q('.ss-toaster')!
     expect(container.getAttribute('aria-label')).toBe('Notifications')
+    expect(container.getAttribute('role')).toBe('region')
     expect(container.dataset.position).toBe('top-right')
     const el = q('.ss-toast')!
     expect(el.classList.contains('success')).toBe(true)

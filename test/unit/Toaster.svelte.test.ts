@@ -12,6 +12,8 @@ describe('Toaster', () => {
     const { container } = render(Toaster, {})
     const region = container.querySelector('.ss-toaster')
     expect(region).toHaveAttribute('aria-label', 'Notifications')
+    // a named landmark: aria-label is prohibited on a role-less div (axe aria-prohibited-attr)
+    expect(region).toHaveAttribute('role', 'region')
     // the container is no longer the live region — avoids double announcements
     expect(region).not.toHaveAttribute('aria-live')
   })
