@@ -24,9 +24,11 @@
   let { children } = $props()
 
   // Map the docs nav into the dssoca Sidebar's group shape — the item `id` is
-  // the route, so `active` / `onSelect` drive real navigation (dogfooding).
+  // the route, so `active` / `onSelect` drive real navigation (dogfooding). The
+  // Sidebar renders `section` as the group heading, so it gets the human label
+  // (DS-0156), never the stable key.
   const groups = NAV.map((g) => ({
-    section: g.section,
+    section: g.label,
     items: g.items.map((it) => ({
       id: it.href,
       label: it.label,

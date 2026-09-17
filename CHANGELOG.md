@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
+## [Unreleased]
+
+### Changed
+
+- **Docs sidebar — grouped guide pages** (`DS-0156`). The flat run of nine links above the
+  component list is now three labelled groups: **Getting started** (Introduction, Installation,
+  Plain HTML & CSS), **Configuration** (Theming & config, Tokens, Theme Builder, Keyboard) and
+  **Explore** (Inspirations, Color theory, All components). No page moved URL; `NAV` groups
+  carry a stable `section` key plus a rendered `label`, and the search palette hints each
+  page with its group. Membership is pinned by the docs tests.
+
 ## [0.18.0] — Inspirations & plain-HTML polish — 2026-09-06
 
 ### Added

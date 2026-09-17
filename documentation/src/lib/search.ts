@@ -9,7 +9,14 @@
  * docs test suite and the prerender can both import it.
  */
 import type { SearchPaletteItem } from 'dssoca'
-import { COMPONENTS, NAV, STORYBOOK_URL, type ComponentDoc, type NavGroup } from './docs.config'
+import {
+  COMPONENTS,
+  NAV,
+  STORYBOOK_URL,
+  guideEntries,
+  type ComponentDoc,
+  type NavGroup,
+} from './docs.config'
 import { CATEGORIES } from './categories'
 
 export type DocsAction = 'toggle-theme' | 'cycle-size' | 'open-help' | 'copy-install'
@@ -45,13 +52,14 @@ function categoryOf(slug: string): string | undefined {
 }
 
 export function pageItems(nav: NavGroup[] = NAV): DocsSearchItem[] {
-  const guide = nav.find((g) => g.section === 'guide')?.items ?? []
   return [
     { id: 'page:/', label: 'Home', hint: 'Landing page', href: '/', group: GROUP_PAGES },
-    ...guide.map((it) => ({
+    // Every page above the component list, in sidebar order; the hint names its
+    // nav group (DS-0156) so a hit reads "Tokens · Configuration".
+    ...guideEntries(nav).map(({ group, item: it }) => ({
       id: `page:${it.href}`,
       label: it.label,
-      hint: it.external ? 'Site · opens in a new tab' : 'Guide',
+      hint: it.external ? `${group.label} · opens in a new tab` : group.label,
       // External guide entries open in a new tab (see `DocsSearchItem.url`).
       ...(it.external ? { url: it.href } : { href: it.href }),
       group: GROUP_PAGES,

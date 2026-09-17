@@ -1,5 +1,14 @@
 import { describe, it, expect } from 'vitest'
-import { COMPONENTS, NAV, getComponent, storyUrl, storybookLink } from '../src/lib/docs.config'
+import {
+  COMPONENTS,
+  NAV,
+  GUIDE_SECTIONS,
+  INSPIRATIONS_URL,
+  getComponent,
+  guideEntries,
+  storyUrl,
+  storybookLink,
+} from '../src/lib/docs.config'
 
 describe('docs.config — components', () => {
   it('has entries with the required, non-empty fields', () => {
@@ -43,20 +52,39 @@ describe('docs.config — nav', () => {
     }
   })
 
-  it('has a guide group with the expected pages', () => {
-    const guide = NAV.find((g) => g.section === 'guide')
-    const hrefs = guide?.items.map((i) => i.href) ?? []
-    expect(hrefs).toEqual(
-      expect.arrayContaining([
-        '/introduction',
-        '/installation',
-        '/theming',
-        '/color-theory',
-        '/tokens',
-        '/theme-builder',
-        '/keyboard',
-      ]),
-    )
+  // DS-0156: the pages above the component list are split into three labelled
+  // groups. Membership and order are pinned exactly so the IA can't silently
+  // regress — moving a page is a deliberate edit here too.
+  it('splits the guide pages into getting-started / configuration / explore, in that order', () => {
+    expect(NAV.map((g) => g.section)).toEqual([...GUIDE_SECTIONS, 'components'])
+    const byGroup = Object.fromEntries(NAV.map((g) => [g.section, g.items.map((i) => i.href)]))
+    expect(byGroup).toMatchObject({
+      'getting-started': ['/introduction', '/installation', '/vanilla'],
+      configuration: ['/theming', '/tokens', '/theme-builder', '/keyboard'],
+      explore: [INSPIRATIONS_URL, '/color-theory', '/components'],
+    })
+  })
+
+  it('gives every group a distinct, human heading label', () => {
+    const labels = NAV.map((g) => g.label)
+    expect(labels).toEqual(['Getting started', 'Configuration', 'Explore', 'Components'])
+    expect(new Set(labels).size).toBe(labels.length)
+  })
+
+  it('lists every guide page exactly once, each with an href, icon and keywords', () => {
+    const entries = guideEntries()
+    const hrefs = entries.map((e) => e.item.href)
+    expect(new Set(hrefs).size).toBe(hrefs.length)
+    expect(hrefs).toHaveLength(10)
+    for (const { group, item } of entries) {
+      expect(GUIDE_SECTIONS, item.href).toContain(group.section)
+      expect(item.icon, `icon for ${item.href}`).toBeTruthy()
+      expect(item.keywords?.length, `keywords for ${item.href}`).toBeGreaterThan(0)
+    }
+    // The one off-site entry keeps its new-tab flag; nothing else is external.
+    expect(entries.filter((e) => e.item.external).map((e) => e.item.href)).toEqual([
+      INSPIRATIONS_URL,
+    ])
   })
 
   it('lists the components alphabetically by name', () => {
