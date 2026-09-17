@@ -54,15 +54,49 @@ export interface NavItem {
   /** Off-site link: rendered as a real new-tab anchor (Sidebar `external`), never routed. */
   external?: boolean
 }
+/**
+ * Stable nav-group keys (DS-0156). Code keys on these — never on the rendered `label` — so the
+ * wording can change without touching search or tests. Every non-component page belongs to
+ * exactly one of the three guide groups:
+ *
+ * - `getting-started` — the necessary path: what it is, install it, use it without Svelte.
+ * - `configuration`   — the knobs: theming/config, tokens, the palette builder, keyboard.
+ * - `explore`         — browsable surfaces: example sites, colour theory, the component catalog.
+ *
+ * A new page MUST declare which group it belongs to (add it to that group's `items`).
+ */
+export type NavSection = 'getting-started' | 'configuration' | 'explore' | 'components'
+
+/** The guide groups, in sidebar order (everything above the per-component list). */
+export const GUIDE_SECTIONS = [
+  'getting-started',
+  'configuration',
+  'explore',
+] as const satisfies readonly NavSection[]
+
 export interface NavGroup {
-  section: string
+  /** Stable key — see {@link NavSection}. */
+  section: NavSection
+  /** Human label the sidebar renders as the group heading. */
+  label: string
   items: NavItem[]
 }
 
-/** Left-nav structure — guide pages first, then a page per component. */
+/** Every page item above the component list, paired with its group. */
+export function guideEntries(nav: readonly NavGroup[] = NAV): { group: NavGroup; item: NavItem }[] {
+  return nav
+    .filter((g) => g.section !== 'components')
+    .flatMap((group) => group.items.map((item) => ({ group, item })))
+}
+
+/**
+ * Left-nav structure — three labelled guide groups (DS-0156), then a page per component.
+ * Group membership is pinned by `test/docs.config.test.ts`.
+ */
 export const NAV: NavGroup[] = [
   {
-    section: 'guide',
+    section: 'getting-started',
+    label: 'Getting started',
     items: [
       {
         label: 'Introduction',
@@ -76,6 +110,30 @@ export const NAV: NavGroup[] = [
         icon: 'terminal',
         keywords: ['install', 'setup', 'pnpm add', 'npm', 'import', 'theme.css', 'fonts', 'peer'],
       },
+      {
+        label: 'Plain HTML & CSS',
+        href: '/vanilla',
+        icon: 'terminal',
+        keywords: [
+          'vanilla',
+          'vanilla.css',
+          'vanilla.js',
+          'no svelte',
+          'static site',
+          'cdn',
+          'jsdelivr',
+          '@scope',
+          'plain html',
+          'data-ss-modal',
+          'toast',
+        ],
+      },
+    ],
+  },
+  {
+    section: 'configuration',
+    label: 'Configuration',
+    items: [
       {
         label: 'Theming & config',
         href: '/theming',
@@ -92,12 +150,6 @@ export const NAV: NavGroup[] = [
           'presets',
           'config',
         ],
-      },
-      {
-        label: 'Color theory',
-        href: '/color-theory',
-        icon: 'note',
-        keywords: ['oklch', 'terminal', 'ansi', '16 colors', 'contrast', 'slots', 'accent'],
       },
       {
         label: 'Tokens',
@@ -124,24 +176,12 @@ export const NAV: NavGroup[] = [
         icon: 'target',
         keywords: ['shortcuts', 'hotkeys', 'a11y', 'accessibility', 'wcag', 'registry', 'focus'],
       },
-      {
-        label: 'Plain HTML & CSS',
-        href: '/vanilla',
-        icon: 'terminal',
-        keywords: [
-          'vanilla',
-          'vanilla.css',
-          'vanilla.js',
-          'no svelte',
-          'static site',
-          'cdn',
-          'jsdelivr',
-          '@scope',
-          'plain html',
-          'data-ss-modal',
-          'toast',
-        ],
-      },
+    ],
+  },
+  {
+    section: 'explore',
+    label: 'Explore',
+    items: [
       {
         label: 'Inspirations',
         href: INSPIRATIONS_URL,
@@ -163,6 +203,12 @@ export const NAV: NavGroup[] = [
         ],
       },
       {
+        label: 'Color theory',
+        href: '/color-theory',
+        icon: 'note',
+        keywords: ['oklch', 'terminal', 'ansi', '16 colors', 'contrast', 'slots', 'accent'],
+      },
+      {
         label: 'All components',
         href: '/components',
         icon: 'database',
@@ -172,6 +218,7 @@ export const NAV: NavGroup[] = [
   },
   {
     section: 'components',
+    label: 'Components',
     // Component links are intentionally icon-less (cleaner nav), and sorted
     // alphabetically by name so the sidebar is scannable (COMPONENTS itself
     // keeps its source/insertion order for the per-component prerender).

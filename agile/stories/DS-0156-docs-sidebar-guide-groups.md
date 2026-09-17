@@ -2,14 +2,14 @@
 id: DS-0156
 type: story
 title: "Docs sidebar — split the top links into guide / configuration / explore groups"
-status: todo
+status: done
 priority: high
 tags: [docs, navigation, ia]
 depends_on: []
 parent: null
 epic: null
 created: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-18
 ---
 
 ## Description
@@ -36,18 +36,18 @@ The `components` group below is untouched.
 
 ## Acceptance criteria
 
-- [ ] `NAV` carries three groups above `components`, each with its own `section` key; the sidebar
+- [x] `NAV` carries three groups above `components`, each with its own `section` key; the sidebar
   renders a visible group label/separator per group (Sidebar already supports sections — reuse it,
   don't invent chrome).
-- [ ] Every existing guide page still appears exactly once, keeps its `href`, `icon` and
+- [x] Every existing guide page still appears exactly once, keeps its `href`, `icon` and
   `keywords`; the `external` flag on Inspirations still opens in a new tab.
-- [ ] Search (`documentation/src/lib/search.ts`) and any nav-driven prev/next or breadcrumb chrome
+- [x] Search (`documentation/src/lib/search.ts`) and any nav-driven prev/next or breadcrumb chrome
   still resolve every page; no dead entries.
-- [ ] Renders correctly in both themes, all three size variants, and at mobile width (collapsed
+- [x] Renders correctly in both themes, all three size variants, and at mobile width (collapsed
   sidebar / drawer) — group labels don't break the collapsed state.
-- [ ] `pnpm docs:test` green (extend it to pin the group membership so the split can't silently
+- [x] `pnpm docs:test` green (extend it to pin the group membership so the split can't silently
   regress); `pnpm lint`, `format:check`, `check`, `test` green.
-- [ ] Documentation updated (docs nav is itself the doc; note the grouping in the docs README/
+- [x] Documentation updated (docs nav is itself the doc; note the grouping in the docs README/
   `docs.config.ts` comment so future pages land in the right group).
 
 ## Notes
@@ -59,3 +59,20 @@ The `components` group below is untouched.
 - Files: `documentation/src/lib/docs.config.ts` (`NAV`), the sidebar consumer in
   `documentation/src/lib/layouts/`, `documentation/src/lib/search.ts`.
 - Any new page added later must declare which of the three groups it belongs to.
+
+## Decisions (2026-09-18)
+
+- Labels: **Getting started** / **Configuration** / **Explore** (+ the existing **Components**).
+  "Getting started" over "Guide" because it is the label newcomers already scan for (Tailwind,
+  MUI, Bootstrap); "Configuration" matches the library's own vocabulary (`applyDesignConfig`,
+  the "Theming & config" page).
+- `NavGroup` gained a stable `section: NavSection` key (`getting-started` | `configuration` |
+  `explore` | `components`) **and** a rendered `label`; code keys on the former, the Sidebar
+  shows the latter, so wording can change without touching search or tests. `GUIDE_SECTIONS`
+  + `guideEntries()` replace the old `section === 'guide'` lookups.
+- Search palette hints now name the page's group ("Tokens · Configuration",
+  "Inspirations · Explore · opens in a new tab") instead of a flat "Guide".
+- Membership/order pinned exactly in `documentation/test/docs.config.test.ts`; adding a page
+  without choosing a group fails the suite. Documented in `documentation/CLAUDE.md` house rules.
+- Verified: docs build prerenders all four headings; both themes, three sizes and the 720px
+  stacked layout checked in headless Chromium.
