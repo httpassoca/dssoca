@@ -76,7 +76,7 @@ describe('Icon', () => {
   })
 
   // ----------------------------------------------------------------
-  //  DS-0087 — extended built-in glyph set (nav/social)
+  //  DS-0087 — extended built-in glyph set (nav/social); DS-0157 added `search`
   // ----------------------------------------------------------------
 
   const NEW_GLYPHS = [
@@ -87,6 +87,7 @@ describe('Icon', () => {
     'linkedin',
     'language',
     'color-swatch',
+    'search',
   ] as const
 
   // Compile-time: each new name is part of the IconName union.

@@ -38,6 +38,7 @@ const BUILTIN_PATHS = {
   language: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3L8 12l4 9M12 3l4 9-4 9"/>',
   'color-swatch':
     '<rect x="3" y="3" width="8" height="18"/><path d="M7 17v.01"/><path d="M11 19l8-8 2 2-8 8"/><path d="M13 21h8"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/>',
 } as const
 
 export type IconName = keyof typeof BUILTIN_PATHS

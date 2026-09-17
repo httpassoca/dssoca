@@ -133,6 +133,12 @@ EmptyState, ServiceCard, Sparkline, DateField, Select, Pagination, Table (sortin
 FileDrop, Image (lightbox), LogStream, Sidebar, Topbar, SearchPalette, ShortcutsHelp and the
 charts (Chart, ScatterPlot, BoxPlot, BumpChart, Heatmap — copy their rendered SVG).
 
+One CSS-only behaviour worth knowing: a `.ss-kbd` key cap **hides itself on devices without a
+keyboard** (`@media (hover: none) and (pointer: coarse)` — phones and tablets), exactly like the
+Svelte component's `hideOnMobile` default. Where the chip is the content rather than a hint, add
+`data-hide-on-mobile="false"` to the outer `<kbd class="ss-kbd">`; and hide the words around a
+hint yourself, so "Enter to send" doesn't degrade to "to send".
+
 ## See it composed into whole sites
 
 The [Inspirations](https://httpassoca.github.io/dssoca/) site is twelve example websites — an

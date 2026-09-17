@@ -227,6 +227,14 @@ describe('vanilla.css — output', () => {
     expect(outputMedia).toBe(sourceMedia + 1)
   })
 
+  it('ships the Kbd hide-on-mobile rule (DS-0157) inside the Kbd scope, opt-out intact', () => {
+    const start = css.indexOf('/* ── Kbd ── */')
+    const end = css.indexOf('/* ── ', start + 1)
+    const kbd = css.slice(start, end === -1 ? undefined : end)
+    expect(kbd).toContain('@media (hover: none) and (pointer: coarse)')
+    expect(kbd).toContain(':where(:scope).ss-kbd:not([data-hide-on-mobile=false])')
+  })
+
   it('preserves every source style rule inside its scope block', () => {
     for (const [name, c] of Object.entries(compiled)) {
       const rules = splitRules(c.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^@charset[^\n]*\n/, ''))

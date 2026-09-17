@@ -8,8 +8,24 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+### Added
+
+- **`Icon` `search` glyph** (`DS-0157`) — a magnifier, used by Topbar's command button on touch
+  devices (below) and available to consumers like every other built-in.
+
 ### Changed
 
+- **`Kbd` hides itself on keyboard-less devices — `hideOnMobile` prop, default `true`**
+  (`DS-0157`; **behaviour change**). Key-cap chips are noise where the only input is a finger, so
+  on `@media (hover: none) and (pointer: coarse)` viewports (phones, tablets) the chip is now
+  `display: none` — a capability query, not a width, so a narrow desktop window keeps its hints.
+  Pass `hideOnMobile={false}` where the chip _is_ the content rather than a hint; it then renders
+  `data-hide-on-mobile="false"` on the root, which is also the plain-HTML opt-out (bare
+  `<kbd class="ss-kbd">` markup gets the new default with no changes). `ShortcutsHelp` opts its
+  rows out; `Topbar`'s command button swaps the hidden ⌘K chip for a decorative `search` glyph on
+  those devices so the tap target never renders empty. Audit your own "Enter to send"-style
+  sentences: the chip hides, the words around it are yours to hide. The Inspirations sites do
+  exactly that.
 - **Docs sidebar — grouped guide pages** (`DS-0156`). The flat run of nine links above the
   component list is now three labelled groups: **Getting started** (Introduction, Installation,
   Plain HTML & CSS), **Configuration** (Theming & config, Tokens, Theme Builder, Keyboard) and

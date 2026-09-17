@@ -11,14 +11,15 @@
     format?: ShortcutFormat
     platform?: ShortcutPlatform
     size?: Size
+    hideOnMobile?: boolean
     /** Rendered as the children snippet when set. */
     text?: string
   }
-  let { keys, format, platform, size, text }: Props = $props()
+  let { keys, format, platform, size, hideOnMobile = true, text }: Props = $props()
 </script>
 
 {#if text !== undefined}
-  <Kbd {keys} {format} {platform} {size}>{text}</Kbd>
+  <Kbd {keys} {format} {platform} {size} {hideOnMobile}>{text}</Kbd>
 {:else}
-  <Kbd {keys} {format} {platform} {size} />
+  <Kbd {keys} {format} {platform} {size} {hideOnMobile} />
 {/if}
