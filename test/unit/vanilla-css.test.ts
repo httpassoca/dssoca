@@ -201,12 +201,14 @@ describe('vanilla.css — output', () => {
     for (const r of refs) if (r !== 'none') expect(declared.has(r), `animation ${r}`).toBe(true)
   })
 
-  it('emits the four :global rules unscoped, anchored to their roots', () => {
+  it('emits the five :global rules unscoped, anchored to their roots', () => {
     const globalsExpected = [
       '.ss-card .media img, .ss-card .media svg, .ss-card .media video {',
       '.ss-link .ss-link-ext {',
       '.ss-segmented .segment .ic {',
       '.ss-icon .ss-icon-dot {',
+      // DS-0159: tile media fills the frame.
+      '.ss-tierlist .tile img, .ss-tierlist .tile svg, .ss-tierlist .tile video {',
     ]
     // Top-level rules are the only unindented non-at-rule selectors in the sheet.
     const topLevelStyleRules = css.split('\n').filter((l) => /^[^\s@/}]/.test(l) && l.endsWith('{'))

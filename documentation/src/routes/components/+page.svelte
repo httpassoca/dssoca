@@ -38,6 +38,7 @@
     BumpChart,
     Heatmap,
     Kbd,
+    TierList,
   } from 'dssoca'
   import { componentsByCategory } from '$lib/categories'
   import { COMPONENTS } from '$lib/docs.config'
@@ -313,6 +314,25 @@
     </div>
   {:else if slug === 'heatmap'}
     <Heatmap rows={heatNames} columns={heatNames} values={heatValues} cellSize={32} />
+  {:else if slug === 'tier-list'}
+    <!-- two compact rows fit the 168px stage; readonly — the whole card is the link -->
+    <div class="w-full" style="--ss-tier-tile-h: 56px; --ss-tier-tile-w: 72px;">
+      <TierList
+        items={[
+          { id: 'a', label: 'Chrono' },
+          { id: 'b', label: 'Zelda' },
+          { id: 'c', label: 'Tetris' },
+        ]}
+        tiers={[
+          { id: 'S', label: 'S' },
+          { id: 'A', label: 'A' },
+        ]}
+        placements={{ S: ['a', 'b'], A: ['c'] }}
+        tray={false}
+        readonly
+        size="sm"
+      />
+    </div>
   {:else if slug === 'table'}
     <div class="w-full">
       <Table columns={tableCols} rows={tableRows} />

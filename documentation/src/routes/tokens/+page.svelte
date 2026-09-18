@@ -174,6 +174,17 @@
       tokens: ['--ss-container-max-w', '--ss-container-px', '--ss-container-page-py'],
     },
     {
+      title: 'component tokens — TierList',
+      note: 'size axis · src/styles/components/_tierlist.scss',
+      tokens: [
+        '--ss-tier-tile-w',
+        '--ss-tier-tile-h',
+        '--ss-tier-label-w',
+        '--ss-tier-label-font',
+        '--ss-tier-gap',
+      ],
+    },
+    {
       title: 'component tokens — Spinner',
       note: 'size axis (font) + static color · src/styles/components/_spinner.scss',
       tokens: ['--ss-spinner-font', '--ss-spinner-color'],

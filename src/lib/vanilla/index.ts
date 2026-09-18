@@ -16,6 +16,7 @@ import { installMenu } from './menu.js'
 import { installTooltip } from './tooltip.js'
 import { installSwitch } from './switch.js'
 import { installSegmented } from './segmented.js'
+import { installTierlist } from './tierlist.js'
 import { installFields, mountFields } from './fields.js'
 import { hydrateIcons } from './icons.js'
 
@@ -36,6 +37,7 @@ export { openMenu, closeMenu } from './menu.js'
 export { showTooltip, hideTooltip } from './tooltip.js'
 export { toggleSwitch } from './switch.js'
 export { selectSegment } from './segmented.js'
+export { toggleGrab, readPlacements } from './tierlist.js'
 export { clearInput, nudgeNumber, autosize } from './fields.js'
 export {
   applyDesignConfig,
@@ -67,6 +69,7 @@ export function install(): void {
   installTooltip()
   installSwitch()
   installSegmented()
+  installTierlist()
   installFields()
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => mount(), { once: true })

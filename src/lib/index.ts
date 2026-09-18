@@ -90,6 +90,15 @@ export { default as BoxPlot, type BoxGroup } from './components/BoxPlot.svelte'
 export { default as BumpChart, type BumpSeries } from './components/BumpChart.svelte'
 export { default as Heatmap } from './components/Heatmap.svelte'
 
+// TierList (DS-0159): ranked rows + tray with pointer and keyboard sorting.
+export { default as TierList } from './components/TierList.svelte'
+export {
+  DEFAULT_TIERS as TIERLIST_DEFAULT_TIERS,
+  type TierListTier,
+  type TierListItem,
+  type TierListPlacements,
+} from './tierlist-core.js'
+
 // Keyboard-shortcuts feature (DS-0135): registry core + display chip.
 export { default as Kbd } from './components/Kbd.svelte'
 export { default as ShortcutsHelp } from './components/ShortcutsHelp.svelte'

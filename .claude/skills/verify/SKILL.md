@@ -53,6 +53,15 @@ zstd libpciaccess` — curl each `.pkg.tar.zst`, `bsdtar -xf … -C $S/root --ex
 
 ## Gotchas
 
+- **jsdom cannot catch these — always run the browser pass for interactive components** (found
+  on TierList, DS-0159): pointer capture dies when the captured node is re-created or
+  re-inserted (a keyed `{#each}` across blocks, or `insertBefore` on the same node) — listen on
+  `window`/`document` for the rest of a drag; Chrome blurs a focused node that leaves the
+  document even briefly, so "cancel on blur" must be decided a macrotask later and the node
+  re-focused after Svelte's flush. Drive real gestures with `page.mouse` (down → small move →
+  move → up) and `page.keyboard.press`; scroll the target into view / use a tall viewport, or the
+  pointer lands on `<html>`.
+
 - pnpm only — `npm` is not on PATH (exit 127).
 - dssoca `SegmentedControl` renders **radios**, not buttons — locate with
   `getByRole('radio', { name: ... })`.

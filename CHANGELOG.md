@@ -10,6 +10,22 @@ may include breaking changes (flagged **BREAKING**).
 
 ### Added
 
+- **`TierList` component** (`DS-0159`, `DS-0160`) — labelled tier rows (S / A / B / C / D by
+  default, or any `{ id, label, color? }` list) plus an unranked tray, holding one tile per
+  item. Tiles move by **pointer drag** between and within rows (Pointer Events, so touch works;
+  live reorder with a ghost under the pointer, commit on release) and by **keyboard** (Space
+  picks up, arrows move — left/right within the row, up/down across rows, Home/End — Space
+  drops, Escape cancels) with every step read out by a polite live region, so ranking never
+  depends on dragging (WCAG 2.2 SC 2.5.7). Presentational: what a tile shows is your `tile`
+  snippet; the result comes back as `placements` (tier id → ordered item ids) through
+  `bind:placements` / `onchange`; `onselect` activates a tile (Enter / click); `readonly` shows
+  someone else's ranking. Row accents are palette slots (accent, cyan, yellow, muted, red, …)
+  as Badge-style washes — no colour literals; sizes read the new `--ss-tier-*` tokens
+  (`src/styles/components/_tierlist.scss`). No runtime dependency: the pure model, move maths
+  and wording live in `tierlist-core.ts`, shared with the **plain-HTML behaviour**
+  (`dssoca/vanilla.js` now drives the rendered markup: same drag + keyboard paths, emits
+  `ss:change` with `{ placements }`, `data-ss-readonly` makes it inert). Ported from the
+  passoca roulette tierlist minus its app logic (posters, autosave, publish, export).
 - **Inspirations gallery inside the docs** (`DS-0158`). `/inspirations` on the docs site lists
   every example website — same cards, blurbs, component chips and thumbnails as the GitHub Pages
   gallery — inside the docs layout and axes; each card opens its site on the Pages host in a new
