@@ -116,6 +116,9 @@ documentation/
       introduction|installation|theming/+page.svx   guide pages (Markdown)
       tokens/+page.svelte          live token gallery
       vanilla/+page.svx            "Plain HTML & CSS" guide (DS-0148)
+      inspirations/+page.svelte    Inspirations gallery (DS-0158): Cards from the shared
+                       ../inspirations/manifest.json (alias @dssoca/inspirations), each an
+                       `external` link to its site on the Pages host, thumbnails hot-linked
       components/[slug]/+page.{server.ts,svelte}  one config-driven page per component; the
                        SERVER load renders the component's `htmlExample` with svelte/server
                        (lib/server/html-example.ts) into the page's HTML section
@@ -129,6 +132,7 @@ Wired in `svelte.config.js` → `kit.alias` (feeds both Vite and the generated t
 - `dssoca` → `../src/lib/index.ts` (components + config)
 - `@dssoca/styles/*` → `../src/styles/*` (e.g. `@dssoca/styles/theme.scss`)
 - `@dssoca/lib/*` → `../src/lib/*`
+- `@dssoca/inspirations/*` → `../inspirations/*` (the gallery manifest, DS-0158)
 
 `vite.config.ts` adds `server.fs.allow` for the repo root so Vite can read those source files. No
 build of the library is needed first — the docs track the working tree.

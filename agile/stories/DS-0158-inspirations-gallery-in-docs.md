@@ -2,14 +2,14 @@
 id: DS-0158
 type: story
 title: "Inspirations gallery inside the docs site (not just an external link)"
-status: todo
+status: done
 priority: high
 tags: [docs, inspirations, navigation, ia]
 depends_on: [DS-0150]
 parent: null
 epic: null
 created: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-18
 ---
 
 ## Description
@@ -46,18 +46,18 @@ Design decisions to settle in refinement:
 
 ## Acceptance criteria
 
-- [ ] `/inspirations` exists on the docs site, prerenders, and lists every example site — the same
+- [x] `/inspirations` exists on the docs site, prerenders, and lists every example site — the same
   set the Pages gallery lists, from a shared manifest, with no hand-duplicated card copy.
-- [ ] Each card links to its site on the Pages host, opens in a new tab (`rel="noopener
+- [x] Each card links to its site on the Pages host, opens in a new tab (`rel="noopener
   noreferrer"`), and carries the thumbnail (or the placeholder when one is missing).
-- [ ] The card's description is laid out as **two rows, not two columns**, on both galleries.
-- [ ] The nav entry is internal, sits in the explore group, and search finds the page.
-- [ ] The standalone Pages gallery keeps working unchanged apart from the description layout; the
+- [x] The card's description is laid out as **two rows, not two columns**, on both galleries.
+- [x] The nav entry is internal, sits in the explore group, and search finds the page.
+- [x] The standalone Pages gallery keeps working unchanged apart from the description layout; the
   example sites are untouched.
-- [ ] Both themes, all three size variants, mobile width; axe clean; `pnpm docs:test` extended to
+- [x] Both themes, all three size variants, mobile width; axe clean; `pnpm docs:test` extended to
   pin the page's presence and that the docs gallery and the manifest agree.
-- [ ] `pnpm lint`, `format:check`, `check`, `test`, `docs:test`, `pack` green.
-- [ ] Documentation updated (docs nav, the Plain HTML & CSS guide pointer, README, CLAUDE.md's
+- [x] `pnpm lint`, `format:check`, `check`, `test`, `docs:test`, `pack` green.
+- [x] Documentation updated (docs nav, the Plain HTML & CSS guide pointer, README, CLAUDE.md's
   `inspirations/` layout note, CHANGELOG).
 
 ## Notes
@@ -71,3 +71,32 @@ Design decisions to settle in refinement:
 - The exact element to restack is the gallery card's description block — confirm against
   `inspirations/index.html` (`.ss-card` → `.head`/`.heading`/`.body`) with the owner before
   implementing, since "the description" could mean the title/subtitle pair or the blurb + chips.
+
+
+## Decisions (2026-09-18)
+
+- **One manifest.** `inspirations/manifest.json` (`slug`, `title`, `kind`, `blurb`,
+  `components[]`) is the single source of the cards. `scripts/lib/inspirations.mjs` gained
+  `loadManifest()` (validates shape, slugs, duplicates), `renderGalleryCard()` /
+  `renderGallery()` (fills the `<!-- inspirations:cards -->` marker in the source `index.html`
+  at build time, on the exact vanilla Card DOM) and `thumbAlt()`. `build-inspirations.mjs`
+  fails when the manifest and the folders disagree. The docs page imports the same JSON via a
+  new `@dssoca/inspirations` alias. Chips must be real component names (pinned by both suites).
+- **Thumbnails hot-linked** from the Pages host (`…/thumbs/<slug>.png`) — zero repo weight, no
+  Chromium in the docs build; the striped placeholder shows when the Pages deploy doesn't have
+  one yet (a site added on `develop` before its release). The prerendered `<img>` can error
+  before hydration, so a mount-time `complete && naturalWidth === 0` check backs the `onerror`.
+- **`Card` `external` prop** added (target `_blank`, `rel="noopener noreferrer"`, "(opens in a
+  new tab)" announcement — Sidebar's convention) so the docs cards open the example off-site
+  without a bespoke anchor; the vanilla gallery already rendered that DOM.
+- **"Two rows instead of two columns"** read as the card *head*: the component lays the heading
+  block (title over kind) beside the actions/↗ column; both galleries now put the title and the
+  ↗ on row 1 and the kind on row 2 spanning the width (`.insp-grid .ss-card .head` in
+  `site.css`, mirrored with `:global` in the docs page). The `.body` (blurb, then chips) was
+  already stacked. **Owner to confirm** this is the block meant — the story flagged the
+  ambiguity; flipping the interpretation is a CSS-only change in those two places.
+- Nav: `/inspirations` internal in the Explore group (DS-0156), `film` icon + keywords kept;
+  search hint "Explore". The page links the standalone Pages host in its intro.
+- Verified: docs build prerenders `/inspirations`; headless Chromium pass in both themes, all
+  sizes and at 390px, axe (axe-core) clean, cards `target=_blank rel=noopener noreferrer`,
+  placeholders shown when the thumbnail URL 404s.

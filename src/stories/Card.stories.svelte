@@ -140,12 +140,19 @@
   {/snippet}
 </Story>
 
-<!-- Linkable card: whole surface is a primary link -->
+<!-- Linkable card: whole surface is a primary link; `external` (DS-0158) opens a new tab -->
 <Story name="Linkable" args={{ title: 'Docs', meta: '', withAction: false }}>
   {#snippet children()}
-    <Card title="Read the docs" description="opens dssoca docs" href="https://example.com">
-      <p style="margin:0;font-size:13px">The entire card is clickable.</p>
-    </Card>
+    <div style="display: grid; gap: var(--ss-gap); grid-template-columns: 1fr 1fr;">
+      <Card title="Read the docs" description="same tab" href="https://example.com">
+        <p style="margin:0;font-size:13px">The entire card is clickable.</p>
+      </Card>
+      <Card title="Example site" description="new tab" meta="↗" href="https://example.com" external>
+        <p style="margin:0;font-size:13px">
+          Opens off-site with rel="noopener noreferrer" and an "(opens in a new tab)" announcement.
+        </p>
+      </Card>
+    </div>
   {/snippet}
 </Story>
 

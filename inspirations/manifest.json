@@ -1,0 +1,86 @@
+[
+  {
+    "slug": "dashboard",
+    "title": "Ops console",
+    "kind": "dashboard",
+    "blurb": "Metrics, charts, a deploy table and a live-looking log stream inside the app shell.",
+    "components": ["Topbar", "Sidebar", "MetricTile", "Chart", "Table", "LogStream"]
+  },
+  {
+    "slug": "social",
+    "title": "Social feed",
+    "kind": "social network",
+    "blurb": "A three-column timeline with a composer, post cards, menus and a mobile bottom nav.",
+    "components": ["Card", "Avatar", "Textarea", "BottomNav", "Menu", "Tooltip"]
+  },
+  {
+    "slug": "dating",
+    "title": "Swipe profiles",
+    "kind": "dating app",
+    "blurb": "A phone-shaped card stack with like / skip actions, keyboard hints and a match dialog.",
+    "components": ["Card", "Badge", "Button", "Modal", "BottomNav", "Kbd"]
+  },
+  {
+    "slug": "chat",
+    "title": "Team chat",
+    "kind": "messaging",
+    "blurb": "Server rail, channel sidebar, grouped messages, reactions and an autosizing composer.",
+    "components": ["Sidebar", "Avatar", "Input", "Textarea", "Menu", "EmptyState"]
+  },
+  {
+    "slug": "landing",
+    "title": "Product landing",
+    "kind": "marketing site",
+    "blurb": "Hero, feature grid, a product shot built from real components, pricing tiers and a FAQ.",
+    "components": ["Heading", "Container", "Card", "Accordion", "SegmentedControl", "Button"]
+  },
+  {
+    "slug": "blog",
+    "title": "Personal blog",
+    "kind": "publishing",
+    "blurb": "A narrow reading column with post list, prose, code blocks, tags and pagination.",
+    "components": ["Heading", "Link", "Badge", "Pagination", "Kbd", "Input"]
+  },
+  {
+    "slug": "tracker",
+    "title": "Media tracker",
+    "kind": "list & save",
+    "blurb": "Poster grid or table of everything you watched, with filters, scores and a rating dialog.",
+    "components": ["Card", "Table", "SegmentedControl", "Select", "Pagination", "Modal"]
+  },
+  {
+    "slug": "store",
+    "title": "Storefront",
+    "kind": "e-commerce",
+    "blurb": "A product page with gallery, variant pickers, quantity stepper, cart toasts and related items.",
+    "components": ["NumberField", "Select", "Accordion", "Badge", "Card", "Button"]
+  },
+  {
+    "slug": "mail",
+    "title": "Mail client",
+    "kind": "productivity",
+    "blurb": "Folders, a triage list with keyboard hints, a reading pane, compose dialog and search palette.",
+    "components": ["Sidebar", "Kbd", "Menu", "Modal", "SearchPalette", "Textarea"]
+  },
+  {
+    "slug": "board",
+    "title": "Project board",
+    "kind": "kanban",
+    "blurb": "Columns of issue cards with priorities, assignees, an issue dialog and a show-done switch.",
+    "components": ["Card", "Badge", "Avatar", "Modal", "Switch", "DateField"]
+  },
+  {
+    "slug": "music",
+    "title": "Music player",
+    "kind": "streaming",
+    "blurb": "A playlist page with a track table, a now-playing row and a fixed transport bar.",
+    "components": ["Sidebar", "Table", "Button", "Spinner", "Menu", "BottomNav"]
+  },
+  {
+    "slug": "settings",
+    "title": "Account settings",
+    "kind": "forms & auth",
+    "blurb": "Every form control in one place: profile, notifications, security, API keys — plus a sign-in screen.",
+    "components": ["Input", "Switch", "Select", "FileDrop", "Modal", "Table"]
+  }
+]
