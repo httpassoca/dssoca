@@ -10,11 +10,24 @@ may include breaking changes (flagged **BREAKING**).
 
 ### Added
 
+- **Inspirations gallery inside the docs** (`DS-0158`). `/inspirations` on the docs site lists
+  every example website — same cards, blurbs, component chips and thumbnails as the GitHub Pages
+  gallery — inside the docs layout and axes; each card opens its site on the Pages host in a new
+  tab. The nav entry is internal now (Explore group) and search routes to it. One source of
+  truth: `inspirations/manifest.json` feeds both galleries (the Pages gallery's cards are rendered
+  into `index.html` at build time from it — adding a site is a folder + a manifest entry),
+  drift-guarded by the root and docs test suites. Thumbnails are hot-linked from the Pages host
+  with the striped placeholder as fallback.
+- **`Card` `external` prop** (`DS-0158`) — with `href`, the overlay link opens in a new tab
+  (`target="_blank"`, `rel="noopener noreferrer"`) and announces "(opens in a new tab)", matching
+  Sidebar's `external`.
 - **`Icon` `search` glyph** (`DS-0157`) — a magnifier, used by Topbar's command button on touch
   devices (below) and available to consumers like every other built-in.
 
 ### Changed
 
+- **Inspirations gallery cards: head laid out as two rows** (`DS-0158`) — title with the ↗ at its
+  end, then the kind on its own line — on both the Pages gallery and the docs gallery.
 - **`Kbd` hides itself on keyboard-less devices — `hideOnMobile` prop, default `true`**
   (`DS-0157`; **behaviour change**). Key-cap chips are noise where the only input is a finger, so
   on `@media (hover: none) and (pointer: coarse)` viewports (phones, tablets) the chip is now

@@ -18,6 +18,12 @@
     children: Snippet
     /** Makes the whole card a primary link to this href. */
     href?: string
+    /**
+     * Off-site `href` (DS-0158): the overlay link opens in a new tab with
+     * `rel="noopener noreferrer"` and announces "(opens in a new tab)" — Sidebar's `external`
+     * convention.
+     */
+    external?: boolean
     /** Makes the whole card clickable; pairs with keyboard activation. */
     onclick?: (e: MouseEvent | KeyboardEvent) => void
     /** Surface style: outlined (default) or elevated (shadow tokens). */
@@ -36,6 +42,7 @@
     footer,
     children,
     href,
+    external = false,
     onclick,
     variant = 'outlined',
     size,
@@ -99,11 +106,15 @@
     <a
       class="overlay"
       {href}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
       {onclick}
       onkeydown={onKeydown}
       aria-labelledby={title ? titleId : undefined}
     >
-      <span class="sr-only">{typeof title === 'string' ? title : 'Open'}</span>
+      <span class="sr-only"
+        >{typeof title === 'string' ? title : 'Open'}{external ? ' (opens in a new tab)' : ''}</span
+      >
     </a>
   {/if}
 </div>

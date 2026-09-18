@@ -168,6 +168,29 @@
 .insp-thumb.missing .placeholder {
   display: grid;
 }
+/* DS-0158: the card head reads as two rows — title with the ↗ at its end, then the kind on its
+   own line — instead of the component's two columns (heading | actions). Mirrored on the docs
+   gallery (documentation/src/routes/inspirations). */
+.insp-grid .ss-card .head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+}
+.insp-grid .ss-card .head .heading {
+  display: contents;
+}
+.insp-grid .ss-card .head .title {
+  grid-column: 1;
+  grid-row: 1;
+}
+.insp-grid .ss-card .head .actions {
+  grid-column: 2;
+  grid-row: 1;
+}
+.insp-grid .ss-card .head .desc {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
 .insp-chips {
   display: flex;
   flex-wrap: wrap;

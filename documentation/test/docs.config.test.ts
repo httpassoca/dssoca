@@ -61,7 +61,7 @@ describe('docs.config — nav', () => {
     expect(byGroup).toMatchObject({
       'getting-started': ['/introduction', '/installation', '/vanilla'],
       configuration: ['/theming', '/tokens', '/theme-builder', '/keyboard'],
-      explore: [INSPIRATIONS_URL, '/color-theory', '/components'],
+      explore: ['/inspirations', '/color-theory', '/components'],
     })
   })
 
@@ -81,10 +81,11 @@ describe('docs.config — nav', () => {
       expect(item.icon, `icon for ${item.href}`).toBeTruthy()
       expect(item.keywords?.length, `keywords for ${item.href}`).toBeGreaterThan(0)
     }
-    // The one off-site entry keeps its new-tab flag; nothing else is external.
-    expect(entries.filter((e) => e.item.external).map((e) => e.item.href)).toEqual([
-      INSPIRATIONS_URL,
-    ])
+    // DS-0158: every guide page is internal now (Inspirations lives at /inspirations and links
+    // the Pages host from the page itself).
+    expect(entries.filter((e) => e.item.external)).toEqual([])
+    expect(entries.map((e) => e.item.href).every((h) => h.startsWith('/'))).toBe(true)
+    expect(INSPIRATIONS_URL).toMatch(/^https:\/\/httpassoca\.github\.io\/dssoca\/$/)
   })
 
   it('lists the components alphabetically by name', () => {

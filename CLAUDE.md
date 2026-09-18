@@ -61,6 +61,9 @@ src/styles/        Sass source (@use partials) → compiled to dist/theme.css; n
 src/routes/        showcase/preview app (dev only, not published)
 inspirations/      Inspirations site (DS-0150): example websites in plain HTML on the vanilla
                    path — index.html gallery, <slug>/index.html (+ site.css, site.js), assets/axes.js.
+                   manifest.json is the ONE source of the gallery cards (DS-0158): the build
+                   renders them into index.html's `<!-- inspirations:cards -->` marker, and the
+                   docs site's /inspirations page imports the same file.
                    Built by scripts/build-inspirations.mjs → inspirations-dist/ (gitignored),
                    deployed to GitHub Pages by .github/workflows/pages.yml. Not published to npm.
 test/              Vitest suite (unit/ + harness/) + setup.ts
@@ -93,8 +96,9 @@ Published surface (`exports`): `dssoca` (components + config), `dssoca/theme.css
   generated CSS, keeps its own `site.css` to layout (tokens only, no colour literals, no
   radius), is self-contained (no external assets) and passes axe — all pinned by
   `test/unit/inspirations.test.ts`; the gallery must link every `<slug>/` folder. Thumbnails
-  are generated in the Pages workflow, never committed. Adding a site = a new folder + a
-  gallery card.
+  are generated in the Pages workflow, never committed. Adding a site = a new folder + an
+  entry in `inspirations/manifest.json` (the gallery cards and the docs' `/inspirations` page
+  both render from it — never hand-write a card).
 - **Tests are a RULE**: run `pnpm test` and add/extend tests for any change before calling it done.
   A11y is covered by `vitest-axe` (unit) + `@storybook/addon-a11y` (Storybook); target WCAG 2.2 AA.
 - **Docs are a RULE**: every user-facing change ships its docs. Update the component page in

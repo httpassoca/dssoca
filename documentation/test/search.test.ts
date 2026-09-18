@@ -39,10 +39,11 @@ describe('search index', () => {
       // DS-0156: the hint names the page's nav group.
       expect(item!.hint, `${it.href} hint`).toContain(group.label)
     }
+    // DS-0158: Inspirations is an in-site page now — routed, not opened in a new tab.
     const insp = pages.find((p) => p.label === 'Inspirations')!
-    expect(insp.url).toMatch(/^https:\/\/httpassoca\.github\.io\/dssoca\/$/)
-    expect(insp.href).toBeUndefined()
-    expect(insp.hint).toBe('Explore · opens in a new tab')
+    expect(insp.href).toBe('/inspirations')
+    expect(insp.url).toBeUndefined()
+    expect(insp.hint).toBe('Explore')
     expect(pages.find((p) => p.href === '/tokens')!.hint).toBe('Configuration')
   })
 

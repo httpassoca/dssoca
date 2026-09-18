@@ -25,8 +25,9 @@ export type { PropDoc, ComponentDoc } from './component-docs/types'
 export const STORYBOOK_URL: string = import.meta.env.VITE_STORYBOOK_URL ?? 'http://localhost:6006'
 
 /**
- * The Inspirations site (DS-0150): example websites built on the plain-HTML path, deployed to
- * GitHub Pages by `.github/workflows/pages.yml` — a fixed URL, so no env var.
+ * The standalone Inspirations site (DS-0150): the example websites built on the plain-HTML path,
+ * deployed to GitHub Pages by `.github/workflows/pages.yml` — a fixed URL, so no env var. The
+ * docs' own `/inspirations` gallery (DS-0158) links every example (and its thumbnail) there.
  */
 export const INSPIRATIONS_URL = 'https://httpassoca.github.io/dssoca/'
 
@@ -183,10 +184,10 @@ export const NAV: NavGroup[] = [
     label: 'Explore',
     items: [
       {
+        // DS-0158: the gallery lives on this site; each card opens its example on the Pages host.
         label: 'Inspirations',
-        href: INSPIRATIONS_URL,
+        href: '/inspirations',
         icon: 'film',
-        external: true,
         keywords: [
           'examples',
           'example sites',

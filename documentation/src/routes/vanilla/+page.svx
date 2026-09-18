@@ -141,13 +141,15 @@ hint yourself, so "Enter to send" doesn't degrade to "to send".
 
 ## See it composed into whole sites
 
-The [Inspirations](https://httpassoca.github.io/dssoca/) site is twelve example websites — an
-ops dashboard, a social feed, a dating app, a team chat, a landing page, a blog, a media tracker,
-a storefront, a mail client, a kanban board, a music player and an account-settings screen —
-each written by hand in plain HTML on exactly this path. Open one, view its source, copy what
-you like. They live in the repo under `inspirations/`, are rebuilt from the current source on
-every deploy, and their theme/size toggles use `applyDesignConfig`-equivalent attributes on
-`<html>`, so they double as a test of the two axes at page scale.
+[Inspirations](/inspirations) is a gallery of twelve example websites — an ops dashboard, a
+social feed, a dating app, a team chat, a landing page, a blog, a media tracker, a storefront, a
+mail client, a kanban board, a music player and an account-settings screen — each written by
+hand in plain HTML on exactly this path. Open one, view its source, copy what you like. The
+sites are served from the standalone
+[Inspirations site on GitHub Pages](https://httpassoca.github.io/dssoca/), live in the repo under
+`inspirations/`, are rebuilt from the current source on every deploy, and their theme/size
+toggles use `applyDesignConfig`-equivalent attributes on `<html>`, so they double as a test of
+the two axes at page scale.
 
 ## Caveats
 

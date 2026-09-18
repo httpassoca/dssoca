@@ -23,7 +23,9 @@ import {
   STATIC_FONTS_DIR,
   VENDOR,
   listInspirations,
+  loadManifest,
   relocateFontUrls,
+  renderGallery,
   vendorFiles,
 } from './lib/inspirations.mjs'
 
@@ -32,9 +34,23 @@ if (!existsSync(join(DIST_DIR, 'vanilla.css'))) {
   process.exit(1)
 }
 
+// The gallery cards come from the manifest (DS-0158); a folder without an entry (or vice
+// versa) is a drift bug, not something to paper over.
+const manifest = loadManifest()
+const folders = listInspirations()
+const listed = manifest.map((e) => e.slug).sort()
+if (JSON.stringify(listed) !== JSON.stringify(folders)) {
+  console.error(
+    `build-inspirations: manifest.json (${listed.join(', ')}) and the site folders (${folders.join(', ')}) disagree`,
+  )
+  process.exit(1)
+}
+
 rmSync(OUT_DIR, { recursive: true, force: true })
 mkdirSync(OUT_DIR, { recursive: true })
 cpSync(INSPIRATIONS_DIR, OUT_DIR, { recursive: true })
+const gallery = join(OUT_DIR, 'index.html')
+writeFileSync(gallery, renderGallery(readFileSync(gallery, 'utf8'), manifest))
 
 const files = vendorFiles()
 for (const rel of files) {
