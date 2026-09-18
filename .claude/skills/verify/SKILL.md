@@ -36,7 +36,15 @@ zstd libpciaccess` — curl each `.pkg.tar.zst`, `bsdtar -xf … -C $S/root --ex
   (`NOTREACHED remote_font_face_source.cc`) as soon as a page loads webfonts. Write
   `$S/fonts/fonts.conf` = `<fontconfig><dir>$S/root/usr/share/fonts</dir><cachedir>$S/fonts/cache</cachedir></fontconfig>`
   and set `FONTCONFIG_FILE` to it.
-- Launch: `chromium.launch({ executablePath: '~/.cache/ms-playwright/chromium_headless_shell-1228/chrome-headless-shell-linux64/chrome-headless-shell', args: ['--no-sandbox'] })`
+- Package-name gotchas: `atk` ships inside `at-spi2-core`, `graphite2` is `graphite`, brotli libs
+  come from `brotli` — asking the db for those names prints MISSING and is harmless. Also add
+  `glib2 dbus libffi pcre2 expat libpng harfbuzz` (nss/atk pull them in).
+- Verified 2026-09-18: `chromium_headless_shell-1243` + `playwright-core@1.63.0` works with the
+  recipe above (the `-1228` folder may no longer exist — `ls ~/.cache/ms-playwright/`).
+- Stop a background `vite preview`/storybook by port, never by pattern:
+  `kill $(ss -ltnp | grep ':<port>' | grep -o 'pid=[0-9]*' | cut -d= -f2)` — `pkill -f`/`pgrep -f`
+  match the calling shell and kill the session (exit 144).
+- Launch: `chromium.launch({ executablePath: '~/.cache/ms-playwright/chromium_headless_shell-<rev>/chrome-headless-shell-linux64/chrome-headless-shell', args: ['--no-sandbox'] })`
   with `playwright-core@latest` in a scratch dir. Storybook: `pnpm storybook --ci --port 6006 &`,
   then `iframe.html?id=<story-id>&viewMode=story&args=prop:value`. Stop it with `kill <pid>`,
   not `pkill -f storybook` (that matches the calling shell too).
@@ -44,6 +52,15 @@ zstd libpciaccess` — curl each `.pkg.tar.zst`, `bsdtar -xf … -C $S/root --ex
   to keep a tooltip open across a resize.
 
 ## Gotchas
+
+- **jsdom cannot catch these — always run the browser pass for interactive components** (found
+  on TierList, DS-0159): pointer capture dies when the captured node is re-created or
+  re-inserted (a keyed `{#each}` across blocks, or `insertBefore` on the same node) — listen on
+  `window`/`document` for the rest of a drag; Chrome blurs a focused node that leaves the
+  document even briefly, so "cancel on blur" must be decided a macrotask later and the node
+  re-focused after Svelte's flush. Drive real gestures with `page.mouse` (down → small move →
+  move → up) and `page.keyboard.press`; scroll the target into view / use a tall viewport, or the
+  pointer lands on `<html>`.
 
 - pnpm only — `npm` is not on PATH (exit 127).
 - dssoca `SegmentedControl` renders **radios**, not buttons — locate with

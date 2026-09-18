@@ -29,6 +29,7 @@
     type ShortcutPlatform,
   } from '../shortcuts.svelte.js'
   import Kbd from './Kbd.svelte'
+  import Icon from './Icon.svelte'
 
   interface Stat {
     key: string
@@ -272,6 +273,8 @@
       onclick={() => onCommand?.()}
     >
       <span class="kbd" aria-hidden="true"><Kbd keys="mod+k" {platform} {size} /></span>
+      <!-- DS-0157: the chip hides on keyboard-less devices; a search glyph keeps the tap target visible. -->
+      <span class="touch" aria-hidden="true"><Icon name="search" px={14} /></span>
     </button>
   {/if}
 
@@ -464,6 +467,17 @@
     .kbd {
       display: inline-flex;
       align-items: center;
+    }
+    // Shown only where the Kbd chip hides itself (DS-0157) — same capability query as Kbd.
+    .touch {
+      display: none;
+      align-items: center;
+      color: var(--ss-fg-muted);
+    }
+    @media (hover: none) and (pointer: coarse) {
+      .touch {
+        display: inline-flex;
+      }
     }
 
     // Responsive collapse (DS-0082, documented breakpoints above): drop the

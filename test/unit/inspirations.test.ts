@@ -15,11 +15,17 @@ import { SPINNER_VARIANTS } from '$lib/spinner-frames'
 import { dssocaConfig } from '$lib/dssoca.config'
 import { buildVanillaCss, extractStyleBlock } from '../../scripts/lib/vanilla-css.mjs'
 import {
+  GALLERY_MARKER,
   INSPIRATIONS_DIR,
   listInspirations,
+  loadManifest,
   relocateFontUrls,
+  renderGallery,
+  renderGalleryCard,
+  thumbAlt,
   vendorFiles,
 } from '../../scripts/lib/inspirations.mjs'
+import { COMPONENT_NAMES } from '$lib/dssoca.config'
 import { fileAt, startServer } from '../../scripts/serve-inspirations.mjs'
 
 /**
@@ -35,13 +41,22 @@ const VALID_THEMES = ['dark', 'light']
 const VALID_SIZES = ['sm', 'md', 'lg']
 
 const slugs = listInspirations()
+const manifest = loadManifest()
 const readPage = (dir: string) => readFileSync(join(dir, 'index.html'), 'utf8')
 const parse = (html: string) => new DOMParser().parseFromString(html, 'text/html')
+/** The gallery as the build ships it: the source template with its cards rendered (DS-0158). */
+const galleryHtml = () => renderGallery(readPage(INSPIRATIONS_DIR), manifest)
 
 /** Every page (the gallery + one per site) with the prefix its dssoca links must use. */
-const pages: Array<{ name: string; dir: string; prefix: string }> = [
-  { name: 'gallery', dir: INSPIRATIONS_DIR, prefix: './' },
-  ...slugs.map((slug) => ({ slug, name: slug, dir: join(INSPIRATIONS_DIR, slug), prefix: '../' })),
+const pages: Array<{ name: string; dir: string; prefix: string; html: string }> = [
+  { name: 'gallery', dir: INSPIRATIONS_DIR, prefix: './', html: galleryHtml() },
+  ...slugs.map((slug) => ({
+    slug,
+    name: slug,
+    dir: join(INSPIRATIONS_DIR, slug),
+    prefix: '../',
+    html: readPage(join(INSPIRATIONS_DIR, slug)),
+  })),
 ]
 
 // ---- allowed `ss-*` classes: whatever the generated stylesheets define -----------------
@@ -92,7 +107,7 @@ describe('inspirations: folders ↔ gallery', () => {
   })
 
   it('the gallery links every site (new tab, noopener) and nothing else', () => {
-    const doc = parse(readPage(INSPIRATIONS_DIR))
+    const doc = parse(galleryHtml())
     const cards = [...doc.querySelectorAll<HTMLAnchorElement>('a[data-inspiration]')]
     const linked = cards.map((a) => a.getAttribute('data-inspiration')).sort()
     expect(linked).toEqual(slugs)
@@ -110,8 +125,84 @@ describe('inspirations: folders ↔ gallery', () => {
   })
 })
 
+// DS-0158: one manifest feeds both galleries (Pages + the docs site's /inspirations page).
+describe('inspirations: manifest', () => {
+  it('lists exactly the site folders, each once', () => {
+    expect(manifest.map((e) => e.slug).sort()).toEqual(slugs)
+  })
+
+  it('has a title, kind, blurb and real component chips per site', () => {
+    for (const e of manifest) {
+      expect(e.title.trim(), e.slug).not.toBe('')
+      expect(e.kind.trim(), e.slug).not.toBe('')
+      expect(e.blurb.trim(), e.slug).not.toBe('')
+      expect(e.components.length, e.slug).toBeGreaterThan(0)
+      for (const c of e.components) expect(COMPONENT_NAMES, `${e.slug}: ${c}`).toContain(c)
+    }
+  })
+
+  it('the source gallery carries the card marker exactly once, and the build fills it', () => {
+    const src = readPage(INSPIRATIONS_DIR)
+    expect(src.split(GALLERY_MARKER)).toHaveLength(2)
+    const built = galleryHtml()
+    expect(built).not.toContain(GALLERY_MARKER)
+    expect(built.match(/data-inspiration="/g)).toHaveLength(manifest.length)
+    expect(() => renderGallery('<ul></ul>', manifest)).toThrow(/marker/)
+  })
+
+  it('renders a card on the vanilla Card contract, escaped, with a derived alt', () => {
+    const entry = {
+      slug: 'demo',
+      title: 'A <b>& B</b>',
+      kind: 'k',
+      blurb: 'says "hi"',
+      components: ['Card'],
+    }
+    const card = renderGalleryCard(entry)
+    expect(card).toContain('A &lt;b&gt;&amp; B&lt;/b&gt;')
+    expect(card).toContain('says &quot;hi&quot;')
+    expect(card).toContain(
+      `alt="${thumbAlt(entry).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}"`,
+    )
+    expect(card).toContain('href="./demo/"')
+    expect(card).toContain('rel="noopener noreferrer"')
+    expect(card).toContain('(opens in a new tab)')
+    expect(thumbAlt({ title: 'Ops console' })).toBe('Screenshot of the ops console example')
+  })
+
+  it('loadManifest rejects malformed entries', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'dssoca-manifest-'))
+    const f = join(dir, 'manifest.json')
+    writeFileSync(
+      f,
+      JSON.stringify([
+        { slug: 'a', title: 'A', kind: 'k', blurb: 'b', components: [] },
+        { slug: 'a', title: 'A', kind: 'k', blurb: 'b', components: [] },
+      ]),
+    )
+    expect(() => loadManifest(f)).toThrow(/duplicate slug/)
+    writeFileSync(
+      f,
+      JSON.stringify([{ slug: 'a', title: '', kind: 'k', blurb: 'b', components: [] }]),
+    )
+    expect(() => loadManifest(f)).toThrow(/missing "title"/)
+    writeFileSync(
+      f,
+      JSON.stringify([{ slug: 'Bad Slug', title: 'A', kind: 'k', blurb: 'b', components: [] }]),
+    )
+    expect(() => loadManifest(f)).toThrow(/bad slug/)
+    writeFileSync(
+      f,
+      JSON.stringify([{ slug: 'a', title: 'A', kind: 'k', blurb: 'b', components: 'Card' }]),
+    )
+    expect(() => loadManifest(f)).toThrow(/components/)
+    writeFileSync(f, '[]')
+    expect(() => loadManifest(f)).toThrow(/non-empty/)
+  })
+})
+
 describe.each(pages.map((p) => [p.name, p] as const))('inspirations page: %s', (_n, page) => {
-  const html = readPage(page.dir)
+  const html = page.html
   const doc = parse(html)
 
   it('declares the document contract (doctype, lang, both design axes, viewport, title)', () => {

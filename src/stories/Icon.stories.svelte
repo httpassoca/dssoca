@@ -5,7 +5,7 @@
 
   const ALL_NAMES = Object.keys(PATHS) as IconName[]
 
-  /** DS-0087: nav/social additions, shown in their own story. */
+  /** DS-0087: nav/social additions (+ `search`, DS-0157), shown in their own story. */
   const NAV_SOCIAL_NAMES: IconName[] = [
     'home',
     'briefcase',
@@ -14,6 +14,7 @@
     'linkedin',
     'language',
     'color-swatch',
+    'search',
   ]
 
   const { Story } = defineMeta({
@@ -50,6 +51,7 @@
           'linkedin',
           'language',
           'color-swatch',
+          'search',
         ] satisfies IconName[],
         description: 'Icon identifier — maps to an inline SVG path.',
       },

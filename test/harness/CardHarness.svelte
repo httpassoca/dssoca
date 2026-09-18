@@ -10,6 +10,7 @@
     withMedia?: boolean
     withTitleSnippet?: boolean
     href?: string
+    external?: boolean
     onclick?: (e: MouseEvent | KeyboardEvent) => void
     variant?: 'outlined' | 'elevated'
     titleLevel?: number
@@ -24,6 +25,7 @@
     withMedia = false,
     withTitleSnippet = false,
     href,
+    external,
     onclick,
     variant,
     titleLevel,
@@ -36,6 +38,7 @@
   {meta}
   {description}
   {href}
+  {external}
   {onclick}
   {variant}
   {titleLevel}

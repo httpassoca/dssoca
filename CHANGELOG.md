@@ -6,6 +6,69 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
+## [0.19.0] — TierList, docs IA & mobile key caps — 2026-09-18
+
+### Added
+
+- **`TierList` component** (`DS-0159`, `DS-0160`) — labelled tier rows (S / A / B / C / D by
+  default, or any `{ id, label, color? }` list) plus an unranked tray, holding one tile per
+  item. Tiles move by **pointer drag** between and within rows (Pointer Events, so touch works;
+  live reorder with a ghost under the pointer, commit on release) and by **keyboard** (Space
+  picks up, arrows move — left/right within the row, up/down across rows, Home/End — Space
+  drops, Escape cancels) with every step read out by a polite live region, so ranking never
+  depends on dragging (WCAG 2.2 SC 2.5.7). Presentational: what a tile shows is your `tile`
+  snippet; the result comes back as `placements` (tier id → ordered item ids) through
+  `bind:placements` / `onchange`; `onselect` activates a tile (Enter / click); `readonly` shows
+  someone else's ranking. Row accents are palette slots (accent, cyan, yellow, muted, red, …)
+  as Badge-style washes — no colour literals; sizes read the new `--ss-tier-*` tokens
+  (`src/styles/components/_tierlist.scss`). No runtime dependency: the pure model, move maths
+  and wording live in `tierlist-core.ts`, shared with the **plain-HTML behaviour**
+  (`dssoca/vanilla.js` now drives the rendered markup: same drag + keyboard paths, emits
+  `ss:change` with `{ placements }`, `data-ss-readonly` makes it inert). Ported from the
+  passoca roulette tierlist minus its app logic (posters, autosave, publish, export).
+- **Inspirations gallery inside the docs** (`DS-0158`). `/inspirations` on the docs site lists
+  every example website — same cards, blurbs, component chips and thumbnails as the GitHub Pages
+  gallery — inside the docs layout and axes; each card opens its site on the Pages host in a new
+  tab. The nav entry is internal now (Explore group) and search routes to it. One source of
+  truth: `inspirations/manifest.json` feeds both galleries (the Pages gallery's cards are rendered
+  into `index.html` at build time from it — adding a site is a folder + a manifest entry),
+  drift-guarded by the root and docs test suites. Thumbnails are hot-linked from the Pages host
+  with the striped placeholder as fallback.
+- **`Card` `external` prop** (`DS-0158`) — with `href`, the overlay link opens in a new tab
+  (`target="_blank"`, `rel="noopener noreferrer"`) and announces "(opens in a new tab)", matching
+  Sidebar's `external`.
+- **`Icon` `search` glyph** (`DS-0157`) — a magnifier, used by Topbar's command button on touch
+  devices (below) and available to consumers like every other built-in.
+
+### Changed
+
+- **Inspirations gallery cards: head laid out as two rows** (`DS-0158`) — title with the ↗ at its
+  end, then the kind on its own line — on both the Pages gallery and the docs gallery.
+- **`Kbd` hides itself on keyboard-less devices — `hideOnMobile` prop, default `true`**
+  (`DS-0157`; **behaviour change**). Key-cap chips are noise where the only input is a finger, so
+  on `@media (hover: none) and (pointer: coarse)` viewports (phones, tablets) the chip is now
+  `display: none` — a capability query, not a width, so a narrow desktop window keeps its hints.
+  Pass `hideOnMobile={false}` where the chip _is_ the content rather than a hint; it then renders
+  `data-hide-on-mobile="false"` on the root, which is also the plain-HTML opt-out (bare
+  `<kbd class="ss-kbd">` markup gets the new default with no changes). `ShortcutsHelp` opts its
+  rows out; `Topbar`'s command button swaps the hidden ⌘K chip for a decorative `search` glyph on
+  those devices so the tap target never renders empty. Audit your own "Enter to send"-style
+  sentences: the chip hides, the words around it are yours to hide. The Inspirations sites do
+  exactly that.
+- **Docs sidebar — grouped guide pages** (`DS-0156`). The flat run of nine links above the
+  component list is now three labelled groups: **Getting started** (Introduction, Installation,
+  Plain HTML & CSS), **Configuration** (Theming & config, Tokens, Theme Builder, Keyboard) and
+  **Explore** (Inspirations, Color theory, All components). No page moved URL; `NAV` groups
+  carry a stable `section` key plus a rendered `label`, and the search palette hints each
+  page with its group. Membership is pinned by the docs tests.
+
+### Fixed
+
+- **Inspirations thumbnails on GitHub Pages** (hotfix after 0.18.0) — the screenshot script
+  ran the Playwright CLI synchronously from the same process that serves the built site, so
+  the browser's first request was never answered and the Pages run hung; the capture is
+  asynchronous now, with a hard timeout, and the suite pins it.
+
 ## [0.18.0] — Inspirations & plain-HTML polish — 2026-09-06
 
 ### Added
@@ -628,7 +691,8 @@ Docs-site only (the published library is unchanged from `0.8.0`).
   component set (`DS-0002`), toast notifications (`DS-0003`), and empty/error-state affordances
   (`DS-0004`).
 
-[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.18.0...HEAD
+[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.19.0...HEAD
+[0.19.0]: https://github.com/httpassoca/dssoca/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/httpassoca/dssoca/compare/v0.17.0...v0.18.0
 [0.9.0]: https://github.com/httpassoca/dssoca/compare/v0.8.2...v0.9.0
 [0.2.0]: https://github.com/httpassoca/dssoca/compare/v0.1.0...v0.2.0

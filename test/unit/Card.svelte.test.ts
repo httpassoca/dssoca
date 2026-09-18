@@ -124,6 +124,28 @@ describe('Card', () => {
     expect(container.querySelector('.ss-card')?.getAttribute('role')).toBeNull()
   })
 
+  // DS-0158 — off-site link cards (the docs' Inspirations gallery).
+  it('external: the overlay opens in a new tab, noopener, and says so to AT', () => {
+    const { container } = render(CardHarness, {
+      title: 'Ops console',
+      href: 'https://example.com/x/',
+      external: true,
+      body: 'x',
+    })
+    const overlay = container.querySelector('a.overlay')!
+    expect(overlay).toHaveAttribute('target', '_blank')
+    expect(overlay).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(overlay.querySelector('.sr-only')).toHaveTextContent('Ops console (opens in a new tab)')
+  })
+
+  it('a plain href stays same-tab with no rel and no announcement', () => {
+    const { container } = render(CardHarness, { title: 'Stats', href: '/foo', body: 'x' })
+    const overlay = container.querySelector('a.overlay')!
+    expect(overlay).not.toHaveAttribute('target')
+    expect(overlay).not.toHaveAttribute('rel')
+    expect(overlay.querySelector('.sr-only')).toHaveTextContent(/^Stats$/)
+  })
+
   it('labels the card region via aria-labelledby pointing at the title id', () => {
     const { container } = render(CardHarness, { title: 'Stats', body: 'x' })
     const root = container.querySelector('.ss-card')!

@@ -42,12 +42,18 @@ export const kbd: ComponentDoc = {
     },
     SIZE_PROP,
     {
+      name: 'hideOnMobile',
+      type: 'boolean',
+      default: 'true',
+      desc: 'Hide the chip on devices without a keyboard — a capability query, `(hover: none) and (pointer: coarse)` (phones, tablets), not a width. Pass `false` where the chip *is* the content (a shortcuts list, a keyboard guide); it then renders `data-hide-on-mobile="false"` on the root.',
+    },
+    {
       name: 'children',
       type: 'Snippet',
       desc: 'Raw-content escape hatch for keys the grammar cannot express (`<Kbd>F12</Kbd>`). Ignored when `keys` is set.',
     },
   ],
   notes:
-    'Kbd is purely visual — assistive tech gets the combo as one full-word name (`aria-label="Command K"` via `role="img"` in glyph format), but the chip alone is not an affordance: never show a key without explanatory text next to it ("Search ⌘K", not a bare chip). The real binding belongs on the owning control — register it through the shortcut registry and set `aria-keyshortcuts` there with the `ariaKeyshortcuts()` helper so AT users learn the shortcut from the control itself.',
+    'Kbd is purely visual — assistive tech gets the combo as one full-word name (`aria-label="Command K"` via `role="img"` in glyph format), but the chip alone is not an affordance: never show a key without explanatory text next to it ("Search ⌘K", not a bare chip). The real binding belongs on the owning control — register it through the shortcut registry and set `aria-keyshortcuts` there with the `ariaKeyshortcuts()` helper so AT users learn the shortcut from the control itself. **Hidden on touch devices by default** (`hideOnMobile`): a key cap is noise where the only input is a finger, so on `(hover: none) and (pointer: coarse)` viewports the chip is `display: none` (out of the a11y tree too). That is a capability query, not a width — a narrow desktop window keeps its hints. Opt out with `hideOnMobile={false}` where the chip is the subject rather than a hint (ShortcutsHelp does this for its rows); the surrounding text is yours to hide ("Enter to send" should not degrade to "to send"). Plain HTML: `.ss-kbd` hides the same way, and `data-hide-on-mobile="false"` on the root opts out.',
   guide: { href: '/keyboard', label: 'Making your site keyboard-friendly' },
 }

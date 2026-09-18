@@ -8,13 +8,14 @@ import Modal from '$lib/components/Modal.svelte'
 import Tooltip from '$lib/components/Tooltip.svelte'
 import Switch from '$lib/components/Switch.svelte'
 import SegmentedControl from '$lib/components/SegmentedControl.svelte'
+import TierList from '$lib/components/TierList.svelte'
 import Input from '$lib/components/Input.svelte'
 import NumberField from '$lib/components/NumberField.svelte'
 import Textarea from '$lib/components/Textarea.svelte'
 import Icon from '$lib/components/Icon.svelte'
 import { PATHS } from '$lib/icons'
 // Importing the entry installs the delegated behaviours on this file's jsdom document.
-import { mount, iconSvg, hydrateIcons } from '$lib/vanilla/index'
+import { mount, iconSvg, hydrateIcons, readPlacements } from '$lib/vanilla/index'
 
 const axeOpts = {
   rules: {
@@ -340,6 +341,152 @@ describe('vanilla — SegmentedControl', () => {
       'Month',
       'Day',
     ])
+  })
+
+  it('has no axe violations', async () => {
+    mountHtml(html())
+    expect(await axe(document.body, axeOpts)).toHaveNoViolations()
+  })
+})
+
+describe('vanilla — TierList (DS-0159)', () => {
+  const ITEMS = [
+    { id: 'a', label: 'Alpha' },
+    { id: 'b', label: 'Beta' },
+    { id: 'c', label: 'Gamma' },
+  ]
+  const html = (extra: Record<string, unknown> = {}) =>
+    svelteHtml(TierList, { items: ITEMS, placements: { S: ['a', 'b'] }, label: 'Games', ...extra })
+  const zoneIds = (zone: string) =>
+    qa<HTMLElement>(
+      zone === 'tray' ? '[data-zone][data-tray] .tile' : `[data-zone="${zone}"] .tile`,
+    ).map((t) => t.dataset.item)
+  const tile = (id: string) => q<HTMLButtonElement>(`.tile[data-item="${id}"]`)
+  const live = () => q('.ss-tierlist .live').textContent?.trim()
+
+  it('reads the placements the markup carries', () => {
+    const root = mountHtml(html()).firstElementChild as HTMLElement
+    expect(readPlacements(root)).toEqual({ S: ['a', 'b'], A: [], B: [], C: [], D: [] })
+    expect(zoneIds('tray')).toEqual(['c'])
+  })
+
+  it('Space grabs, arrows move within and across rows, Space drops and emits ss:change', () => {
+    const root = mountHtml(html()).firstElementChild as HTMLElement
+    const seen: unknown[] = []
+    root.addEventListener('ss:change', (e) => seen.push((e as CustomEvent).detail))
+    const a = tile('a')
+    a.focus()
+    key(a, ' ')
+    expect(a.getAttribute('aria-pressed')).toBe('true')
+    expect(a.closest('.cell')?.classList.contains('grabbed')).toBe(true)
+    expect(root.classList.contains('sorting')).toBe(true)
+    expect(live()).toMatch(/^Picked up Alpha, S, position 1 of 2\./)
+    key(a, 'ArrowRight')
+    expect(zoneIds('S')).toEqual(['b', 'a'])
+    expect(live()).toBe('Alpha moved to S, position 2 of 2.')
+    key(a, 'ArrowRight') // edge: nothing
+    expect(zoneIds('S')).toEqual(['b', 'a'])
+    key(a, 'ArrowDown')
+    expect(zoneIds('A')).toEqual(['a'])
+    expect(document.activeElement).toBe(a)
+    expect(a.getAttribute('aria-pressed')).toBe('true')
+    key(a, 'ArrowDown')
+    key(a, 'End')
+    key(a, ' ')
+    expect(a.getAttribute('aria-pressed')).toBe('false')
+    expect(root.classList.contains('sorting')).toBe(false)
+    expect(live()).toBe('Dropped Alpha in B, position 1 of 1.')
+    expect(seen).toEqual([{ placements: { S: ['b'], A: [], B: ['a'], C: [], D: [] } }])
+  })
+
+  it('Escape puts the tile back where it was; a blur while grabbed cancels too', async () => {
+    const root = mountHtml(html()).firstElementChild as HTMLElement
+    const seen: unknown[] = []
+    root.addEventListener('ss:change', (e) => seen.push((e as CustomEvent).detail))
+    const b = tile('b')
+    b.focus()
+    key(b, ' ')
+    key(b, 'ArrowDown')
+    key(b, 'ArrowDown')
+    expect(zoneIds('B')).toEqual(['b'])
+    key(b, 'Escape')
+    expect(zoneIds('S')).toEqual(['a', 'b'])
+    expect(live()).toBe('Cancelled. Beta returned to S, position 2 of 2.')
+    expect(b.getAttribute('aria-pressed')).toBe('false')
+    key(b, ' ')
+    key(b, 'ArrowLeft')
+    expect(zoneIds('S')).toEqual(['b', 'a'])
+    // the cancel is decided a macrotask after focus has really left the tile
+    b.blur()
+    await new Promise<void>((r) => setTimeout(r, 0))
+    expect(zoneIds('S')).toEqual(['a', 'b'])
+    expect(b.getAttribute('aria-pressed')).toBe('false')
+    expect(seen).toEqual([])
+  })
+
+  it('Enter grabs unless the tile carries data-ss-activate (an onselect consumer)', () => {
+    mountHtml(html())
+    key(tile('a'), 'Enter')
+    expect(tile('a').getAttribute('aria-pressed')).toBe('true')
+    key(tile('a'), 'Enter')
+    expect(tile('a').getAttribute('aria-pressed')).toBe('false')
+    tile('b').setAttribute('data-ss-activate', '')
+    key(tile('b'), 'Enter')
+    expect(tile('b').getAttribute('aria-pressed')).toBe('false')
+  })
+
+  it('pointer drag moves a tile into another row and emits once on release', () => {
+    const root = mountHtml(html()).firstElementChild as HTMLElement
+    const seen: unknown[] = []
+    root.addEventListener('ss:change', (e) => seen.push((e as CustomEvent).detail))
+    // One zone per 200px band; every cell 100px wide from x = 0.
+    const zones = qa<HTMLElement>('[data-zone]')
+    zones.forEach((zone, zi) => {
+      Array.from(zone.querySelectorAll<HTMLElement>(':scope > .cell')).forEach((cell, ci) => {
+        const box = { left: ci * 110, right: ci * 110 + 100, top: zi * 200, bottom: zi * 200 + 100 }
+        cell.getBoundingClientRect = () => ({ ...box, width: 100, height: 100 }) as DOMRect
+        cell.querySelector<HTMLElement>('.tile')!.getBoundingClientRect = cell.getBoundingClientRect
+      })
+    })
+    document.elementsFromPoint = (_x: number, y: number) => {
+      const zone = zones[Math.floor(y / 200)]
+      return zone ? [zone] : []
+    }
+    const c = tile('c') // in the tray (zone index 5)
+    const pointer = (type: string, x: number, y: number) =>
+      c.dispatchEvent(
+        new MouseEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          clientX: x,
+          clientY: y,
+          button: 0,
+        }),
+      )
+    pointer('pointerdown', 50, 1050)
+    pointer('pointermove', 52, 1052) // under the threshold
+    expect(root.classList.contains('dragging')).toBe(false)
+    pointer('pointermove', 150, 50) // tier S, right of Alpha
+    expect(root.classList.contains('dragging')).toBe(true)
+    expect(q('.ss-tierlist .ghost')).not.toBeNull()
+    expect(q('[data-zone="S"]').classList.contains('target')).toBe(true)
+    expect(zoneIds('S')).toEqual(['a', 'c', 'b'])
+    expect(c.closest('.cell')?.classList.contains('shadow')).toBe(true)
+    pointer('pointerup', 150, 50)
+    expect(root.classList.contains('dragging')).toBe(false)
+    expect(q('.ss-tierlist .ghost')).toBeNull()
+    expect(seen).toEqual([{ placements: { S: ['a', 'c', 'b'], A: [], B: [], C: [], D: [] } }])
+    expect(live()).toBe('Dropped Gamma in S, position 2 of 3.')
+  })
+
+  it('data-ss-readonly markup is inert', () => {
+    const root = mountHtml(html({ readonly: true })).firstElementChild as HTMLElement
+    expect(root.hasAttribute('data-ss-readonly')).toBe(true)
+    expect(q('button.tile')).toBeNull()
+    const seen: unknown[] = []
+    root.addEventListener('ss:change', (e) => seen.push((e as CustomEvent).detail))
+    key(q('.tile'), ' ')
+    expect(seen).toEqual([])
   })
 
   it('has no axe violations', async () => {

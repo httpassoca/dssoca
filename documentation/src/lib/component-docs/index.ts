@@ -47,6 +47,8 @@ import { searchPalette } from './search-palette'
 // Keyboard-shortcuts feature (DS-0135).
 import { kbd } from './kbd'
 import { shortcutsHelp } from './shortcuts-help'
+// TierList (DS-0159).
+import { tierList } from './tier-list'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -98,4 +100,6 @@ export const COMPONENTS: ComponentDoc[] = [
   // DS-0135 — keyboard-shortcuts feature.
   kbd,
   shortcutsHelp,
+  // DS-0159 — ranked rows with drag-and-drop + keyboard sorting.
+  tierList,
 ]

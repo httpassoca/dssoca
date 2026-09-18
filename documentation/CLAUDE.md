@@ -100,7 +100,10 @@ documentation/
     app.html           <html data-theme="dark" data-size-variant="md">
     lib/
       docs.config.ts   SOURCE OF TRUTH: STORYBOOK_URL, NAV, and the per-component
-                       metadata (name, slug, icon, tagline, storyId, usage, props)
+                       metadata (name, slug, icon, tagline, storyId, usage, props).
+                       NAV = three labelled guide groups (DS-0156: `getting-started` →
+                       `configuration` → `explore`, keyed by `NavSection`, rendered by
+                       `label`) followed by the alphabetical `components` group
       highlight.ts     Prism highlight() + langClass() (used by CodeBlock)
       prism-setup.js   Prism singleton + language grammars (shared with mdsvex)
       styles/code.css  Prism token theme mapped to --ss-code-* (follows the theme axis)
@@ -113,6 +116,9 @@ documentation/
       introduction|installation|theming/+page.svx   guide pages (Markdown)
       tokens/+page.svelte          live token gallery
       vanilla/+page.svx            "Plain HTML & CSS" guide (DS-0148)
+      inspirations/+page.svelte    Inspirations gallery (DS-0158): Cards from the shared
+                       ../inspirations/manifest.json (alias @dssoca/inspirations), each an
+                       `external` link to its site on the Pages host, thumbnails hot-linked
       components/[slug]/+page.{server.ts,svelte}  one config-driven page per component; the
                        SERVER load renders the component's `htmlExample` with svelte/server
                        (lib/server/html-example.ts) into the page's HTML section
@@ -126,6 +132,7 @@ Wired in `svelte.config.js` → `kit.alias` (feeds both Vite and the generated t
 - `dssoca` → `../src/lib/index.ts` (components + config)
 - `@dssoca/styles/*` → `../src/styles/*` (e.g. `@dssoca/styles/theme.scss`)
 - `@dssoca/lib/*` → `../src/lib/*`
+- `@dssoca/inspirations/*` → `../inspirations/*` (the gallery manifest, DS-0158)
 
 `vite.config.ts` adds `server.fs.allow` for the repo root so Vite can read those source files. No
 build of the library is needed first — the docs track the working tree.
@@ -133,6 +140,12 @@ build of the library is needed first — the docs track the working tree.
 ## House rules
 
 - **Content = what exists today.** No speculative/future components or APIs.
+- **Add a guide page →** put its `NAV` entry in the right group (DS-0156): `getting-started`
+  (the necessary path: what it is, install, plain HTML), `configuration` (theming/config,
+  tokens, theme builder, keyboard) or `explore` (browsable surfaces: inspirations, colour
+  theory, the component catalog). Give it an `icon` and `keywords` (the search palette indexes
+  every entry, hinting its group label). `test/docs.config.test.ts` pins the membership —
+  update it in the same change.
 - **Add a component →** add a file under `src/lib/component-docs/` (collected into `COMPONENTS`):
   set its `storyId` to the real Storybook id (`components-<name>--<story>`; confirm against
   `../storybook-static/index.json` or a running Storybook) and an **`htmlExample`** (plain,

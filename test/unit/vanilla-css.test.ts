@@ -201,12 +201,14 @@ describe('vanilla.css — output', () => {
     for (const r of refs) if (r !== 'none') expect(declared.has(r), `animation ${r}`).toBe(true)
   })
 
-  it('emits the four :global rules unscoped, anchored to their roots', () => {
+  it('emits the five :global rules unscoped, anchored to their roots', () => {
     const globalsExpected = [
       '.ss-card .media img, .ss-card .media svg, .ss-card .media video {',
       '.ss-link .ss-link-ext {',
       '.ss-segmented .segment .ic {',
       '.ss-icon .ss-icon-dot {',
+      // DS-0159: tile media fills the frame.
+      '.ss-tierlist .tile img, .ss-tierlist .tile svg, .ss-tierlist .tile video {',
     ]
     // Top-level rules are the only unindented non-at-rule selectors in the sheet.
     const topLevelStyleRules = css.split('\n').filter((l) => /^[^\s@/}]/.test(l) && l.endsWith('{'))
@@ -225,6 +227,14 @@ describe('vanilla.css — output', () => {
       (css.match(/^ {2}@media/gm)?.length ?? 0) + (css.match(/^ {2}@supports/gm)?.length ?? 0)
     // +1: the spinner appendix adds its own reduced-motion block.
     expect(outputMedia).toBe(sourceMedia + 1)
+  })
+
+  it('ships the Kbd hide-on-mobile rule (DS-0157) inside the Kbd scope, opt-out intact', () => {
+    const start = css.indexOf('/* ── Kbd ── */')
+    const end = css.indexOf('/* ── ', start + 1)
+    const kbd = css.slice(start, end === -1 ? undefined : end)
+    expect(kbd).toContain('@media (hover: none) and (pointer: coarse)')
+    expect(kbd).toContain(':where(:scope).ss-kbd:not([data-hide-on-mobile=false])')
   })
 
   it('preserves every source style rule inside its scope block', () => {

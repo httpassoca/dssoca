@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { COMPONENTS, NAV, STORYBOOK_URL } from '../src/lib/docs.config'
+import { COMPONENTS, STORYBOOK_URL, guideEntries } from '../src/lib/docs.config'
 import {
   buildSearchItems,
   pageItems,
@@ -30,20 +30,26 @@ describe('search index', () => {
   it('includes the landing page and every guide nav entry (external ones as `url` items)', () => {
     const pages = pageItems()
     expect(pages[0]).toMatchObject({ label: 'Home', href: '/' })
-    const guide = NAV.find((g) => g.section === 'guide')!.items
-    for (const it of guide) {
+    const entries = guideEntries()
+    expect(pages).toHaveLength(entries.length + 1)
+    for (const { group, item: it } of entries) {
       const item = pages.find((p) => (it.external ? p.url : p.href) === it.href)
       expect(item, it.href).toMatchObject({ label: it.label })
       expect(Boolean(item!.url) !== Boolean(item!.href), `${it.href} is url xor href`).toBe(true)
+      // DS-0156: the hint names the page's nav group.
+      expect(item!.hint, `${it.href} hint`).toContain(group.label)
     }
+    // DS-0158: Inspirations is an in-site page now — routed, not opened in a new tab.
     const insp = pages.find((p) => p.label === 'Inspirations')!
-    expect(insp.url).toMatch(/^https:\/\/httpassoca\.github\.io\/dssoca\/$/)
-    expect(insp.href).toBeUndefined()
+    expect(insp.href).toBe('/inspirations')
+    expect(insp.url).toBeUndefined()
+    expect(insp.hint).toBe('Explore')
+    expect(pages.find((p) => p.href === '/tokens')!.hint).toBe('Configuration')
   })
 
   it('every guide nav entry carries search keywords', () => {
-    for (const it of NAV.find((g) => g.section === 'guide')!.items) {
-      expect(it.keywords?.length, it.href).toBeGreaterThan(0)
+    for (const { item } of guideEntries()) {
+      expect(item.keywords?.length, item.href).toBeGreaterThan(0)
     }
   })
 

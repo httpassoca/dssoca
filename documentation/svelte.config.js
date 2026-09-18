@@ -40,6 +40,9 @@ const config = {
       dssoca: '../src/lib/index.ts',
       '@dssoca/styles': '../src/styles',
       '@dssoca/lib': '../src/lib',
+      // The Inspirations manifest (DS-0158): the docs gallery reads the same file the Pages
+      // gallery is rendered from.
+      '@dssoca/inspirations': '../inspirations',
     },
   },
 }

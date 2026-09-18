@@ -322,6 +322,25 @@ Chrome that previously hardcoded px, now size-aware (md = the former fixed value
 | `--ss-log-t-w`   | `52px`  | `58px`  | `64px`  | Timestamp column min-width        |
 | `--ss-log-lvl-w` | `34px`  | `38px`  | `42px`  | Level column min-width            |
 
+### Component size tokens (`DS-0159`)
+
+**TierList** (`--ss-tier-*`) — `src/styles/components/_tierlist.scss`. Tiles are square by
+default; a consumer showing posters overrides `--ss-tier-tile-h` on the root (e.g. `162px`,
+1.5× the width). Row min-height is derived (`tile-h + 2 × gap`), not a token.
+
+| Token                  | `sm`         | `md`         | `lg`           | Role                       |
+| ---------------------- | ------------ | ------------ | -------------- | -------------------------- |
+| `--ss-tier-tile-w`     | `84px`       | `108px`      | `132px`        | Tile width                 |
+| `--ss-tier-tile-h`     | `84px`       | `108px`      | `132px`        | Tile height                |
+| `--ss-tier-label-w`    | `36px`       | `44px`       | `56px`         | Tier letter column width   |
+| `--ss-tier-label-font` | `--ss-ui-md` | `--ss-ui-lg` | `--ss-size-h3` | Tier letter font size      |
+| `--ss-tier-gap`        | `--ss-s-1`   | `6px`        | `--ss-s-2`     | Gap between rows and tiles |
+
+Row accents are not tokens: each row sets `--ss-tier-color` inline to its `color` or, by
+index, a palette slot (`--ss-accent`, `--ss-cyan`, `--ss-yellow`, `--ss-fg-muted`, `--ss-red`,
+`--ss-blue`, `--ss-magenta`, `--ss-green`, cycling); the letter box is a Badge-style
+`color-mix()` wash of it.
+
 ### Component override tokens (`DS-0133`)
 
 **SearchPalette** (`--ss-search-palette-*`) — consumer-overridable knobs read as inline

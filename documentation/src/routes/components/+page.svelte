@@ -38,6 +38,7 @@
     BumpChart,
     Heatmap,
     Kbd,
+    TierList,
   } from 'dssoca'
   import { componentsByCategory } from '$lib/categories'
   import { COMPONENTS } from '$lib/docs.config'
@@ -239,8 +240,9 @@
     </div>
   {:else if slug === 'kbd'}
     <div class="row">
-      <Kbd keys="mod+k" platform="apple" />
-      <Kbd keys="?, mod+/" platform="other" />
+      <!-- the chip is the tile's subject — keep it on touch devices (DS-0157) -->
+      <Kbd keys="mod+k" platform="apple" hideOnMobile={false} />
+      <Kbd keys="?, mod+/" platform="other" hideOnMobile={false} />
     </div>
   {:else if slug === 'metric-tile'}
     <div class="w-full">
@@ -312,6 +314,25 @@
     </div>
   {:else if slug === 'heatmap'}
     <Heatmap rows={heatNames} columns={heatNames} values={heatValues} cellSize={32} />
+  {:else if slug === 'tier-list'}
+    <!-- two compact rows fit the 168px stage; readonly — the whole card is the link -->
+    <div class="w-full" style="--ss-tier-tile-h: 56px; --ss-tier-tile-w: 72px;">
+      <TierList
+        items={[
+          { id: 'a', label: 'Chrono' },
+          { id: 'b', label: 'Zelda' },
+          { id: 'c', label: 'Tetris' },
+        ]}
+        tiers={[
+          { id: 'S', label: 'S' },
+          { id: 'A', label: 'A' },
+        ]}
+        placements={{ S: ['a', 'b'], A: ['c'] }}
+        tray={false}
+        readonly
+        size="sm"
+      />
+    </div>
   {:else if slug === 'table'}
     <div class="w-full">
       <Table columns={tableCols} rows={tableRows} />
@@ -373,9 +394,15 @@
          Modal/SearchPalette). -->
     <div class="help-mock">
       <div class="hm-group">navigation</div>
-      <div class="hm-row"><span>Open search</span> <Kbd keys="mod+k" platform="other" /></div>
+      <div class="hm-row">
+        <span>Open search</span>
+        <Kbd keys="mod+k" platform="other" hideOnMobile={false} />
+      </div>
       <div class="hm-group">general</div>
-      <div class="hm-row"><span>Show shortcuts</span> <Kbd keys="?" platform="other" /></div>
+      <div class="hm-row">
+        <span>Show shortcuts</span>
+        <Kbd keys="?" platform="other" hideOnMobile={false} />
+      </div>
     </div>
   {/if}
 {/snippet}

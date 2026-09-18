@@ -46,6 +46,12 @@ export const card: ComponentDoc = {
     },
     { name: 'href', type: 'string', desc: 'Makes the whole card a primary link to this href.' },
     {
+      name: 'external',
+      type: 'boolean',
+      default: 'false',
+      desc: 'Off-site `href`: the overlay link opens in a new tab with `rel="noopener noreferrer"` and announces "(opens in a new tab)" (Sidebar\'s `external` convention).',
+    },
+    {
       name: 'onclick',
       type: '(e: MouseEvent | KeyboardEvent) => void',
       desc: 'Makes the whole card clickable; pairs with keyboard activation.',

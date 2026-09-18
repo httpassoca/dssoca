@@ -484,3 +484,11 @@
     display: none;
   }
 }
+
+/* Keyboard hints are noise where there is no keyboard (DS-0157): the key caps hide themselves on
+   coarse-pointer devices, so hide the words around them too. */
+@media (hover: none) and (pointer: coarse) {
+  .ll-keys-hint {
+    display: none;
+  }
+}

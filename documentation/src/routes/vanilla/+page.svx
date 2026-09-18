@@ -19,9 +19,9 @@ From npm (`pnpm add dssoca`) or straight from a CDN, in this order:
 ```html
 <html data-theme="dark" data-size-variant="md">
   <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/theme.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla.css" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.18/dist/vanilla/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.19/dist/theme.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.19/dist/vanilla.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.19/dist/vanilla/index.js"></script>
   </head>
   <body>
     <button class="ss-btn primary" type="button">deploy</button>
@@ -83,6 +83,7 @@ use a `data-ss-*` attribute.
 | [Tooltip](/components/tooltip)                 | `.ss-tooltip[data-placement]` (as rendered)                          | Shows on hover/focus, hides on leave/blur/Escape. Placement is used as-is (no collision flipping).                        |
 | [Switch](/components/switch)                   | `.track[role=switch]` (as rendered)                                  | Toggles `aria-checked` / `.on` from the track or the label. Emits `ss:change`.                                           |
 | [SegmentedControl](/components/segmented-control) | `.segment[role=radio]`, optional `data-value`                     | Click / arrows / Home / End select; emits `ss:change` with the `data-value`.                                             |
+| [TierList](/components/tier-list)              | `.tile[data-item]` inside `[data-zone]` rows (as rendered)           | Pointer drag between/within rows + keyboard sorting (Space, arrows, Space, Escape) with live announcements. `data-ss-readonly` on the root makes it inert. Emits `ss:change` with `{ placements }`. |
 | [Input](/components/input)                     | `.clear` button (as rendered when `clearable`)                       | Empties, refocuses, hides itself until you type.                                                                         |
 | [NumberField](/components/number-field)        | `.step.dec` / `.step.inc` (as rendered)                              | Nudges by `step`, clamps to `min`/`max`, disables at the bounds.                                                          |
 | [Textarea](/components/textarea)               | `.field.autosize` (as rendered)                                      | CSS `field-sizing: content` where supported; `scrollHeight` fallback otherwise.                                            |
@@ -133,15 +134,23 @@ EmptyState, ServiceCard, Sparkline, DateField, Select, Pagination, Table (sortin
 FileDrop, Image (lightbox), LogStream, Sidebar, Topbar, SearchPalette, ShortcutsHelp and the
 charts (Chart, ScatterPlot, BoxPlot, BumpChart, Heatmap — copy their rendered SVG).
 
+One CSS-only behaviour worth knowing: a `.ss-kbd` key cap **hides itself on devices without a
+keyboard** (`@media (hover: none) and (pointer: coarse)` — phones and tablets), exactly like the
+Svelte component's `hideOnMobile` default. Where the chip is the content rather than a hint, add
+`data-hide-on-mobile="false"` to the outer `<kbd class="ss-kbd">`; and hide the words around a
+hint yourself, so "Enter to send" doesn't degrade to "to send".
+
 ## See it composed into whole sites
 
-The [Inspirations](https://httpassoca.github.io/dssoca/) site is twelve example websites — an
-ops dashboard, a social feed, a dating app, a team chat, a landing page, a blog, a media tracker,
-a storefront, a mail client, a kanban board, a music player and an account-settings screen —
-each written by hand in plain HTML on exactly this path. Open one, view its source, copy what
-you like. They live in the repo under `inspirations/`, are rebuilt from the current source on
-every deploy, and their theme/size toggles use `applyDesignConfig`-equivalent attributes on
-`<html>`, so they double as a test of the two axes at page scale.
+[Inspirations](/inspirations) is a gallery of twelve example websites — an ops dashboard, a
+social feed, a dating app, a team chat, a landing page, a blog, a media tracker, a storefront, a
+mail client, a kanban board, a music player and an account-settings screen — each written by
+hand in plain HTML on exactly this path. Open one, view its source, copy what you like. The
+sites are served from the standalone
+[Inspirations site on GitHub Pages](https://httpassoca.github.io/dssoca/), live in the repo under
+`inspirations/`, are rebuilt from the current source on every deploy, and their theme/size
+toggles use `applyDesignConfig`-equivalent attributes on `<html>`, so they double as a test of
+the two axes at page scale.
 
 ## Caveats
 
