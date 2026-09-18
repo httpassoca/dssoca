@@ -1,0 +1,31 @@
+// --- tierlist tokens (DS-0159) -------------------------------------------------
+// Component-scoped --ss-* size tokens for TierList: the tile box, the row-label
+// column and the gap between tiles. Tiles are square by default; a consumer
+// showing posters overrides `--ss-tier-tile-h` on the root (e.g. 1.5× the width).
+// Row min-height derives from tile + gap in the component. Zero radius (house rule).
+// md is the default on :root; sm / lg override per the size axis.
+
+:root,
+[data-size-variant='md'] {
+  --ss-tier-tile-w: 108px;
+  --ss-tier-tile-h: 108px;
+  --ss-tier-label-w: 44px;
+  --ss-tier-label-font: var(--ss-ui-lg);
+  --ss-tier-gap: 6px;
+}
+
+[data-size-variant='sm'] {
+  --ss-tier-tile-w: 84px;
+  --ss-tier-tile-h: 84px;
+  --ss-tier-label-w: 36px;
+  --ss-tier-label-font: var(--ss-ui-md);
+  --ss-tier-gap: var(--ss-s-1);
+}
+
+[data-size-variant='lg'] {
+  --ss-tier-tile-w: 132px;
+  --ss-tier-tile-h: 132px;
+  --ss-tier-label-w: 56px;
+  --ss-tier-label-font: var(--ss-size-h3);
+  --ss-tier-gap: var(--ss-s-2);
+}

@@ -47,4 +47,11 @@ if (!('animate' in Element.prototype)) {
   }
 }
 
+// jsdom has no `getAnimations()` either; Svelte's `animate:flip` (TierList) calls it on the
+// element before deciding whether to animate. An empty list is the honest answer here.
+if (!('getAnimations' in Element.prototype)) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(Element.prototype as any).getAnimations = () => []
+}
+
 afterEach(() => cleanup())

@@ -99,10 +99,10 @@ HTML on this path, deployed from `inspirations/` to GitHub Pages.
 
 ## What's in the box
 
-**Components (23):** `Icon`, `Badge`, `Button`, `Input`, `Textarea`, `Card`, `Sparkline`,
+**Components (24):** `Icon`, `Badge`, `Button`, `Input`, `Textarea`, `Card`, `Sparkline`,
 `ServiceCard`, `MetricTile`, `Topbar`, `Sidebar`, `BottomNav`, `Menu`, `Link`,
 `SegmentedControl`, `Accordion`, `LogStream`, `Toaster`, `EmptyState`, `Image`,
-`Heading`, `Container`, `Spinner`.
+`Heading`, `Container`, `Spinner`, `TierList`.
 
 **Toasts:** `toast` (`.success` / `.error` / `.info` / `.loading` / `.promise`) + the `toasts`
 store (`update` / `dismiss` / `pause` / `resume` / `clear`, `max` cap) — render once with

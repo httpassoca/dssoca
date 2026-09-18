@@ -132,6 +132,7 @@ describe('docs.config — nav', () => {
       'Switch',
       'Table',
       'Textarea',
+      'TierList',
       'Toaster',
       'Tooltip',
       'Topbar',

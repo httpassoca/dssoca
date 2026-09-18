@@ -51,6 +51,7 @@ export const CATEGORIES: Category[] = [
       'box-plot',
       'bump-chart',
       'heatmap',
+      'tier-list',
     ],
   },
   {
