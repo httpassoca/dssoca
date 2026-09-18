@@ -74,6 +74,8 @@ describe('ShortcutsHelp — registry-backed rendering', () => {
     const editing = container.querySelector('.ss-shortcuts-help .group')!
     expect(editing.querySelector('dt')).toHaveTextContent('Save')
     const kbd = editing.querySelector('dd .ss-kbd')!
+    // DS-0157: the chip is the overlay's content — it must never hide on touch devices.
+    expect(kbd).toHaveAttribute('data-hide-on-mobile', 'false')
     expect(kbd).not.toBeNull()
     // jsdom is a non-Apple platform: `mod` renders as Ctrl.
     expect(kbd.textContent).toContain('Ctrl')

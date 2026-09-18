@@ -239,8 +239,9 @@
     </div>
   {:else if slug === 'kbd'}
     <div class="row">
-      <Kbd keys="mod+k" platform="apple" />
-      <Kbd keys="?, mod+/" platform="other" />
+      <!-- the chip is the tile's subject — keep it on touch devices (DS-0157) -->
+      <Kbd keys="mod+k" platform="apple" hideOnMobile={false} />
+      <Kbd keys="?, mod+/" platform="other" hideOnMobile={false} />
     </div>
   {:else if slug === 'metric-tile'}
     <div class="w-full">
@@ -373,9 +374,15 @@
          Modal/SearchPalette). -->
     <div class="help-mock">
       <div class="hm-group">navigation</div>
-      <div class="hm-row"><span>Open search</span> <Kbd keys="mod+k" platform="other" /></div>
+      <div class="hm-row">
+        <span>Open search</span>
+        <Kbd keys="mod+k" platform="other" hideOnMobile={false} />
+      </div>
       <div class="hm-group">general</div>
-      <div class="hm-row"><span>Show shortcuts</span> <Kbd keys="?" platform="other" /></div>
+      <div class="hm-row">
+        <span>Show shortcuts</span>
+        <Kbd keys="?" platform="other" hideOnMobile={false} />
+      </div>
     </div>
   {/if}
 {/snippet}

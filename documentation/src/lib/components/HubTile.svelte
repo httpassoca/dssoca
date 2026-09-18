@@ -193,8 +193,9 @@
       <!-- self-animating frames (static first frame under reduced motion) -->
       <Spinner variant="squareCorners" label="Loading" showLabel />
     {:else if slug === 'kbd'}
-      <!-- pinned platform per variant: stable tiles, no client-side detection flip -->
-      <Kbd keys={v.t} platform={v.plat} />
+      <!-- pinned platform per variant: stable tiles, no client-side detection flip;
+           the chip is the tile's subject, so it stays on touch devices (DS-0157) -->
+      <Kbd keys={v.t} platform={v.plat} hideOnMobile={false} />
     {/if}
     <!-- a single misbehaving tile must never take down the whole field -->
     {#snippet failed()}{/snippet}

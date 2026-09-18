@@ -232,6 +232,12 @@ describe('Topbar', () => {
     // the visible chip is a real <Kbd> and stays decorative
     expect(btn.querySelector('.kbd')).toHaveAttribute('aria-hidden', 'true')
     expect(btn.querySelector('.kbd .ss-kbd')).not.toBeNull()
+    // DS-0157: the chip hides itself on keyboard-less devices (default hideOnMobile), so a
+    // decorative search glyph — shown only there — keeps the button from rendering empty.
+    expect(btn.querySelector('.kbd .ss-kbd')).not.toHaveAttribute('data-hide-on-mobile')
+    const touch = btn.querySelector('.touch')!
+    expect(touch).toHaveAttribute('aria-hidden', 'true')
+    expect(touch.querySelector('svg.ss-icon')).not.toBeNull()
   })
 
   it('reflects Apple platforms in aria-keyshortcuts and the Kbd chip', async () => {

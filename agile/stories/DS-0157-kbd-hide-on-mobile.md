@@ -2,14 +2,14 @@
 id: DS-0157
 type: story
 title: "Kbd — `hideOnMobile` prop, default true"
-status: todo
+status: done
 priority: high
 tags: [ui, components, kbd, responsive, a11y, api]
 depends_on: [DS-0137]
 parent: null
 epic: DS-0135
 created: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-18
 ---
 
 ## Description
@@ -48,22 +48,22 @@ Open questions for refinement (decide before implementing):
 
 ## Acceptance criteria
 
-- [ ] `hideOnMobile?: boolean` on `Kbd` (default `true`), documented in the props JSDoc; reflected
+- [x] `hideOnMobile?: boolean` on `Kbd` (default `true`), documented in the props JSDoc; reflected
   onto the root as a data attribute (Modal's `data-fullscreen` / Sidebar's `data-collapsed`
   convention), never as a prefixed class.
-- [ ] CSS-only: no `window.matchMedia`, no runes, nothing to break under SSR.
-- [ ] Every in-repo consumer audited and, where the chip is the subject rather than a hint,
+- [x] CSS-only: no `window.matchMedia`, no runes, nothing to break under SSR.
+- [x] Every in-repo consumer audited and, where the chip is the subject rather than a hint,
   explicitly `hideOnMobile={false}` — Kbd's own docs page, `/keyboard`, `ShortcutsHelp`, Storybook.
-- [ ] `vanilla.css` gets the same behaviour via the generated rule; a plain-HTML `.ss-kbd` hides on
+- [x] `vanilla.css` gets the same behaviour via the generated rule; a plain-HTML `.ss-kbd` hides on
   mobile by default and opts out with the documented attribute.
-- [ ] Tests (`test/unit/Kbd.svelte.test.ts`): default attribute present, opt-out removes it,
+- [x] Tests (`test/unit/Kbd.svelte.test.ts`): default attribute present, opt-out removes it,
   existing keycap/format/platform tests unchanged, `vitest-axe` clean. Add the vanilla drift test's
   expectation if `ROOT_CLASSES` output changes.
-- [ ] Storybook: a story showing the mobile-hidden default (viewport addon or a note) plus the
+- [x] Storybook: a story showing the mobile-hidden default (viewport addon or a note) plus the
   opt-out.
-- [ ] Documentation updated (`documentation/src/lib/component-docs/kbd.ts` prop row + note,
+- [x] Documentation updated (`documentation/src/lib/component-docs/kbd.ts` prop row + note,
   the Keyboard guide's mention, CHANGELOG behaviour-change entry).
-- [ ] `pnpm test`, `check`, `lint`, `format:check`, `docs:test`, `pack`, `build-storybook` green.
+- [x] `pnpm test`, `check`, `lint`, `format:check`, `docs:test`, `pack`, `build-storybook` green.
 
 ## Notes
 
@@ -75,3 +75,32 @@ Open questions for refinement (decide before implementing):
 - Related: [[DS-0137-kbd-component]] (the component), [[DS-0138-shortcuts-help-overlay]] and
   [[DS-0133-search-palette]] (consumers that must opt out), [[DS-0148-vanilla-html-consumption]]
   (vanilla parity).
+
+## Decisions (2026-09-18)
+
+- **"Mobile" = capability, not width.** `@media (hover: none) and (pointer: coarse)` only. A
+  narrow desktop window still has a keyboard, so a width fallback would hide a usable hint; the
+  capability query is exactly "no physical pointer/keyboard" (phones, tablets; touch laptops
+  report `hover: hover` + `pointer: fine` and keep their chips). Authored once, top-level in
+  `Kbd.svelte`'s style block so the vanilla generator ships it verbatim.
+- **Hide = `display: none`.** An unusable affordance leaves the a11y tree too. No
+  `aria-labelledby` references point at a Kbd in-repo (ShortcutsHelp/SearchPalette use `<dd>` /
+  text), so nothing is stranded.
+- **Attribute only when opted out.** `data-hide-on-mobile="false"` is rendered only for
+  `hideOnMobile={false}`; the default DOM is byte-identical to 0.18, so every existing plain-HTML
+  `.ss-kbd` (the Inspirations sites, consumers' pages) gets the behaviour with no markup change —
+  the story's vanilla goal. (The AC's "default attribute present" was read as "the contract is a
+  data attribute"; presence-on-default would have forced every vanilla author to add it.)
+- **Consumer audit.** Opted out (chip is the subject): `ShortcutsHelp` rows, the `/keyboard`
+  guide's table and inline chips, the docs component gallery + landing hub tiles, the blog
+  inspiration's "Press ⌘K" sentence. Kept the default (chip is a hint): Tooltip/ShortcutsHelp
+  story buttons, docs `usage` snippets, the mail inspiration's search button. **Topbar**: the ⌘K
+  chip is the command button's only content, so a new decorative `search` icon (added to
+  `BUILTIN_PATHS`) shows under the same query — otherwise the button rendered empty on phones.
+  Inspirations sentences built around a chip (chat "Enter to send", dating arrow hints, mail
+  hint bar + "⌘↵ to send", landing "? for shortcuts") hide as a whole via each `site.css`.
+- **Storybook**: `HiddenOnMobile` story shows default vs opt-out side by side with a note — the
+  viewport toolbar only resizes the iframe and cannot emulate a coarse pointer; DevTools device
+  emulation can.
+- Verified in headless Chromium with iPhone emulation (`hasTouch` + `isMobile`): Topbar chip
+  hidden + search glyph shown, `/keyboard` chips visible, chat inspiration hint line gone.

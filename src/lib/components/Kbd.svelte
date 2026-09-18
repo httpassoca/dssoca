@@ -39,11 +39,20 @@
     platform?: ShortcutPlatform
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
+    /**
+     * Hide the chip on devices without a keyboard (DS-0157): a capability query —
+     * `(hover: none) and (pointer: coarse)`, i.e. phones and tablets — not a width, so a narrow
+     * desktop window keeps its hint. Default `true`; pass `false` where the chip *is* the
+     * content (a shortcuts overlay, a keyboard guide). Reflected as
+     * `data-hide-on-mobile="false"` on the root only when opted out, so the default DOM is
+     * unchanged and plain-HTML `.ss-kbd` markup gets the behaviour for free.
+     */
+    hideOnMobile?: boolean
     /** Raw-content escape hatch for keys the grammar can't express (`<Kbd>F12</Kbd>` sequences, chords…). Ignored when `keys` is set. */
     children?: Snippet
   }
 
-  let { keys, format = 'glyph', platform, size, children }: Props = $props()
+  let { keys, format = 'glyph', platform, size, hideOnMobile = true, children }: Props = $props()
 
   // Hydration posture: 'other' on the server AND the first client render,
   // corrected in an effect so server and client first paints agree. An
@@ -73,6 +82,7 @@
 <kbd
   class="ss-kbd"
   data-size-variant={resolveComponentSize('Kbd', size)}
+  data-hide-on-mobile={hideOnMobile ? undefined : 'false'}
   role={ariaLabel ? 'img' : undefined}
   aria-label={ariaLabel}
 >
@@ -123,6 +133,16 @@
     .or {
       font-size: var(--ss-ui-xs);
       letter-spacing: 0.05em;
+    }
+  }
+
+  // DS-0157: key caps advertise an affordance a finger can't use. Capability, not width — a
+  // phone/tablet reports no hover + a coarse pointer; a narrow desktop window still has keys.
+  // `display: none` (not visually-hidden): an unusable hint should leave the a11y tree too.
+  // Top-level so the vanilla generator ships it as-is; the opt-out attribute is the contract.
+  @media (hover: none) and (pointer: coarse) {
+    .ss-kbd:not([data-hide-on-mobile='false']) {
+      display: none;
     }
   }
 </style>

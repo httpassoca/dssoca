@@ -219,7 +219,8 @@
                   {#if recordingId === item.id}
                     <span class="prompt">Press keys…</span>
                   {:else}
-                    <Kbd keys={item.keys} />
+                    <!-- The chip IS the content here — never hide it on touch devices (DS-0157). -->
+                    <Kbd keys={item.keys} hideOnMobile={false} />
                   {/if}
                 </dd>
                 {#if editable}

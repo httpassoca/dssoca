@@ -1,5 +1,9 @@
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import { render } from '@testing-library/svelte'
+import { axe } from 'vitest-axe'
+import { compileString } from 'sass'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { tick } from 'svelte'
 import KbdHarness from '../harness/KbdHarness.svelte'
 
@@ -172,6 +176,47 @@ describe('Kbd', () => {
     it('inherits the ancestor size when unset (no attribute)', () => {
       const { container } = render(KbdHarness, { keys: 'mod+k', platform: 'other' })
       expect(container.querySelector('.ss-kbd')).not.toHaveAttribute('data-size-variant')
+    })
+  })
+
+  // DS-0157 — hide on keyboard-less devices. jsdom evaluates no media queries, so the
+  // markup contract (the opt-out attribute) and the CSS rule are pinned separately.
+  describe('hideOnMobile (DS-0157)', () => {
+    it('defaults to true: no opt-out attribute on the root', () => {
+      const { container } = render(KbdHarness, { keys: 'mod+k', platform: 'other' })
+      expect(container.querySelector('.ss-kbd')).not.toHaveAttribute('data-hide-on-mobile')
+    })
+
+    it('hideOnMobile={false} reflects data-hide-on-mobile="false" on the root', () => {
+      const { container } = render(KbdHarness, {
+        keys: 'mod+k',
+        platform: 'other',
+        hideOnMobile: false,
+      })
+      expect(container.querySelector('.ss-kbd')).toHaveAttribute('data-hide-on-mobile', 'false')
+    })
+
+    it('applies to the raw-content escape hatch too', () => {
+      const { container } = render(KbdHarness, { text: 'F12', hideOnMobile: false })
+      expect(container.querySelector('.ss-kbd')).toHaveAttribute('data-hide-on-mobile', 'false')
+    })
+
+    it('hides with a capability query, not a width, and only without the opt-out', () => {
+      const src = readFileSync(resolve(__dirname, '../../src/lib/components/Kbd.svelte'), 'utf8')
+      const scss = /<style lang="scss">([\s\S]*?)<\/style>/.exec(src)![1]
+      const css = compileString(scss, { syntax: 'scss', style: 'expanded' }).css
+      const block = /@media \(hover: none\) and \(pointer: coarse\) \{([\s\S]*?)\n\}/.exec(css)
+      expect(block, 'capability media query').not.toBeNull()
+      expect(block![1]).toContain('.ss-kbd:not([data-hide-on-mobile=false])')
+      expect(block![1]).toMatch(/display:\s*none/)
+      expect(css).not.toMatch(/max-width/)
+    })
+
+    it('is axe-clean in both states', async () => {
+      const shown = render(KbdHarness, { keys: 'mod+k', platform: 'apple', hideOnMobile: false })
+      expect(await axe(shown.container)).toHaveNoViolations()
+      const hidden = render(KbdHarness, { keys: 'mod+k', platform: 'apple' })
+      expect(await axe(hidden.container)).toHaveNoViolations()
     })
   })
 
