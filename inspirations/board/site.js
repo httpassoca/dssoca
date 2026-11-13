@@ -5,7 +5,7 @@
  * Textarea autosize; this module reacts to the `ss:*` events they emit and fills the issue
  * dialog from the card that opened it. Everything is static, in-memory demo state.
  */
-import { toast } from '../vendor/vanilla/index.js'
+import { toast, closeModal } from '../vendor/vanilla/index.js'
 import { getAxes, setAxes } from '../assets/axes.js'
 
 const PEOPLE = {
@@ -88,19 +88,14 @@ $('view').addEventListener('ss:change', (e) => {
   board.dataset.view = view
 })
 
-// ── Cards: keyboard activation + fill the issue dialog ─────────────────────
-
-document.addEventListener('keydown', (e) => {
-  const card = e.target instanceof Element && e.target.closest('.ss-card[role="button"]')
-  if (!card || (e.key !== 'Enter' && e.key !== ' ')) return
-  e.preventDefault()
-  card.click()
-})
+// ── Cards: fill the issue dialog ───────────────────────────────────────────
+// Each card's stretched `.overlay` <button> (the Card component's clickable pattern) carries
+// data-ss-modal, so the vanilla bundle opens the dialog and Enter/Space are native.
 
 document.addEventListener('click', (e) => {
   if (!(e.target instanceof Element)) return
-  const card = e.target.closest('.ss-card[data-ss-modal="#issue"]')
-  if (card) fillIssue(card)
+  const opener = e.target.closest('.ss-card > .overlay[data-ss-modal="#issue"]')
+  if (opener) fillIssue(opener.closest('.ss-card'))
   const adder = e.target.closest('[data-ss-modal="#new-issue"][data-status]')
   if (adder) $('ni-status').value = adder.dataset.status
 })
@@ -194,7 +189,10 @@ $('new-issue-form').addEventListener('submit', (e) => {
   keyEl.textContent = key
   titleEl.id = `${key.toLowerCase()}-title`
   titleEl.textContent = title
-  card.setAttribute('aria-labelledby', `${keyEl.id} ${titleEl.id}`)
+  card.setAttribute('aria-labelledby', keyEl.id)
+  const overlay = card.querySelector('.overlay')
+  overlay.setAttribute('aria-labelledby', `${keyEl.id} ${titleEl.id}`)
+  overlay.querySelector('.sr-only').textContent = key
   const prio = card.querySelector('.actions .ss-badge')
   prio.classList.add(PRIORITY_TONE[priority])
   prio.textContent = priority
@@ -207,9 +205,9 @@ $('new-issue-form').addEventListener('submit', (e) => {
   applyFilters()
   e.target.reset()
   $('ni-status').value = 'backlog'
-  $('new-issue').close()
+  closeModal($('new-issue'))
   toast.success(`${key} created`, {
-    action: { label: 'Open', onClick: () => card.click() },
+    action: { label: 'Open', onClick: () => overlay.click() },
   })
 })
 

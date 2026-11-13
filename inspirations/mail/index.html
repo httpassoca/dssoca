@@ -1182,20 +1182,24 @@
     <!-- ── search palette (static) ────────────────────────────────────────── -->
     <dialog id="search" class="ss-search-palette" aria-label="Search mail">
       <div class="panel">
-        <input
-          value=""
-          class="input"
-          type="text"
-          placeholder="Search mail, people, labels…"
-          spellcheck="false"
-          autocomplete="off"
-          role="combobox"
-          aria-label="Search mail"
-          aria-autocomplete="list"
-          aria-expanded="true"
-          aria-controls="search-listbox"
-          aria-activedescendant="search-opt-0"
-        />
+        <div class="bar">
+          <input
+            value=""
+            class="input"
+            type="text"
+            placeholder="Search mail, people, labels…"
+            spellcheck="false"
+            autocomplete="off"
+            role="combobox"
+            aria-label="Search mail"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            aria-controls="search-listbox"
+            aria-activedescendant="search-opt-0"
+          />
+          <button type="button" class="close" aria-label="Close">×</button>
+        </div>
+        <p class="sr-only" role="status"></p>
         <div class="results">
           <ul id="search-listbox" class="listbox" role="listbox" aria-label="Search mail">
             <li class="group" role="group" aria-label="Messages">

@@ -167,6 +167,7 @@
                 <span data-ss-icon="logs" data-px="13"></span>
                 <span class="label">Danger zone</span>
                 <span class="dot err" aria-hidden="true"></span>
+                <span class="sr-only">, down</span>
               </a>
             </li>
           </ul>
@@ -251,17 +252,18 @@
                         class="zone"
                         role="button"
                         tabindex="0"
-                        aria-label="Change avatar. PNG or JPG, square, up to 2 MB"
+                        aria-labelledby="stg-avatar-label stg-avatar-title"
                         aria-describedby="stg-avatar-hint"
                       >
                         <span class="prompt">
-                          <span class="title">Drop an image here</span>
+                          <span class="title" id="stg-avatar-title">Drop an image here</span>
                           <span class="sub">or click to browse</span>
                         </span>
                       </div>
                       <span class="msg hint" id="stg-avatar-hint"
                         >PNG or JPG, square, up to 2 MB</span
                       >
+                      <span class="sr-only" role="status" aria-live="polite"></span>
                     </div>
                   </div>
 
@@ -674,54 +676,54 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                       </caption>
                       <thead>
                         <tr>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Device</span>
                           </th>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Location</span>
                           </th>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Last active</span>
                           </th>
-                          <th scope="col" class="head" data-align="right">
+                          <th scope="col" class="head" data-align="end">
                             <span class="label">Action</span>
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr class="row">
-                          <td class="cell" data-align="left">Firefox · Fedora</td>
-                          <td class="cell" data-align="left">Lisbon, PT</td>
-                          <td class="cell" data-align="left">now</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell" data-align="start">Firefox · Fedora</td>
+                          <td class="cell" data-align="start">Lisbon, PT</td>
+                          <td class="cell" data-align="start">now</td>
+                          <td class="cell" data-align="end">
                             <span class="ss-badge positive">this device</span>
                           </td>
                         </tr>
                         <tr class="row">
-                          <td class="cell" data-align="left">Orbit CLI 4.2</td>
-                          <td class="cell" data-align="left">Lisbon, PT</td>
-                          <td class="cell" data-align="left">12 min ago</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell" data-align="start">Orbit CLI 4.2</td>
+                          <td class="cell" data-align="start">Lisbon, PT</td>
+                          <td class="cell" data-align="start">12 min ago</td>
+                          <td class="cell" data-align="end">
                             <button class="ss-btn ghost" type="button" data-stg-revoke>
                               <span class="label">Revoke</span>
                             </button>
                           </td>
                         </tr>
                         <tr class="row">
-                          <td class="cell" data-align="left">Safari · iPhone</td>
-                          <td class="cell" data-align="left">Porto, PT</td>
-                          <td class="cell" data-align="left">yesterday</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell" data-align="start">Safari · iPhone</td>
+                          <td class="cell" data-align="start">Porto, PT</td>
+                          <td class="cell" data-align="start">yesterday</td>
+                          <td class="cell" data-align="end">
                             <button class="ss-btn ghost" type="button" data-stg-revoke>
                               <span class="label">Revoke</span>
                             </button>
                           </td>
                         </tr>
                         <tr class="row">
-                          <td class="cell" data-align="left">Chrome · Windows</td>
-                          <td class="cell" data-align="left">Frankfurt, DE</td>
-                          <td class="cell" data-align="left">3 days ago</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell" data-align="start">Chrome · Windows</td>
+                          <td class="cell" data-align="start">Frankfurt, DE</td>
+                          <td class="cell" data-align="start">3 days ago</td>
+                          <td class="cell" data-align="end">
                             <button class="ss-btn ghost" type="button" data-stg-revoke>
                               <span class="label">Revoke</span>
                             </button>
@@ -766,9 +768,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                   <div class="stg-metrics">
                     <div class="ss-metric">
                       <div class="label">Build minutes</div>
-                      <div class="val" role="status" aria-live="polite">
-                        1,840<span class="small">/3k</span>
-                      </div>
+                      <div class="val">1,840<span class="small">/3k</span></div>
                       <div
                         class="delta neutral"
                         role="img"
@@ -780,9 +780,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                     </div>
                     <div class="ss-metric">
                       <div class="label">Bandwidth</div>
-                      <div class="val" role="status" aria-live="polite">
-                        212<span class="small">GB</span>
-                      </div>
+                      <div class="val">212<span class="small">GB</span></div>
                       <div
                         class="delta positive"
                         role="img"
@@ -794,9 +792,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                     </div>
                     <div class="ss-metric">
                       <div class="label">Seats</div>
-                      <div class="val" role="status" aria-live="polite">
-                        7<span class="small">/10</span>
-                      </div>
+                      <div class="val">7<span class="small">/10</span></div>
                       <div
                         class="delta negative emphasis"
                         role="img"
@@ -863,32 +859,32 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                       </caption>
                       <thead>
                         <tr>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Name</span>
                           </th>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Key</span>
                           </th>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Scope</span>
                           </th>
-                          <th scope="col" class="head numeric" data-align="right">
+                          <th scope="col" class="head numeric" data-align="end">
                             <span class="label">Expires</span>
                           </th>
-                          <th scope="col" class="head" data-align="right">
+                          <th scope="col" class="head" data-align="end">
                             <span class="label">Copy</span>
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr class="row">
-                          <td class="cell" data-align="left">ci-deploy</td>
-                          <td class="cell" data-align="left"><code>orb_live_7f3a…c9e1</code></td>
-                          <td class="cell" data-align="left">
+                          <td class="cell" data-align="start">ci-deploy</td>
+                          <td class="cell" data-align="start"><code>orb_live_7f3a…c9e1</code></td>
+                          <td class="cell" data-align="start">
                             <span class="ss-badge info">deploy</span>
                           </td>
-                          <td class="cell numeric" data-align="right">62 d</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell numeric" data-align="end">62 d</td>
+                          <td class="cell" data-align="end">
                             <button
                               class="ss-btn ghost icon-only"
                               type="button"
@@ -916,13 +912,13 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                           </td>
                         </tr>
                         <tr class="row">
-                          <td class="cell" data-align="left">laptop</td>
-                          <td class="cell" data-align="left"><code>orb_live_b2d0…41af</code></td>
-                          <td class="cell" data-align="left">
+                          <td class="cell" data-align="start">laptop</td>
+                          <td class="cell" data-align="start"><code>orb_live_b2d0…41af</code></td>
+                          <td class="cell" data-align="start">
                             <span class="ss-badge neutral">read</span>
                           </td>
-                          <td class="cell numeric" data-align="right">180 d</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell numeric" data-align="end">180 d</td>
+                          <td class="cell" data-align="end">
                             <button
                               class="ss-btn ghost icon-only"
                               type="button"
@@ -950,13 +946,13 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                           </td>
                         </tr>
                         <tr class="row">
-                          <td class="cell" data-align="left">metrics-export</td>
-                          <td class="cell" data-align="left"><code>orb_live_e91c…08b3</code></td>
-                          <td class="cell" data-align="left">
+                          <td class="cell" data-align="start">metrics-export</td>
+                          <td class="cell" data-align="start"><code>orb_live_e91c…08b3</code></td>
+                          <td class="cell" data-align="start">
                             <span class="ss-badge caution">admin</span>
                           </td>
-                          <td class="cell numeric" data-align="right">4 d</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell numeric" data-align="end">4 d</td>
+                          <td class="cell" data-align="end">
                             <button
                               class="ss-btn ghost icon-only"
                               type="button"
@@ -1172,7 +1168,14 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
             <div class="ss-numberfield">
               <label class="lbl" for="stg-key-days">Expires in days</label>
               <div class="control">
-                <button type="button" class="step dec" aria-label="Decrease">−</button>
+                <button
+                  type="button"
+                  class="step dec"
+                  aria-label="Decrease"
+                  aria-controls="stg-key-days"
+                >
+                  −
+                </button>
                 <input
                   class="ss-input"
                   id="stg-key-days"
@@ -1184,8 +1187,16 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                   step="30"
                   aria-describedby="stg-key-days-hint"
                 />
-                <button type="button" class="step inc" aria-label="Increase">+</button>
+                <button
+                  type="button"
+                  class="step inc"
+                  aria-label="Increase"
+                  aria-controls="stg-key-days"
+                >
+                  +
+                </button>
               </div>
+              <span class="live" aria-live="polite" aria-atomic="true"></span>
               <span class="msg hint" id="stg-key-days-hint">1–365 · admin keys max 90</span>
             </div>
             <div class="ss-select">
