@@ -39,6 +39,10 @@ pnpm docs:build        # build the docs site (static)
 - **New chrome reads size tokens** (`--ss-*`), never hardcoded px, or it won't rescale.
 - **Tests are required.** Run `pnpm test` and add/extend tests for any change. A11y is covered by
   `vitest-axe` (unit) and `@storybook/addon-a11y` (Storybook); target **WCAG 2.2 AA**.
+- **Follow the accessibility & quality rules.** `CLAUDE.md` → _Accessibility & quality rules_ lists
+  what every component must get right (focus rings, roles and names, live regions, keyboard, RTL,
+  contrast, touch targets, reduced motion). `test/unit/checklist-guards.test.ts` enforces the
+  mechanical ones; check the rest in a real browser, in both themes and under `dir="rtl"`.
 - **Update the agile tracker.** Move the relevant `agile/` item, then run `node build.mjs` in
   `agile/` to rebuild the board.
 
