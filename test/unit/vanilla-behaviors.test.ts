@@ -265,17 +265,16 @@ describe('vanilla — Tooltip', () => {
 
   it('shows on focus/hover, hides on blur/leave/Escape, wires aria-describedby', () => {
     mountHtml(html())
-    const root = q('.ss-tooltip')
     const tip = q('.tip')
     const btn = q('button')
     expect(tip.hidden).toBe(true)
     btn.dispatchEvent(new FocusEvent('focusin', { bubbles: true }))
     expect(tip.hidden).toBe(false)
     expect(tip.classList.contains('open')).toBe(true)
-    expect(root.getAttribute('aria-describedby')).toBe(tip.id)
+    expect(btn.getAttribute('aria-describedby')).toBe(tip.id)
     key(btn, 'Escape')
     expect(tip.hidden).toBe(true)
-    expect(root.hasAttribute('aria-describedby')).toBe(false)
+    expect(btn.hasAttribute('aria-describedby')).toBe(false)
     btn.dispatchEvent(new MouseEvent('mouseover', { bubbles: true, relatedTarget: document.body }))
     expect(tip.hidden).toBe(false)
     btn.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, relatedTarget: document.body }))
@@ -520,7 +519,7 @@ describe('vanilla — fields', () => {
     expect(clear.hidden).toBe(false)
   })
 
-  it('NumberField: steppers nudge by step, clamp, and disable at the bounds', () => {
+  it('NumberField: steppers nudge by step, clamp, and aria-disable at the bounds', () => {
     mountHtml(
       svelteHtml(NumberField, { label: 'Qty', id: 'n', min: 0, max: 2, step: 1, value: 1 }).replace(
         'class="ss-input"',
@@ -534,14 +533,14 @@ describe('vanilla — fields', () => {
     input.addEventListener('change', changes)
     click(inc)
     expect(input.value).toBe('2')
-    expect(inc.disabled).toBe(true)
-    click(inc) // disabled: no-op
+    expect(inc.getAttribute('aria-disabled')).toBe('true')
+    click(inc) // aria-disabled: no-op
     expect(input.value).toBe('2')
     click(dec)
     click(dec)
     expect(input.value).toBe('0')
-    expect(dec.disabled).toBe(true)
-    expect(inc.disabled).toBe(false)
+    expect(dec.getAttribute('aria-disabled')).toBe('true')
+    expect(inc.hasAttribute('aria-disabled')).toBe(false)
     expect(changes).toHaveBeenCalledTimes(3)
     input.value = ''
     click(inc) // empty → starts from min
