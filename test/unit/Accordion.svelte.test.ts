@@ -6,6 +6,21 @@ import { axe } from 'vitest-axe'
 import { type AccordionItem } from '$lib/components/Accordion.svelte'
 import AccordionHarness from '../harness/AccordionHarness.svelte'
 
+// jsdom has no `inert` IDL attribute, and Svelte sets boolean attributes like
+// `inert` as a DOM property — reflect it to the content attribute (as browsers do)
+// so the rendered markup can be asserted.
+if (!('inert' in HTMLElement.prototype)) {
+  Object.defineProperty(HTMLElement.prototype, 'inert', {
+    configurable: true,
+    get(this: HTMLElement) {
+      return this.hasAttribute('inert')
+    },
+    set(this: HTMLElement, v: boolean) {
+      this.toggleAttribute('inert', !!v)
+    },
+  })
+}
+
 // jsdom's getComputedStyle does not apply Svelte's scoped <style> cascade, so
 // the truncation / clip / padding CSS contracts can't be read off the rendered
 // DOM. They are pure CSS — assert them at the source so a regression that
@@ -318,6 +333,31 @@ describe('Accordion', () => {
     // i.e. no `…:not([hidden]) … .panel-inner {` compound selector. Match only
     // within a single selector (no `{`/`}` between the gate and .panel-inner).
     expect(source).not.toMatch(/:not\(\[hidden\]\)[^{}]*\.panel-inner\s*\{/)
+  })
+
+  // --- closed panels leave the a11y tree + Tab order (DS-0162) ---------
+
+  it('marks closed panels inert and open panels not inert', async () => {
+    const { container } = setup({ defaultValue: 'one' })
+    const [openPanel, closedPanel] = panels(container)
+    expect(openPanel).not.toHaveAttribute('inert')
+    expect(closedPanel).toHaveAttribute('inert')
+    await fireEvent.click(heads(container)[1]) // single mode: opens two, closes one
+    expect(closedPanel).not.toHaveAttribute('inert')
+    expect(openPanel).toHaveAttribute('inert')
+  })
+
+  it('hides closed panels with visibility, delayed on close only (CSS contract)', () => {
+    // `.panel[hidden]` keeps `display: grid` so the collapse animates; without
+    // `visibility: hidden` the closed content would stay focusable and exposed.
+    const panelBlock = source.match(/\n {4}\.panel \{[\s\S]*?\n {4}\}/)?.[0] ?? ''
+    const closed = panelBlock.match(/&\[hidden\]\s*\{[^}]*\}/)?.[0] ?? ''
+    const opened = panelBlock.match(/&:not\(\[hidden\]\)\s*\{[^}]*\}/)?.[0] ?? ''
+    expect(closed).toMatch(/visibility:\s*hidden/)
+    expect(opened).toMatch(/visibility:\s*visible/)
+    // Close: visibility flips after the collapse (--ss-dur); open: immediately.
+    expect(panelBlock).toMatch(/visibility 0s linear var\(--ss-dur\)/)
+    expect(opened).toMatch(/visibility 0s linear 0s/)
   })
 
   // --- header label overflow (DS-0117) ---------------------------------
