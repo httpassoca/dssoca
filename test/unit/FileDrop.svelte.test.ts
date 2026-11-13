@@ -45,7 +45,111 @@ describe('FileDrop — rendering', () => {
     const z = zone(container)
     expect(z).toHaveAttribute('role', 'button')
     expect(z).toHaveAttribute('tabindex', '0')
-    expect(z.getAttribute('aria-label')).toContain('Upload report')
+    expect(z).toHaveAccessibleName('Upload report Drop files here')
+  })
+})
+
+describe('FileDrop — accessible name (Front-End Checklist, DS-0173)', () => {
+  it('names the zone from its visible text via aria-labelledby (no aria-label)', () => {
+    const { container } = render(FileDrop, { label: 'Attachments' })
+    const z = zone(container)
+    expect(z).not.toHaveAttribute('aria-label')
+    const ids = z.getAttribute('aria-labelledby')!.split(' ')
+    expect(ids).toHaveLength(2)
+    expect(container.querySelector(`#${CSS.escape(ids[0])}`)).toHaveTextContent('Attachments')
+    expect(container.querySelector(`#${CSS.escape(ids[1])}`)).toHaveTextContent('Drop files here')
+    expect(z).toHaveAccessibleName('Attachments Drop files here')
+  })
+
+  it('falls back to the visible title when there is no label', () => {
+    const { container } = render(FileDrop)
+    expect(zone(container)).toHaveAccessibleName('Drop files here')
+  })
+
+  it('keeps the hint out of the name (description only)', () => {
+    const { container } = render(FileDrop, { label: 'Avatar', hint: 'PNG only' })
+    const z = zone(container)
+    expect(z).toHaveAccessibleName('Avatar Drop files here')
+    expect(z).toHaveAccessibleDescription('PNG only')
+  })
+})
+
+describe('FileDrop — rejected files are reported (DS-0173)', () => {
+  it('calls onreject with files the accept filter discards and announces them', async () => {
+    const onreject = vi.fn()
+    const { container } = render(FileDrop, { onreject, accept: 'application/json', multiple: true })
+    const live = container.querySelector('.ss-filedrop [aria-live="polite"]')!
+    expect(live).toBeInTheDocument()
+    expect(live).toHaveTextContent('')
+    const txt = new File(['x'], 'x.txt', { type: 'text/plain' })
+    await fireEvent.drop(zone(container), { dataTransfer: { files: [jsonFile(), txt] } })
+    expect(onreject).toHaveBeenCalledWith([txt])
+    await vi.waitFor(() => expect(live).toHaveTextContent('x.txt (file type not accepted)'))
+  })
+
+  it('reports extras dropped when not multiple', async () => {
+    const onreject = vi.fn()
+    const { container } = render(FileDrop, { onreject })
+    const a = new File(['a'], 'a.txt', { type: 'text/plain' })
+    const b = new File(['b'], 'b.txt', { type: 'text/plain' })
+    await fireEvent.drop(zone(container), { dataTransfer: { files: [a, b] } })
+    expect(onreject).toHaveBeenCalledWith([b])
+    const live = container.querySelector('.ss-filedrop [aria-live="polite"]')!
+    await vi.waitFor(() => expect(live).toHaveTextContent('b.txt (only one file allowed)'))
+  })
+
+  it('does not call onreject when nothing is discarded', async () => {
+    const onreject = vi.fn()
+    const { container } = render(FileDrop, { onreject })
+    await fireEvent.drop(zone(container), { dataTransfer: { files: [jsonFile()] } })
+    expect(onreject).not.toHaveBeenCalled()
+  })
+})
+
+describe('FileDrop — focus after remove / clear (DS-0173)', () => {
+  const three = () => ['a', 'b', 'c'].map((n) => new File([n], `${n}.txt`, { type: 'text/plain' }))
+  const removes = (c: HTMLElement) =>
+    Array.from(c.querySelectorAll<HTMLButtonElement>('.ss-filedrop .remove'))
+
+  it('moves focus to the next remove button', async () => {
+    const { container } = render(FileDrop, { multiple: true, files: three() })
+    const btn = removes(container)[1]
+    btn.focus()
+    await fireEvent.click(btn)
+    await vi.waitFor(() => expect(document.activeElement).toBe(removes(container)[1]))
+    expect(document.activeElement).toHaveAccessibleName('Remove c.txt')
+  })
+
+  it('moves focus to the previous remove button when the last one is removed', async () => {
+    const { container } = render(FileDrop, { multiple: true, files: three() })
+    const btn = removes(container)[2]
+    btn.focus()
+    await fireEvent.click(btn)
+    await vi.waitFor(() => expect(document.activeElement).toHaveAccessibleName('Remove b.txt'))
+  })
+
+  it('moves focus to the zone when the list becomes empty', async () => {
+    const { container } = render(FileDrop, { files: [jsonFile()] })
+    const btn = removes(container)[0]
+    btn.focus()
+    await fireEvent.click(btn)
+    await vi.waitFor(() => expect(document.activeElement).toBe(zone(container)))
+  })
+
+  it('moves focus to the zone after Clear', async () => {
+    const { container, getByText } = render(FileDrop, { multiple: true, files: three() })
+    const btn = getByText('Clear')
+    btn.focus()
+    await fireEvent.click(btn)
+    await vi.waitFor(() => expect(document.activeElement).toBe(zone(container)))
+  })
+})
+
+describe('FileDrop — touch targets (DS-0173)', () => {
+  const src = readFileSync(resolve(process.cwd(), 'src/lib/components/FileDrop.svelte'), 'utf8')
+  it('.remove and .clear have a 24×24 minimum hit area', () => {
+    expect(src).toMatch(/\.remove,\s*\.clear\s*\{[^}]*min-inline-size:\s*24px/)
+    expect(src).toMatch(/\.remove,\s*\.clear\s*\{[^}]*min-block-size:\s*24px/)
   })
 })
 
