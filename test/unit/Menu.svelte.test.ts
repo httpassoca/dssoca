@@ -323,6 +323,53 @@ describe('Menu', () => {
     })
   })
 
+  describe('accessible name (DS-0177)', () => {
+    it('without `label` the menu is named by the trigger text via aria-labelledby', () => {
+      const { container } = render(MenuHarness, { items: ITEMS, trigger: 'Actions', open: true })
+      const p = panel(container)
+      expect(p).not.toHaveAttribute('aria-label')
+      expect(p).toHaveAttribute('aria-labelledby', trigger(container).id)
+      expect(trigger(container).id).not.toBe('')
+      expect(p).toHaveAccessibleName('Actions')
+    })
+
+    it('an explicit `label` wins and drops aria-labelledby', () => {
+      const { container } = render(MenuHarness, {
+        items: ITEMS,
+        trigger: 'More',
+        label: 'Row actions',
+        open: true,
+      })
+      const p = panel(container)
+      expect(p).toHaveAttribute('aria-label', 'Row actions')
+      expect(p).not.toHaveAttribute('aria-labelledby')
+      expect(p).toHaveAccessibleName('Row actions')
+    })
+
+    it('unlabelled open menu has no axe violations', async () => {
+      const { container } = render(MenuHarness, { items: ITEMS, trigger: 'Actions', open: true })
+      expect(await axe(container, axeOpts)).toHaveNoViolations()
+    })
+  })
+
+  describe('styles (DS-0177)', () => {
+    // Scoped styles don't reach jsdom's computed style; pin the source instead.
+    const css = () => readFileSync('src/lib/components/Menu.svelte', 'utf8').split('<style')[1]
+
+    it('uses logical properties for panel alignment and item text (RTL)', () => {
+      const src = css()
+      expect(src).not.toMatch(/^\s*(left|right):/m)
+      expect(src).not.toMatch(/text-align:\s*left/)
+      expect(src).toMatch(/inset-inline-start:\s*0/)
+      expect(src).toMatch(/inset-inline-end:\s*0/)
+      expect(src).toMatch(/text-align:\s*start/)
+    })
+
+    it('never uses --ss-primary-soft as a focus indicator', () => {
+      expect(css()).not.toMatch(/--ss-primary-soft/)
+    })
+  })
+
   describe('a11y (axe)', () => {
     it('open action menu has no violations', async () => {
       const { container } = render(MenuHarness, { items: ITEMS, open: true, label: 'Actions' })

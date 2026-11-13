@@ -60,8 +60,8 @@
     /** Vertical side the panel opens toward. */
     side?: Side
     /**
-     * Accessible label for the panel (`role="menu"`). Falls back to the
-     * trigger's text when omitted.
+     * Accessible label for the panel (`role="menu"`). When omitted the
+     * panel is named by the trigger's text via `aria-labelledby`.
      */
     label?: string
     /** Token size (sm|md|lg); inherits the global size when unset. */
@@ -83,6 +83,7 @@
 
   const uid = $props.id()
   const panelId = `${uid}-panel`
+  const triggerId = `${uid}-trigger`
 
   // When any item carries a `selected` flag the menu is a selection group, so
   // rows become `menuitemradio` + `aria-checked` (WAI-ARIA). Otherwise plain
@@ -216,6 +217,7 @@
 <div class="ss-menu" data-size-variant={sizeAttr} data-align={align} data-side={side}>
   <button
     bind:this={triggerEl}
+    id={triggerId}
     type="button"
     class="trigger"
     aria-haspopup="menu"
@@ -233,7 +235,8 @@
     class="panel"
     class:open
     role="menu"
-    aria-label={label}
+    aria-label={label || undefined}
+    aria-labelledby={label ? undefined : triggerId}
     aria-hidden={!open}
     tabindex="-1"
     onkeydown={onPanelKeydown}
@@ -294,10 +297,10 @@
       border-color: var(--ss-line-strong);
       background: var(--ss-hover);
     }
+    // Focus: the base `outline: 2px solid var(--ss-primary)` ring (_base.scss)
+    // applies; the border tint is an extra cue on top of it.
     &:focus-visible {
-      outline: none;
       border-color: var(--ss-primary);
-      box-shadow: 0 0 0 3px var(--ss-primary-soft);
     }
   }
 
@@ -348,10 +351,10 @@
     transform: translateY(6px) scale(0.98);
   }
   .ss-menu[data-align='start'] .panel {
-    left: 0;
+    inset-inline-start: 0;
   }
   .ss-menu[data-align='end'] .panel {
-    right: 0;
+    inset-inline-end: 0;
   }
 
   .item {
@@ -359,7 +362,7 @@
     align-items: center;
     gap: var(--ss-menu-item-gap);
     width: 100%;
-    text-align: left;
+    text-align: start;
     font: 500 var(--ss-ui-md) var(--ss-font-mono);
     color: var(--ss-fg-muted);
     background: transparent;
@@ -378,7 +381,11 @@
       outline: none;
       color: var(--ss-fg);
       background: var(--ss-hover);
+      // Inset bar on the inline-start edge (box-shadow has no logical form).
       box-shadow: inset 2px 0 0 0 var(--ss-primary);
+      &:dir(rtl) {
+        box-shadow: inset -2px 0 0 0 var(--ss-primary);
+      }
     }
     &.selected {
       color: var(--ss-fg);
