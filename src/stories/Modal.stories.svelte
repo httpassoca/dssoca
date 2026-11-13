@@ -49,6 +49,7 @@
   // showModal()/close(). Module-scoped $state keeps it reactive for the
   // shared `render: template` (mirrors the Menu/Accordion story pattern).
   let open = $state(false)
+  let customOpen = $state(false)
 </script>
 
 {#snippet template(args: Record<string, unknown>)}
@@ -101,3 +102,17 @@
 
 <!-- Fullscreen variant (DS-0145): fills the viewport, header/footer pinned, body scrolls -->
 <Story name="Fullscreen" args={{ title: 'Log stream', fullscreen: true }} />
+
+<!-- Custom header (DS-0178): the header snippet receives the titleId that the
+     dialog's aria-labelledby points at, so the dialog keeps its name. -->
+<Story name="CustomHeader">
+  {#snippet template()}
+    <Button onclick={() => (customOpen = true)}>Open modal</Button>
+    <Modal bind:open={customOpen}>
+      {#snippet header(titleId)}
+        <h2 id={titleId} style="margin: 0; flex: 1 1 auto;">Custom heading</h2>
+      {/snippet}
+      <p>The header snippet labels the dialog via the id it receives.</p>
+    </Modal>
+  {/snippet}
+</Story>

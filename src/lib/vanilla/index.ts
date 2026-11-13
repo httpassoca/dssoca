@@ -31,7 +31,7 @@ export type {
 } from './toast.js'
 export { iconSvg, hydrateIcons, type IconOptions } from './icons.js'
 export { registerIcon, type IconName } from '../icons.js'
-export { openModal, closeModal } from './modal.js'
+export { openModal, closeModal, lockScroll, unlockScroll } from './modal.js'
 export { toggleAccordion } from './accordion.js'
 export { openMenu, closeMenu } from './menu.js'
 export { showTooltip, hideTooltip } from './tooltip.js'
