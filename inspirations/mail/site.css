@@ -83,20 +83,6 @@ body {
   background: var(--ss-primary);
 }
 
-.mail-glyph {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 13px;
-  line-height: 1;
-  flex: none;
-}
-
-.ss-bottom-nav .mail-glyph {
-  width: var(--ss-icon);
-  font-size: var(--ss-icon);
-}
-
 /* ── message list pane ──────────────────────────────────────────────────── */
 .mail-list {
   display: flex;
@@ -177,10 +163,6 @@ body {
   background: var(--ss-hover);
 }
 
-.mail-row.is-unread {
-  background: color-mix(in oklab, var(--ss-primary) 6%, transparent);
-}
-
 .mail-row.is-selected {
   background: var(--ss-primary-soft);
   border-left-color: var(--ss-primary);
@@ -194,17 +176,23 @@ body {
   background: none;
   border: 0;
   padding: 0;
-  width: var(--ss-s-5);
-  height: var(--ss-s-5);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ss-s-6);
+  height: var(--ss-s-6);
   cursor: pointer;
   color: var(--ss-fg-faint);
-  font-size: var(--ss-size-sm);
-  line-height: 1;
 }
 
 .mail-star:hover,
 .mail-star[aria-pressed='true'] {
   color: var(--ss-yellow);
+}
+
+/* Starred is a filled star, not just a recoloured outline. */
+.mail-star[aria-pressed='true'] svg {
+  fill: currentColor;
 }
 
 .mail-row-main {
@@ -229,7 +217,7 @@ body {
 
 .mail-sender {
   font-size: var(--ss-size-sm);
-  color: var(--ss-fg);
+  color: var(--ss-fg-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -262,16 +250,32 @@ body {
 }
 
 .mail-subject {
-  color: var(--ss-fg);
+  color: var(--ss-fg-muted);
 }
 
 .mail-snippet {
   color: var(--ss-fg-faint);
 }
 
+/* Unread leads by weight, full-strength text and a square dot; read rows sit back in muted. */
 .is-unread .mail-sender,
 .is-unread .mail-subject {
-  font-weight: 700;
+  font-weight: 600;
+  color: var(--ss-fg);
+}
+
+.is-selected .mail-sender,
+.is-selected .mail-subject {
+  color: var(--ss-fg);
+}
+
+.is-unread .mail-sender::before {
+  content: '';
+  display: inline-block;
+  width: var(--ss-s-2);
+  height: var(--ss-s-2);
+  margin-inline-end: var(--ss-s-2);
+  background: var(--ss-primary);
 }
 
 .mail-row-tags {

@@ -34,6 +34,7 @@ function syncUnread() {
 function markRead(row) {
   row.classList.remove('is-unread')
   row.dataset.unread = 'false'
+  $('[data-unread-word]', row)?.remove()
 }
 
 // ── selection (click, j/k) ──────────────────────────────────────────────────
@@ -72,7 +73,6 @@ function toggleStar(row) {
   const btn = $('.mail-star', row)
   const on = btn.getAttribute('aria-pressed') !== 'true'
   btn.setAttribute('aria-pressed', String(on))
-  btn.textContent = on ? '★' : '☆'
   row.dataset.starred = String(on)
   applyFilter()
 }
