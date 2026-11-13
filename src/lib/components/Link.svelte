@@ -48,10 +48,23 @@
   // A disabled link gets no external affordances (it cannot navigate).
   const isExternal = $derived(!disabled && (external ?? looksExternal))
 
-  // External links open in a new tab and carry the security rel; callers can
-  // still override target/rel explicitly via the forwarded attributes.
+  // External links default to a new tab; an explicit `target` always wins.
   const resolvedTarget = $derived(target ?? (isExternal ? '_blank' : undefined))
-  const resolvedRel = $derived(rel ?? (isExternal ? 'noopener noreferrer' : undefined))
+  // The new-tab safeguards follow the RESOLVED target, not `isExternal`: any
+  // link that opens a new tab (auto-detected or an explicit target="_blank")
+  // gets `noopener noreferrer` and the "opens in a new tab" hint.
+  const opensNewTab = $derived(!disabled && resolvedTarget?.toLowerCase() === '_blank')
+  // Merge rather than replace: a caller's `rel` tokens are kept and the
+  // security tokens are appended when missing.
+  const resolvedRel = $derived.by(() => {
+    const tokens = (rel ?? '').split(/\s+/).filter(Boolean)
+    if (opensNewTab) {
+      for (const t of ['noopener', 'noreferrer']) {
+        if (!tokens.some((x) => x.toLowerCase() === t)) tokens.push(t)
+      }
+    }
+    return tokens.length ? tokens.join(' ') : undefined
+  })
 
   // Swallow activation while disabled; otherwise defer to a forwarded onclick.
   function handleClick(e: MouseEvent) {
@@ -80,10 +93,8 @@
   {...rest}
 >
   {#if children}<span class="label">{@render children()}</span>{/if}
-  {#if isExternal}
-    <Icon name="external" {size} class="ss-link-ext" />
-    <span class="sr-only"> (opens in a new tab)</span>
-  {/if}
+  {#if isExternal}<Icon name="external" {size} class="ss-link-ext" />{/if}
+  {#if opensNewTab}<span class="sr-only"> (opens in a new tab)</span>{/if}
 </a>
 
 <style lang="scss">
@@ -99,6 +110,12 @@
     cursor: pointer;
     transition: color var(--ss-dur-fast) var(--ss-ease);
 
+    // Cancel theme.css's global `a::before` underline: the component draws its
+    // own (inline variant) so it looks the same with or without theme.css.
+    &::before {
+      content: none;
+    }
+
     &:focus-visible {
       outline: 2px solid var(--ss-primary);
       outline-offset: 2px;
@@ -111,26 +128,24 @@
     }
   }
 
-  /* ── inline: animated underline that reveals on hover/focus, with a glow ── */
+  /* ── inline: always-underlined, thickening with a glow on hover/focus ── */
   .ss-link.inline {
     .label {
       position: relative;
 
-      // The reveal/glow underline. A pseudo-element (not text-decoration) so it
-      // can grow in weight and cast a primary-tinted glow on hover/focus.
+      // The underline. A pseudo-element (not text-decoration) so it can grow in
+      // weight and cast a primary-tinted glow on hover/focus. It is visible at
+      // rest (1px) so inline links are never told apart by colour alone
+      // (WCAG 1.4.1), even on the tokens.css-only path.
       &::after {
         content: '';
         position: absolute;
-        left: 0;
-        right: 0;
+        inset-inline: 0;
         bottom: -1px;
         height: 1px;
         background: var(--ss-primary);
-        // Reveal from the leading edge; collapse to 0 width when idle.
-        transform: scaleX(0);
-        transform-origin: left center;
+        transform: scaleX(1);
         transition:
-          transform var(--ss-dur-slow) var(--ss-ease),
           height var(--ss-dur-fast) var(--ss-ease),
           box-shadow var(--ss-dur-slow) var(--ss-ease);
       }
@@ -138,7 +153,6 @@
 
     &:hover .label::after,
     &:focus-visible .label::after {
-      transform: scaleX(1);
       height: 2px;
       box-shadow: var(--ss-shadow-glow);
     }
