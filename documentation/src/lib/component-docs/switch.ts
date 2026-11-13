@@ -13,6 +13,8 @@ export const switchDoc: ComponentDoc = {
   description:
     'A binary toggle built on a native `<button role="switch">`, so Space and Enter activate it for free. Bindable `checked`, an optional adjacent `label` (clicking it toggles too) that becomes the accessible name, and `disabled` for inert state. Square track and square thumb (house rule — no rounded pill); the track fills with the brand colour when on, transitions respect reduced-motion.',
   storyId: 'components-switch--default',
+  notes:
+    'Keyboard focus shows the global focus ring (2px solid `--ss-primary`, offset 2px, from `theme.css`) around the track. The thumb is placed with logical insets, so under `dir="rtl"` it starts at the right and slides left when on.',
   usage: `<script>
   import { Switch } from 'dssoca';
   let enabled = $state(false);
