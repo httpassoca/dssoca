@@ -205,37 +205,11 @@
               <span aria-hidden="true">↑ +4.2%</span>
               <span class="period" aria-hidden="true">vs 24h</span>
             </div>
-            <div class="chart">
-              <div
-                class="ss-spark fluid"
-                data-variant="line"
-                role="img"
-                aria-label="Requests per minute, last 14 hours: rising from 61k to 91k"
-              >
-                <svg
-                  class="chart"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <polyline
-                    class="line"
-                    points="0,90.909 7.692,81.818 15.385,100 23.077,75.758 30.769,60.606 38.462,66.667 46.154,51.515 53.846,39.394 61.538,54.545 69.231,33.333 76.923,21.212 84.615,27.273 92.308,9.091 100,0"
-                    style="stroke: var(--ss-primary)"
-                  ></polyline>
-                </svg>
-              </div>
-            </div>
           </div>
           <div class="ss-metric">
             <div class="label">Error rate</div>
             <div class="val">0.42<span class="small">%</span></div>
-            <div
-              class="delta negative emphasis"
-              role="img"
-              aria-label="increased +0.08pt vs 24h, negative"
-            >
+            <div class="delta negative" role="img" aria-label="increased +0.08pt vs 24h, negative">
               <span aria-hidden="true">↑ +0.08pt</span>
               <span class="period" aria-hidden="true">vs 24h</span>
             </div>
@@ -910,11 +884,10 @@
                 <div class="title" id="card-deploys-title" role="heading" aria-level="2">
                   Recent deploys
                 </div>
-                <div class="desc">Last 6 of 42 this week</div>
               </div>
               <div class="actions">
                 <div class="meta">2 pipelines running</div>
-                <button class="ss-btn ghost" type="button">
+                <button class="ss-btn ghost" type="button" data-size-variant="sm">
                   <span class="label">view all</span>
                 </button>
               </div>
@@ -923,7 +896,7 @@
               <div class="ops-scroll">
                 <table class="ss-table" id="ops-deploys">
                   <caption>
-                    Deploys across all environments, newest first
+                    Last 6 of 42 this week, all environments
                   </caption>
                   <thead>
                     <tr>
@@ -1186,7 +1159,13 @@
           <span>Nimbus Ops v2.14.3 · eu-west-1 · build 8f3a1c</span>
           <div class="ops-foot-right">
             <span>status.nimbus.example</span>
-            <button class="ss-btn ghost" type="button" id="ops-theme" aria-pressed="false">
+            <button
+              class="ss-btn ghost"
+              type="button"
+              id="ops-theme"
+              aria-pressed="false"
+              data-size-variant="sm"
+            >
               <span class="label">theme: dark</span>
             </button>
           </div>
