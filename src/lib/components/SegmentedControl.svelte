@@ -100,13 +100,22 @@
   }
 
   function onKeydown(e: KeyboardEvent, index: number) {
-    let target = -1
+    let target: number
+    // RTL: the row is laid out right-to-left, so ArrowLeft points at the NEXT
+    // segment. Read the computed direction at keydown time (it inherits from
+    // any ancestor `dir`). Up/Down stay logical (prev/next).
+    const rtl = getComputedStyle(e.currentTarget as Element).direction === 'rtl'
+    const right: 1 | -1 = rtl ? -1 : 1
     switch (e.key) {
       case 'ArrowRight':
+        target = step(index, right)
+        break
+      case 'ArrowLeft':
+        target = step(index, right === 1 ? -1 : 1)
+        break
       case 'ArrowDown':
         target = step(index, 1)
         break
-      case 'ArrowLeft':
       case 'ArrowUp':
         target = step(index, -1)
         break
@@ -181,8 +190,9 @@
       color: var(--ss-fg-muted);
       background: transparent;
       border: 0;
-      // Hairline divider between segments via the leading border.
-      border-left: 1px solid var(--ss-line);
+      // Hairline divider between segments via the leading (inline-start)
+      // border, so the dividers stay between segments in RTL too.
+      border-inline-start: 1px solid var(--ss-line);
       padding: var(--ss-seg-py) var(--ss-seg-px);
       cursor: pointer;
       white-space: nowrap;
@@ -192,7 +202,7 @@
         background var(--ss-dur-fast) var(--ss-ease);
 
       &:first-child {
-        border-left: 0;
+        border-inline-start: 0;
       }
 
       &:hover:not(.selected):not(:disabled) {
@@ -207,8 +217,10 @@
 
       &:focus-visible {
         outline: none;
-        // Inset ring so the highlight reads inside the shared frame.
-        box-shadow: inset 0 0 0 2px var(--ss-primary-soft);
+        // Inset ring so the highlight reads inside the shared frame. Solid
+        // --ss-primary (not the 18%/12%-alpha primary-soft wash) so the
+        // indicator clears WCAG 1.4.11's 3:1 against the segment background.
+        box-shadow: inset 0 0 0 2px var(--ss-primary);
         z-index: 1;
       }
 
