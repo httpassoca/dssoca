@@ -372,6 +372,64 @@ describe('TierList — pointer drag', () => {
   })
 })
 
+describe('TierList — RTL', () => {
+  // jsdom doesn't inherit `direction` from an ancestor `dir`, so stub the computed style.
+  function forceRtl() {
+    const real = window.getComputedStyle
+    vi.spyOn(window, 'getComputedStyle').mockImplementation((el, pseudo) => {
+      const cs = real(el, pseudo)
+      return new Proxy(cs, { get: (t, k) => (k === 'direction' ? 'rtl' : Reflect.get(t, k)) })
+    })
+  }
+
+  it('mirrors ArrowLeft / ArrowRight while a tile is picked up', async () => {
+    const { container } = render(TierListHarness, { placements: { S: ['alpha', 'beta'] } })
+    forceRtl()
+    const t = tile(container, 'alpha')
+    t.focus()
+    await key(t, ' ')
+    await key(t, 'ArrowLeft') // forward in a right-to-left row
+    expect(zoneIds(container, 'S')).toEqual(['beta', 'alpha'])
+    await key(tile(container, 'alpha'), 'ArrowLeft') // already last: nothing
+    expect(zoneIds(container, 'S')).toEqual(['beta', 'alpha'])
+    await key(tile(container, 'alpha'), 'ArrowRight')
+    expect(zoneIds(container, 'S')).toEqual(['alpha', 'beta'])
+  })
+
+  it('pointer insertion counts from the right edge', async () => {
+    const onchange = vi.fn()
+    const { container } = render(TierListHarness, {
+      placements: { S: ['alpha', 'beta', 'gamma'] },
+      onchange,
+    })
+    // Row S laid out right to left: alpha 900–1000, beta 790–890, gamma 680–780.
+    const zones = Array.from(container.querySelectorAll<HTMLElement>('[data-zone]'))
+    Array.from(zones[0].querySelectorAll<HTMLElement>(':scope > .cell')).forEach((cell, ci) => {
+      const right = 1000 - ci * 110
+      const box = { left: right - 100, right, top: 10, bottom: 110 }
+      cell.getBoundingClientRect = () => ({ ...box, width: 100, height: 100 }) as DOMRect
+      cell.querySelector<HTMLElement>('.tile')!.getBoundingClientRect = cell.getBoundingClientRect
+    })
+    document.elementsFromPoint = (_x: number, y: number) => {
+      const zone = zones[Math.floor(y / 200)]
+      return zone ? [zone] : []
+    }
+    forceRtl()
+    const t = tile(container, 'gamma')
+    await fireEvent.pointerDown(t, { button: 0, clientX: 730, clientY: 50, pointerId: 1 })
+    await fireEvent.pointerMove(t, { clientX: 980, clientY: 60 }) // right of alpha's centre
+    expect(zoneIds(container, 'S')).toEqual(['gamma', 'alpha', 'beta'])
+    await fireEvent.pointerUp(tile(container, 'gamma'))
+    expect(onchange).toHaveBeenLastCalledWith({
+      S: ['gamma', 'alpha', 'beta'],
+      A: [],
+      B: [],
+      C: [],
+      D: [],
+    })
+  })
+})
+
 describe('TierList — props sync', () => {
   it('re-derives from new placements and drops items that disappear', async () => {
     const { container, rerender } = render(TierListHarness, { placements: { S: ['alpha'] } })
