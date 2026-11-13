@@ -1,0 +1,122 @@
+{
+  "component": "LogStream",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Switched-off level chips (`aria-pressed=\"false\"`) keep AA contrast: they use `--ss-fg-muted` text and a dashed border instead of `opacity: 0.45`.",
+          "refs": ["DS-0190", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The `role=\"log\"` scroller has `tabindex=\"0\"`, so keyboard users can focus and scroll it.",
+          "refs": ["DS-0190", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The default empty state is plain text (`.empty` with `.empty-title` and `.empty-msg`) instead of an `EmptyState` with `role=\"status\"`, so the message is no longer announced twice inside the live region.",
+          "refs": ["DS-0190", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The toolbar chips, the search field and the \"Jump to bottom\" button read `--ss-chip-py` for vertical padding instead of `--ss-badge-py`. The values are the same, so rendering is unchanged.",
+          "refs": ["DS-0121"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "The viewport height and column widths are size-aware tokens: `--ss-log-min-h`, `--ss-log-max-h`, `--ss-log-t-w` and `--ss-log-lvl-w`. The `md` values equal the former fixed pixels; `sm` and `lg` now scale.",
+          "refs": ["DS-0068"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Controlled `lines` prop with the exported `LogLine` and `LogLevel` types, and `maxLines` (default `30`) to cap the buffer. In a line, `id`, `t` and `svc` are optional.",
+          "refs": ["DS-0040", "#34"]
+        },
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The built-in random stream is a demo that runs only when `lines` is not passed; the new `demo` prop turns it on or off and `live` stays as an alias.",
+          "refs": ["DS-0040", "#34"]
+        },
+        {
+          "type": "added",
+          "text": "Controls toolbar (`controls`, default `true`) with per-level filter chips, a text filter, a wrap toggle, copy and clear. The `toolbar` snippet replaces it and `wrap` sets the initial wrapping.",
+          "refs": ["DS-0040", "#34"]
+        },
+        {
+          "type": "added",
+          "text": "Follow-tail: the log scrolls to new lines only while you are at the bottom, and a \"Jump to bottom\" button appears when you scroll up.",
+          "refs": ["DS-0040", "#34"]
+        },
+        {
+          "type": "added",
+          "text": "The log region has `role=\"log\"`, an `ariaLabel` prop (default `Log output`) and an `announce` prop (`off`, `polite` or `assertive`) that sets `aria-live`.",
+          "refs": ["DS-0040", "#34"]
+        },
+        {
+          "type": "added",
+          "text": "Empty state with an `empty` snippet to replace it, and a `loading` prop that shows a connecting indicator and sets `aria-busy`.",
+          "refs": ["DS-0040", "#34"]
+        },
+        {
+          "type": "changed",
+          "text": "Markup: lines now sit in `.viewport` > `.scroll` inside `.ss-logs`, the message has a `.msg` class, and the root has a border. Colours come from tokens: `--ss-code-bg` replaces the hardcoded `#0a0a0a`, levels read `--ss-log-info`, `--ss-log-warn`, `--ss-log-err` and `--ss-log-ok`.",
+          "refs": ["DS-0040", "#34"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Styles are scoped inside the component; the global `theme.css` no longer carries the `.ss-logs` rules.",
+          "refs": ["DS-0009", "#6"]
+        },
+        {
+          "type": "added",
+          "text": "`size` prop (`sm`, `md` or `lg`) that inherits the global size when unset; the root carries `data-size-variant`.",
+          "refs": ["DS-0012", "#9"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root class is `ss-logs` (was `hub-logs`), and the tokens it reads are `--ss-*` (were `--hs-*`).",
+          "refs": ["DS-0005"]
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a terminal-style log viewer that shows timestamped lines with a level and a service tag. It streams built-in sample lines while `live` is true and takes `initialLines` as the seed."
+        }
+      ]
+    }
+  ]
+}

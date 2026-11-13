@@ -1,0 +1,70 @@
+{
+  "component": "Menu",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Without `label`, the `role=\"menu\"` panel is named by its trigger: the trigger gets an `id` and the panel gets `aria-labelledby` pointing to it. An explicit `label` still renders `aria-label`. In plain HTML, `dssoca/vanilla.js` adds the same `aria-labelledby` on open to panels that have no name.",
+          "refs": ["DS-0177", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The trigger shows the solid `--ss-primary` focus outline instead of a `--ss-primary-soft` glow at about 1.5:1.",
+          "refs": ["DS-0177", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "RTL support: the panel aligns with `inset-inline-start` / `inset-inline-end`, items use `text-align: start`, and the focused row's inset bar moves to the right edge under `dir=\"rtl\"`.",
+          "refs": ["DS-0177", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML behaviour in `dssoca/vanilla.js`: the same `.ss-menu > .trigger` + `.panel[role=\"menu\"] > .item` markup gets open/close, roving focus, outside-click and Escape dismissal, and a bubbling `ss:select` event with `{ index, value }` (`value` is the item's `data-value`).",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The selected row's background tint is mixed from `--ss-accent` (`color-mix`, 6%) instead of `--ss-primary-rgb`.",
+          "refs": ["DS-0128"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Per-item leading visuals on `MenuItem`: `leading` (a snippet), `swatch` (any CSS color, drawn as a square chip) and `emoji` (a text glyph), next to the existing `icon`. When more than one is set the precedence is `leading` → `swatch` → `emoji` → `icon`; they render in a `.lead` span with the same `--ss-icon` footprint.",
+          "refs": ["DS-0088", "#75"]
+        },
+        {
+          "type": "fixed",
+          "text": "SSR safety: the outside-click `document` listener is environment-guarded and its handler null-checks the trigger and panel elements.",
+          "refs": ["DS-0067", "#73"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a dropdown menu, a trigger button that opens a floating panel of selectable `items`, with a bindable `open`, `onSelect`, `align` (`start` | `end`), `side` (`bottom` | `top`), `label` and `size`. It has roving keyboard focus, outside-click and Escape dismissal, and items with a `selected` flag become `menuitemradio` rows with a check marker.",
+          "refs": ["DS-0044", "DS-0050", "#53"]
+        }
+      ]
+    }
+  ]
+}

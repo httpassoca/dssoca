@@ -1,0 +1,25 @@
+{
+  "component": "Container",
+  "releases": [
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Usable from plain HTML: the new `dssoca/vanilla.css` stylesheet carries the `.ss-container` styles, so a `<div class=\"ss-container\">` (plus `page` and `data-size-variant`) needs no Svelte and no JavaScript. Load it after `theme.css` or `tokens.css`; it requires CSS `@scope`.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a centered, max-width page-content wrapper (`.ss-container`) with horizontal gutters that goes full-bleed on narrow viewports. The `page` prop makes it fill the viewport height and adds vertical page padding, and `size` (`sm`, `md`, `lg`) rescales the `--ss-container-max-w`, `--ss-container-px` and `--ss-container-page-py` tokens it reads.",
+          "refs": ["DS-0085", "#75"]
+        }
+      ]
+    }
+  ]
+}

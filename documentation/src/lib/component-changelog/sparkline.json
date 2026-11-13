@@ -1,0 +1,106 @@
+{
+  "component": "Sparkline",
+  "releases": [
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The height falls back to the `--ss-icon` size token when `--ss-spark-h` is not set, so the chart still follows the size axis; the literal `18px` is only the last resort.",
+          "refs": ["DS-0068"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New `variant` prop (`bars` | `line` | `area`, default `bars`): `line` and `area` render an inline SVG, and `area` fills under the curve at reduced opacity. The root carries `data-variant`.",
+          "refs": ["DS-0035", "#32"]
+        },
+        {
+          "type": "added",
+          "text": "New `trend` prop (`auto` | `up` | `down` | `flat` | `none`, default `none`) colours the chart by direction with `--ss-success`, `--ss-danger` or `--ss-fg-muted` and overrides `color`; `auto` compares the first and last value.",
+          "refs": ["DS-0035", "#32"]
+        },
+        {
+          "type": "added",
+          "text": "New `min` and `max` props fix the scale bounds, so several sparklines (for example table rows) can share one scale.",
+          "refs": ["DS-0035", "#32"]
+        },
+        {
+          "type": "added",
+          "text": "New `fluid` and `width` props: `fluid` stretches the chart to its container width (bars flex), and `width` sets an explicit CSS width.",
+          "refs": ["DS-0035", "#32"]
+        },
+        {
+          "type": "added",
+          "text": "New `summary` and `valueFormat` props: `summary` replaces the generated screen-reader text, and `valueFormat` formats the values inside it.",
+          "refs": ["DS-0035", "#32"]
+        },
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Values are scaled across the real data range (data min to data max) instead of from zero to the max, so the same `data` draws different bar heights. A flat series sits on the mid-line.",
+          "refs": ["DS-0035", "#32"]
+        },
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Always exposed to assistive technology as `role=\"img\"` with a generated summary (first to last value, direction, range, number of points) as its `aria-label`; without `label` it was `aria-hidden` before. `label` still overrides the name.",
+          "refs": ["DS-0035", "#32"]
+        },
+        {
+          "type": "changed",
+          "text": "Height, bar width and gap read the new size tokens `--ss-spark-h`, `--ss-spark-bar-w` and `--ss-spark-gap`, so the `sm`, `md` and `lg` sizes really rescale the chart. The root is now `display: inline-flex`.",
+          "refs": ["DS-0035", "#32"]
+        },
+        {
+          "type": "fixed",
+          "text": "Empty `data` shows an em-dash with the accessible name \"No data\", and a single value shows one centred bar (or a marker in the `line` and `area` variants).",
+          "refs": ["DS-0035", "#32"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New `label` prop: when set, the chart is exposed as `role=\"img\"` with that `aria-label`; without it the chart is decorative (`aria-hidden`).",
+          "refs": ["DS-0013", "#10"]
+        },
+        {
+          "type": "added",
+          "text": "New `size` prop (`sm` | `md` | `lg`) that sets `data-size-variant` on the root and inherits the global size when unset.",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "changed",
+          "text": "The `.ss-spark` styles are scoped inside the component and are no longer part of `theme.css`.",
+          "refs": ["DS-0009", "#6"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root class is `ss-spark` (was `hub-spark`) and the default `color` is `var(--ss-primary)` (was `var(--hs-primary)`)."
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a tiny inline bar chart that draws a `data` array of numbers as a row of bars, with a `color` prop for the fill."
+        }
+      ]
+    }
+  ]
+}

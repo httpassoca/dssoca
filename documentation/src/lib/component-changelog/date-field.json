@@ -1,0 +1,35 @@
+{
+  "component": "DateField",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The required asterisk (`.req`) is spaced with `margin-inline-start` instead of `margin-left`, so the gap sits on the correct side under `dir=\"rtl\"`.",
+          "refs": ["DS-0169", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The invalid focus ring is derived from the `--ss-danger` palette slot with `color-mix()` (was `rgba(var(--ss-red-rgb), 0.22)`), so it follows a custom palette.",
+          "refs": ["DS-0128", "#104"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a styled native `<input type=\"date\">` on the shared field chrome, with a bindable ISO `value`, `min` / `max`, `label`, `hint` / `error` wiring, `required`, `disabled`, `readonly`, `invalid` and `size`.",
+          "refs": ["DS-0095", "#82"]
+        }
+      ]
+    }
+  ]
+}

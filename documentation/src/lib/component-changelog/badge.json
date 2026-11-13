@@ -1,0 +1,119 @@
+{
+  "component": "Badge",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "A count-only badge without `label` is named by its visible count (clamped, e.g. `99+`) instead of being an unnamed image. `role=\"img\"` is set only when the badge has an accessible name, so a dot-only badge without `label` stays a plain `<span>`.",
+          "refs": ["DS-0175", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "`tone` is now one of `brand`, `neutral`, `positive`, `caution`, `critical`, `info`, and the default moves from `info` to `neutral`. Rename `up` to `positive`, `deg` to `caution` and `down` to `critical`; `maint` is dropped and its accent becomes `brand`.",
+          "refs": ["DS-0119", "DS-0107", "#100"]
+        },
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Tone tokens are renamed to match: `--ss-badge-up-*` to `--ss-badge-positive-*`, `--ss-badge-deg-*` to `--ss-badge-caution-*`, `--ss-badge-down-*` to `--ss-badge-critical-*` and `--ss-badge-maint-*` to `--ss-badge-brand-*`. Every tone gains a `--ss-badge-<tone>-fg` token, so the text colour meets WCAG 2.2 AA in both themes.",
+          "refs": ["DS-0119", "DS-0107", "#100"]
+        },
+        {
+          "type": "removed",
+          "breaking": true,
+          "text": "The `ondismiss` prop and its trailing `<button class=\"x\">` are gone, so the badge never renders an interactive or focusable element. `label` remains only as the accessible name of a badge without text.",
+          "refs": ["DS-0120", "DS-0107", "#100"]
+        },
+        {
+          "type": "changed",
+          "text": "Vertical padding is removed: the badge pads `0 var(--ss-badge-px)` and takes its height from the content and an explicit `line-height`, so it sits compactly inline with text. The `--ss-badge-py` token is dropped.",
+          "refs": ["DS-0121", "DS-0107", "#100"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The leading status dot is opt-in through the new `dot` prop (default `false`); before, every badge rendered it.",
+          "refs": ["DS-0031", "#33"]
+        },
+        {
+          "type": "added",
+          "text": "New `neutral` tone for non-status labels and new `maint` tone for maintenance states.",
+          "refs": ["DS-0031", "DS-0036", "#33", "#35"]
+        },
+        {
+          "type": "added",
+          "text": "New `count` and `max` props render a numeric badge in a `.count` element: values above `max` (default `99`) show as `99+`, and a `count` of `0` renders no number.",
+          "refs": ["DS-0031", "#33"]
+        },
+        {
+          "type": "added",
+          "text": "New `ondismiss` prop renders a trailing dismiss button.",
+          "refs": ["DS-0031", "#33"]
+        },
+        {
+          "type": "added",
+          "text": "New `live` prop turns the badge into a polite live region (`role=\"status\"`), and new `label` prop names a badge without text. `children` is now optional, and a badge without it gets the `label-less` class and `role=\"img\"`.",
+          "refs": ["DS-0031", "#33"]
+        },
+        {
+          "type": "changed",
+          "text": "Tone colours and inner sizes read tokens instead of literals: `--ss-badge-<tone>-bg`, `--ss-badge-<tone>-border`, `--ss-badge-gap` and `--ss-badge-dot`.",
+          "refs": ["DS-0031", "#33"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Styles are scoped to the component and the global `.ss-badge` rules are removed from `theme.css`, so hand-written `<span class=\"ss-badge\">` markup is no longer styled by the stylesheet alone.",
+          "refs": ["DS-0009", "#6"]
+        },
+        {
+          "type": "added",
+          "text": "New `size` prop (`sm`, `md`, `lg`) that inherits the global size when unset. The root carries `data-size-variant` and the padding reads `--ss-badge-py` and `--ss-badge-px`.",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "fixed",
+          "text": "The decorative status dot is hidden from assistive technology with `aria-hidden=\"true\"`.",
+          "refs": ["DS-0013", "#10"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root class is renamed from `hub-badge` to `ss-badge`, following the library-wide `hub-` to `ss-` class and `--hs-*` to `--ss-*` token rename."
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a small inline status label with a leading dot and a `tone` prop (`up`, `deg`, `down`, `info`; default `info`)."
+        }
+      ]
+    }
+  ]
+}
