@@ -13,11 +13,13 @@ export const heatmap: ComponentDoc = {
       ],
     },
     behaviour: 'css',
-    note: 'Rendered geometry: copy as-is. Hover tooltips are not wired by vanilla.js.',
+    note: 'Rendered geometry: copy as-is. Hover tooltips and arrow-key navigation are not wired by vanilla.js.',
   },
   tagline: 'Token-driven matrix where cell colour intensity encodes value.',
   description:
-    "A token-driven matrix/grid where each cell's colour intensity encodes its value, with row and column headers. Every cell is filled with `--ss-primary` and varies its opacity across a linear scale over the value domain, so the brightest cells are the strongest. `null` values render a blank cell that is excluded from the scale — ideal for a head-to-head win matrix where the diagonal (self) is empty. Every value cell is keyboard-focusable with an accessible tooltip, and empty input shows an em-dash placeholder.",
+    "A token-driven matrix/grid where each cell's colour intensity encodes its value, with row and column headers. Every cell is filled with `--ss-primary` and varies its opacity across a linear scale over the value domain, so the brightest cells are the strongest. `null` values render a blank cell that is excluded from the scale — ideal for a head-to-head win matrix where the diagonal (self) is empty. Cells are exposed as a `grid` > `row` > `gridcell` structure, each named `<row> vs <col>: <value>` (`no value` for blanks). Value text is drawn in `--ss-fg` on an `--ss-bg` halo so it stays readable on every intensity, and with `showValues={false}` a min→max legend keys the colour scale. Empty input shows an em-dash placeholder.",
+  notes:
+    'Keyboard: the grid is a single Tab stop (the top-left cell by default, then the last focused cell). Arrow keys move between cells (Left/Right within a row, Up/Down between rows, clamped at the edges); Home/End jump to the first/last cell. The hover/focus tooltip is visual only (`aria-hidden`) because every cell already carries its value in its accessible name; Escape dismisses it, including one opened by hover. The in-cell value text is `aria-hidden` too, since it duplicates the cell name.',
   storyId: 'components-heatmap--default',
   usage: `<script>
   import { Heatmap } from 'dssoca';
@@ -60,7 +62,7 @@ export const heatmap: ComponentDoc = {
       name: 'showValues',
       type: 'boolean',
       default: 'true',
-      desc: 'Render the value text inside each cell.',
+      desc: 'Render the value text inside each cell. When false, a min→max legend is drawn under the grid so intensity is not the only cue.',
     },
     { name: 'xLabel', type: 'string', desc: 'X axis caption drawn under the column headers.' },
     {
@@ -73,7 +75,7 @@ export const heatmap: ComponentDoc = {
       name: 'tooltip',
       type: 'boolean',
       default: 'true',
-      desc: 'Reveal a tooltip on hover/focus of a cell. Each value cell is keyboard-focusable.',
+      desc: 'Reveal a tooltip on hover/focus of a cell (visual only; Escape dismisses it).',
     },
     {
       name: 'summary',
