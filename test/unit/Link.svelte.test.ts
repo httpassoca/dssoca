@@ -4,6 +4,10 @@ import { createRawSnippet } from 'svelte'
 import { axe } from 'vitest-axe'
 import Link from '$lib/components/Link.svelte'
 import LinkHarness from '../harness/LinkHarness.svelte'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { compileString } from 'sass'
+import { extractStyleBlock } from '../../scripts/lib/vanilla-css.mjs'
 
 const label = (text: string) => createRawSnippet(() => ({ render: () => `<span>${text}</span>` }))
 
@@ -103,6 +107,55 @@ describe('Link', () => {
       const a = container.querySelector('a')!
       expect(a).toHaveAttribute('target', '_self')
       expect(a).toHaveAttribute('rel', 'nofollow')
+    })
+  })
+
+  describe('new-tab safeguards follow the resolved target (DS-0174)', () => {
+    it('adds noopener noreferrer and the new-tab hint to an explicit target="_blank"', () => {
+      const { container } = render(LinkHarness, {
+        props: { href: '/internal', target: '_blank', text: 'in' },
+      })
+      const a = container.querySelector('a')!
+      expect(a).toHaveAttribute('rel', 'noopener noreferrer')
+      expect(screen.getByText(/opens in a new tab/i)).toBeInTheDocument()
+    })
+
+    it('merges a custom rel with the security tokens instead of replacing them', () => {
+      const { container } = render(LinkHarness, {
+        props: { href: 'https://example.com', rel: 'nofollow', text: 'ext' },
+      })
+      expect(container.querySelector('a')).toHaveAttribute('rel', 'nofollow noopener noreferrer')
+    })
+
+    it('does not duplicate a security token the caller already passed', () => {
+      const { container } = render(LinkHarness, {
+        props: { href: '/x', target: '_blank', rel: 'noreferrer external', text: 'x' },
+      })
+      expect(container.querySelector('a')).toHaveAttribute('rel', 'noreferrer external noopener')
+    })
+
+    it('drops the new-tab hint when an external link is forced to target="_self"', () => {
+      render(LinkHarness, { props: { href: 'https://example.com', target: '_self', text: 'e' } })
+      expect(screen.queryByText(/opens in a new tab/i)).toBeNull()
+    })
+  })
+
+  describe('resting underline (DS-0174)', () => {
+    const src = readFileSync(resolve(process.cwd(), 'src/lib/components/Link.svelte'), 'utf8')
+    const css = compileString(extractStyleBlock(src)!, { syntax: 'scss', style: 'expanded' }).css
+    const rules = css.split('}')
+
+    it('draws the inline underline at rest, not only on hover/focus', () => {
+      const rest = rules.find((r) => /\.ss-link\.inline \.label::after\s*\{/.test(r))
+      expect(rest).toBeDefined()
+      expect(rest).toMatch(/content:\s*""|content:\s*''/)
+      expect(rest).toMatch(/height:\s*1px/)
+      expect(rest).not.toMatch(/scaleX\(0\)/)
+    })
+
+    it('cancels the global theme.css a::before underline so only one line shows', () => {
+      const rule = rules.find((r) => /\.ss-link::before\s*\{/.test(r))
+      expect(rule).toMatch(/content:\s*none/)
     })
   })
 

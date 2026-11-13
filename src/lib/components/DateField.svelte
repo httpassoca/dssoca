@@ -115,7 +115,7 @@
       letter-spacing: 0.08em;
       .req {
         color: var(--ss-red);
-        margin-left: 2px;
+        margin-inline-start: 2px;
       }
     }
 

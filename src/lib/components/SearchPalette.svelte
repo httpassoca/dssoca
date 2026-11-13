@@ -37,6 +37,7 @@
   import { tick, type Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
   import { shortcuts } from '../shortcuts.svelte.js'
+  import { lockScroll, unlockScroll } from '../vanilla/modal.js'
 
   interface Props {
     /** Whether the palette is shown. Bindable — sync it from caller state. */
@@ -58,6 +59,11 @@
     'aria-label'?: string
     /** No-results text (used when the `empty` snippet is absent). @default 'No results' */
     emptyText?: string
+    /** Screen-reader announcement of the result count while a query is typed.
+     *  @default (n) => `${n} result(s)` */
+    resultsText?: (count: number) => string
+    /** Accessible name of the close button (shown on small, full-screen viewports). @default 'Close' */
+    closeLabel?: string
     /** Footer hint row; false hides it. A `footer` snippet replaces it. @default '↑↓ navigate · ↵ open · esc close' */
     footerText?: string | false
     /** Clear the query and selection when the palette closes. @default true */
@@ -87,6 +93,8 @@
     placeholder = 'Search…',
     'aria-label': ariaLabel = 'Search',
     emptyText = 'No results',
+    resultsText = (n: number) => `${n} ${n === 1 ? 'result' : 'results'}`,
+    closeLabel = 'Close',
     footerText = '↑↓ navigate · ↵ open · esc close',
     resetOnClose = true,
     size,
@@ -166,6 +174,19 @@
       el.close()
     }
   })
+
+  // Lock the page behind the palette while open (the dialog's own .results
+  // already has overscroll-behavior: contain). Shares Modal's reference-counted
+  // lock, so a palette opened over a modal (or vice versa) unwinds correctly.
+  $effect(() => {
+    if (!open) return
+    lockScroll()
+    return unlockScroll
+  })
+
+  // Polite live text for the always-rendered status node: silent until the
+  // user types, then the result count (or the no-results text).
+  const status = $derived(query.trim() ? (flat.length ? resultsText(flat.length) : emptyText) : '')
 
   // Native `close` (Esc, .close()) → sync state, optionally reset, notify.
   function onDialogClose() {
@@ -287,23 +308,32 @@
   onpointerdown={onPointerDown}
 >
   <div class="panel">
-    <input
-      bind:this={input}
-      bind:value={query}
-      oninput={onQueryInput}
-      onkeydown={onInputKeydown}
-      class="input"
-      type="text"
-      {placeholder}
-      spellcheck="false"
-      autocomplete="off"
-      role="combobox"
-      aria-label={ariaLabel}
-      aria-autocomplete="list"
-      aria-expanded={flat.length > 0}
-      aria-controls={listId}
-      aria-activedescendant={flat.length ? optionId(active) : undefined}
-    />
+    <div class="bar">
+      <input
+        bind:this={input}
+        bind:value={query}
+        oninput={onQueryInput}
+        onkeydown={onInputKeydown}
+        class="input"
+        type="text"
+        {placeholder}
+        spellcheck="false"
+        autocomplete="off"
+        role="combobox"
+        aria-label={ariaLabel}
+        aria-autocomplete="list"
+        aria-expanded={flat.length > 0}
+        aria-controls={listId}
+        aria-activedescendant={flat.length ? optionId(active) : undefined}
+      />
+      <!-- Touch exit for the full-screen small-viewport layout (no backdrop to
+         tap there); hidden on wider screens, where Esc/backdrop close it. -->
+      <button type="button" class="close" aria-label={closeLabel} onclick={() => (open = false)}
+        >×</button
+      >
+    </div>
+
+    <p class="sr-only" role="status">{status}</p>
 
     <div class="results" bind:this={list}>
       {#if flat.length === 0}
@@ -423,23 +453,70 @@
     flex-direction: column;
   }
 
+  .bar {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--ss-line);
+
+    &:focus-within {
+      border-bottom-color: var(--ss-primary);
+    }
+  }
+
   .input {
+    flex: 1;
+    min-width: 0;
     width: 100%;
     padding: var(--ss-search-palette-input-pad, var(--ss-s-4)) var(--ss-s-4);
     background: transparent;
     border: none;
-    border-bottom: 1px solid var(--ss-line);
     color: var(--ss-fg);
     font-family: inherit;
     font-size: var(--ss-search-palette-input-size, var(--ss-ui-lg, var(--ss-size-body)));
 
     &:focus {
       outline: none;
-      border-bottom-color: var(--ss-primary);
     }
     &::placeholder {
       color: var(--ss-fg-muted);
     }
+  }
+
+  // Hidden on wide viewports; the small-viewport media query below shows it.
+  .close {
+    display: none;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--ss-s-10);
+    min-block-size: var(--ss-s-10);
+    margin-inline-end: var(--ss-s-2);
+    padding: 0;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ss-fg-muted);
+    font-family: inherit;
+    font-size: var(--ss-size-h3);
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--ss-fg);
+      border-color: var(--ss-line-strong);
+    }
+  }
+
+  // Visually hidden but announced (result-count live region).
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .results {
@@ -474,20 +551,20 @@
     display: block;
     width: 100%;
     padding: var(--ss-s-2) var(--ss-s-4);
-    // The active rail eats 2px of the left padding so text doesn't shift.
+    // The active rail eats 2px of the inline-start padding so text doesn't shift.
     border: none;
-    border-left: 2px solid transparent;
-    padding-left: calc(var(--ss-s-4) - 2px);
+    border-inline-start: 2px solid transparent;
+    padding-inline-start: calc(var(--ss-s-4) - 2px);
     background: transparent;
     color: var(--ss-fg);
     font-family: inherit;
-    text-align: left;
+    text-align: start;
     text-decoration: none;
     cursor: pointer;
 
     &.active {
       background: var(--ss-primary-soft);
-      border-left-color: var(--ss-primary);
+      border-inline-start-color: var(--ss-primary);
     }
     &.disabled {
       color: var(--ss-fg-faint, var(--ss-fg-muted));
@@ -534,6 +611,9 @@
     .results {
       flex: 1;
       max-height: none;
+    }
+    .close {
+      display: inline-flex;
     }
   }
 

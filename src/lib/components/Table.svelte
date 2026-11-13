@@ -16,8 +16,12 @@
     key: string
     /** Header text. */
     label: string
-    /** Text alignment of the body cells. Numeric columns default to `right`. */
-    align?: 'left' | 'right' | 'center'
+    /**
+     * Text alignment of the header and body cells. Logical: `start`/`end` follow the
+     * writing direction (so they flip in RTL). `left`/`right` are accepted for backward
+     * compatibility and map to `start`/`end`. Numeric columns default to `end`.
+     */
+    align?: 'start' | 'end' | 'left' | 'right' | 'center'
     /** Allow clicking the header to sort by this column. */
     sortable?: boolean
     /** Treat values as numbers — right-aligns, uses the mono font, sorts numerically. */
@@ -106,8 +110,12 @@
     return col.format ? col.format(value, row) : String(value ?? '')
   }
 
-  function colAlign(col: TableColumn): 'left' | 'right' | 'center' {
-    return col.align ?? (col.numeric ? 'right' : 'left')
+  // Logical alignment: legacy `left`/`right` map to `start`/`end` so RTL mirrors.
+  function colAlign(col: TableColumn): 'start' | 'end' | 'center' {
+    const a = col.align ?? (col.numeric ? 'end' : 'start')
+    if (a === 'left') return 'start'
+    if (a === 'right') return 'end'
+    return a
   }
 
   const isEmpty = $derived(rows.length === 0)
@@ -171,7 +179,7 @@
 
     caption {
       caption-side: top;
-      text-align: left;
+      text-align: start;
       font-family: var(--ss-font-mono);
       font-size: var(--ss-ui-xs);
       color: var(--ss-fg-muted);
@@ -180,7 +188,7 @@
     }
 
     .head {
-      text-align: left;
+      text-align: start;
       font-family: var(--ss-font-mono);
       font-size: var(--ss-ui-xs);
       font-weight: 500;
@@ -192,8 +200,10 @@
       padding: var(--ss-table-py, 8px) var(--ss-table-px, 12px);
       white-space: nowrap;
 
+      // `right` is the legacy value (plain-HTML markup); it maps to `end` too.
+      &[data-align='end'],
       &[data-align='right'] {
-        text-align: right;
+        text-align: end;
       }
       &[data-align='center'] {
         text-align: center;
@@ -221,14 +231,14 @@
       &:hover {
         color: var(--ss-fg);
       }
+      // Focus ring: the base `outline: 2px solid var(--ss-primary)` (_base.scss) applies.
       &:focus-visible {
-        outline: none;
         color: var(--ss-fg);
-        box-shadow: 0 0 0 2px var(--ss-primary-soft);
       }
     }
 
-    // Right-aligned headers flip the button so the indicator hugs the edge.
+    // End-aligned headers flip the button so the indicator hugs the edge.
+    .head[data-align='end'] .sort,
     .head[data-align='right'] .sort {
       flex-direction: row-reverse;
     }
@@ -258,10 +268,11 @@
       padding: var(--ss-table-py, 8px) var(--ss-table-px, 12px);
       border-bottom: 1px solid var(--ss-line);
       vertical-align: middle;
-      text-align: left;
+      text-align: start;
 
+      &[data-align='end'],
       &[data-align='right'] {
-        text-align: right;
+        text-align: end;
       }
       &[data-align='center'] {
         text-align: center;

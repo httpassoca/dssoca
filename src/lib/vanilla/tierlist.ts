@@ -11,6 +11,7 @@ import {
   TRAY,
   announceText,
   insertionIndex,
+  keyMoveFor,
   keyboardTarget,
   type TierListKeyMove,
   type TierListPlacements,
@@ -120,13 +121,9 @@ interface Grab {
 }
 const grabs = new WeakMap<HTMLElement, Grab>()
 
-const KEY_MOVES: Record<string, TierListKeyMove> = {
-  ArrowLeft: 'left',
-  ArrowRight: 'right',
-  ArrowUp: 'up',
-  ArrowDown: 'down',
-  Home: 'home',
-  End: 'end',
+/** Read at event time: `dir` may sit on any ancestor and change after install. */
+function isRtl(el: Element): boolean {
+  return getComputedStyle(el).direction === 'rtl'
 }
 
 function setGrabbed(root: HTMLElement, tile: HTMLElement | null): void {
@@ -244,7 +241,7 @@ function moveDrag(d: Drag, x: number, y: number): void {
   const boxes = cellsOf(zone)
     .filter((c) => c !== d.cell)
     .map((c) => c.getBoundingClientRect())
-  placeCell(d.root, d.cell, zoneKey(zone), insertionIndex(boxes, x, y))
+  placeCell(d.root, d.cell, zoneKey(zone), insertionIndex(boxes, x, y, isRtl(zone)))
 }
 
 function endDrag(d: Drag, cancelled: boolean): void {
@@ -278,7 +275,7 @@ export function installTierlist(): void {
       cancelGrab(root, true)
       return
     }
-    const move = KEY_MOVES[e.key]
+    const move = keyMoveFor(e.key, isRtl(tile))
     if (move && grab?.tile === tile) {
       e.preventDefault()
       keyMove(root, tile, move)

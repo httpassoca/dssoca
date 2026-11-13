@@ -1,5 +1,5 @@
 /**
- * Accordion (DS-0148) — toggles `hidden` on the panel referenced by each header's
+ * Accordion (DS-0148) — toggles `hidden` + `inert` on the panel referenced by each header's
  * `aria-controls`, mirroring Accordion.svelte: single-open by default (opening one closes the
  * others), `data-ss-multiple` on the root allows several, Arrow/Home/End rove between headers.
  * Emits `ss:change` on the root with `{ value }` (open ids: string | string[] | undefined).
@@ -12,7 +12,11 @@ function setOpen(head: HTMLElement, open: boolean): void {
   head.setAttribute('aria-expanded', String(open))
   head.closest('.item')?.classList.toggle('open', open)
   const panel = byId(head.getAttribute('aria-controls'))
-  if (panel) panel.hidden = !open
+  if (!panel) return
+  panel.hidden = !open
+  // A closed panel keeps `display: grid` (so the collapse animates); `inert` keeps its content
+  // out of the Tab order and a11y tree, matching Accordion.svelte (DS-0162).
+  panel.toggleAttribute('inert', !open)
 }
 
 export function toggleAccordion(head: HTMLElement): void {

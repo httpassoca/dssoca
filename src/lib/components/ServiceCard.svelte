@@ -11,17 +11,22 @@
     host: string
     status?: Status
     latency?: string
+    /** Sparkline series. Defaults to `[]` (an honest "No data" state, not a made-up trend). */
     spark?: number[]
+    /** Makes the card interactive via a stretched overlay `<button>` (native Enter/Space). */
     onclick?: () => void
-    /** When set, the card renders as a real `<a>` and navigates here (native Enter). */
+    /** When set, the card's overlay is a real `<a>` that navigates here (native Enter). */
     href?: string
     /** Render skeleton placeholders and mark the card `aria-busy`; suppresses interaction. */
     loading?: boolean
-    /** Non-interactive variant: `aria-disabled`, no focus/pointer, no onclick. */
+    /** Inert variant: `aria-disabled`, no focus/pointer, no onclick/href. */
     disabled?: boolean
     /** "Last checked" instant; rendered as relative time in a `<time datetime>` footer slot. */
     updatedAt?: Date | string
-    /** Optional extra metadata rows (version, IP, tags…) below the head. */
+    /**
+     * Optional extra metadata rows (version, IP, tags…) below the head. Sits above the card's
+     * overlay control, so links/buttons in it stay separately focusable and clickable.
+     */
     meta?: Snippet
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
@@ -31,7 +36,7 @@
     host,
     status = 'up',
     latency = '',
-    spark = [4, 8, 6, 10, 7, 12, 9, 14, 11, 16, 13, 10, 12],
+    spark = [],
     onclick,
     href,
     loading = false,
@@ -67,13 +72,24 @@
           : 'positive',
   )
 
-  // Status is decorative on the dot/badge, but meaningful — fold it into the label.
+  // Fallback name while loading (the name/host/badge aren't rendered, so nothing to reference).
   const cardLabel = $derived(`${name}, ${statusLabel}`)
 
-  // The card is interactive (focusable, activatable) unless explicitly inert.
-  // This preserves the original default (a bare card was a role=button); `href`,
-  // `loading`, and `disabled` are the only things that change the element.
-  const interactive = $derived(!loading && !disabled)
+  // Stable ids so the card is named by its visible name + status (aria-labelledby) and described
+  // by the rest of its visible content (aria-describedby) instead of an aria-label that replaced
+  // it (DS-0192).
+  const uid = $props.id()
+  const nameId = `${uid}-name`
+  const statusId = `${uid}-status`
+  const hostId = `${uid}-host`
+  const latencyId = `${uid}-latency`
+  const metaId = `${uid}-meta`
+  const trendId = `${uid}-trend`
+  const updatedId = `${uid}-updated`
+
+  // Interactive only when there is something to do: a bare card (no `href`/`onclick`) is a static
+  // group, not a dead role=button (DS-0192). `loading`/`disabled` still suppress interaction.
+  const interactive = $derived(!loading && !disabled && Boolean(href || onclick))
 
   // --- relative "last checked" timestamp -------------------------------------
   const updatedDate = $derived(
@@ -92,6 +108,19 @@
     return rtf.format(Math.round(secs / 86400), 'day')
   }
   const updatedLabel = $derived(updatedValid ? relativeTime(updatedDate!) : '')
+
+  const labelledBy = `${nameId} ${statusId}`
+  const describedBy = $derived(
+    [
+      hostId,
+      latency ? latencyId : '',
+      meta ? metaId : '',
+      spark.length ? trendId : '',
+      updatedValid ? updatedId : '',
+    ]
+      .filter(Boolean)
+      .join(' '),
+  )
 </script>
 
 {#snippet body()}
@@ -101,8 +130,8 @@
         <div class="sk sk-name" aria-hidden="true"></div>
         <div class="sk sk-host" aria-hidden="true"></div>
       {:else}
-        <div class="name">{name}</div>
-        <div class="host">{host}</div>
+        <div class="name" id={nameId}>{name}</div>
+        <div class="host" id={hostId}>{host}</div>
       {/if}
     </div>
   </div>
@@ -110,75 +139,68 @@
     {#if loading}
       <div class="sk sk-badge" aria-hidden="true"></div>
     {:else}
-      <Badge tone={badgeTone}>{statusLabel}</Badge>
-      <div class="latency">{latency}</div>
+      <Badge tone={badgeTone}><span id={statusId}>{statusLabel}</span></Badge>
+      <div class="latency" id={latency ? latencyId : undefined}>{latency}</div>
     {/if}
   </div>
   {#if meta && !loading}
-    <div class="meta">{@render meta()}</div>
+    <div class="meta" id={metaId}>{@render meta()}</div>
   {/if}
   <div class="footer">
     {#if loading}
       <div class="sk sk-spark" aria-hidden="true"></div>
     {:else}
-      <Sparkline data={spark} color={sparkColor} />
+      <div class="trend" id={trendId}><Sparkline data={spark} color={sparkColor} /></div>
       <div class="foot-meta">
         {#if updatedValid}
-          <time class="updated" datetime={updatedISO}>{updatedLabel}</time>
+          <time class="updated" id={updatedId} datetime={updatedISO}>{updatedLabel}</time>
         {/if}
         {#if interactive}
-          <span class="latency open"><span aria-hidden="true">▸</span> open</span>
+          <!-- Visual cue only: the overlay control carries the role and name. -->
+          <span class="latency open" aria-hidden="true">▸ open</span>
         {/if}
       </div>
     {/if}
   </div>
 {/snippet}
 
-{#if href && interactive}
-  <a
-    class="ss-svc"
-    class:loading
-    {href}
-    aria-label={cardLabel}
-    data-size-variant={resolveComponentSize('ServiceCard', size)}
-    {onclick}
-  >
-    {@render body()}
-  </a>
-{:else if interactive}
-  <div
-    class="ss-svc"
-    role="button"
-    tabindex="0"
-    aria-label={cardLabel}
-    data-size-variant={resolveComponentSize('ServiceCard', size)}
-    {onclick}
-    onkeydown={(e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault()
-        onclick?.()
-      }
-    }}
-  >
-    {@render body()}
-  </div>
-{:else}
-  <div
-    class="ss-svc"
-    class:loading
-    class:disabled
-    role="group"
-    aria-label={cardLabel}
-    aria-busy={loading ? 'true' : undefined}
-    aria-disabled={disabled ? 'true' : undefined}
-    data-size-variant={resolveComponentSize('ServiceCard', size)}
-  >
-    {@render body()}
-  </div>
-{/if}
+<!--
+  The root is never itself interactive (DS-0192, mirroring Card's DS-0183): an interactive card
+  renders ONE stretched overlay control (an <a> for `href`, a <button> for `onclick`) named by the
+  visible name + status and described by the rest of the card, so `meta` controls are never nested
+  inside a link or button. A static card is a named, described group.
+-->
+<div
+  class="ss-svc"
+  class:interactive
+  class:loading
+  class:disabled
+  role={interactive ? undefined : 'group'}
+  aria-label={!interactive && loading ? cardLabel : undefined}
+  aria-labelledby={!interactive && !loading ? labelledBy : undefined}
+  aria-describedby={!interactive && !loading ? describedBy : undefined}
+  aria-busy={loading ? 'true' : undefined}
+  aria-disabled={disabled ? 'true' : undefined}
+  data-size-variant={resolveComponentSize('ServiceCard', size)}
+>
+  {@render body()}
+  {#if interactive && href}
+    <a class="overlay" {href} {onclick} aria-labelledby={labelledBy} aria-describedby={describedBy}
+    ></a>
+  {:else if interactive}
+    <button
+      type="button"
+      class="overlay"
+      {onclick}
+      aria-labelledby={labelledBy}
+      aria-describedby={describedBy}
+    ></button>
+  {/if}
+</div>
 
 <style lang="scss">
   .ss-svc {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr auto;
     gap: var(--ss-gap);
@@ -211,7 +233,10 @@
       align-items: flex-end;
       gap: 2px;
     }
+    // Sits above the overlay control so links/buttons inside `meta` stay clickable.
     .meta {
+      position: relative;
+      z-index: 1;
       grid-column: 1 / -1;
       font-family: var(--ss-font-mono);
       font-size: var(--ss-ui-sm);
@@ -245,22 +270,36 @@
     }
   }
 
-  /* Interactive variants (anchor + role=button div) get the affordance. */
-  a.ss-svc,
-  [role='button'].ss-svc {
-    cursor: pointer;
+  /* Interactive card: hover affordance on the card, pointer via the overlay. */
+  .ss-svc.interactive:hover {
+    border-color: var(--ss-line-strong);
+    background: var(--ss-bg-elev-hover);
+  }
 
-    &:hover {
-      border-color: var(--ss-line-strong);
-      background: var(--ss-bg-elev-hover);
-    }
-    // Focus ring (DS-0068): intentionally mirrors the global :focus-visible
-    // style in _base.scss (2px primary outline, 2px offset) — kept inline so
-    // the role=button <div> variant gets it even without the global sheet.
+  // Single primary link/button stretched over the whole card. It is absolutely positioned so it
+  // takes no grid cell, and is visually empty (named by aria-labelledby), so its own focus ring
+  // outlines the card — the same 2px primary ring as the global :focus-visible style in
+  // _base.scss, kept inline so it also applies without the global sheet.
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
     &:focus-visible {
       outline: 2px solid var(--ss-primary);
       outline-offset: 2px;
     }
+  }
+
+  .trend {
+    display: contents;
   }
 
   /* Disabled: inert, no affordance. */
@@ -319,6 +358,7 @@
   // theme.css draws an animated underline under every <a> (`a::before`). These anchors are
   // component chrome, not prose links — cancel it here so the reset also ships in vanilla.css
   // (DS-0150; the specificity of a scoped class beats the global element rule).
+  .overlay::before,
   .ss-svc::before {
     content: none;
   }

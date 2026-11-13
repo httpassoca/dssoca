@@ -44,6 +44,12 @@ describe('ServiceCard', () => {
     expect(container.querySelector('.latency')).toHaveTextContent('4ms')
   })
 
+  it('defaults spark to no data instead of a made-up trend (DS-0192)', () => {
+    const { container } = render(ServiceCard, { name: 'x', host: 'x.home' })
+    expect(container.querySelectorAll('.ss-spark i')).toHaveLength(0)
+    expect(container.querySelector('.ss-spark')).toHaveAccessibleName('No data')
+  })
+
   it('renders a sparkline from the spark data', () => {
     const { container } = render(ServiceCard, {
       name: 'x',
@@ -53,39 +59,96 @@ describe('ServiceCard', () => {
     expect(container.querySelectorAll('.ss-spark i')).toHaveLength(3)
   })
 
-  it('exposes the card as a role=button and is keyboard focusable', () => {
-    render(ServiceCard, { name: 'x', host: 'x.home' })
-    const card = screen.getByRole('button')
-    expect(card).toHaveClass('ss-svc')
-    expect(card).toHaveAttribute('tabindex', '0')
+  describe('static card (no onclick/href, DS-0192)', () => {
+    it('is not a focusable role=button and shows no "open" cue', () => {
+      const { container } = render(ServiceCard, { name: 'x', host: 'x.home' })
+      expect(screen.queryByRole('button')).toBeNull()
+      expect(screen.queryByRole('link')).toBeNull()
+      expect(container.querySelector('[tabindex]')).toBeNull()
+      expect(container.querySelector('.open')).toBeNull()
+    })
+
+    it('is a group named by the visible name + status and described by the rest', () => {
+      render(ServiceCard, {
+        name: 'movies',
+        host: 'movies.home',
+        status: 'deg',
+        latency: '4ms',
+        spark: [1, 2, 3],
+        updatedAt: new Date(Date.now() - 5_000),
+      })
+      const group = screen.getByRole('group')
+      expect(group).not.toHaveAttribute('aria-label')
+      expect(group).toHaveAccessibleName('movies degraded')
+      const desc = group.getAttribute('aria-describedby')!.split(' ')
+      expect(desc).toHaveLength(4)
+      expect(group).toHaveAccessibleDescription(/movies\.home/)
+      expect(group).toHaveAccessibleDescription(/4ms/)
+      // The sparkline (role=img) is referenced too; jsdom's accname doesn't fold img labels into
+      // descriptions, so assert the reference rather than the computed text.
+      const trend = document.getElementById(desc[2])!
+      expect(trend.querySelector('.ss-spark')).toHaveAccessibleName(/Trend rising/)
+    })
   })
 
-  it('folds the spelled-out status into the accessible name', () => {
-    render(ServiceCard, { name: 'movies', host: 'movies.home', status: 'deg' })
-    expect(screen.getByRole('button')).toHaveAccessibleName('movies, degraded')
-  })
+  describe('button mode (onclick)', () => {
+    it('renders a native <button> overlay named by name + status', () => {
+      render(ServiceCard, { name: 'movies', host: 'movies.home', status: 'deg', onclick: () => {} })
+      const btn = screen.getByRole('button')
+      expect(btn.tagName).toBe('BUTTON')
+      expect(btn).toHaveClass('overlay')
+      expect(btn).not.toHaveAttribute('aria-label')
+      expect(btn).toHaveAccessibleName('movies degraded')
+    })
 
-  it('fires onclick when the card is clicked', async () => {
-    const onclick = vi.fn()
-    render(ServiceCard, { name: 'x', host: 'x.home', onclick })
-    await fireEvent.click(screen.getByRole('button'))
-    expect(onclick).toHaveBeenCalledOnce()
-  })
+    it('describes the button with host and latency (no longer hidden by aria-label)', () => {
+      render(ServiceCard, {
+        name: 'movies',
+        host: 'movies.home',
+        latency: '4ms',
+        onclick: () => {},
+      })
+      const btn = screen.getByRole('button')
+      expect(btn).toHaveAccessibleDescription(/movies\.home/)
+      expect(btn).toHaveAccessibleDescription(/4ms/)
+    })
 
-  it('fires onclick on Enter keydown', async () => {
-    const onclick = vi.fn()
-    render(ServiceCard, { name: 'x', host: 'x.home', onclick })
-    await fireEvent.keyDown(screen.getByRole('button'), { key: 'Enter' })
-    expect(onclick).toHaveBeenCalledOnce()
+    it('fires onclick when the card is clicked', async () => {
+      const onclick = vi.fn()
+      render(ServiceCard, { name: 'x', host: 'x.home', onclick })
+      await fireEvent.click(screen.getByRole('button'))
+      expect(onclick).toHaveBeenCalledOnce()
+    })
+
+    it('shows the "open" cue to sighted users only', () => {
+      const { container } = render(ServiceCard, { name: 'x', host: 'x.home', onclick: () => {} })
+      expect(container.querySelector('.open')).toHaveAttribute('aria-hidden', 'true')
+    })
+
+    it('does not nest meta controls inside the button, and describes it with meta', () => {
+      const { container } = render(ServiceCardHarness, { metaText: 'v9.9.9', withLink: true })
+      const btn = screen.getByRole('button')
+      const metaLink = screen.getByRole('link', { name: 'logs' })
+      expect(btn.contains(metaLink)).toBe(false)
+      expect(container.querySelector('.ss-svc')!.contains(metaLink)).toBe(true)
+      expect(btn).toHaveAccessibleDescription(/v9\.9\.9/)
+    })
   })
 
   describe('link mode (href)', () => {
-    it('renders a real <a> with the href and accessible name when href is set', () => {
-      render(ServiceCard, { name: 'movies', host: 'movies.home', href: '/svc/movies' })
+    it('renders a real <a> overlay with the href, named by name + status', () => {
+      const { container } = render(ServiceCard, {
+        name: 'movies',
+        host: 'movies.home',
+        href: '/svc/movies',
+      })
       const link = screen.getByRole('link')
-      expect(link).toHaveClass('ss-svc')
+      expect(link).toHaveClass('overlay')
+      expect(container.querySelector('.ss-svc')!.contains(link)).toBe(true)
       expect(link).toHaveAttribute('href', '/svc/movies')
-      expect(link).toHaveAccessibleName('movies, up')
+      expect(link).not.toHaveAttribute('aria-label')
+      expect(link).toHaveAccessibleName('movies up')
+      expect(link).toHaveAccessibleDescription(/movies\.home/)
     })
 
     it('does not render a role=button div in link mode (Enter is native)', () => {
@@ -144,6 +207,7 @@ describe('ServiceCard', () => {
       expect(root).toHaveAttribute('aria-disabled', 'true')
       expect(root).not.toHaveAttribute('tabindex')
       expect(screen.queryByRole('button')).toBeNull()
+      expect(container.querySelector('.open')).toBeNull()
       await fireEvent.click(root)
       expect(onclick).not.toHaveBeenCalled()
     })

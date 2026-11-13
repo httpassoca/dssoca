@@ -17,6 +17,7 @@
 }
 .blog-brand {
   font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-lg);
   letter-spacing: 0.04em;
 }
 .blog-nav {
@@ -40,6 +41,24 @@
   gap: var(--ss-gap);
   font-family: var(--ss-font-mono);
   font-size: var(--ss-ui-sm);
+}
+/* Quiet chrome: nav + footer links rest in the muted text role (the underline stays, so they
+   are never told apart by colour alone); the accent is kept for the current page and hover/focus.
+   :not([aria-current]) also lifts these above the component's scoped :visited rule. */
+.blog-nav-list .ss-link.inline:not([aria-current]),
+.blog-footer-links .ss-link.inline:not([aria-current]) {
+  font-weight: 400;
+  color: var(--ss-fg-muted);
+}
+.blog-nav-list .ss-link.inline:not([aria-current]) .label::after,
+.blog-footer-links .ss-link.inline:not([aria-current]) .label::after {
+  background: currentColor;
+}
+.blog-nav-list .ss-link.inline:not([aria-current]):hover,
+.blog-nav-list .ss-link.inline:not([aria-current]):focus-visible,
+.blog-footer-links .ss-link.inline:not([aria-current]):hover,
+.blog-footer-links .ss-link.inline:not([aria-current]):focus-visible {
+  color: var(--ss-primary);
 }
 
 /* ---------- intro ---------- */

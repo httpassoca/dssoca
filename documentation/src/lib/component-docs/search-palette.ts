@@ -76,6 +76,18 @@ export const searchPalette: ComponentDoc = {
       desc: 'No-results text (when the `empty` snippet is absent).',
     },
     {
+      name: 'resultsText',
+      type: '(count: number) => string',
+      default: '(n) => `${n} result(s)`',
+      desc: 'Text announced by the visually hidden `role="status"` region while a query is typed (the no-results case announces `emptyText`). Override to localize.',
+    },
+    {
+      name: 'closeLabel',
+      type: 'string',
+      default: "'Close'",
+      desc: 'Accessible name of the × close button, which is shown only in the full-screen small-viewport layout (below 768px).',
+    },
+    {
       name: 'footerText',
       type: 'string | false',
       default: "'↑↓ navigate · ↵ open · esc close'",
@@ -126,6 +138,6 @@ export const searchPalette: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    "Built on the native `<dialog>` (focus trap, Esc, top layer, `::backdrop`) with the ARIA APG combobox pattern: focus stays on the input and options are referenced via `aria-activedescendant` — never DOM-focused. ArrowUp/Down wrap, PageUp/PageDown jump to first/last (Home/End keep their native caret behavior), Tab is swallowed while open, disabled items are skipped. The component is generic (`T extends SearchPaletteItem`), so your extra item fields flow through `onselect` and the `item` snippet typed. The toggle chord is registry-backed (id `ss:search-palette`): it lists in ShortcutsHelp, obeys `shortcuts.setEnabled()` / `shortcuts.remap()`, and fires on the platform modifier only (Cmd+K on macOS, Ctrl+K elsewhere — remap to `'mod+k, ctrl+k'` if you want both). Anything else bound to `mod+k` (another palette, a Topbar with `onCommand`) collides deterministically — the last one mounted wins — so give the chord to exactly one (`shortcut={false}` on the rest). Size controls the panel width only. Zero border-radius. This site's own ⌘K palette is this component — press `mod+k` or `/` anywhere in the docs to see it with a real index (pages, components with searchable props, actions).",
+    "Built on the native `<dialog>` (focus trap, Esc, top layer, `::backdrop`) with the ARIA APG combobox pattern: focus stays on the input and options are referenced via `aria-activedescendant` — never DOM-focused. ArrowUp/Down wrap, PageUp/PageDown jump to first/last (Home/End keep their native caret behavior), Tab is swallowed while open, disabled items are skipped. The component is generic (`T extends SearchPaletteItem`), so your extra item fields flow through `onselect` and the `item` snippet typed. The toggle chord is registry-backed (id `ss:search-palette`): it lists in ShortcutsHelp, obeys `shortcuts.setEnabled()` / `shortcuts.remap()`, and fires on the platform modifier only (Cmd+K on macOS, Ctrl+K elsewhere — remap to `'mod+k, ctrl+k'` if you want both). Anything else bound to `mod+k` (another palette, a Topbar with `onCommand`) collides deterministically — the last one mounted wins — so give the chord to exactly one (`shortcut={false}` on the rest). An always-rendered, visually hidden `role=status` node announces the result count (or `emptyText`) as you type. While open, the page behind is scroll-locked (`overflow: hidden` on `<html>`, restored on close). Below 768px the palette fills the screen and shows a × close button (40px target) since there is no backdrop to tap. Rows use logical properties (active rail on the inline-start edge), so it mirrors under `dir=rtl`. Size controls the panel width only. Zero border-radius. This site's own ⌘K palette is this component — press `mod+k` or `/` anywhere in the docs to see it with a real index (pages, components with searchable props, actions).",
   guide: { href: '/keyboard', label: 'Making your site keyboard-friendly' },
 }

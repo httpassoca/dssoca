@@ -251,11 +251,21 @@ describe('Sidebar', () => {
 
   it('renders a collapse toggle and fires onToggleCollapsed', async () => {
     const onToggleCollapsed = vi.fn()
-    const { container, getByRole } = render(Sidebar, { onToggleCollapsed })
-    const toggle = getByRole('button', { name: 'Collapse sidebar' })
-    expect(toggle).toHaveAttribute('aria-pressed', 'false')
+    const { getByRole } = render(Sidebar, { onToggleCollapsed })
+    const toggle = getByRole('button', { name: 'Sidebar' })
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
     await fireEvent.click(toggle)
     expect(onToggleCollapsed).toHaveBeenCalledWith(true)
+  })
+
+  // Front-End Checklist (DS-0181): a state-dependent label plus aria-pressed read as
+  // "Collapse sidebar, pressed". The name stays static and the state is aria-expanded.
+  it('keeps the toggle name static and exposes state via aria-expanded, not aria-pressed', () => {
+    const onToggleCollapsed = vi.fn()
+    const { getByRole } = render(Sidebar, { onToggleCollapsed, collapsed: true })
+    const toggle = getByRole('button', { name: 'Sidebar' })
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    expect(toggle).not.toHaveAttribute('aria-pressed')
   })
 
   it('omits the toggle when no onToggleCollapsed handler is provided', () => {
@@ -400,5 +410,74 @@ describe('Sidebar', () => {
     })
     const child = container.querySelector('a.item.child')
     expect(child).toHaveAttribute('href', '/movies')
+  })
+})
+
+describe('Sidebar — Front-End Checklist fixes (DS-0181)', () => {
+  const STATUS_GROUPS = [
+    {
+      section: 's',
+      items: [
+        { id: 'a', label: 'Alpha', icon: 'grid' as const, status: 'up' as const },
+        { id: 'b', label: 'Beta', icon: 'grid' as const, status: 'deg' as const },
+        { id: 'c', label: 'Gamma', href: '/c', status: 'down' as const },
+        {
+          id: 'd',
+          label: 'Delta',
+          status: 'deg' as const,
+          children: [
+            { id: 'd1', label: 'Delta one', status: 'down' as const },
+            { id: 'd2', label: 'Delta two', href: '/d2', status: 'deg' as const },
+          ],
+        },
+      ],
+    },
+  ]
+
+  it('announces degraded/down status in the expanded rail, not only via the coloured dot', () => {
+    const { getByRole } = render(Sidebar, { groups: STATUS_GROUPS, active: 'd1' })
+    expect(getByRole('button', { name: /^Beta\s*, degraded$/ })).toBeInTheDocument()
+    expect(getByRole('link', { name: /^Gamma\s*, down$/ })).toBeInTheDocument()
+    expect(getByRole('button', { name: /^Delta\s*, degraded$/ })).toBeInTheDocument()
+    expect(getByRole('button', { name: /^Delta one\s*, down$/ })).toBeInTheDocument()
+    expect(getByRole('link', { name: /^Delta two\s*, degraded$/ })).toBeInTheDocument()
+    // 'up' is the healthy default and adds no word.
+    expect(getByRole('button', { name: 'Alpha' })).toBeInTheDocument()
+  })
+
+  it('keeps section and sub-panel ids unique across two Sidebars on one page', () => {
+    const groups = [
+      {
+        section: 'sec',
+        items: [{ id: 'media', label: 'Media', children: [{ id: 'm', label: 'M' }] }],
+      },
+    ]
+    const a = render(Sidebar, { groups })
+    const b = render(Sidebar, { groups })
+    const ids = [a.container, b.container].flatMap((c) =>
+      Array.from(c.querySelectorAll('[id]')).map((el) => el.id),
+    )
+    expect(ids).toHaveLength(4)
+    expect(new Set(ids).size).toBe(ids.length)
+    // References still resolve inside each instance.
+    for (const c of [a.container, b.container]) {
+      const list = c.querySelector('ul.list')!
+      expect(c.querySelector(`#${CSS.escape(list.getAttribute('aria-labelledby')!)}`)).toHaveClass(
+        'section',
+      )
+      const disc = c.querySelector('.disclosure')!
+      expect(c.querySelector(`#${CSS.escape(disc.getAttribute('aria-controls')!)}`)).toHaveClass(
+        'sublist',
+      )
+    }
+  })
+
+  it('uses logical (RTL-safe) properties instead of physical left/right', () => {
+    const source = readFileSync(resolve(process.cwd(), 'src/lib/components/Sidebar.svelte'), 'utf8')
+    const style = source.slice(source.indexOf('<style'))
+    expect(style).not.toMatch(/(margin|padding|border)-(left|right)\b/)
+    expect(style).not.toMatch(/text-align:\s*(left|right)/)
+    expect(style).toMatch(/border-inline-end:\s*1px solid var\(--ss-line\)/)
+    expect(style).toMatch(/\.open:dir\(rtl\)/)
   })
 })

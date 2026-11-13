@@ -25,6 +25,8 @@ describe('BoxPlot — boxes', () => {
     const boxes = container.querySelectorAll('.ss-boxplot rect.box')
     expect(boxes).toHaveLength(3)
     expect(boxes[0]).toHaveAttribute('tabindex', '0')
+    expect(boxes[1]).toHaveAttribute('tabindex', '-1')
+    expect(boxes[2]).toHaveAttribute('tabindex', '-1')
     expect(boxes[0].getAttribute('aria-label')).toContain('Ana')
   })
 
@@ -53,6 +55,76 @@ describe('BoxPlot — tooltip', () => {
     expect(container.querySelector('.ss-boxplot .tooltip')!.textContent).toContain('Ana')
     await fireEvent.blur(box)
     expect(container.querySelector('.ss-boxplot .tooltip')).toBeNull()
+  })
+
+  it('hides the tooltip from AT and is not a live region', async () => {
+    const { container } = render(BoxPlot, { groups })
+    await fireEvent.focus(container.querySelector('.ss-boxplot rect.box')!)
+    const tip = container.querySelector('.ss-boxplot .tooltip')!
+    expect(tip).toHaveAttribute('aria-hidden', 'true')
+    expect(tip).not.toHaveAttribute('role')
+  })
+
+  it('dismisses the tooltip on Escape (focus and hover)', async () => {
+    const { container } = render(BoxPlot, { groups })
+    const box = container.querySelector('.ss-boxplot rect.box')!
+    await fireEvent.focus(box)
+    await fireEvent.keyDown(box, { key: 'Escape' })
+    expect(container.querySelector('.ss-boxplot .tooltip')).toBeNull()
+    await fireEvent.mouseEnter(box)
+    expect(container.querySelector('.ss-boxplot .tooltip')).not.toBeNull()
+    await fireEvent.keyDown(window, { key: 'Escape' })
+    expect(container.querySelector('.ss-boxplot .tooltip')).toBeNull()
+  })
+
+  it('puts min and max (shown only in the tooltip) into the box label', () => {
+    const { container } = render(BoxPlot, {
+      groups: [{ label: 'G', values: [1, 2, 3, 4, 5] }],
+      yFormat: (y: number) => `${y}u`,
+    })
+    const label = container.querySelector('.ss-boxplot rect.box')!.getAttribute('aria-label')!
+    expect(label).toContain('min 1u')
+    expect(label).toContain('max 5u')
+  })
+})
+
+describe('BoxPlot — keyboard (roving tabindex)', () => {
+  it('exposes marks as role="img", not inert buttons', () => {
+    const { container } = render(BoxPlot, { groups })
+    const boxes = container.querySelectorAll('.ss-boxplot rect.box')
+    boxes.forEach((b) => expect(b).toHaveAttribute('role', 'img'))
+    expect(container.querySelector('.ss-boxplot [role="button"]')).toBeNull()
+  })
+
+  it('is a single tab stop', () => {
+    const { container } = render(BoxPlot, { groups })
+    expect(container.querySelectorAll('.ss-boxplot [tabindex="0"]')).toHaveLength(1)
+  })
+
+  it('moves focus with the arrow keys, Home and End, and keeps the last focused as the tab stop', async () => {
+    const { container } = render(BoxPlot, { groups })
+    const boxes = container.querySelectorAll<SVGRectElement>('.ss-boxplot rect.box')
+    boxes[0].focus()
+    await fireEvent.keyDown(boxes[0], { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(boxes[1])
+    expect(boxes[1]).toHaveAttribute('tabindex', '0')
+    expect(boxes[0]).toHaveAttribute('tabindex', '-1')
+    await fireEvent.keyDown(boxes[1], { key: 'End' })
+    expect(document.activeElement).toBe(boxes[2])
+    await fireEvent.keyDown(boxes[2], { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(boxes[2])
+    await fireEvent.keyDown(boxes[2], { key: 'ArrowUp' })
+    expect(document.activeElement).toBe(boxes[1])
+    await fireEvent.keyDown(boxes[1], { key: 'Home' })
+    expect(document.activeElement).toBe(boxes[0])
+    expect(container.querySelectorAll('.ss-boxplot [tabindex="0"]')).toHaveLength(1)
+  })
+
+  it('does not swallow non-navigation keys', async () => {
+    const { container } = render(BoxPlot, { groups })
+    const box = container.querySelector('.ss-boxplot rect.box')!
+    const notCancelled = await fireEvent.keyDown(box, { key: 'Tab' })
+    expect(notCancelled).toBe(true)
   })
 })
 

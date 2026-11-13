@@ -4,7 +4,7 @@
  * wires the fake mail model: selection, stars, filters, shortcuts and the search palette.
  */
 import { setAxes, getAxes } from '../assets/axes.js'
-import { toast } from '../vendor/vanilla/index.js'
+import { toast, openModal, closeModal } from '../vendor/vanilla/index.js'
 
 const $ = (sel, root = document) => root.querySelector(sel)
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel))
@@ -34,6 +34,7 @@ function syncUnread() {
 function markRead(row) {
   row.classList.remove('is-unread')
   row.dataset.unread = 'false'
+  $('[data-unread-word]', row)?.remove()
 }
 
 // ── selection (click, j/k) ──────────────────────────────────────────────────
@@ -72,7 +73,6 @@ function toggleStar(row) {
   const btn = $('.mail-star', row)
   const on = btn.getAttribute('aria-pressed') !== 'true'
   btn.setAttribute('aria-pressed', String(on))
-  btn.textContent = on ? '★' : '☆'
   row.dataset.starred = String(on)
   applyFilter()
 }
@@ -216,7 +216,7 @@ $('#compose-send').addEventListener('click', () => {
     return
   }
   $('#compose-form').reset()
-  compose.close()
+  closeModal(compose)
   toast.success('sent')
 })
 
@@ -226,7 +226,7 @@ const searchInput = $('.input', search)
 
 function openSearch() {
   if (search.open) return
-  search.showModal()
+  openModal(search)
   searchInput.value = ''
   searchInput.focus()
 }
@@ -235,14 +235,21 @@ $('#search-open').addEventListener('click', openSearch)
 $('#search-open-mobile').addEventListener('click', openSearch)
 
 search.addEventListener('pointerdown', (e) => {
-  if (e.target === search) search.close()
+  if (e.target === search) closeModal(search)
 })
+
+// The × in the bar (the full-screen small-viewport exit).
+$('.close', search).addEventListener('click', () => closeModal(search))
+
+// Escape closes the dialog natively; release the scroll lock with it (the vanilla
+// modal helper only watches dialog.ss-modal for native closes).
+search.addEventListener('close', () => closeModal(search))
 
 search.addEventListener('click', (e) => {
   const row = e.target.closest('.row[role="option"]')
   if (!row) return
-  search.close()
-  if (row.dataset.action === 'compose') compose.showModal()
+  closeModal(search)
+  if (row.dataset.action === 'compose') openModal(compose)
   else if (row.dataset.action === 'starred') {
     const seg = $('#filter .segment[data-value="starred"]')
     seg.click()
@@ -281,7 +288,7 @@ document.addEventListener('keydown', (e) => {
       break
     }
     case 'c':
-      compose.showModal()
+      openModal(compose)
       break
   }
 })

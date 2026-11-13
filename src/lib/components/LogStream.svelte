@@ -19,7 +19,6 @@
 <script lang="ts">
   import { tick, untrack, type Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
-  import EmptyState from './EmptyState.svelte'
 
   interface Props {
     /** Controlled lines. When provided, the component renders exactly these (capped to `maxLines`). */
@@ -225,12 +224,15 @@
   {/if}
 
   <div class="viewport">
+    <!-- Focusable so keyboard users (notably Safari, which doesn't focus scrollers) can scroll it. -->
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
     <div
       class="scroll"
       class:nowrap={!wrapOn}
       bind:this={el}
       onscroll={onScroll}
       role="log"
+      tabindex="0"
       aria-label={ariaLabel}
       aria-live={announce}
       aria-busy={loading}
@@ -245,13 +247,14 @@
         {#if empty}
           {@render empty()}
         {:else}
-          <EmptyState
-            title="No log lines"
-            message={allLines.length
-              ? 'No lines match the current filters.'
-              : 'Waiting for output…'}
-            {size}
-          />
+          <!-- Plain text, not <EmptyState>: its role="status" nested inside the
+               role="log" live region would announce the message twice. -->
+          <div class="empty">
+            <p class="empty-title">No log lines</p>
+            <p class="empty-msg">
+              {allLines.length ? 'No lines match the current filters.' : 'Waiting for output…'}
+            </p>
+          </div>
         {/if}
       {:else}
         {#each visibleLines as line, i (keyFor(line, i))}
@@ -335,8 +338,11 @@
     &[aria-pressed='true'] {
       border-color: var(--ss-line-strong);
     }
+    // Off: muted (AA on --ss-code-bg) text + dashed border instead of opacity, which dropped
+    // contrast to ~2.6–3.7:1. The border style keeps "off" non-colour-only.
     &[aria-pressed='false'] {
-      opacity: 0.45;
+      color: var(--ss-fg-muted);
+      border-style: dashed;
     }
 
     &.info[aria-pressed='true'] {
@@ -420,6 +426,28 @@
     .svc {
       color: var(--ss-code-keyword);
       flex: none;
+    }
+  }
+
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ss-gap-sm);
+    min-height: calc(var(--_min-h) - 2 * var(--ss-gap));
+    text-align: center;
+
+    p {
+      margin: 0;
+    }
+    .empty-title {
+      color: var(--ss-code-fg);
+      font-size: var(--ss-ui-md);
+    }
+    .empty-msg {
+      color: var(--ss-fg-faint);
+      font-size: var(--ss-ui-sm);
     }
   }
 

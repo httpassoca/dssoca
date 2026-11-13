@@ -101,6 +101,7 @@ Published surface (`exports`): `dssoca` (components + config), `dssoca/theme.css
   both render from it — never hand-write a card).
 - **Tests are a RULE**: run `pnpm test` and add/extend tests for any change before calling it done.
   A11y is covered by `vitest-axe` (unit) + `@storybook/addon-a11y` (Storybook); target WCAG 2.2 AA.
+  axe alone is not enough — follow _Accessibility & quality rules_ below.
 - **Docs are a RULE**: every user-facing change ships its docs. Update the component page in
   `documentation/src/lib/docs.config.ts` (`COMPONENTS` — `props`/`usage`/`description`/`notes`) for
   any API change, and `docs/tokens.md` (+ `docs/themes.md` when colors/theming change) for any token
@@ -108,6 +109,85 @@ Published surface (`exports`): `dssoca` (components + config), `dssoca/theme.css
   speculative APIs.
 - **Agile is a RULE**: update `agile/` items on any change (move status, add stories/tasks, bump
   `updated`), then `node build.mjs` in `agile/` to rebuild the board.
+
+## Accessibility & quality rules — apply to every component change
+
+These came out of the Front-End Checklist audit of all components (GitHub #139, agile `DS-0161`).
+Check a new or changed component against them **before** calling it done. The mechanical ones are
+enforced by `test/unit/checklist-guards.test.ts`; the rest need judgement and a browser.
+
+**Focus**
+
+- Never replace the base focus ring (`outline: 2px solid var(--ss-primary); outline-offset: 2px`,
+  `_base.scss`) with something weaker. `--ss-primary-soft` is a 12–18% wash (~1.2–1.5:1) and is
+  **never** a focus indicator. If the element clips, use `outline-offset: -2px` or a solid inset
+  `box-shadow` in `--ss-primary`. An indicator needs ≥3:1 against what is behind it.
+- Never let focus fall to `<body>`: when an action removes or disables the focused element (remove
+  buttons, dismissable toasts, steppers at a bound), move focus to a sensible neighbour, or use
+  `aria-disabled` + a no-op instead of native `disabled`.
+- Hidden means hidden: collapsed/closed content must leave the tab order **and** the a11y tree
+  (`inert` + `visibility: hidden`, or real `hidden`). Clipping with `overflow` is not hiding.
+- Modal surfaces lock page scroll with `lockScroll()`/`unlockScroll()` (`vanilla/modal.ts`,
+  reference-counted) and need a visible close control on touch (no Esc key there).
+
+**Names, roles, states**
+
+- A role is a promise: `role="button"`/`tabindex="0"` only on things that do something when
+  activated. Data marks are `role="img"` (or `gridcell`), not buttons.
+- Never nest interactive content inside a button/link. A fully clickable card uses the stretched
+  overlay pattern (`<a|button class="overlay">` as a sibling; see `Card.svelte`, `ServiceCard.svelte`).
+- `aria-describedby`/`aria-labelledby` go on the element that takes focus, not a wrapper. Don't put
+  `aria-labelledby` on a role-less `<div>`. IDs come from `$props.id()` so two instances never collide.
+- `aria-label` replaces content. Prefer `aria-labelledby` on visible text (so speech-input users can
+  say what they see), and never let a label hide information (counts, status, host…).
+- Don't announce the same thing twice (label + tooltip, value text + `aria-label`, hint in both name
+  and description): mark the visual duplicate `aria-hidden`.
+- Never encode meaning in colour alone: status gets a (visually hidden) word, chart series get a
+  dash pattern/shape or direct label, inline links get a resting underline.
+
+**Live regions**
+
+- A live region must be in the DOM **before** its content changes, and should carry enough context
+  to make sense alone ("label value", not a bare number). Don't nest live regions.
+- Liveness is opt-in for anything that can appear many times on a page (tiles, cards).
+
+**Keyboard**
+
+- Composite widgets are ONE tab stop with roving tabindex; a missing/invalid "active" item must
+  still leave one item at `tabindex="0"`. Charts use `chartNavStep` (`src/lib/chart-nav.ts`).
+- Tooltips/popovers: dismissable with Escape from anywhere, hoverable, persistent (WCAG 1.4.13).
+- Arrow keys follow reading direction: read `getComputedStyle(el).direction` at keydown and swap
+  Left/Right under `rtl` (not for SVG charts, which don't mirror).
+
+**Layout, colour, motion**
+
+- Logical properties only for margin/padding/border/text-align/insets (`margin-inline-start`,
+  `inset-inline-end`, `text-align: start`). Physical `left/right` is fine only for
+  direction-independent geometry (`left: 50%` centring, full-bleed `left: 0; right: 0`).
+- Touch targets ≥24×24 CSS px (`min-inline-size`/`min-block-size: var(--ss-s-6)`), growing the hit
+  area, not the glyph.
+- Text contrast ≥4.5:1 **against the surface it actually sits on** — `--ss-fg-faint` is AA-tuned
+  for `--ss-bg` only, not `--ss-code-bg` or tinted fills. Never use `opacity` to mute an active
+  control's text; use a colour token. Text over a variable-strength fill needs a halo or a
+  per-strength colour.
+- CSS transitions use `--ss-dur-*` (zeroed under reduced motion). JS animations (`animate:flip`,
+  `Tween`, rAF) must check `prefersReducedMotion` from `svelte/motion` themselves.
+
+**Safety & defaults**
+
+- `{@html}` only with developer-authored markup, sanitised and documented as trusted-only.
+- `target="_blank"` always gets `rel="noopener noreferrer"` (merged with any caller `rel`) and a
+  new-tab hint.
+- No made-up default data (a fake sparkline is announced as a real trend). Empty defaults.
+
+**Process**
+
+- jsdom can't see focus visibility, contrast, hover or RTL layout. For any interactive or visual
+  change run the browser pass (`.claude/skills/verify`), in both themes and under `dir="rtl"`.
+- A markup or attribute change is a vanilla-contract change: mirror it in `src/lib/vanilla/` and in
+  the `inspirations/` pages that hand-write that component.
+- To audit: the `frontend-checklist-global` skill (Front-End Checklist plugin); rule text lives at
+  <https://frontendchecklist.io/rules>.
 
 ## Commands
 
@@ -155,6 +235,7 @@ and CI enforces it as a blocking step.
 2. Export it from `src/lib/index.ts`, and register its root class in `ROOT_CLASSES`
    (`scripts/lib/vanilla-css.mjs`) — the drift test fails otherwise.
 3. Add a Vitest test under `test/unit/` (mirror an existing one; harness in `test/harness/` if needed).
+   Walk the _Accessibility & quality rules_ above and pin each one that applies with a test.
 4. `pnpm test` green; `pnpm pack` clean (publint).
 5. Update the docs: the component's entry in `documentation/src/lib/component-docs/` (props/usage/
    description/notes **and an `htmlExample`** — the docs build server-renders it into the page's

@@ -4,11 +4,32 @@
  * vanilla.js; this file only wires the feed-specific state: likes, boosts, follows, the
  * composer character count and the "load more" button.
  */
-import { toast } from '../vendor/vanilla/index.js'
+import { toast, registerIcon, hydrateIcons } from '../vendor/vanilla/index.js'
 import { setAxes, getAxes } from '../assets/axes.js'
 
 const $ = (sel, root = document) => root.querySelector(sel)
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)]
+
+// ---------- post-action glyphs ----------
+// dssoca has no reply / boost / like glyphs, so register three in the same square-cap style
+// and hydrate their placeholders (vanilla.js has already mounted the built-in ones by now).
+registerIcon('sig-reply', '<path d="M9 6l-5 5 5 5"/><path d="M4 11h16v8"/>')
+registerIcon(
+  'sig-boost',
+  '<path d="M4 12V7h13"/><path d="M14 4l3 3-3 3"/><path d="M20 12v5H7"/><path d="M10 14l-3 3 3 3"/>',
+)
+registerIcon('sig-like', '<path d="M12 21 4 13a5 5 0 0 1 7-7l1 1 1-1a5 5 0 0 1 7 7z"/>')
+for (const el of $$('[data-sig-icon]')) {
+  el.setAttribute('data-ss-icon', `sig-${el.dataset.sigIcon}`)
+  el.removeAttribute('data-sig-icon')
+}
+hydrateIcons(document)
+
+/** The like glyph is an outline at rest and filled once pressed. */
+function setLiked(btn, liked) {
+  btn.setAttribute('aria-pressed', liked ? 'true' : 'false')
+  btn.querySelector('.affix svg')?.setAttribute('fill', liked ? 'currentColor' : 'none')
+}
 
 const fmt = (n) => new Intl.NumberFormat('en', { notation: 'compact' }).format(n)
 
@@ -31,13 +52,11 @@ document.addEventListener('click', (e) => {
   const btn = e.target instanceof Element ? e.target.closest('[data-action]') : null
   if (!btn) return
   const action = btn.dataset.action
-  const affix = btn.querySelector('.affix')
 
   if (action === 'like') {
     const liked = btn.getAttribute('aria-pressed') === 'true'
     const next = countOf(btn) + (liked ? -1 : 1)
-    btn.setAttribute('aria-pressed', liked ? 'false' : 'true')
-    if (affix) affix.textContent = liked ? '♡' : '♥'
+    setLiked(btn, !liked)
     setCount(btn, next, 'like')
     return
   }
@@ -151,10 +170,7 @@ postBtn?.addEventListener('click', () => {
     clone.querySelector('.sig-post-text').textContent = text
     for (const b of clone.querySelectorAll('[data-action]')) {
       b.removeAttribute('data-boosted')
-      if (b.dataset.action === 'like') {
-        b.setAttribute('aria-pressed', 'false')
-        b.querySelector('.affix').textContent = '♡'
-      }
+      if (b.dataset.action === 'like') setLiked(b, false)
       if (b.dataset.action !== 'share')
         setCount(b, 0, b.dataset.action === 'reply' ? 'reply' : b.dataset.action)
     }

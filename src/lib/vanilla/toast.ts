@@ -7,9 +7,15 @@
  *   toasts.dismiss(id) / clear() / update(id, patch) / max
  *
  * The stack lives in the first `.ss-toaster` on the page (author it to choose `data-position`
- * / size) or in one auto-created under `<body>`. Hover/focus pause the timer, Escape and the
- * × button dismiss, exit runs the `.leaving` CSS animation from vanilla.css. Swipe-to-dismiss
- * is not ported.
+ * / size) or in one auto-created under `<body>`. Hover/focus pause the timer (it resumes only
+ * once the pointer has left AND focus is outside the toast), Escape and the × button dismiss,
+ * exit runs the `.leaving` CSS animation from vanilla.css. Dismissing the focused toast moves
+ * focus to a neighbouring toast, or back to where it came from. Swipe-to-dismiss is not ported.
+ *
+ * Announcements go through two persistent, visually hidden live regions inside the container
+ * (`.live[role=status]` polite, `.live[role=alert]` assertive — the same DOM Toaster.svelte
+ * renders; author them in the markup or they are added on DOM ready / first use). Each visible
+ * toast mirrors its message into one of them; the toasts themselves carry no live role.
  */
 import {
   type Toast,
@@ -39,8 +45,14 @@ const LEAVE_FALLBACK_MS = 400
 interface Live {
   toast: Toast
   el: HTMLElement
+  /** The toast's mirror node inside the polite/assertive live region. */
+  say: HTMLElement
   timer: ToastTimer | null
+  hovered: boolean
 }
+
+/** Screen readers need a moment to register a fresh live region before it changes. */
+const LIVE_READY_MS = 100
 
 const reduceMotion = () =>
   typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -51,6 +63,11 @@ class VanillaToastStore {
   #live: Live[] = []
   #queue: Toast[] = []
   #container: HTMLElement | null = null
+  #polite: HTMLElement | null = null
+  #assertive: HTMLElement | null = null
+  /** When the current live regions were created (content inserted earlier may be skipped). */
+  #liveSince = 0
+  #returnFocus: HTMLElement | null = null
 
   /** Visible toasts (read-only snapshot). */
   get items(): Toast[] {
@@ -69,7 +86,58 @@ class VanillaToastStore {
       document.body.appendChild(el)
     }
     this.#container = el
+    el.addEventListener('focusin', (e) => {
+      const from = e.relatedTarget as HTMLElement | null
+      if (from && !el.contains(from)) this.#returnFocus = from
+    })
+    this.#ensureLive(el)
     return el
+  }
+
+  /** Make sure the container holds both persistent live regions (adds any that are missing). */
+  #ensureLive(el: HTMLElement): void {
+    const find = (role: string) =>
+      Array.from(el.children).find(
+        (c): c is HTMLElement => c.classList.contains('live') && c.getAttribute('role') === role,
+      ) ?? null
+    let polite = find('status')
+    let assertive = find('alert')
+    this.#liveSince = !polite || !assertive ? Date.now() : 0
+    if (!polite) {
+      polite = document.createElement('div')
+      polite.className = 'live'
+      polite.setAttribute('role', 'status')
+      polite.setAttribute('aria-live', 'polite')
+      el.prepend(polite)
+    }
+    if (!assertive) {
+      assertive = document.createElement('div')
+      assertive.className = 'live'
+      assertive.setAttribute('role', 'alert')
+      assertive.setAttribute('aria-live', 'assertive')
+      polite.after(assertive)
+    }
+    this.#polite = polite
+    this.#assertive = assertive
+  }
+
+  /** Prepare the live regions of an author-placed container ahead of the first toast. */
+  prepare(): void {
+    if (document.querySelector('.ss-toaster')) void this.container
+  }
+
+  /** Write a toast's message into the live region matching its kind. */
+  #announce(live: Live): void {
+    const region = live.toast.kind === 'error' ? this.#assertive! : this.#polite!
+    const text = live.toast.message
+    const write = () => {
+      if (!this.#live.includes(live)) return
+      if (live.say.parentElement !== region) region.appendChild(live.say)
+      live.say.textContent = text
+    }
+    const wait = this.#liveSince + LIVE_READY_MS - Date.now()
+    if (wait > 0) setTimeout(write, wait)
+    else write()
   }
 
   push(kind: ToastKind, message: string, opts?: ToastOptions | number): number {
@@ -85,10 +153,26 @@ class VanillaToastStore {
     const el = document.createElement('div')
     el.tabIndex = -1
     this.#render(el, t)
-    el.addEventListener('pointerenter', () => this.pause(t.id))
-    el.addEventListener('pointerleave', () => this.resume(t.id))
+    const live: Live = {
+      toast: t,
+      el,
+      say: document.createElement('p'),
+      timer: null,
+      hovered: false,
+    }
+    el.addEventListener('pointerenter', () => {
+      live.hovered = true
+      this.pause(t.id)
+    })
+    el.addEventListener('pointerleave', () => {
+      live.hovered = false
+      if (!el.contains(document.activeElement)) this.resume(t.id)
+    })
     el.addEventListener('focusin', () => this.pause(t.id))
-    el.addEventListener('focusout', () => this.resume(t.id))
+    el.addEventListener('focusout', (e) => {
+      if (el.contains(e.relatedTarget as Node | null) || live.hovered) return
+      this.resume(t.id)
+    })
     el.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         e.stopPropagation()
@@ -105,15 +189,17 @@ class VanillaToastStore {
       }
     })
     this.container.appendChild(el)
-    const live: Live = { toast: t, el, timer: null }
     this.#live.push(live)
+    this.#announce(live)
     this.#arm(live)
   }
 
   #render(el: HTMLElement, t: Toast): void {
     el.className = `ss-toast ${t.kind}`
-    el.setAttribute('role', t.kind === 'error' ? 'alert' : 'status')
-    el.setAttribute('aria-live', t.kind === 'error' ? 'assertive' : 'polite')
+    // A focusable group named by its message (focus can land on the toast itself).
+    const msgId = `ss-toast-msg-${t.id}`
+    el.setAttribute('role', 'group')
+    el.setAttribute('aria-labelledby', msgId)
     const ic =
       t.kind === 'loading'
         ? `<span class="ic spinner${reduceMotion() ? ' still' : ''}" aria-hidden="true"></span>`
@@ -122,7 +208,7 @@ class VanillaToastStore {
       ? `<button class="action" type="button">${escapeHtml(t.action.label)}</button>`
       : ''
     el.innerHTML =
-      `${ic}<span class="msg">${escapeHtml(t.message)}</span>${action}` +
+      `${ic}<span class="msg" id="${msgId}">${escapeHtml(t.message)}</span>${action}` +
       `<button class="x" type="button" aria-label="Dismiss">×</button>`
   }
 
@@ -147,7 +233,11 @@ class VanillaToastStore {
     if (patch.timeout !== undefined) target.timeout = patch.timeout
     else if (patch.kind !== undefined) target.timeout = DEFAULT_TIMEOUT[patch.kind]
     if (live) {
+      // Re-rendering replaces the toast's buttons; keep focus inside it.
+      const hadFocus = live.el.contains(document.activeElement)
       this.#render(live.el, live.toast)
+      if (hadFocus && !live.el.contains(document.activeElement)) live.el.focus()
+      this.#announce(live)
       this.#arm(live)
     }
     return true
@@ -164,14 +254,26 @@ class VanillaToastStore {
   dismiss(id: number): void {
     const i = this.#live.findIndex((l) => l.toast.id === id)
     if (i !== -1) {
+      if (holdsFocus(this.#live[i])) this.#moveFocusFrom(i)
       const [live] = this.#live.splice(i, 1)
       live.timer?.cancel()
+      live.say.remove()
       this.#leave(live.el)
       this.#promote()
       return
     }
     const qi = this.#queue.findIndex((t) => t.id === id)
     if (qi !== -1) this.#queue.splice(qi, 1)
+  }
+
+  /** Move focus off the toast at `i` (about to be removed): next toast, previous, or origin. */
+  #moveFocusFrom(i: number): void {
+    const next = this.#live[i + 1] ?? this.#live[i - 1]
+    if (next) next.el.focus()
+    else if (this.#returnFocus?.isConnected) {
+      this.#returnFocus.focus()
+      this.#returnFocus = null
+    }
   }
 
   #leave(el: HTMLElement): void {
@@ -197,6 +299,7 @@ class VanillaToastStore {
   clear(): void {
     for (const l of this.#live) {
       l.timer?.cancel()
+      l.say.remove()
       l.el.remove()
     }
     this.#live = []
@@ -204,11 +307,23 @@ class VanillaToastStore {
   }
 }
 
+const holdsFocus = (l: Live): boolean => l.el.contains(document.activeElement)
+
 function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
 export const toasts = new VanillaToastStore()
+
+// Give an author-placed `.ss-toaster` its live regions as soon as the DOM is ready, so they exist
+// well before the first toast writes into them.
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => toasts.prepare(), { once: true })
+  } else {
+    toasts.prepare()
+  }
+}
 
 export const toast = {
   success: (message: string, opts?: ToastOptions | number) => toasts.push('success', message, opts),

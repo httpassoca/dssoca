@@ -1,7 +1,14 @@
 import { describe, it, expect, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, fireEvent } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
 import Switch from '$lib/components/Switch.svelte'
+
+// jsdom's getComputedStyle does not apply Svelte's scoped <style> cascade, so the
+// focus-ring and RTL contracts are asserted at the source (same pattern as Accordion).
+const source = readFileSync(resolve(process.cwd(), 'src/lib/components/Switch.svelte'), 'utf8')
+const style = source.slice(source.indexOf('<style'))
 
 const axeOpts = {
   rules: {
@@ -117,5 +124,18 @@ describe('Switch', () => {
   it('has no axe violations when disabled', async () => {
     const { container } = render(Switch, { label: 'Notifications', disabled: true })
     expect(await axe(container, axeOpts)).toHaveNoViolations()
+  })
+
+  describe('CSS contracts (DS-0171)', () => {
+    it('does not replace the base focus ring with the faint --ss-primary-soft shadow', () => {
+      expect(style).not.toContain('--ss-primary-soft')
+      expect(style).not.toMatch(/outline:\s*none/)
+    })
+
+    it('positions and slides the thumb with logical properties (RTL-safe)', () => {
+      expect(style).not.toMatch(/(^|[\s;{])(left|right):/m)
+      expect(style).not.toContain('translateX')
+      expect(style).toContain('inset-inline-start')
+    })
   })
 })

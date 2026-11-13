@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, fireEvent } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
 import Pagination from '$lib/components/Pagination.svelte'
@@ -11,6 +13,9 @@ const axeOpts = {
     'color-contrast': { enabled: false },
   },
 }
+
+const source = readFileSync(resolve(process.cwd(), 'src/lib/components/Pagination.svelte'), 'utf8')
+const style = source.slice(source.indexOf('<style'))
 
 /** The page-number buttons only (excludes Prev/Next nav buttons). */
 function numberButtons(container: HTMLElement) {
@@ -138,5 +143,22 @@ describe('Pagination', () => {
   it('has no axe violations (windowed with ellipses)', async () => {
     const { container } = render(Pagination, { page: 10, pageCount: 20 })
     expect(await axe(container, axeOpts)).toHaveNoViolations()
+  })
+
+  describe('RTL (DS-0193)', () => {
+    it('draws cell dividers with logical inline-start borders, not physical left/right', () => {
+      expect(style).not.toMatch(/border-(left|right)\b/)
+      expect(style).toContain('border-inline-start: 1px solid var(--ss-line)')
+      expect(style).toMatch(/&:first-child\s*\{\s*border-inline-start: 0;/)
+    })
+
+    it('relies on bidi mirroring for the ‹ › glyphs (no transform that would double-flip them)', () => {
+      const { container } = render(Pagination, { page: 2, pageCount: 3 })
+      const glyphs = Array.from(container.querySelectorAll('.nav-btn span')).map(
+        (s) => s.textContent,
+      )
+      expect(glyphs).toEqual(['\u2039', '\u203A'])
+      expect(style).not.toMatch(/scaleX\(-1\)|rotate\(180deg\)/)
+    })
   })
 })

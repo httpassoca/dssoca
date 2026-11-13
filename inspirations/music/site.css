@@ -96,12 +96,6 @@ body {
   gap: var(--ss-gap);
   align-items: end;
   padding: var(--ss-main-py) var(--ss-main-px) var(--ss-s-6);
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--ss-magenta) 26%, var(--ss-bg)) 0%,
-    color-mix(in oklab, var(--ss-blue) 10%, var(--ss-bg)) 70%,
-    var(--ss-bg) 100%
-  );
 }
 
 .music-hero-cover {
@@ -190,6 +184,11 @@ body {
   min-width: 0;
 }
 
+.music-num {
+  font-variant-numeric: tabular-nums;
+  color: var(--ss-fg-muted);
+}
+
 .music-thumb {
   width: var(--ss-s-10);
   height: var(--ss-s-10);
@@ -218,13 +217,16 @@ body {
   color: var(--ss-fg-muted);
 }
 
-.music-playing .music-track-title {
+/* The playing row is marked once, in the index column: the equaliser while playing, the
+   accent track number while paused. The title stays neutral. */
+.music-playing .music-num {
   color: var(--ss-primary);
 }
 
-.music-num {
-  font-variant-numeric: tabular-nums;
-  color: var(--ss-fg-muted);
+/* Liked hearts: solid glyph at full text strength; not-liked stay a muted outline. */
+.music-tracks [data-like][aria-pressed='true'],
+#music-now-like[aria-pressed='true'] {
+  color: var(--ss-fg);
 }
 
 .music-num[hidden],
@@ -339,14 +341,14 @@ body {
   -webkit-appearance: none;
   flex: 1 1 auto;
   width: 100%;
-  height: 4px;
+  height: var(--ss-s-1);
   margin: 0;
   padding: 0;
   border: 0;
   cursor: pointer;
   background: linear-gradient(
     to right,
-    var(--ss-primary) var(--music-fill, 0%),
+    var(--ss-fg-muted) var(--music-fill, 0%),
     var(--ss-line-strong) var(--music-fill, 0%)
   );
 }
@@ -354,22 +356,22 @@ body {
 .music-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 12px;
-  height: 12px;
+  width: var(--ss-s-3);
+  height: var(--ss-s-3);
   background: var(--ss-fg);
   border: 0;
 }
 
 .music-range::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
+  width: var(--ss-s-3);
+  height: var(--ss-s-3);
   background: var(--ss-fg);
   border: 0;
 }
 
 .music-range:focus-visible {
   outline: 2px solid var(--ss-primary);
-  outline-offset: 4px;
+  outline-offset: var(--ss-s-1);
 }
 
 /* ---------- responsive ---------- */

@@ -77,7 +77,7 @@ export const input: ComponentDoc = {
       name: 'clearable',
       type: 'boolean',
       default: 'false',
-      desc: 'Renders a clear button; hidden when empty/readonly/disabled.',
+      desc: 'Renders a clear button (24×24 minimum hit area, standard solid focus ring); hidden when empty/readonly/disabled.',
     },
     { name: 'autocomplete', type: 'FullAutoFill', desc: 'Native autocomplete hint.' },
     {

@@ -53,16 +53,61 @@ describe('NumberField', () => {
     expect(screen.getByTestId('bound-value')).toHaveTextContent('0')
   })
 
-  it('disables the − stepper at min', () => {
+  it('marks the − stepper aria-disabled (not natively disabled) at min', () => {
     const { container } = render(NumberFieldHarness, { initial: 0, min: 0 })
-    expect(container.querySelector('button.dec')).toBeDisabled()
-    expect(container.querySelector('button.inc')).not.toBeDisabled()
+    const dec = container.querySelector('button.dec')!
+    const inc = container.querySelector('button.inc')!
+    expect(dec).not.toBeDisabled()
+    expect(dec).toHaveAttribute('aria-disabled', 'true')
+    expect(inc).not.toHaveAttribute('aria-disabled')
   })
 
-  it('disables the + stepper at max', () => {
+  it('marks the + stepper aria-disabled (not natively disabled) at max', () => {
     const { container } = render(NumberFieldHarness, { initial: 10, max: 10 })
+    const inc = container.querySelector('button.inc')!
+    expect(inc).not.toBeDisabled()
+    expect(inc).toHaveAttribute('aria-disabled', 'true')
+    expect(container.querySelector('button.dec')).not.toHaveAttribute('aria-disabled')
+  })
+
+  it('keeps focus on a stepper that reaches its bound, and the bound press is a no-op', async () => {
+    const { container } = render(NumberFieldHarness, { initial: 1, min: 0 })
+    const dec = container.querySelector<HTMLButtonElement>('button.dec')!
+    dec.focus()
+    await fireEvent.click(dec)
+    expect(screen.getByTestId('bound-value')).toHaveTextContent('0')
+    expect(dec).toHaveAttribute('aria-disabled', 'true')
+    expect(document.activeElement).toBe(dec)
+    await fireEvent.click(dec)
+    expect(screen.getByTestId('bound-value')).toHaveTextContent('0')
+  })
+
+  it('ties the steppers to the input with aria-controls', () => {
+    const { container } = render(NumberFieldHarness, { id: 'qty' })
+    expect(container.querySelector('button.dec')).toHaveAttribute('aria-controls', 'qty')
+    expect(container.querySelector('button.inc')).toHaveAttribute('aria-controls', 'qty')
+  })
+
+  it('announces stepper changes through a polite live region present from first render', async () => {
+    const { container } = render(NumberFieldHarness, { initial: 2 })
+    const live = container.querySelector('.live')!
+    expect(live).toHaveAttribute('aria-live', 'polite')
+    expect(live).toHaveTextContent('')
+    await fireEvent.click(container.querySelector('button.inc')!)
+    expect(container.querySelector('.live')).toBe(live)
+    expect(live).toHaveTextContent('3')
+  })
+
+  it('does not announce typed values (AT already voices the input)', async () => {
+    const { container } = render(NumberFieldHarness, {})
+    await fireEvent.input(container.querySelector('input')!, { target: { value: '42' } })
+    expect(container.querySelector('.live')).toHaveTextContent('')
+  })
+
+  it('natively disables both steppers when readonly', () => {
+    const { container } = render(NumberFieldHarness, { initial: 5, readonly: true })
+    expect(container.querySelector('button.dec')).toBeDisabled()
     expect(container.querySelector('button.inc')).toBeDisabled()
-    expect(container.querySelector('button.dec')).not.toBeDisabled()
   })
 
   it('typing a number updates the bound value', async () => {

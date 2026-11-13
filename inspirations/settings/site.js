@@ -3,7 +3,7 @@
  * settings ⇄ sign-in view swap, toasts for the form actions, the bio counter, the
  * password reveal, the delete-account confirmation gate and the section nav state.
  */
-import { toast } from '../vendor/vanilla/index.js'
+import { toast, closeModal } from '../vendor/vanilla/index.js'
 import { setAxes, getAxes } from '../assets/axes.js'
 
 const $ = (sel, root = document) => root.querySelector(sel)
@@ -154,7 +154,7 @@ deleteDialog?.addEventListener('close', () => {
 })
 
 deleteBtn?.addEventListener('click', () => {
-  deleteDialog?.close()
+  if (deleteDialog) closeModal(deleteDialog)
   toast.error('deletion scheduled — you have 14 days to undo', 8000)
 })
 

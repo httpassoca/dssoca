@@ -11,17 +11,27 @@
   // dialog itself (the inner .panel covers the dialog's content box, so any
   // hit on the dialog element is the surrounding backdrop area).
   //
+  // Naming (DS-0178): a custom `header` snippet receives the title id so it can
+  // put `id={titleId}` on its heading; the dialog stays aria-labelledby that id.
+  // While open, page scroll is locked on <html> (ref-counted helper shared with
+  // the vanilla layer) and .body uses overscroll-behavior: contain.
+  //
   // Zero radius; surface = --ss-bg-elev, border = --ss-line; tinted ::backdrop.
   // Component metrics are inline var(--ss-modal-*, fallback) so no global SCSS
   // is touched (DS-0094).
   // ─────────────────────────────────────────────────────────────────────────
   import type { Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import { lockScroll, unlockScroll } from '../vanilla/modal.js'
 
   interface Props {
     /** Whether the modal is shown. Bindable — sync it from caller state. */
     open?: boolean
-    /** Title rendered in the header; also wires `aria-labelledby`. */
+    /**
+     * Title rendered in the header; also wires `aria-labelledby`. With a custom `header`
+     * snippet the title is not rendered but still names the dialog (as `aria-label`) unless
+     * the snippet labels it via the `titleId` it receives.
+     */
     title?: string
     /** Token size (sm|md|lg); controls max-width. Inherits the global size when unset. */
     size?: Size
@@ -43,8 +53,12 @@
     'aria-label'?: string
     /** Called after the dialog has closed (any reason: Esc, backdrop, button). */
     onclose?: () => void
-    /** Header content; replaces the default title row when provided. */
-    header?: Snippet
+    /**
+     * Header content; replaces the default title row when provided. Receives the id the
+     * dialog's `aria-labelledby` points at — put it on your heading (`id={titleId}`) so the
+     * dialog keeps its accessible name.
+     */
+    header?: Snippet<[string]>
     /** Footer content (typically action buttons). */
     footer?: Snippet
     /** Body content. */
@@ -71,6 +85,31 @@
   // Stable id so the dialog's `aria-labelledby` can point at the title element.
   const uid = $props.id()
   const titleId = $derived(`${uid}-title`)
+
+  // Naming. Default header: the <h2> carries titleId (no redundant aria-label).
+  // Custom header: aria-labelledby points at titleId (the snippet is handed it);
+  // `title` / `aria-label` ride along as aria-label, which accessible-name
+  // computation falls back to if the snippet never renders that id.
+  const labelledBy = $derived(title || (header && !ariaLabel) ? titleId : undefined)
+  const labelAttr = $derived(header ? (ariaLabel ?? title) : title ? undefined : ariaLabel)
+
+  // Dev aid: a custom header that neither uses titleId nor has a title/aria-label
+  // fallback leaves the dialog unnamed (same warn pattern as Button/Icon).
+  $effect(() => {
+    if (!open || !header || title || ariaLabel || !dialog) return
+    if (!dialog.querySelector(`[id="${titleId}"]`) && typeof console !== 'undefined') {
+      console.warn(
+        '[dssoca] Modal: a custom `header` must put the `titleId` it receives on its heading (or pass `title` / `aria-label`); this dialog has no accessible name.',
+      )
+    }
+  })
+
+  // Lock the page behind the dialog while it is open; release on close/unmount.
+  $effect(() => {
+    if (!open) return
+    lockScroll()
+    return unlockScroll
+  })
 
   // Mirror `open` onto the native dialog. showModal()/close() throw if called
   // in the wrong state, so guard on dialog.open before flipping it.
@@ -107,8 +146,8 @@
   class:danger
   data-size-variant={resolveComponentSize('Modal', size)}
   data-fullscreen={fullscreen ? '' : undefined}
-  aria-labelledby={title ? titleId : undefined}
-  aria-label={title ? undefined : ariaLabel}
+  aria-labelledby={labelledBy}
+  aria-label={labelAttr}
   onclose={onDialogClose}
   oncancel={onCancel}
   onpointerdown={onPointerDown}
@@ -116,7 +155,7 @@
   <div class="panel">
     <header class="head">
       {#if header}
-        {@render header()}
+        {@render header(titleId)}
       {:else if title}
         <h2 class="title" id={titleId}>{title}</h2>
       {/if}
@@ -229,7 +268,7 @@
 
   .close {
     flex: none;
-    margin-left: auto;
+    margin-inline-start: auto;
     appearance: none;
     display: inline-flex;
     align-items: center;
@@ -261,6 +300,8 @@
   .body {
     padding: var(--ss-modal-pad-y, var(--ss-s-4)) var(--ss-modal-pad-x, var(--ss-s-5));
     overflow: auto;
+    // A scroll that reaches the end of the body must not chain to the page.
+    overscroll-behavior: contain;
     color: var(--ss-fg);
     font-family: var(--ss-font-body);
     line-height: var(--ss-leading, 1.5);

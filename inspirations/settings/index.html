@@ -35,7 +35,6 @@
         <a href="#api-keys" class="ss-link inline stg-top-docs">
           <span class="label">API docs</span>
         </a>
-        <span class="ss-badge brand">pro</span>
         <div id="stg-account" class="ss-menu" data-align="end" data-side="bottom">
           <button
             type="button"
@@ -167,6 +166,7 @@
                 <span data-ss-icon="logs" data-px="13"></span>
                 <span class="label">Danger zone</span>
                 <span class="dot err" aria-hidden="true"></span>
+                <span class="sr-only">, down</span>
               </a>
             </li>
           </ul>
@@ -203,12 +203,6 @@
               <h1>Settings</h1>
               <div class="sub">ines.varga@orbit.dev · workspace <strong>lumen-labs</strong></div>
             </div>
-            <span class="stg-sync">
-              <span class="ss-badge positive">
-                <span class="dot" aria-hidden="true"></span>
-                all changes synced
-              </span>
-            </span>
           </div>
 
           <div class="stg-content">
@@ -251,17 +245,18 @@
                         class="zone"
                         role="button"
                         tabindex="0"
-                        aria-label="Change avatar. PNG or JPG, square, up to 2 MB"
+                        aria-labelledby="stg-avatar-label stg-avatar-title"
                         aria-describedby="stg-avatar-hint"
                       >
                         <span class="prompt">
-                          <span class="title">Drop an image here</span>
+                          <span class="title" id="stg-avatar-title">Drop an image here</span>
                           <span class="sub">or click to browse</span>
                         </span>
                       </div>
                       <span class="msg hint" id="stg-avatar-hint"
                         >PNG or JPG, square, up to 2 MB</span
                       >
+                      <span class="sr-only" role="status" aria-live="polite"></span>
                     </div>
                   </div>
 
@@ -342,7 +337,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                           aria-describedby="stg-birthday-hint"
                         />
                       </div>
-                      <span class="msg hint" id="stg-birthday-hint">Only shown to you.</span>
+                      <span class="msg hint" id="stg-birthday-hint">Only shown to you</span>
                     </div>
                   </div>
                 </div>
@@ -472,7 +467,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                           One message per production deploy, with the diff summary.
                         </p>
                       </div>
-                      <span class="ss-badge neutral">push</span>
+                      <span class="stg-row-meta">push</span>
                     </li>
                     <li class="stg-row">
                       <div class="stg-row-text">
@@ -496,7 +491,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                           Immediately, on every failed build in a project you own.
                         </p>
                       </div>
-                      <span class="ss-badge critical">email + push</span>
+                      <span class="stg-row-meta">email + push</span>
                     </li>
                     <li class="stg-row">
                       <div class="stg-row-text">
@@ -520,7 +515,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                           When someone @mentions you in a review or an incident thread.
                         </p>
                       </div>
-                      <span class="ss-badge neutral">push</span>
+                      <span class="stg-row-meta">push</span>
                     </li>
                     <li class="stg-row">
                       <div class="stg-row-text">
@@ -544,7 +539,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                           Usage, spend and incident summary every Monday at 09:00.
                         </p>
                       </div>
-                      <span class="ss-badge neutral">email</span>
+                      <span class="stg-row-meta">email</span>
                     </li>
                     <li class="stg-row stg-row-quiet">
                       <div class="stg-row-text">
@@ -574,7 +569,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                   </ul>
                 </div>
                 <div class="foot">
-                  <span>4 of 5 channels on</span>
+                  <span>3 of 5 on</span>
                   <div class="stg-actions">
                     <button class="ss-btn ghost" type="reset">
                       <span class="label">Cancel</span>
@@ -674,54 +669,54 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                       </caption>
                       <thead>
                         <tr>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Device</span>
                           </th>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Location</span>
                           </th>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Last active</span>
                           </th>
-                          <th scope="col" class="head" data-align="right">
+                          <th scope="col" class="head" data-align="end">
                             <span class="label">Action</span>
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr class="row">
-                          <td class="cell" data-align="left">Firefox · Fedora</td>
-                          <td class="cell" data-align="left">Lisbon, PT</td>
-                          <td class="cell" data-align="left">now</td>
-                          <td class="cell" data-align="right">
-                            <span class="ss-badge positive">this device</span>
+                          <td class="cell" data-align="start">Firefox · Fedora</td>
+                          <td class="cell" data-align="start">Lisbon, PT</td>
+                          <td class="cell" data-align="start">now</td>
+                          <td class="cell" data-align="end">
+                            <span class="stg-row-meta">this device</span>
                           </td>
                         </tr>
                         <tr class="row">
-                          <td class="cell" data-align="left">Orbit CLI 4.2</td>
-                          <td class="cell" data-align="left">Lisbon, PT</td>
-                          <td class="cell" data-align="left">12 min ago</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell" data-align="start">Orbit CLI 4.2</td>
+                          <td class="cell" data-align="start">Lisbon, PT</td>
+                          <td class="cell" data-align="start">12 min ago</td>
+                          <td class="cell" data-align="end">
                             <button class="ss-btn ghost" type="button" data-stg-revoke>
                               <span class="label">Revoke</span>
                             </button>
                           </td>
                         </tr>
                         <tr class="row">
-                          <td class="cell" data-align="left">Safari · iPhone</td>
-                          <td class="cell" data-align="left">Porto, PT</td>
-                          <td class="cell" data-align="left">yesterday</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell" data-align="start">Safari · iPhone</td>
+                          <td class="cell" data-align="start">Porto, PT</td>
+                          <td class="cell" data-align="start">yesterday</td>
+                          <td class="cell" data-align="end">
                             <button class="ss-btn ghost" type="button" data-stg-revoke>
                               <span class="label">Revoke</span>
                             </button>
                           </td>
                         </tr>
                         <tr class="row">
-                          <td class="cell" data-align="left">Chrome · Windows</td>
-                          <td class="cell" data-align="left">Frankfurt, DE</td>
-                          <td class="cell" data-align="left">3 days ago</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell" data-align="start">Chrome · Windows</td>
+                          <td class="cell" data-align="start">Frankfurt, DE</td>
+                          <td class="cell" data-align="start">3 days ago</td>
+                          <td class="cell" data-align="end">
                             <button class="ss-btn ghost" type="button" data-stg-revoke>
                               <span class="label">Revoke</span>
                             </button>
@@ -766,9 +761,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                   <div class="stg-metrics">
                     <div class="ss-metric">
                       <div class="label">Build minutes</div>
-                      <div class="val" role="status" aria-live="polite">
-                        1,840<span class="small">/3k</span>
-                      </div>
+                      <div class="val">1,840<span class="small">/3,000</span></div>
                       <div
                         class="delta neutral"
                         role="img"
@@ -780,9 +773,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                     </div>
                     <div class="ss-metric">
                       <div class="label">Bandwidth</div>
-                      <div class="val" role="status" aria-live="polite">
-                        212<span class="small">GB</span>
-                      </div>
+                      <div class="val">212<span class="small">GB</span></div>
                       <div
                         class="delta positive"
                         role="img"
@@ -794,9 +785,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                     </div>
                     <div class="ss-metric">
                       <div class="label">Seats</div>
-                      <div class="val" role="status" aria-live="polite">
-                        7<span class="small">/10</span>
-                      </div>
+                      <div class="val">7<span class="small">/10</span></div>
                       <div
                         class="delta negative emphasis"
                         role="img"
@@ -816,7 +805,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                   </p>
                 </div>
                 <div class="foot">
-                  <span>next invoice · 1 Oct · $24.00</span>
+                  <span>next invoice · 1 Oct 2026 · $24</span>
                   <div class="stg-actions">
                     <button
                       class="ss-btn ghost"
@@ -863,32 +852,32 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                       </caption>
                       <thead>
                         <tr>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Name</span>
                           </th>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Key</span>
                           </th>
-                          <th scope="col" class="head" data-align="left">
+                          <th scope="col" class="head" data-align="start">
                             <span class="label">Scope</span>
                           </th>
-                          <th scope="col" class="head numeric" data-align="right">
+                          <th scope="col" class="head numeric" data-align="end">
                             <span class="label">Expires</span>
                           </th>
-                          <th scope="col" class="head" data-align="right">
+                          <th scope="col" class="head" data-align="end">
                             <span class="label">Copy</span>
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr class="row">
-                          <td class="cell" data-align="left">ci-deploy</td>
-                          <td class="cell" data-align="left"><code>orb_live_7f3a…c9e1</code></td>
-                          <td class="cell" data-align="left">
-                            <span class="ss-badge info">deploy</span>
+                          <td class="cell" data-align="start">ci-deploy</td>
+                          <td class="cell" data-align="start"><code>orb_live_7f3a…c9e1</code></td>
+                          <td class="cell" data-align="start">
+                            <span class="ss-badge neutral">deploy</span>
                           </td>
-                          <td class="cell numeric" data-align="right">62 d</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell numeric" data-align="end">62 d</td>
+                          <td class="cell" data-align="end">
                             <button
                               class="ss-btn ghost icon-only"
                               type="button"
@@ -916,13 +905,13 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                           </td>
                         </tr>
                         <tr class="row">
-                          <td class="cell" data-align="left">laptop</td>
-                          <td class="cell" data-align="left"><code>orb_live_b2d0…41af</code></td>
-                          <td class="cell" data-align="left">
+                          <td class="cell" data-align="start">laptop</td>
+                          <td class="cell" data-align="start"><code>orb_live_b2d0…41af</code></td>
+                          <td class="cell" data-align="start">
                             <span class="ss-badge neutral">read</span>
                           </td>
-                          <td class="cell numeric" data-align="right">180 d</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell numeric" data-align="end">180 d</td>
+                          <td class="cell" data-align="end">
                             <button
                               class="ss-btn ghost icon-only"
                               type="button"
@@ -950,13 +939,13 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                           </td>
                         </tr>
                         <tr class="row">
-                          <td class="cell" data-align="left">metrics-export</td>
-                          <td class="cell" data-align="left"><code>orb_live_e91c…08b3</code></td>
-                          <td class="cell" data-align="left">
+                          <td class="cell" data-align="start">metrics-export</td>
+                          <td class="cell" data-align="start"><code>orb_live_e91c…08b3</code></td>
+                          <td class="cell" data-align="start">
                             <span class="ss-badge caution">admin</span>
                           </td>
-                          <td class="cell numeric" data-align="right">4 d</td>
-                          <td class="cell" data-align="right">
+                          <td class="cell numeric" data-align="end">4 d</td>
+                          <td class="cell" data-align="end">
                             <button
                               class="ss-btn ghost icon-only"
                               type="button"
@@ -1007,10 +996,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                     <div class="desc">These actions are permanent. Read twice, click once.</div>
                   </div>
                   <div class="actions">
-                    <span class="ss-badge critical">
-                      <span class="dot" aria-hidden="true"></span>
-                      irreversible
-                    </span>
+                    <div class="meta">irreversible</div>
                   </div>
                 </div>
                 <div class="body">
@@ -1172,7 +1158,14 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
             <div class="ss-numberfield">
               <label class="lbl" for="stg-key-days">Expires in days</label>
               <div class="control">
-                <button type="button" class="step dec" aria-label="Decrease">−</button>
+                <button
+                  type="button"
+                  class="step dec"
+                  aria-label="Decrease"
+                  aria-controls="stg-key-days"
+                >
+                  −
+                </button>
                 <input
                   class="ss-input"
                   id="stg-key-days"
@@ -1184,8 +1177,16 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                   step="30"
                   aria-describedby="stg-key-days-hint"
                 />
-                <button type="button" class="step inc" aria-label="Increase">+</button>
+                <button
+                  type="button"
+                  class="step inc"
+                  aria-label="Increase"
+                  aria-controls="stg-key-days"
+                >
+                  +
+                </button>
               </div>
+              <span class="live" aria-live="polite" aria-atomic="true"></span>
               <span class="msg hint" id="stg-key-days-hint">1–365 · admin keys max 90</span>
             </div>
             <div class="ss-select">
@@ -1240,7 +1241,7 @@ Platform engineer at Lumen Labs. I break build pipelines so you don't have to. M
                 aria-describedby="stg-delete-confirm-hint"
               />
             </div>
-            <span class="msg hint" id="stg-delete-confirm-hint">Case-sensitive.</span>
+            <span class="msg hint" id="stg-delete-confirm-hint">Case-sensitive</span>
           </div>
         </div>
         <footer class="foot">

@@ -54,6 +54,11 @@
         control: 'boolean',
         description: 'Skeleton state: hides the real value behind aria-hidden bars.',
       },
+      live: {
+        control: 'boolean',
+        description:
+          'Make the tile one polite, atomic live region so updates are announced with the label. Off by default.',
+      },
       size: {
         control: { type: 'inline-radio' },
         options: ['sm', 'md', 'lg'],
@@ -75,6 +80,7 @@
       deltaLabel: undefined,
       emphasis: false,
       loading: false,
+      live: false,
       withChart: false,
     },
   })
@@ -96,6 +102,7 @@
     deltaLabel={(args.deltaLabel as string) || undefined}
     emphasis={args.emphasis as boolean}
     loading={args.loading as boolean}
+    live={args.live as boolean}
     size={args.size as 'sm' | 'md' | 'lg' | undefined}
     chart={args.withChart ? chartDemo : undefined}
   />
@@ -154,6 +161,12 @@
     deltaLabel: 'vs prev 7d',
     emphasis: true,
   }}
+/>
+
+<!-- Opt-in live region: updates are announced as "label value delta" -->
+<Story
+  name="Live"
+  args={{ label: 'req/min', value: '142', delta: '↑12%', dir: 'up', live: true }}
 />
 
 <!-- Skeleton/loading state -->

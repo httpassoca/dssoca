@@ -3,7 +3,7 @@
  *
  * The deck is five static profile cards in the DOM; only the front one is visible (the rest
  * carry `hidden`). Skip / super like / like advance the deck; every third like opens the
- * "It's a match!" modal instead. Arrow keys mirror the buttons. Modals, icons, toasts, the
+ * match modal instead. Arrow keys mirror the buttons. Modals, icons, toasts, the
  * settings switch and segmented control come from vanilla.js — this file only reacts to them.
  */
 import { openModal, toast } from '../vendor/vanilla/index.js'

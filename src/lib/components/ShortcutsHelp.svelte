@@ -363,7 +363,7 @@
     }
 
     .off-tag {
-      margin-left: var(--ss-s-1);
+      margin-inline-start: var(--ss-s-1);
       color: var(--ss-fg-muted);
     }
 

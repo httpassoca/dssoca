@@ -37,16 +37,63 @@ describe('Tooltip', () => {
     expect(tip(container)).toHaveAttribute('hidden')
     expect(tip(container)).not.toHaveClass('open')
     expect(root(container)).not.toHaveAttribute('aria-describedby')
+    expect(trigger(container)).not.toHaveAttribute('aria-describedby')
   })
 
-  it('shows on focusin: sets aria-describedby to the tooltip id and reveals it', async () => {
+  // DS-0163: the description must sit on the focused trigger, not the non-focusable wrapper.
+  it('shows on focusin: the focused trigger gets aria-describedby → the tip', async () => {
     const { container } = render(TooltipHarness, { text: 'More info' })
-    await fireEvent.focusIn(root(container))
+    await fireEvent.focusIn(trigger(container))
     const t = tip(container)
     expect(t).toHaveClass('open')
     expect(t).not.toHaveAttribute('hidden')
-    expect(root(container)).toHaveAttribute('aria-describedby', t.id)
+    expect(trigger(container)).toHaveAttribute('aria-describedby', t.id)
+    expect(root(container)).not.toHaveAttribute('aria-describedby')
+    expect(trigger(container)).toHaveAccessibleDescription('More info')
     expect(t).toHaveTextContent('More info')
+  })
+
+  it('describes the focusable trigger when opened by hover', async () => {
+    const { container } = render(TooltipHarness)
+    await fireEvent.mouseEnter(root(container))
+    expect(trigger(container)).toHaveAttribute('aria-describedby', tip(container).id)
+    await fireEvent.mouseLeave(root(container))
+    expect(trigger(container)).not.toHaveAttribute('aria-describedby')
+  })
+
+  it("keeps the trigger's own aria-describedby tokens and restores them on close", async () => {
+    const { container } = render(TooltipHarness, { describedBy: 'hint-1' })
+    await fireEvent.focusIn(trigger(container))
+    expect(trigger(container)).toHaveAttribute('aria-describedby', `hint-1 ${tip(container).id}`)
+    await fireEvent.focusOut(trigger(container))
+    expect(trigger(container)).toHaveAttribute('aria-describedby', 'hint-1')
+  })
+
+  // DS-0163 / WCAG 1.4.13: Escape dismisses a hover-opened tip wherever focus is.
+  it('hides a hover-opened tip on Escape pressed outside the tooltip', async () => {
+    const { container } = render(TooltipHarness)
+    await fireEvent.mouseEnter(root(container))
+    expect(tip(container)).toHaveClass('open')
+    await fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(tip(container)).not.toHaveClass('open')
+    expect(trigger(container)).not.toHaveAttribute('aria-describedby')
+  })
+
+  it('ignores Escape on the document while closed and other keys while open', async () => {
+    const { container } = render(TooltipHarness)
+    await fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(tip(container)).not.toHaveClass('open')
+    await fireEvent.mouseEnter(root(container))
+    await fireEvent.keyDown(document.body, { key: 'Enter' })
+    expect(tip(container)).toHaveClass('open')
+  })
+
+  it('removes its id from the trigger when unmounted while open', async () => {
+    const { container, unmount } = render(TooltipHarness, { describedBy: 'hint-1' })
+    const btn = trigger(container)
+    await fireEvent.focusIn(btn)
+    unmount()
+    expect(btn).toHaveAttribute('aria-describedby', 'hint-1')
   })
 
   it('hides on focusout', async () => {
@@ -55,7 +102,7 @@ describe('Tooltip', () => {
     expect(tip(container)).toHaveClass('open')
     await fireEvent.focusOut(root(container))
     expect(tip(container)).not.toHaveClass('open')
-    expect(root(container)).not.toHaveAttribute('aria-describedby')
+    expect(trigger(container)).not.toHaveAttribute('aria-describedby')
   })
 
   it('shows on mouseenter and hides on mouseleave', async () => {
@@ -70,9 +117,9 @@ describe('Tooltip', () => {
     const { container } = render(TooltipHarness)
     await fireEvent.focusIn(root(container))
     expect(tip(container)).toHaveClass('open')
-    await fireEvent.keyDown(root(container), { key: 'Escape' })
+    await fireEvent.keyDown(trigger(container), { key: 'Escape' })
     expect(tip(container)).not.toHaveClass('open')
-    expect(root(container)).not.toHaveAttribute('aria-describedby')
+    expect(trigger(container)).not.toHaveAttribute('aria-describedby')
   })
 
   // DS-0144: `text` accepts a snippet for small rendered templates.
@@ -87,14 +134,14 @@ describe('Tooltip', () => {
     it('is hidden (and unannounced) while closed, like the string form', () => {
       const { container } = render(TooltipHarness, { rich: true })
       expect(tip(container)).toHaveAttribute('hidden')
-      expect(root(container)).not.toHaveAttribute('aria-describedby')
+      expect(trigger(container)).not.toHaveAttribute('aria-describedby')
     })
 
     it('becomes the accessible description while open', async () => {
       const { container } = render(TooltipHarness, { rich: true })
-      await fireEvent.focusIn(root(container))
+      await fireEvent.focusIn(trigger(container))
       const t = tip(container)
-      expect(root(container)).toHaveAttribute('aria-describedby', t.id)
+      expect(trigger(container)).toHaveAttribute('aria-describedby', t.id)
       expect(t).not.toHaveAttribute('hidden')
       expect(t.textContent?.trim()).toContain('Copy path')
       expect(t.textContent?.trim()).toContain('/srv/app')
@@ -104,7 +151,7 @@ describe('Tooltip', () => {
       const { container } = render(TooltipHarness, { rich: true })
       await fireEvent.focusIn(root(container))
       expect(tip(container)).toHaveClass('open')
-      await fireEvent.keyDown(root(container), { key: 'Escape' })
+      await fireEvent.keyDown(trigger(container), { key: 'Escape' })
       expect(tip(container)).not.toHaveClass('open')
     })
 

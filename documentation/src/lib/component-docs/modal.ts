@@ -11,7 +11,7 @@ export const modal: ComponentDoc = {
         '<button class="ss-btn secondary" type="button" data-ss-dismiss>cancel</button><button class="ss-btn danger" type="button" data-ss-dismiss>delete</button>',
     },
     behaviour: 'js',
-    note: 'A native <dialog>. vanilla.js opens it from any [data-ss-modal="#id"] element and closes it from [data-ss-dismiss] or a backdrop click (add data-ss-static to keep it open; data-ss-no-esc blocks Escape).',
+    note: 'A native <dialog>. vanilla.js opens it from any [data-ss-modal="#id"] element and closes it from [data-ss-dismiss] or a backdrop click, locking page scroll while it is open (add data-ss-static to keep it open; data-ss-no-esc blocks Escape).',
   },
   tagline: 'Accessible overlay dialog built on native <dialog>.',
   description:
@@ -29,6 +29,14 @@ export const modal: ComponentDoc = {
     <Button onclick={() => (open = false)}>Confirm</Button>
   {/snippet}
   <p>Are you sure you want to continue?</p>
+</Modal>
+
+<!-- Custom header: put the titleId it receives on your heading -->
+<Modal bind:open={customOpen}>
+  {#snippet header(titleId)}
+    <h2 id={titleId}>Custom heading</h2>
+  {/snippet}
+  <p>Body</p>
 </Modal>
 
 <!-- Fills the viewport: header/footer pinned, body scrolls, size axis inert -->
@@ -83,8 +91,8 @@ export const modal: ComponentDoc = {
     },
     {
       name: 'header',
-      type: 'Snippet',
-      desc: 'Replaces the default title row in the header.',
+      type: 'Snippet<[titleId: string]>',
+      desc: "Replaces the default title row in the header. Receives the id the dialog's `aria-labelledby` points at: put it on your heading (`id={titleId}`). If you also pass `title` or `aria-label`, that string is kept as an `aria-label` fallback. In dev, a header that leaves the dialog unnamed logs a console warning.",
     },
     {
       name: 'footer',
@@ -99,5 +107,5 @@ export const modal: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Uses the native `<dialog>` element: the browser provides the focus trap, Esc handling and an inert `::backdrop`. `aria-labelledby` points at the title when set; otherwise pass `aria-label`. The close button carries `aria-label="Close"`. Size controls the dialog max-width only. Zero border-radius. With `fullscreen` the dialog fills the viewport (`100dvh`, `vh` fallback) and the size axis has no effect on width; because the panel is full-bleed there is no backdrop area left to hit, so `closeOnBackdrop` is unreachable in that mode — the close button and Esc are the exits. Responsiveness stays with the caller: pass `fullscreen={width < 640}` to mirror MUI\'s full-screen-on-mobile pattern.',
+    'Uses the native `<dialog>` element: the browser provides the focus trap, Esc handling and an inert `::backdrop`. `aria-labelledby` points at the title when set; otherwise pass `aria-label`. The close button carries `aria-label="Close"`. Size controls the dialog max-width only. While open, the page behind is scroll-locked (`overflow: hidden` on `<html>`, ref-counted so stacked dialogs release it only when the last one closes) and the body uses `overscroll-behavior: contain`; vanilla.js applies the same lock on every open and close path. Zero border-radius. With `fullscreen` the dialog fills the viewport (`100dvh`, `vh` fallback) and the size axis has no effect on width; because the panel is full-bleed there is no backdrop area left to hit, so `closeOnBackdrop` is unreachable in that mode — the close button and Esc are the exits. Responsiveness stays with the caller: pass `fullscreen={width < 640}` to mirror MUI\'s full-screen-on-mobile pattern.',
 }

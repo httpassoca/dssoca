@@ -125,8 +125,6 @@ const statusSelect = $('#rl-rate-status')
 const nameEl = $('#rl-rate-name')
 let current = null
 
-const SCORE_TONE = (s) =>
-  s === '' ? 'neutral' : s >= 8 ? 'positive' : s >= 6 ? 'info' : 'critical'
 const STATUS_TONE = {
   watching: 'brand',
   completed: 'positive',
@@ -134,8 +132,8 @@ const STATUS_TONE = {
   dropped: 'caution',
 }
 
-function setBadge(badge, tone, text, dot) {
-  badge.className = `ss-badge ${tone} ${badge.classList.contains('rl-score') ? 'rl-score' : 'rl-status'}`
+function setStatusBadge(badge, tone, text, dot) {
+  badge.className = `ss-badge ${tone} rl-status`
   badge.replaceChildren()
   if (dot) {
     const d = document.createElement('span')
@@ -143,7 +141,7 @@ function setBadge(badge, tone, text, dot) {
     d.setAttribute('aria-hidden', 'true')
     badge.append(d)
   }
-  badge.append(...text)
+  badge.append(text)
 }
 
 document.addEventListener('click', (e) => {
@@ -170,12 +168,9 @@ $('#rl-rate-save').addEventListener('click', () => {
     el.dataset.score = score
     el.dataset.status = status
   }
-  const sr = document.createElement('span')
-  sr.className = 'rl-sr-only'
-  sr.textContent = 'score '
-  setBadge($('.rl-score', current), SCORE_TONE(score), [sr, score || '—'])
+  $('.rl-score-v', current).textContent = score || '—'
   for (const badge of [$('.rl-status', current), row && $('.rl-status', row)]) {
-    if (badge) setBadge(badge, STATUS_TONE[status], [status], status === 'watching')
+    if (badge) setStatusBadge(badge, STATUS_TONE[status], status, status === 'watching')
   }
   if (row) $('.rl-score-cell', row).textContent = score || '—'
 

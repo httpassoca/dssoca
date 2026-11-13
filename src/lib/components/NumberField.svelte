@@ -65,11 +65,16 @@
   const isInvalid = $derived(invalid || Boolean(error) || undefined)
   const resolvedSize = $derived(resolveComponentSize('NumberField', size))
 
-  // Steppers are inert at the bounds (and when the field can't be edited).
+  // Steppers are natively disabled only when the whole field can't be edited. At a bound
+  // they stay focusable and become `aria-disabled` no-ops, so a keyboard user who presses
+  // − down to `min` keeps focus on the button instead of dropping to <body>.
+  const locked = $derived(disabled || readonly)
   const atMin = $derived(value != null && min != null && value <= min)
   const atMax = $derived(value != null && max != null && value >= max)
-  const decDisabled = $derived(disabled || readonly || atMin)
-  const incDisabled = $derived(disabled || readonly || atMax)
+
+  // Polite live region text: set only by the steppers (typing in the input is already
+  // voiced by AT). The region itself is always rendered so updates are announced.
+  let announcement = $state('')
 
   function clamp(n: number): number {
     if (min != null && n < min) return min
@@ -84,8 +89,10 @@
   }
 
   function nudge(dir: 1 | -1) {
+    if (locked || (dir < 0 ? atMin : atMax)) return
     const base = value ?? (dir > 0 ? (min ?? 0) : (max ?? 0))
     value = clamp(base + dir * step)
+    announcement = String(value)
   }
 </script>
 
@@ -107,7 +114,9 @@
       type="button"
       class="step dec"
       aria-label="Decrease"
-      disabled={decDisabled}
+      aria-controls={inputId}
+      disabled={locked}
+      aria-disabled={!locked && atMin ? 'true' : undefined}
       onclick={() => nudge(-1)}
     >
       −
@@ -136,12 +145,15 @@
       type="button"
       class="step inc"
       aria-label="Increase"
-      disabled={incDisabled}
+      aria-controls={inputId}
+      disabled={locked}
+      aria-disabled={!locked && atMax ? 'true' : undefined}
       onclick={() => nudge(1)}
     >
       +
     </button>
   </div>
+  <span class="live" aria-live="polite" aria-atomic="true">{announcement}</span>
 
   {#if error}<span class="msg error" id={errorId} role="alert">{error}</span>{/if}
   {#if hint}<span class="msg hint" id={hintId}>{hint}</span>{/if}
@@ -164,7 +176,7 @@
       letter-spacing: 0.08em;
       .req {
         color: var(--ss-red);
-        margin-left: 2px;
+        margin-inline-start: 2px;
       }
     }
 
@@ -211,18 +223,34 @@
       color: var(--ss-fg-muted);
       cursor: pointer;
       transition: color var(--ss-dur-fast) var(--ss-ease);
-      &:hover:not(:disabled) {
+      &:hover:not(:disabled, [aria-disabled='true']) {
         color: var(--ss-fg);
       }
+      // Solid inset ring: the stepper sits flush inside the bordered .control, so an outset
+      // ring would collide with the wrapper border.
       &:focus-visible {
-        outline: none;
+        outline: 2px solid var(--ss-primary);
+        outline-offset: -2px;
         color: var(--ss-fg);
-        box-shadow: 0 0 0 2px var(--ss-primary-soft);
       }
-      &:disabled {
+      &:disabled,
+      &[aria-disabled='true'] {
         color: var(--ss-fg-faint);
         cursor: not-allowed;
       }
+    }
+
+    // Visually hidden, still in the accessibility tree.
+    .live {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .msg {

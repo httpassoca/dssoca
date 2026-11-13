@@ -4,7 +4,8 @@
  * Outside pointerdown closes without returning focus; Escape / item activation return focus
  * to the trigger. Emits `ss:select` on the root with `{ index, value }` (`value` is the
  * item's `data-value`, when authored). For `menuitemradio` items the check marker moves to
- * the activated item.
+ * the activated item. A panel with neither `aria-label` nor `aria-labelledby` gets
+ * `aria-labelledby` pointing at its trigger on first open (an id is minted if needed).
  */
 import { on, emit, all } from './delegate.js'
 import { iconSvg } from './icons.js'
@@ -33,9 +34,19 @@ function focusItem(panel: HTMLElement, item: HTMLButtonElement | undefined): voi
   item.focus()
 }
 
+let autoId = 0
+
+/** An unnamed `role="menu"` panel is named by its trigger (mirrors Menu.svelte's fallback). */
+function ensureName(trigger: HTMLElement, panel: HTMLElement): void {
+  if (panel.hasAttribute('aria-label') || panel.hasAttribute('aria-labelledby')) return
+  if (!trigger.id) trigger.id = `ss-menu-trigger-${++autoId}`
+  panel.setAttribute('aria-labelledby', trigger.id)
+}
+
 export function openMenu(trigger: HTMLElement, focus: 'first' | 'last' = 'first'): void {
   const { panel } = parts(trigger)
   if (!panel || trigger.getAttribute('aria-expanded') === 'true') return
+  ensureName(trigger, panel)
   trigger.setAttribute('aria-expanded', 'true')
   panel.classList.add('open')
   panel.setAttribute('aria-hidden', 'false')

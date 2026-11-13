@@ -20,11 +20,11 @@ export const chart: ComponentDoc = {
       legend: true,
     },
     behaviour: 'css',
-    note: 'Charts are rendered geometry: copy the SVG as-is. Hover tooltips are not wired by vanilla.js.',
+    note: "Charts are rendered geometry: copy the SVG as-is (including each line's `stroke-dasharray` and the matching legend `.swatch-line`). Hover tooltips and arrow-key navigation are not wired by vanilla.js.",
   },
   tagline: 'Multi-series line, area, and bar chart.',
   description:
-    'A token-driven chart for comparing one or more series as a line, filled area, or grouped bars. Scales and paths are computed from the data; the SVG is rendered as plain markup with `--ss-*`-styled axes, gridlines, and a cycling categorical palette. Every datum is keyboard-focusable and reveals an accessible tooltip; the chart auto-generates a screen-reader summary (or pass `summary`). Empty input shows an em-dash placeholder.',
+    'A token-driven chart for comparing one or more series as a line, filled area, or grouped bars. Scales and paths are computed from the data; the SVG is rendered as plain markup with `--ss-*`-styled axes, gridlines, and a cycling categorical palette. Line and area series are told apart without colour: series 0 is solid and each later series takes a dash pattern from the fixed `CHART_DASH_CYCLE`, and the legend keys draw the same pattern; `endLabels` also prints each series\' name at the end of its line. The chart is a single tab stop: arrow keys (and Home/End) move between data points or bars, each exposed as `role="img"` with a label that carries its series, x and y value. The visual tooltip is hidden from assistive tech and closes on Escape. The chart auto-generates a screen-reader summary (or pass `summary`). Empty input shows an em-dash placeholder.',
   storyId: 'components-chart--default',
   usage: `<script>
   import { Chart } from 'dssoca';
@@ -37,7 +37,8 @@ export const chart: ComponentDoc = {
 
 <Chart {series} />
 <Chart {series} variant="bar" />
-<Chart {series} variant="area" fluid />`,
+<Chart {series} variant="area" fluid />
+<Chart {series} endLabels />`,
   props: [
     {
       name: 'series',
@@ -87,13 +88,25 @@ export const chart: ComponentDoc = {
       name: 'legend',
       type: 'boolean',
       default: 'true',
-      desc: 'Show the series legend (labels + colour swatches).',
+      desc: "Show the series legend: labels plus a colour key. Line/area keys are short strokes with the series' dash pattern; bar keys are colour blocks.",
+    },
+    {
+      name: 'dashes',
+      type: 'boolean',
+      default: 'true',
+      desc: 'Line/area: series 0 stays solid and each later series gets a `stroke-dasharray` from the fixed `CHART_DASH_CYCLE`, so series differ by more than colour. Set `false` for all-solid lines.',
+    },
+    {
+      name: 'endLabels',
+      type: 'boolean',
+      default: 'false',
+      desc: "Line/area: print each series' label directly after its last datum (labels are nudged apart so they never overlap; the right margin grows to fit them).",
     },
     {
       name: 'tooltip',
       type: 'boolean',
       default: 'true',
-      desc: 'Reveal a tooltip on hover/focus of a datum. Each datum is keyboard-focusable.',
+      desc: "Reveal a visual tooltip on hover/focus of a datum (aria-hidden; the datum's own label carries the same text). Escape dismisses it.",
     },
     {
       name: 'summary',

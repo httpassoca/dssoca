@@ -110,7 +110,7 @@
 <!-- Numeric badge clamped to `max` -->
 <Story
   name="Count"
-  args={{ tone: 'info', text: '', count: 120, max: 99, label: 'unread messages' }}
+  args={{ tone: 'info', text: '', count: 120, max: 99, label: '99+ unread messages' }}
 />
 
 <!-- Live status region: role="status" + aria-live announces tone/text changes -->

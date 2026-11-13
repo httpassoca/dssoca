@@ -84,9 +84,13 @@ export const logStream: ComponentDoc = {
       default: 'false',
       desc: 'Show a connecting/loading indicator.',
     },
-    { name: 'empty', type: 'Snippet', desc: 'Custom empty state.' },
+    {
+      name: 'empty',
+      type: 'Snippet',
+      desc: 'Custom empty state. Rendered inside the `role="log"` live region, so avoid nesting another live region (e.g. `<EmptyState>`, which is `role="status"`) here.',
+    },
     SIZE_PROP,
   ],
   notes:
-    'Exports the `LogLevel` (`info | warn | err | ok`) and `LogLine` types from `dssoca`. The viewport min/max heights and the timestamp/level column widths are overridable, size-aware tokens: `--ss-log-min-h`, `--ss-log-max-h`, `--ss-log-t-w`, `--ss-log-lvl-w` (md defaults 160/240/58/38px).',
+    'Exports the `LogLevel` (`info | warn | err | ok`) and `LogLine` types from `dssoca`. The viewport min/max heights and the timestamp/level column widths are overridable, size-aware tokens: `--ss-log-min-h`, `--ss-log-max-h`, `--ss-log-t-w`, `--ss-log-lvl-w` (md defaults 160/240/58/38px). The scrollable `role="log"` region has `tabindex="0"` so keyboard users can focus and scroll it. The default empty message is plain text (no nested `role="status"`), so it is announced once by the log region. Switched-off level chips use `--ss-fg-muted` (AA on the log `--ss-code-bg` in light and dark) and a dashed border rather than reduced opacity.',
 }

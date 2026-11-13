@@ -242,6 +242,42 @@ describe('Button', () => {
       expect(btn).toHaveClass('icon-only')
       expect(screen.getByRole('button', { name: 'Settings' })).toBe(btn)
     })
+
+    it('warns when iconOnly has no label (the button would have no accessible name)', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      try {
+        render(ButtonHarness, { iconOnly: true, text: '⚙' })
+        expect(warn).toHaveBeenCalledWith(
+          expect.stringContaining('Button: `iconOnly` needs a `label`'),
+        )
+      } finally {
+        warn.mockRestore()
+      }
+    })
+
+    it.each([
+      ['label', { label: 'Settings' }],
+      ['aria-label', { 'aria-label': 'Settings' }],
+      ['aria-labelledby', { 'aria-labelledby': 'some-id' }],
+    ])('does not warn when iconOnly is named via %s', (_, props) => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      try {
+        render(ButtonHarness, { iconOnly: true, text: '⚙', ...props } as never)
+        expect(warn).not.toHaveBeenCalledWith(expect.stringContaining('Button: `iconOnly`'))
+      } finally {
+        warn.mockRestore()
+      }
+    })
+
+    it('does not warn for a plain (non-icon-only) button without a label', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      try {
+        render(ButtonHarness, { text: 'Save' })
+        expect(warn).not.toHaveBeenCalledWith(expect.stringContaining('Button: `iconOnly`'))
+      } finally {
+        warn.mockRestore()
+      }
+    })
   })
 
   describe('fullWidth', () => {

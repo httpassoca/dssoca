@@ -131,6 +131,19 @@ body {
   overflow-y: auto;
 }
 
+/* Equal row heights: a long name truncates instead of wrapping to a second line. */
+.relay-channels .ss-side .item .label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* One count column: a row without a status dot keeps the dot's slot free (dot + its margin + the
+   row gap), so every count badge sits on the same line as the ones that have a dot after them. */
+.relay-channels .ss-side .item .badge:last-child {
+  margin-inline-end: calc(var(--ss-badge-dot) + var(--ss-s-1) + var(--ss-s-2));
+}
+
 .relay-me {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -432,6 +445,12 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Presence is a square status dot, as in the channel list: drop the dot-only badge's inline
+   padding so its frame hugs the dot instead of drawing a short bar. */
+.relay-member .ss-badge {
+  --ss-badge-px: 0;
 }
 
 /* Offline members read muted by colour only — no opacity, so avatars/badges keep AA contrast. */

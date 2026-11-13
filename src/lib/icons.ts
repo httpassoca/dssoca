@@ -49,10 +49,47 @@ export type IconName = keyof typeof BUILTIN_PATHS
  */
 export const PATHS: Record<string, string> = { ...BUILTIN_PATHS }
 
+// Light defence-in-depth pass for the raw-markup escape hatches (`registerIcon`, Icon's
+// `paths`, DS-0176). Removes the obvious script vectors and nothing a glyph needs: drawing
+// elements, their attributes, `<g>`/`<defs>`/`<use>`/`<style>` all pass through untouched.
+const SCRIPT_BLOCK = /<script\b[\s\S]*?<\/script\s*>/gi
+const FOREIGN_BLOCK = /<foreignObject\b[\s\S]*?<\/foreignObject\s*>/gi
+const STRAY_TAG = /<\/?(?:script|foreignObject)\b[^>]*>/gi
+const EVENT_ATTR = /([\s/])on[a-z0-9_.:-]*\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi
+const JS_URL_ATTR = /([\s/])((?:xlink:)?href)\s*=\s*(["']?)\s*javascript:[^"'\s>]*\3/gi
+
+/**
+ * Strip `<script>`, `<foreignObject>`, `on*` event-handler attributes and `javascript:`
+ * links from SVG inner markup. Repeats until stable so split-up payloads can't reassemble.
+ *
+ * This is a light filter, **not** a security boundary: a regex can't fully parse markup.
+ * Markup passed to `registerIcon` or Icon's `paths` must still be trusted (authored by you,
+ * never user input).
+ */
+export function sanitizeIconMarkup(markup: string): string {
+  let prev: string
+  let out = markup
+  do {
+    prev = out
+    out = out
+      .replace(SCRIPT_BLOCK, '')
+      .replace(FOREIGN_BLOCK, '')
+      .replace(STRAY_TAG, '')
+      .replace(EVENT_ATTR, '$1')
+      .replace(JS_URL_ATTR, '$1')
+  } while (out !== prev)
+  return out
+}
+
 /**
  * Register (or override) a glyph at runtime so `<Icon name="foo" />` resolves
  * raw SVG inner markup that isn't part of the curated {@link IconName} union.
- * The markup is rendered verbatim inside the icon's `<svg viewBox="0 0 24 24">`.
+ * The markup is rendered inside the icon's `<svg viewBox="0 0 24 24">` after a light
+ * {@link sanitizeIconMarkup} pass.
+ *
+ * **Trust requirement:** `paths` is injected as HTML. Only pass markup you control (your own
+ * icon set, a vetted file); never user-supplied or third-party strings. The filter removes
+ * obvious script vectors but is not a substitute for that.
  *
  *   registerIcon('heart', '<path d="M12 21 4 13a5 5 0 0 1 7-7l1 1 1-1a5 5 0 0 1 7 7z"/>')
  *   <Icon name={'heart' as IconName} />
@@ -61,7 +98,11 @@ export function registerIcon(name: string, paths: string): void {
   PATHS[name] = paths
 }
 
-/** Look a glyph up; built-ins first, then runtime registrations. */
+/**
+ * Look a glyph up; built-ins first, then runtime registrations. Registered markup comes back
+ * through {@link sanitizeIconMarkup} (also covers direct writes to the public `PATHS` record).
+ */
 export function resolveIcon(name: string): string | undefined {
-  return PATHS[name]
+  const found = PATHS[name]
+  return found == null ? undefined : sanitizeIconMarkup(found)
 }

@@ -258,6 +258,7 @@
         status="up"
         latency="4ms"
         updatedAt={demoDate}
+        spark={[4, 8, 6, 10, 7, 12, 9, 13, 10]}
       />
     </div>
   {:else if slug === 'sparkline'}

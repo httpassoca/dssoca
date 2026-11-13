@@ -16,13 +16,13 @@
       variant: {
         control: { type: 'inline-radio' },
         options: ['inline', 'button'],
-        description: 'Visual treatment: animated underline (inline) or solid primary (button).',
+        description: 'Visual treatment: underlined text (inline) or solid primary (button).',
       },
       external: {
         control: { type: 'inline-radio' },
         options: [undefined, true, false],
         description:
-          'Open in a new tab + safe rel + external glyph. Auto-detected for absolute http(s) URLs when left undefined.',
+          'Open in a new tab + external glyph. Auto-detected for absolute http(s) URLs when left undefined.',
       },
       size: {
         control: { type: 'inline-radio' },

@@ -117,7 +117,22 @@
   }
 
   const sizeAttr = $derived(resolveComponentSize('Sidebar', size))
+
+  // Per-instance id prefix so two Sidebars on one page never share section/panel ids.
+  const uid = $props.id()
 </script>
+
+<!-- Status dot + a visually hidden status word, so degraded/down never relies on colour alone
+     (WCAG 1.4.1). In the collapsed rail the item's aria-label already carries the word. -->
+{#snippet statusDot(status: SideStatus | undefined)}
+  {#if status}
+    <span
+      class="dot {status === 'deg' ? 'warn' : status === 'down' ? 'err' : ''}"
+      aria-hidden="true"
+    ></span>
+    {#if STATUS_WORD[status]}<span class="sr-only">, {STATUS_WORD[status]}</span>{/if}
+  {/if}
+{/snippet}
 
 <nav
   class="ss-side"
@@ -129,8 +144,8 @@
     <button
       type="button"
       class="rail-toggle"
-      aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-      aria-pressed={collapsed}
+      aria-label="Sidebar"
+      aria-expanded={!collapsed}
       onclick={() => onToggleCollapsed?.(!collapsed)}
     >
       <Icon name="arrow" px={13} />
@@ -138,14 +153,14 @@
   {/if}
 
   {#each groups as g, gi}
-    {@const labelId = `ss-side-sec-${gi}`}
+    {@const labelId = `${uid}-sec-${gi}`}
     <div class="section" id={labelId}>{g.section}</div>
     <ul class="list" aria-labelledby={labelId}>
       {#each g.items as item}
         <li class="row">
           {#if item.children?.length}
             {@const open = isOpen(item)}
-            {@const panelId = `ss-side-sub-${item.id}`}
+            {@const panelId = `${uid}-sub-${item.id}`}
             <button
               type="button"
               class="item disclosure {hasActiveDescendant(item) ? 'active' : ''}"
@@ -160,12 +175,7 @@
               {#if item.badge != null && item.badge !== ''}
                 <span class="badge">{item.badge}</span>
               {/if}
-              {#if item.status}
-                <span
-                  class="dot {item.status === 'deg' ? 'warn' : item.status === 'down' ? 'err' : ''}"
-                  aria-hidden="true"
-                ></span>
-              {/if}
+              {@render statusDot(item.status)}
               <span class="caret {open ? 'open' : ''}" aria-hidden="true"></span>
             </button>
             <ul class="sublist" id={panelId} aria-label={item.label} hidden={!open}>
@@ -191,16 +201,7 @@
                       {#if child.badge != null && child.badge !== ''}
                         <span class="badge">{child.badge}</span>
                       {/if}
-                      {#if child.status}
-                        <span
-                          class="dot {child.status === 'deg'
-                            ? 'warn'
-                            : child.status === 'down'
-                              ? 'err'
-                              : ''}"
-                          aria-hidden="true"
-                        ></span>
-                      {/if}
+                      {@render statusDot(child.status)}
                     </a>
                   {:else}
                     <div
@@ -223,16 +224,7 @@
                       {#if child.badge != null && child.badge !== ''}
                         <span class="badge">{child.badge}</span>
                       {/if}
-                      {#if child.status}
-                        <span
-                          class="dot {child.status === 'deg'
-                            ? 'warn'
-                            : child.status === 'down'
-                              ? 'err'
-                              : ''}"
-                          aria-hidden="true"
-                        ></span>
-                      {/if}
+                      {@render statusDot(child.status)}
                     </div>
                   {/if}
                 </li>
@@ -258,12 +250,7 @@
               {#if item.badge != null && item.badge !== ''}
                 <span class="badge">{item.badge}</span>
               {/if}
-              {#if item.status}
-                <span
-                  class="dot {item.status === 'deg' ? 'warn' : item.status === 'down' ? 'err' : ''}"
-                  aria-hidden="true"
-                ></span>
-              {/if}
+              {@render statusDot(item.status)}
             </a>
           {:else}
             <div
@@ -286,12 +273,7 @@
               {#if item.badge != null && item.badge !== ''}
                 <span class="badge">{item.badge}</span>
               {/if}
-              {#if item.status}
-                <span
-                  class="dot {item.status === 'deg' ? 'warn' : item.status === 'down' ? 'err' : ''}"
-                  aria-hidden="true"
-                ></span>
-              {/if}
+              {@render statusDot(item.status)}
             </div>
           {/if}
         </li>
@@ -302,14 +284,14 @@
 
 <style lang="scss">
   .ss-side {
-    border-right: 1px solid var(--ss-line);
+    border-inline-end: 1px solid var(--ss-line);
     padding: var(--ss-gap) var(--ss-s-1);
     display: flex;
     flex-direction: column;
     gap: 1px;
     background: var(--ss-bg);
     width: var(--ss-side-w);
-    // Fill the host container's height so the rail (border-right + background)
+    // Fill the host container's height so the rail (border-inline-end + background)
     // spans the full screen/column instead of stopping at the last item. Uses
     // min-height so it still grows past the viewport when the nav is long (the
     // host scrolls). A percentage min-height against an indefinite-height parent
@@ -337,10 +319,10 @@
         gap: 0;
       }
       .dot {
-        margin-left: 0;
+        margin-inline-start: 0;
       }
       .sublist {
-        padding-left: 0;
+        padding-inline-start: 0;
       }
     }
 
@@ -354,7 +336,7 @@
       gap: 1px;
     }
     .sublist {
-      padding-left: var(--ss-s-3);
+      padding-inline-start: var(--ss-s-3);
     }
     .row {
       display: block;
@@ -395,12 +377,10 @@
       cursor: pointer;
       color: var(--ss-fg-muted);
       font: 500 var(--ss-ui-md) var(--ss-font-mono);
-      border-left: 2px solid transparent;
-      border-top: 0;
-      border-right: 0;
-      border-bottom: 0;
+      border: 0;
+      border-inline-start: 2px solid transparent;
       background: none;
-      text-align: left;
+      text-align: start;
       text-decoration: none;
       box-sizing: border-box;
       transition: all var(--ss-dur-fast) var(--ss-ease);
@@ -412,7 +392,7 @@
       &.active {
         color: var(--ss-fg);
         background: color-mix(in srgb, var(--ss-accent) 6%, transparent);
-        border-left-color: var(--ss-primary);
+        border-inline-start-color: var(--ss-primary);
       }
 
       .label {
@@ -440,7 +420,7 @@
 
       .badge {
         flex: 0 0 auto;
-        margin-left: auto;
+        margin-inline-start: auto;
         font-family: var(--ss-font-mono);
         font-size: var(--ss-ui-xs);
         line-height: 1;
@@ -451,14 +431,14 @@
         border-radius: 0;
       }
       .badge + .dot {
-        margin-left: var(--ss-s-1);
+        margin-inline-start: var(--ss-s-1);
       }
 
       .dot {
         flex: 0 0 auto;
         width: 5px;
         height: 5px;
-        margin-left: auto;
+        margin-inline-start: auto;
         background: var(--ss-primary);
         &.warn {
           background: var(--ss-yellow);
@@ -470,20 +450,24 @@
 
       .caret {
         flex: 0 0 auto;
-        margin-left: var(--ss-s-1);
+        margin-inline-start: var(--ss-s-1);
         width: 0;
         height: 0;
-        border-left: 4px solid currentColor;
+        border-inline-start: 4px solid currentColor;
         border-top: 3px solid transparent;
         border-bottom: 3px solid transparent;
         transition: transform var(--ss-dur-fast) var(--ss-ease);
         &.open {
           transform: rotate(90deg);
         }
+        // The caret points inline-end (leftwards in RTL), so it turns the other way to point down.
+        &.open:dir(rtl) {
+          transform: rotate(-90deg);
+        }
       }
       .badge + .caret,
       .dot + .caret {
-        margin-left: var(--ss-s-1);
+        margin-inline-start: var(--ss-s-1);
       }
     }
 

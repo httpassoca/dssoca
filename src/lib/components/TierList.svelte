@@ -34,6 +34,7 @@
   // ─────────────────────────────────────────────────────────────────────────
   import { tick, untrack, type Snippet } from 'svelte'
   import { flip } from 'svelte/animate'
+  import { prefersReducedMotion } from 'svelte/motion'
   import { resolveComponentSize, type Size } from '../config.js'
   import {
     DEFAULT_TIERS,
@@ -42,13 +43,13 @@
     announceText,
     buildZones,
     insertionIndex,
+    keyMoveFor,
     keyboardTarget,
     locate,
     moveItem,
     placementsOf,
     tierColor,
     zonesEqual,
-    type TierListKeyMove,
     type TierListZones,
   } from '../tierlist-core.js'
 
@@ -142,14 +143,8 @@
 
   // --- keyboard sorting ----------------------------------------------------
   let grabbed = $state<{ id: string; origin: TierListZones } | null>(null)
-  const KEY_MOVES: Record<string, TierListKeyMove> = {
-    ArrowLeft: 'left',
-    ArrowRight: 'right',
-    ArrowUp: 'up',
-    ArrowDown: 'down',
-    Home: 'home',
-    End: 'end',
-  }
+  // Read at event time, not once: `dir` may be set on any ancestor and change later.
+  const isRtl = (el: Element) => getComputedStyle(el).direction === 'rtl'
 
   function toggleGrab(id: string) {
     if (grabbed?.id === id) {
@@ -203,7 +198,7 @@
       cancelGrab(true)
       return
     }
-    const move = KEY_MOVES[e.key]
+    const move = keyMoveFor(e.key, isRtl(e.currentTarget as Element))
     if (!move) return
     e.preventDefault()
     const target = keyboardTarget(zones, zoneOrder, item.id, move)
@@ -314,7 +309,8 @@
     const boxes = Array.from(zoneEl.querySelectorAll<HTMLElement>(':scope > .cell'))
       .filter((c) => c.dataset.item !== drag!.id)
       .map((c) => c.getBoundingClientRect())
-    const next = moveItem(zones, drag.id, zone, insertionIndex(boxes, e.clientX, e.clientY))
+    const index = insertionIndex(boxes, e.clientX, e.clientY, isRtl(zoneEl))
+    const next = moveItem(zones, drag.id, zone, index)
     if (next !== zones) zones = next
   }
 
@@ -373,7 +369,7 @@
         class:shadow={drag?.active && drag.id === item.id}
         class:grabbed={grabbed?.id === item.id}
         data-item={item.id}
-        animate:flip={{ duration: 150 }}
+        animate:flip={{ duration: prefersReducedMotion.current ? 0 : 150 }}
       >
         {#if readonly}
           <div class="tile" data-item={item.id} aria-label={item.label} role="img">
@@ -535,7 +531,7 @@
       background: var(--ss-bg-inset);
       color: inherit;
       font: inherit;
-      text-align: left;
+      text-align: start;
       overflow: hidden;
       cursor: grab;
       // Pointer Events drive the drag; the browser must not turn a touch into a scroll.
