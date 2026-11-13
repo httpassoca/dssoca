@@ -396,3 +396,70 @@ describe('SearchPalette — a11y', () => {
     expect(await axe(container, axeOpts)).toHaveNoViolations()
   })
 })
+
+describe('SearchPalette — Front-End Checklist fixes (DS-0180)', () => {
+  const getDialog = (container: HTMLElement) =>
+    container.querySelector<HTMLDialogElement>('dialog.ss-search-palette')!
+
+  afterEach(() => {
+    document.documentElement.style.overflow = ''
+  })
+
+  it('renders a labelled close button that closes the palette', async () => {
+    const onclose = vi.fn()
+    const { container } = render(SearchPalette, { ...baseProps(), onclose })
+    const close = container.querySelector<HTMLButtonElement>('.ss-search-palette button.close')!
+    expect(close).not.toBeNull()
+    expect(close).toHaveAttribute('aria-label', 'Close')
+    await fireEvent.click(close)
+    await tick()
+    expect(getDialog(container).open).toBe(false)
+    expect(onclose).toHaveBeenCalledOnce()
+  })
+
+  it('closeLabel names the close button', () => {
+    const { container } = render(SearchPalette, { ...baseProps(), closeLabel: 'Fechar' })
+    expect(container.querySelector('button.close')).toHaveAttribute('aria-label', 'Fechar')
+  })
+
+  it('keeps an always-rendered status region that announces counts and no-results', async () => {
+    const { container } = render(SearchPalette, baseProps())
+    const status = container.querySelector('.ss-search-palette [role="status"]')!
+    expect(status).not.toBeNull()
+    expect(status).toHaveTextContent('')
+    const input = getInput(container)
+    await fireEvent.input(input, { target: { value: 'tok' } })
+    expect(status).toHaveTextContent('1 result')
+    await fireEvent.input(input, { target: { value: 'o' } })
+    expect(status).toHaveTextContent(/^\d+ results$/)
+    await fireEvent.input(input, { target: { value: 'zzz' } })
+    // Same node (not re-mounted), now carrying the no-results text.
+    expect(container.querySelector('.ss-search-palette [role="status"]')).toBe(status)
+    expect(status).toHaveTextContent('No results')
+  })
+
+  it('resultsText customizes the announcement', async () => {
+    const { container } = render(SearchPalette, {
+      ...baseProps(),
+      resultsText: (n: number) => `${n} resultado(s)`,
+    })
+    await fireEvent.input(getInput(container), { target: { value: 'tok' } })
+    expect(container.querySelector('[role="status"]')).toHaveTextContent('1 resultado(s)')
+  })
+
+  it('locks page scroll while open and restores it on close', async () => {
+    document.documentElement.style.overflow = 'scroll'
+    const { container } = render(SearchPalette, baseProps())
+    await tick()
+    expect(document.documentElement.style.overflow).toBe('hidden')
+    getDialog(container).close()
+    await tick()
+    expect(document.documentElement.style.overflow).toBe('scroll')
+  })
+
+  it('does not lock scroll while closed', async () => {
+    render(SearchPalette, { items: navItems })
+    await tick()
+    expect(document.documentElement.style.overflow).toBe('')
+  })
+})
