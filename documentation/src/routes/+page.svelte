@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/environment'
-  import { Button } from 'dssoca'
+  import { Button, Icon } from 'dssoca'
+  import { GITHUB_URL } from '$lib/search'
   import { COMPONENTS } from '$lib/docs.config'
   import Hub from '$lib/components/Hub.svelte'
 </script>
@@ -45,6 +46,15 @@
       <a href="/introduction"><Button variant="primary">Get started</Button></a>
       <a href="/components"><Button variant="secondary">Browse components</Button></a>
     </div>
+
+    <p class="repo">
+      <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+        <Icon name="github" px={16} decorative />
+        <span>GitHub</span>
+        <span class="sr">(opens in a new tab)</span>
+      </a>
+      <a href="/changelog">Changelog</a>
+    </p>
   </div>
 </section>
 
@@ -142,6 +152,36 @@
 
       a {
         text-decoration: none;
+      }
+    }
+
+    // Quiet secondary links under the actions: the repository and the release notes.
+    .repo {
+      display: flex;
+      gap: var(--ss-s-6);
+      margin: var(--ss-s-6) 0 0;
+      pointer-events: auto;
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-md);
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--ss-s-2);
+        min-block-size: var(--ss-s-6);
+        color: var(--ss-fg);
+
+        &:hover {
+          color: var(--ss-primary);
+        }
+      }
+      .sr {
+        position: absolute;
+        inline-size: 1px;
+        block-size: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
       }
     }
   }
