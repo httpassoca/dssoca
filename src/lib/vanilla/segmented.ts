@@ -1,7 +1,7 @@
 /**
  * SegmentedControl (DS-0148) — radio-group selection over `.ss-segmented > .segment[role=radio]`
  * with the same roving model as SegmentedControl.svelte (Arrow/Home/End select + focus,
- * wrapping over enabled segments). Emits `ss:change` on the root with `{ value, index }`;
+ * wrapping over enabled segments; Left/Right mirror under RTL). Emits `ss:change` on the root with `{ value, index }`;
  * `value` is the segment's `data-value` (vanilla-only attribute) or its label text.
  */
 import { on, emit, all } from './delegate.js'
@@ -37,15 +37,24 @@ export function installSegmented(): void {
     const enabled = segments(root).filter((s) => !s.disabled)
     const pos = enabled.indexOf(segment as HTMLButtonElement)
     const n = enabled.length
+    const next = ((pos < 0 ? -1 : pos) + 1 + n) % n
+    const prev = ((pos < 0 ? 0 : pos) - 1 + n) % n
+    // RTL: the row runs right-to-left, so ArrowLeft points at the NEXT segment.
+    // Read the inherited computed direction at keydown time; Up/Down stay logical.
+    const rtl = getComputedStyle(segment).direction === 'rtl'
     let target: number
     switch (e.key) {
       case 'ArrowRight':
-      case 'ArrowDown':
-        target = ((pos < 0 ? -1 : pos) + 1 + n) % n
+        target = rtl ? prev : next
         break
       case 'ArrowLeft':
+        target = rtl ? next : prev
+        break
+      case 'ArrowDown':
+        target = next
+        break
       case 'ArrowUp':
-        target = ((pos < 0 ? 0 : pos) - 1 + n) % n
+        target = prev
         break
       case 'Home':
         target = 0

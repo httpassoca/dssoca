@@ -1,4 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, fireEvent } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
 import SegmentedControl from '$lib/components/SegmentedControl.svelte'
@@ -8,6 +10,12 @@ const OPTS = [
   { value: 'grid', label: 'Grid', icon: 'grid' as const },
   { value: 'map', label: 'Map' },
 ]
+
+const source = readFileSync(
+  resolve(process.cwd(), 'src/lib/components/SegmentedControl.svelte'),
+  'utf8',
+)
+const style = source.slice(source.indexOf('<style'))
 
 const axeOpts = {
   rules: {
@@ -285,5 +293,77 @@ describe('SegmentedControl', () => {
       label: 'View mode',
     })
     expect(await axe(container, axeOpts)).toHaveNoViolations()
+  })
+
+  // --- Front-End Checklist fixes (DS-0172) --------------------------------
+
+  describe('RTL arrow keys (DS-0172)', () => {
+    afterEach(() => {
+      document.documentElement.removeAttribute('style')
+      vi.restoreAllMocks()
+    })
+
+    // jsdom doesn't inherit `direction` from an ancestor `dir`, so stub the
+    // computed style the handler reads at keydown time.
+    const forceRtl = () => {
+      const real = window.getComputedStyle
+      vi.spyOn(window, 'getComputedStyle').mockImplementation((el, pseudo) => {
+        const cs = real(el, pseudo)
+        return new Proxy(cs, {
+          get: (t, k) => (k === 'direction' ? 'rtl' : Reflect.get(t, k)),
+        })
+      })
+    }
+
+    it('ArrowLeft moves to the NEXT segment under RTL', async () => {
+      forceRtl()
+      const { container } = render(SegmentedControl, {
+        options: OPTS,
+        value: 'list',
+        label: 'View',
+      })
+      const segs = container.querySelectorAll<HTMLElement>('.segment')
+      await fireEvent.keyDown(segs[0], { key: 'ArrowLeft' })
+      expect(document.activeElement).toBe(segs[1])
+      expect(segs[1]).toHaveAttribute('aria-checked', 'true')
+    })
+
+    it('ArrowRight moves to the PREVIOUS segment (wrapping) under RTL', async () => {
+      forceRtl()
+      const { container } = render(SegmentedControl, {
+        options: OPTS,
+        value: 'list',
+        label: 'View',
+      })
+      const segs = container.querySelectorAll<HTMLElement>('.segment')
+      await fireEvent.keyDown(segs[0], { key: 'ArrowRight' })
+      expect(document.activeElement).toBe(segs[2])
+    })
+
+    it('ArrowDown / ArrowUp stay logical (next / previous) under RTL', async () => {
+      forceRtl()
+      const { container } = render(SegmentedControl, {
+        options: OPTS,
+        value: 'grid',
+        label: 'View',
+      })
+      const segs = container.querySelectorAll<HTMLElement>('.segment')
+      await fireEvent.keyDown(segs[1], { key: 'ArrowDown' })
+      expect(document.activeElement).toBe(segs[2])
+      await fireEvent.keyDown(segs[2], { key: 'ArrowUp' })
+      expect(document.activeElement).toBe(segs[1])
+    })
+  })
+
+  describe('styles (DS-0172)', () => {
+    it('never uses the low-contrast --ss-primary-soft wash as a focus ring', () => {
+      expect(style).not.toContain('--ss-primary-soft')
+      expect(style).toMatch(/box-shadow:\s*inset 0 0 0 2px var\(--ss-primary\)/)
+    })
+
+    it('draws segment dividers with logical (inline-start) borders, not physical left', () => {
+      expect(style).not.toMatch(/border-(left|right)\b/)
+      expect(style).toContain('border-inline-start: 1px solid var(--ss-line)')
+    })
   })
 })

@@ -4,7 +4,10 @@
  * - Input `clearable`: `.ss-field .clear` empties `.ss-input`, refocuses it and hides itself;
  *   typing shows it again (Input.svelte removes the button entirely — vanilla toggles `hidden`).
  * - NumberField steppers: `.ss-numberfield .step.dec/.inc` nudge by `step`, clamped to
- *   `min`/`max`, and disable themselves at the bounds (same `nudge`/`clamp` as the component).
+ *   `min`/`max` (same `nudge`/`clamp` as the component). At a bound a stepper becomes an
+ *   `aria-disabled` no-op (still focusable, so focus never drops to <body>); it is natively
+ *   `disabled` only when the input is disabled/readonly. Each nudge writes the new value to
+ *   the field's polite `.live` region.
  * - Textarea autosize: `.ss-textarea .field.autosize` grows with content. Browsers with
  *   `field-sizing: content` do it in CSS; the JS `scrollHeight` sync is the fallback.
  */
@@ -41,13 +44,19 @@ function syncSteppers(input: HTMLInputElement): void {
   const locked = input.disabled || input.readOnly
   const dec = control.querySelector<HTMLButtonElement>('.step.dec')
   const inc = control.querySelector<HTMLButtonElement>('.step.inc')
-  if (dec) dec.disabled = locked || (v != null && min != null && v <= min)
-  if (inc) inc.disabled = locked || (v != null && max != null && v >= max)
+  const bound = (btn: HTMLButtonElement | null, atBound: boolean) => {
+    if (!btn) return
+    btn.disabled = locked
+    if (!locked && atBound) btn.setAttribute('aria-disabled', 'true')
+    else btn.removeAttribute('aria-disabled')
+  }
+  bound(dec, v != null && min != null && v <= min)
+  bound(inc, v != null && max != null && v >= max)
 }
 
 export function nudgeNumber(btn: HTMLButtonElement): void {
   const input = btn.closest('.control')?.querySelector<HTMLInputElement>('.ss-input')
-  if (!input || btn.disabled) return
+  if (!input || btn.disabled || btn.getAttribute('aria-disabled') === 'true') return
   const dir = btn.classList.contains('inc') ? 1 : -1
   const min = num(input.getAttribute('min'))
   const max = num(input.getAttribute('max'))
@@ -62,6 +71,8 @@ export function nudgeNumber(btn: HTMLButtonElement): void {
   fire(input, 'input')
   fire(input, 'change')
   syncSteppers(input)
+  const live = input.closest('.ss-numberfield')?.querySelector('.live')
+  if (live) live.textContent = input.value
 }
 
 // ── Textarea autosize ──────────────────────────────────────────────────────

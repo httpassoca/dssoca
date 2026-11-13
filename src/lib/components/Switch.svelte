@@ -124,14 +124,16 @@
 
       .thumb {
         position: absolute;
-        top: var(--ss-switch-pad, 2px);
-        left: var(--ss-switch-pad, 2px);
+        // Logical insets so the thumb starts at the inline-start end and slides
+        // toward inline-end — mirrors automatically under `dir="rtl"`.
+        inset-block-start: var(--ss-switch-pad, 2px);
+        inset-inline-start: var(--ss-switch-pad, 2px);
         // Square thumb sized to the track height minus padding/border.
         width: var(--ss-switch-thumb, 1rem);
         height: var(--ss-switch-thumb, 1rem);
         border-radius: 0;
         background: var(--ss-fg);
-        transition: transform var(--ss-dur-fast) var(--ss-ease);
+        transition: inset-inline-start var(--ss-dur-fast) var(--ss-ease);
       }
 
       &.on {
@@ -140,13 +142,9 @@
 
         .thumb {
           background: var(--ss-bg);
-          // Slide to the far end: track width − thumb − padding on both sides − borders.
-          transform: translateX(
-            calc(
-              var(--ss-switch-w, 2.25rem) - var(--ss-switch-thumb, 1rem) -
-                (2 * var(--ss-switch-pad, 2px)) - 2px
-            )
-          );
+          // Slide to the inline-end: the containing block is the track's padding
+          // box, so 100% − thumb − padding parks it flush with the far end.
+          inset-inline-start: calc(100% - var(--ss-switch-thumb, 1rem) - var(--ss-switch-pad, 2px));
         }
       }
 
@@ -154,10 +152,8 @@
         border-color: var(--ss-line-strong);
       }
 
-      &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 2px var(--ss-primary-soft);
-      }
+      // No :focus-visible override: the global base ring (2px solid
+      // --ss-primary, offset 2px — _base.scss) is the visible focus cue.
 
       &:disabled {
         cursor: not-allowed;

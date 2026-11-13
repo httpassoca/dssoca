@@ -2,6 +2,9 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, fireEvent } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
 import Textarea from '$lib/components/Textarea.svelte'
+import { compileString } from 'sass'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 const axeOpts = {
   rules: {
@@ -221,5 +224,16 @@ describe('Textarea', () => {
       const { container } = render(Textarea, { label: 'Notes', disabled: true, autosize: true })
       expect(await axe(container, axeOpts)).toHaveNoViolations()
     })
+  })
+
+  // DS-0167 — the required marker's gap must follow writing direction (RTL).
+  it('spaces the required marker with a logical property, not margin-left', () => {
+    const src = readFileSync(resolve(__dirname, '../../src/lib/components/Textarea.svelte'), 'utf8')
+    const scss = /<style lang="scss">([\s\S]*?)<\/style>/.exec(src)![1]
+    const css = compileString(scss, { syntax: 'scss', style: 'expanded' }).css
+    const req = /\.req \{([^}]*)\}/.exec(css)
+    expect(req, '.req rule').not.toBeNull()
+    expect(req![1]).toMatch(/margin-inline-start:/)
+    expect(css).not.toMatch(/margin-(left|right)|(^|[^-])\b(left|right):/m)
   })
 })

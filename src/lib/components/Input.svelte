@@ -148,7 +148,7 @@
       // hair-space between label text and the required marker (DS-0068).
       .req {
         color: var(--ss-red);
-        margin-left: 2px;
+        margin-inline-start: 2px;
       }
     }
 
@@ -200,6 +200,10 @@
       align-items: center;
       justify-content: center;
       flex: none;
+      // WCAG 2.5.8 target floor: the hit area is 24×24 (--ss-s-6) with the glyph
+      // centred; the glyph itself stays at the input's font size (DS-0166).
+      min-inline-size: var(--ss-s-6);
+      min-block-size: var(--ss-s-6);
       font-family: var(--ss-font-body);
       font-size: var(--ss-input-font);
       line-height: 1;
@@ -218,10 +222,10 @@
       &[hidden] {
         display: none;
       }
+      // The base solid --ss-primary outline (_base.scss) is the focus ring; only
+      // brighten the glyph here (DS-0166 — the old translucent halo was ~1.5:1).
       &:focus-visible {
-        outline: none;
         color: var(--ss-fg);
-        box-shadow: 0 0 0 2px var(--ss-primary-soft);
       }
     }
 

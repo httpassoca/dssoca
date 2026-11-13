@@ -140,14 +140,10 @@ body {
   flex-wrap: wrap;
   gap: var(--ss-gap);
 }
+/* A plain row with a small gap: the 28px tiles are too narrow to overlap and keep initials legible. */
 .trl-team {
   display: flex;
-}
-.trl-team .ss-avatar {
-  outline: 2px solid var(--ss-bg);
-}
-.trl-team .ss-avatar + .ss-avatar {
-  margin-left: calc(-1 * var(--ss-s-2));
+  gap: var(--ss-s-1);
 }
 
 /* ---------- board ---------- */

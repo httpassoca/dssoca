@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fly } from 'svelte/transition'
   import { prefersReducedMotion } from 'svelte/motion'
+  import { untrack } from 'svelte'
   import { toasts, type Toast, type ToastKind } from '../toast.svelte.js'
   import { resolveComponentSize, type Size } from '../config.js'
 
@@ -20,6 +21,7 @@
   }
 
   let { size, position = 'top-right' }: Props = $props()
+  const uid = $props.id()
 
   const glyph: Record<ToastKind, string> = { success: '✓', error: '✕', info: 'i', loading: '' }
   // Honor prefers-reduced-motion: collapse the fly transition to an instant swap.
@@ -43,7 +45,16 @@
   })
   const flyDuration = $derived(reduce ? 0 : tokenDuration)
   // Bottom anchors slide in from below; centered ones come straight down/up.
-  const flyX = $derived(position.endsWith('center') ? 0 : position.endsWith('left') ? -16 : 16)
+  // `left`/`right` positions are logical (inline start/end), so in RTL the
+  // horizontal slide mirrors with them.
+  const rtl = $derived(
+    !!rootEl &&
+      typeof getComputedStyle === 'function' &&
+      getComputedStyle(rootEl).direction === 'rtl',
+  )
+  const flyX = $derived(
+    position.endsWith('center') ? 0 : (position.endsWith('left') ? -16 : 16) * (rtl ? -1 : 1),
+  )
   const flyY = $derived(position.endsWith('center') ? (position.startsWith('top') ? -16 : 16) : 0)
 
   // ── swipe-to-dismiss ──────────────────────────────────────────────
@@ -79,7 +90,8 @@
     if (passed) toasts.dismiss(t.id)
     else {
       dragDx = 0
-      toasts.resume(t.id)
+      const el = e.currentTarget as HTMLElement
+      if (hoverId !== t.id && !el.contains(document.activeElement)) toasts.resume(t.id)
     }
   }
 
@@ -94,6 +106,93 @@
       toasts.dismiss(t.id)
     }
   }
+
+  // ── pause / resume ────────────────────────────────────────────────
+  // Hover OR keyboard focus holds the timer; it only runs again once the
+  // pointer has left AND focus is outside the toast (a pointerleave must not
+  // restart the clock under a keyboard user, and vice versa).
+  let hoverId: number | null = null
+
+  function onPointerEnter(t: Toast) {
+    hoverId = t.id
+    toasts.pause(t.id)
+  }
+
+  function onPointerLeave(e: PointerEvent, t: Toast) {
+    if (hoverId === t.id) hoverId = null
+    if (dragId === t.id) return
+    const el = e.currentTarget as HTMLElement
+    if (el.contains(document.activeElement)) return
+    toasts.resume(t.id)
+  }
+
+  function onFocusOut(e: FocusEvent, t: Toast) {
+    const el = e.currentTarget as HTMLElement
+    if (el.contains(e.relatedTarget as Node | null)) return
+    if (hoverId === t.id || dragId === t.id) return
+    toasts.resume(t.id)
+  }
+
+  // ── focus management ──────────────────────────────────────────────
+  // Dismissing the toast that holds focus would drop focus to <body>. Before
+  // the node goes, move focus to a neighbouring toast, or back to where focus
+  // came from before it entered the stack.
+  // Plain (non-reactive) bookkeeping: read only inside the pre-effect below.
+  // eslint-disable-next-line svelte/prefer-svelte-reactivity
+  const toastEls = new Map<number, HTMLElement>()
+  let order: number[] = []
+  let returnFocus: HTMLElement | null = null
+
+  function track(id: number) {
+    return (el: HTMLElement) => {
+      toastEls.set(id, el)
+      return () => {
+        if (toastEls.get(id) === el) toastEls.delete(id)
+      }
+    }
+  }
+
+  function onRootFocusIn(e: FocusEvent) {
+    const from = e.relatedTarget as HTMLElement | null
+    if (from && rootEl && !rootEl.contains(from)) returnFocus = from
+  }
+
+  $effect.pre(() => {
+    const ids = toasts.items.map((t) => t.id)
+    untrack(() => {
+      const alive = new Set(ids)
+      const active = typeof document === 'undefined' ? null : document.activeElement
+      if (active && rootEl?.contains(active)) {
+        const holder = order.find((id) => !alive.has(id) && toastEls.get(id)?.contains(active))
+        if (holder !== undefined) moveFocusFrom(holder, alive)
+      }
+      order = ids
+    })
+  })
+
+  function moveFocusFrom(id: number, alive: Set<number>) {
+    const i = order.indexOf(id)
+    const after = order.slice(i + 1).find((n) => alive.has(n) && toastEls.has(n))
+    const before = order
+      .slice(0, i)
+      .reverse()
+      .find((n) => alive.has(n) && toastEls.has(n))
+    const next = after ?? before
+    if (next !== undefined) {
+      toastEls.get(next)!.focus()
+    } else if (returnFocus?.isConnected) {
+      returnFocus.focus()
+      returnFocus = null
+    }
+  }
+
+  // Screen-reader announcements go through two live regions that are always
+  // rendered (a node inserted already carrying role=status/alert is often
+  // skipped by NVDA/JAWS). Each visible toast mirrors its message into the
+  // polite (status) or assertive (alert, errors) region; the visual toasts
+  // themselves carry no live semantics, so nothing is announced twice.
+  const politeItems = $derived(toasts.items.filter((t) => t.kind !== 'error'))
+  const assertiveItems = $derived(toasts.items.filter((t) => t.kind === 'error'))
 </script>
 
 <div
@@ -103,21 +202,31 @@
   data-position={position}
   data-size-variant={resolveComponentSize('Toaster', size)}
   bind:this={rootEl}
+  onfocusin={onRootFocusIn}
 >
+  <div class="live" role="status" aria-live="polite">
+    {#each politeItems as t (t.id)}<p>{t.message}</p>{/each}
+  </div>
+  <div class="live" role="alert" aria-live="assertive">
+    {#each assertiveItems as t (t.id)}<p>{t.message}</p>{/each}
+  </div>
   {#each toasts.items as t (t.id)}
+    <!-- The pointer/key handlers are progressive extras (pause, swipe, Escape); the buttons inside are the real controls. -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div
       class="ss-toast {t.kind}"
       class:dragging={dragId === t.id}
-      role={t.kind === 'error' ? 'alert' : 'status'}
-      aria-live={t.kind === 'error' ? 'assertive' : 'polite'}
+      role="group"
+      aria-labelledby="{uid}-msg-{t.id}"
       tabindex="-1"
+      {@attach track(t.id)}
       style:transform={dragId === t.id ? `translateX(${dragDx}px)` : undefined}
       style:opacity={dragId === t.id ? Math.max(0.3, 1 - Math.abs(dragDx) / 200) : undefined}
       transition:fly={{ x: flyX, y: flyY, duration: flyDuration }}
-      onpointerenter={() => toasts.pause(t.id)}
-      onpointerleave={() => dragId !== t.id && toasts.resume(t.id)}
+      onpointerenter={() => onPointerEnter(t)}
+      onpointerleave={(e) => onPointerLeave(e, t)}
       onfocusin={() => toasts.pause(t.id)}
-      onfocusout={() => toasts.resume(t.id)}
+      onfocusout={(e) => onFocusOut(e, t)}
       onpointerdown={(e) => onPointerDown(e, t)}
       onpointermove={(e) => onPointerMove(e, t)}
       onpointerup={(e) => endDrag(e, t)}
@@ -129,7 +238,7 @@
       {:else}
         <span class="ic" aria-hidden="true">{glyph[t.kind]}</span>
       {/if}
-      <span class="msg">{t.message}</span>
+      <span class="msg" id="{uid}-msg-{t.id}">{t.message}</span>
       {#if t.action}
         <button class="action" type="button" onclick={() => runAction(t)}>
           {t.action.label}
@@ -149,16 +258,17 @@
     display: flex;
     flex-direction: column;
     gap: var(--ss-s-2);
-    max-width: min(360px, calc(100vw - var(--ss-s-8)));
+    max-inline-size: min(360px, calc(100vw - var(--ss-s-8)));
     pointer-events: none;
 
     // ── position anchors (read the existing --ss-s-* tokens) ──────────
+    // `left`/`right` are logical: they anchor to the inline start/end edge, so
+    // the stack mirrors under dir="rtl". Centred stacks stay physically centred.
     top: var(--ss-s-4);
-    right: var(--ss-s-4);
+    inset-inline-end: var(--ss-s-4);
 
     &[data-position='top-left'] {
-      right: auto;
-      left: var(--ss-s-4);
+      inset-inline: var(--ss-s-4) auto;
     }
     &[data-position='bottom-right'] {
       top: auto;
@@ -167,23 +277,35 @@
     }
     &[data-position='bottom-left'] {
       top: auto;
-      right: auto;
       bottom: var(--ss-s-4);
-      left: var(--ss-s-4);
+      inset-inline: var(--ss-s-4) auto;
       flex-direction: column-reverse;
     }
     &[data-position='top-center'] {
-      right: auto;
+      inset-inline: auto;
       left: 50%;
       transform: translateX(-50%);
     }
     &[data-position='bottom-center'] {
       top: auto;
-      right: auto;
       bottom: var(--ss-s-4);
+      inset-inline: auto;
       left: 50%;
       transform: translateX(-50%);
       flex-direction: column-reverse;
+    }
+
+    // Persistent live regions — visually hidden, always in the DOM.
+    .live {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
     }
   }
   .ss-toast {
@@ -194,7 +316,7 @@
     padding: var(--ss-s-3) var(--ss-s-4);
     background: var(--ss-bg-elev);
     border: 1px solid var(--ss-line);
-    border-left: 3px solid var(--ss-fg-faint);
+    border-inline-start: 3px solid var(--ss-fg-faint);
     box-shadow: var(--ss-shadow-pop);
     font-family: var(--ss-font-mono);
     font-size: var(--ss-ui-md);
@@ -213,16 +335,16 @@
     }
 
     &.success {
-      border-left-color: var(--ss-primary);
+      border-inline-start-color: var(--ss-primary);
     }
     &.error {
-      border-left-color: var(--ss-red);
+      border-inline-start-color: var(--ss-red);
     }
     &.info {
-      border-left-color: var(--ss-cyan);
+      border-inline-start-color: var(--ss-cyan);
     }
     &.loading {
-      border-left-color: var(--ss-fg-faint);
+      border-inline-start-color: var(--ss-fg-faint);
     }
 
     .ic {
@@ -294,6 +416,11 @@
       font-size: var(--ss-size-h3);
       line-height: 1;
       padding: 0;
+      // 24×24 hit area (WCAG 2.5.8) without growing the glyph.
+      display: inline-grid;
+      place-items: center;
+      min-inline-size: var(--ss-s-6);
+      min-block-size: var(--ss-s-6);
 
       &:hover {
         color: var(--ss-fg);

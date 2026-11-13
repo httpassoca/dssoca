@@ -16,7 +16,7 @@ export const bumpChart: ComponentDoc = {
   },
   tagline: 'Ranking-over-stages chart that shows who led and who overtook whom.',
   description:
-    'A token-driven bump chart for tracking finishing rank across an ordered sequence of stages (e.g. the four games of one Friday). Each series is a competitor; its 1-based `ranks` are plotted with rank 1 drawn at the top, connected by lines so crossings reveal overtakes. The x-axis uses a `scalePoint` over `stages`, the y-axis runs integer rank ticks top-down, and `showLabels` puts each series name at its last node (direct labelling). Every node is keyboard-focusable with an accessible tooltip, series absent from a stage (non-finite rank) are skipped while the line still connects present nodes, and empty input shows an em-dash placeholder.',
+    'A token-driven bump chart for tracking finishing rank across an ordered sequence of stages (e.g. the four games of one Friday). Each series is a competitor; its 1-based `ranks` are plotted with rank 1 drawn at the top, connected by lines so crossings reveal overtakes. The x-axis uses a `scalePoint` over `stages`, the y-axis runs integer rank ticks top-down, and `showLabels` puts each series name at its last node (direct labelling). The chart is one tab stop: nodes are `role="img"` marks named "<series>: <stage>, rank <n>", and a roving tabindex walks them series-major (ArrowRight/ArrowDown next, ArrowLeft/ArrowUp previous, Home/End first/last; the last-focused node keeps the tab stop). The hover/focus tooltip is decorative (`aria-hidden`, the node name already carries its data) and Escape dismisses it, including one opened by hover. Series absent from a stage (non-finite rank) are skipped while the line still connects present nodes, and empty input shows an em-dash placeholder.',
   storyId: 'components-bumpchart--default',
   usage: `<script>
   import { BumpChart } from 'dssoca';
@@ -59,7 +59,7 @@ export const bumpChart: ComponentDoc = {
       name: 'tooltip',
       type: 'boolean',
       default: 'true',
-      desc: 'Reveal a tooltip on hover/focus of a node. Each node is keyboard-focusable.',
+      desc: "Reveal a visual tooltip on hover/focus of a node (aria-hidden; Escape hides it). The node's accessible name carries the same data.",
     },
     {
       name: 'summary',

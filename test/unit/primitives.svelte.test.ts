@@ -151,11 +151,10 @@ describe('MetricTile', () => {
     expect(container.querySelector('.skeleton-val')).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it('announces the value via a live region when not loading', () => {
+  it('is not a live region by default (DS-0191)', () => {
     const { container } = render(MetricTile, { label: 'X', value: 99 })
-    const val = container.querySelector('.val')!
-    expect(val).toHaveAttribute('role', 'status')
-    expect(val).toHaveAttribute('aria-live', 'polite')
+    expect(container.querySelector('.val')).not.toHaveAttribute('role')
+    expect(container.querySelector('[aria-live]')).toBeNull()
     expect(container.querySelector('.ss-metric')).not.toHaveAttribute('aria-busy')
   })
 

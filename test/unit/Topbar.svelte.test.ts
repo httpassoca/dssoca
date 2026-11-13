@@ -186,6 +186,22 @@ describe('Topbar', () => {
     }
   })
 
+  it('falls back to the first tab as the tab stop when active matches no tab (DS-0182)', () => {
+    const { container } = render(Topbar, { active: 'overview', tabs: ['a', 'b', 'c'] })
+    const tabs = Array.from(container.querySelectorAll('.ws .tab')) as HTMLElement[]
+    expect(tabs.map((t) => t.getAttribute('tabindex'))).toEqual(['0', '-1', '-1'])
+    expect(container.querySelector('.ws .tab.active')).toBeNull()
+  })
+
+  it('falls back to the first button tab when the leading tabs are links (DS-0182)', () => {
+    const { container } = render(Topbar, {
+      active: 'none',
+      tabs: [{ id: 'a', href: '/a' }, 'b', 'c'],
+    })
+    const buttons = Array.from(container.querySelectorAll('.ws button.tab')) as HTMLElement[]
+    expect(buttons.map((t) => t.getAttribute('tabindex'))).toEqual(['0', '-1'])
+  })
+
   it('moves focus with ArrowRight/ArrowLeft (wrapping) and Home/End', async () => {
     const { container } = render(Topbar, { active: 'overview', tabs: ['a', 'b', 'c'] })
     const tabs = Array.from(container.querySelectorAll('.ws .tab')) as HTMLElement[]
@@ -519,5 +535,15 @@ describe('Topbar', () => {
     tabEls[0].focus()
     await fireEvent.keyDown(tabEls[0], { key: 'End' })
     expect(document.activeElement).toBe(tabEls[11])
+  })
+})
+
+describe('Topbar — RTL (DS-0182)', () => {
+  it('uses logical properties only, so the bar mirrors under dir="rtl"', () => {
+    const src = readFileSync('src/lib/components/Topbar.svelte', 'utf8')
+    const style = src.slice(src.indexOf('<style'))
+    expect(style).not.toMatch(
+      /^\s*(left|right|margin-(left|right)|padding-(left|right)|border-(left|right)):/m,
+    )
   })
 })

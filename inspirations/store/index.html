@@ -39,10 +39,6 @@
           <stop offset="0" stop-color="var(--ss-bg-elev-hover)" />
           <stop offset="1" stop-color="var(--ss-bg)" />
         </linearGradient>
-        <linearGradient id="store-glow" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="var(--ss-primary)" stop-opacity="0.25" />
-          <stop offset="1" stop-color="var(--ss-primary)" stop-opacity="0" />
-        </linearGradient>
       </defs>
     </svg>
 
@@ -68,7 +64,9 @@
       <div class="store-search">
         <div class="ss-field">
           <div class="control">
-            <span class="affix prefix" aria-hidden="true">⌕</span>
+            <span class="affix prefix" aria-hidden="true"
+              ><span data-ss-icon="search" data-size="sm"></span
+            ></span>
             <input
               class="ss-input"
               id="store-q"
@@ -123,7 +121,6 @@
     </header>
 
     <aside class="store-promo" aria-label="Promotion">
-      <span class="ss-badge brand"><span class="dot" aria-hidden="true"></span>drop 04</span>
       <span>Free shipping on orders over $120 · KC-75 ships in 2–3 business days</span>
       <a class="ss-link inline" href="#"><span class="label">see what's new</span></a>
     </aside>
@@ -155,7 +152,6 @@
           >
             <svg viewBox="0 0 640 400" data-view="front" aria-hidden="true" focusable="false">
               <rect width="640" height="400" fill="var(--ss-bg-elev)" />
-              <rect width="640" height="400" fill="url(#store-glow)" />
               <rect
                 x="70"
                 y="106"
@@ -218,7 +214,6 @@
             </svg>
             <svg viewBox="0 0 640 400" data-view="side" aria-hidden="true" focusable="false" hidden>
               <rect width="640" height="400" fill="var(--ss-bg-elev)" />
-              <rect width="640" height="400" fill="url(#store-glow)" />
               <polygon
                 points="60,250 580,250 580,290 60,290"
                 fill="var(--ss-bg)"
@@ -409,13 +404,12 @@
 
         <!-- Buy box -->
         <div class="store-buy">
-          <div class="store-badges">
-            <span class="ss-badge brand">new</span>
+          <p class="store-meta">
             <span class="ss-badge positive"
               ><span class="dot" aria-hidden="true"></span>in stock</span
             >
-            <span class="ss-badge neutral">75% · gasket mount</span>
-          </div>
+            <span>75% · gasket mount</span>
+          </p>
 
           <h1 id="store-title">KC-75 Aluminium Keyboard</h1>
           <p class="store-tagline">
@@ -426,13 +420,12 @@
           <p class="store-price">
             <span class="store-price-now">$159</span>
             <s class="store-price-old"><span class="store-sr-only">was </span>$189</s>
-            <span class="ss-badge caution">save 16%</span>
+            <span class="store-price-save">save 16%</span>
           </p>
 
           <p class="store-rating">
-            <span class="store-stars" aria-hidden="true">★★★★☆</span>
             <span class="store-sr-only">Rated 4.6 out of 5.</span>
-            <span class="store-rating-num" aria-hidden="true">4.6</span>
+            <span aria-hidden="true">4.6 ·</span>
             <a class="ss-link inline" href="#reviews"><span class="label">128 reviews</span></a>
           </p>
 
@@ -512,7 +505,14 @@
             <div class="ss-numberfield">
               <label class="lbl" for="store-qty">Quantity</label>
               <div class="control">
-                <button type="button" class="step dec" aria-label="Decrease">−</button>
+                <button
+                  type="button"
+                  class="step dec"
+                  aria-label="Decrease"
+                  aria-controls="store-qty"
+                >
+                  −
+                </button>
                 <input
                   class="ss-input"
                   id="store-qty"
@@ -524,8 +524,16 @@
                   max="10"
                   step="1"
                 />
-                <button type="button" class="step inc" aria-label="Increase">+</button>
+                <button
+                  type="button"
+                  class="step inc"
+                  aria-label="Increase"
+                  aria-controls="store-qty"
+                >
+                  +
+                </button>
               </div>
+              <span class="live" aria-live="polite" aria-atomic="true"></span>
               <span class="msg hint" id="store-qty-hint">Max 10 per order</span>
             </div>
 
@@ -534,7 +542,6 @@
                 <span class="label">Add to cart</span>
               </button>
               <button class="ss-btn secondary full-width" type="button" id="store-wish">
-                <span class="affix" aria-hidden="true">♥</span>
                 <span class="label">Add to wishlist</span>
               </button>
             </div>
@@ -640,6 +647,7 @@
                 role="region"
                 aria-labelledby="store-acc-h-specs"
                 hidden
+                inert
               >
                 <div class="panel-clip">
                   <div class="panel-inner">
@@ -715,6 +723,7 @@
                 role="region"
                 aria-labelledby="store-acc-h-shipping"
                 hidden
+                inert
               >
                 <div class="panel-clip">
                   <div class="panel-inner">
@@ -761,6 +770,7 @@
                 role="region"
                 aria-labelledby="store-acc-h-returns"
                 hidden
+                inert
               >
                 <div class="panel-clip">
                   <div class="panel-inner">
@@ -784,7 +794,7 @@
           <a class="ss-link inline" href="#"><span class="label">browse all keyboards</span></a>
         </div>
         <div class="store-grid">
-          <div class="ss-card interactive" aria-labelledby="store-rel-1">
+          <div class="ss-card interactive" role="region" aria-labelledby="store-rel-1">
             <div class="media">
               <svg viewBox="0 0 320 180" aria-hidden="true" focusable="false">
                 <rect width="320" height="180" fill="var(--ss-bg)" />
@@ -804,7 +814,7 @@
                 <div class="title" id="store-rel-1" role="heading" aria-level="3">KC-65 Poly</div>
                 <div class="desc">Polycarbonate · 65%</div>
               </div>
-              <div class="actions"><span class="ss-badge brand">new</span></div>
+              <div class="actions"></div>
             </div>
             <div class="body">
               <p class="store-card-price">$119</p>
@@ -814,7 +824,7 @@
             >
           </div>
 
-          <div class="ss-card interactive" aria-labelledby="store-rel-2">
+          <div class="ss-card interactive" role="region" aria-labelledby="store-rel-2">
             <div class="media">
               <svg viewBox="0 0 320 180" aria-hidden="true" focusable="false">
                 <rect width="320" height="180" fill="var(--ss-bg)" />
@@ -844,7 +854,7 @@
                 </div>
                 <div class="desc">Pack of 90 · factory lubed</div>
               </div>
-              <div class="actions"><span class="ss-badge caution">sale</span></div>
+              <div class="actions"></div>
             </div>
             <div class="body">
               <p class="store-card-price">$39 <s>$49</s></p>
@@ -854,7 +864,7 @@
             >
           </div>
 
-          <div class="ss-card interactive" aria-labelledby="store-rel-3">
+          <div class="ss-card interactive" role="region" aria-labelledby="store-rel-3">
             <div class="media">
               <svg viewBox="0 0 320 180" aria-hidden="true" focusable="false">
                 <rect width="320" height="180" fill="var(--ss-bg)" />
@@ -870,7 +880,7 @@
                 </div>
                 <div class="desc">PBT dye-sub · 156 keys</div>
               </div>
-              <div class="actions"><span class="ss-badge brand">new</span></div>
+              <div class="actions"></div>
             </div>
             <div class="body">
               <p class="store-card-price">$89</p>
@@ -880,7 +890,7 @@
             >
           </div>
 
-          <div class="ss-card interactive" aria-labelledby="store-rel-4">
+          <div class="ss-card interactive" role="region" aria-labelledby="store-rel-4">
             <div class="media">
               <svg viewBox="0 0 320 180" aria-hidden="true" focusable="false">
                 <rect width="320" height="180" fill="var(--ss-bg)" />
@@ -902,7 +912,7 @@
                 </div>
                 <div class="desc">75% · oiled walnut</div>
               </div>
-              <div class="actions"><span class="ss-badge caution">sale</span></div>
+              <div class="actions"></div>
             </div>
             <div class="body">
               <p class="store-card-price">$29 <s>$36</s></p>

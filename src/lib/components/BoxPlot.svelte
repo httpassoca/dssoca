@@ -14,6 +14,7 @@
   import { scaleBand, scaleLinear } from 'd3-scale'
   import { extent, quantile } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
+  import { chartNavStep } from '../chart-nav.js'
 
   interface Props {
     /** One box per group. Each group has a `label`, `values`, and optional `color`. */
@@ -184,9 +185,31 @@
     active = null
   }
   function boxLabel(b: (typeof boxes)[number]): string {
-    return `${b.label}: median ${fmtY(b.median)} (Q1 ${fmtY(b.q1)}–Q3 ${fmtY(b.q3)})`
+    return `${b.label}: median ${fmtY(b.median)} (Q1 ${fmtY(b.q1)}–Q3 ${fmtY(b.q3)}), min ${fmtY(b.lo)}, max ${fmtY(b.hi)}`
+  }
+
+  // Roving tabindex (DS-0161): the chart is ONE tab stop; arrow keys move between boxes.
+  let focusIdx = $state(0)
+  const tabIdx = $derived(Math.min(focusIdx, Math.max(0, boxes.length - 1)))
+  const boxEls: (SVGRectElement | null)[] = $state([])
+  function onBoxKeydown(e: KeyboardEvent, i: number) {
+    const next = chartNavStep(e.key, i, boxes.length)
+    if (next === null) return
+    e.preventDefault()
+    focusIdx = next
+    boxEls[next]?.focus()
+  }
+  function onBoxFocus(b: (typeof boxes)[number], i: number) {
+    focusIdx = i
+    show(b)
+  }
+  // Escape dismisses the tooltip whether it came from hover or focus (WCAG 1.4.13).
+  function onWindowKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && active) hide()
   }
 </script>
+
+<svelte:window onkeydown={onWindowKeydown} />
 
 <div
   class="ss-boxplot"
@@ -220,24 +243,27 @@
           <line class="axis" x1="0" x2={innerW} y1={innerH} y2={innerH} />
 
           <!-- boxes -->
-          {#each boxes as b}
+          {#each boxes as b, i}
             <!-- whisker centre line + caps -->
             <line class="whisker" x1={b.cx} x2={b.cx} y1={b.yLo} y2={b.yHi} />
             <line class="whisker" x1={b.cx - b.w / 4} x2={b.cx + b.w / 4} y1={b.yLo} y2={b.yLo} />
             <line class="whisker" x1={b.cx - b.w / 4} x2={b.cx + b.w / 4} y1={b.yHi} y2={b.yHi} />
 
             <!-- box (q1..q3) -->
+            <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
             <rect
+              bind:this={boxEls[i]}
               class="box"
               x={b.x}
               y={b.yQ3}
               width={b.w}
               height={Math.max(0, b.yQ1 - b.yQ3)}
               style="fill:{b.color};stroke:{b.color}"
-              tabindex="0"
-              role="button"
+              tabindex={i === tabIdx ? 0 : -1}
+              role="img"
               aria-label={boxLabel(b)}
-              onfocus={() => show(b)}
+              onkeydown={(e) => onBoxKeydown(e, i)}
+              onfocus={() => onBoxFocus(b, i)}
               onblur={hide}
               onmouseenter={() => show(b)}
               onmouseleave={hide}
@@ -287,7 +313,7 @@
       {#if tooltip && active}
         <div
           class="tooltip"
-          role="status"
+          aria-hidden="true"
           style="left:{((active.cx + M.left) / width) * 100}%;top:{((active.cy + M.top) / height) *
             100}%"
         >
@@ -387,7 +413,7 @@
     }
 
     .box {
-      cursor: pointer;
+      cursor: default; // data marks are not clickable
       fill-opacity: 0.18;
       stroke-width: 1.5;
       transition: fill-opacity var(--ss-dur-fast) var(--ss-ease);

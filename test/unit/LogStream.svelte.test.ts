@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, fireEvent } from '@testing-library/svelte'
 import LogStream from '$lib/components/LogStream.svelte'
 import type { LogLine } from '$lib/components/LogStream.svelte'
@@ -87,14 +89,36 @@ describe('LogStream — a11y / live region', () => {
     expect(region).toHaveAttribute('aria-label', 'Log output')
     expect(region).toHaveAttribute('aria-live', 'polite')
   })
+
+  it('makes the scrollable log region keyboard-focusable', () => {
+    const { container } = render(LogStream, { lines: sample })
+    const region = container.querySelector<HTMLElement>('[role="log"]')!
+    expect(region).toHaveAttribute('tabindex', '0')
+    region.focus()
+    expect(document.activeElement).toBe(region)
+  })
 })
 
 describe('LogStream — empty + loading', () => {
   it('shows an empty state when there are no lines', () => {
     const { container } = render(LogStream, { lines: [] })
     expect(container.querySelectorAll('.ln')).toHaveLength(0)
-    expect(container.querySelector('.ss-empty')).toBeTruthy()
+    expect(container.querySelector('.empty')).toBeTruthy()
     expect(container.textContent).toContain('No log lines')
+    expect(container.textContent).toContain('Waiting for output…')
+  })
+
+  it('does not nest another live region inside the role=log region', () => {
+    const { container } = render(LogStream, { lines: [] })
+    const region = container.querySelector('[role="log"]')!
+    expect(region.querySelector('[role="status"], [role="alert"], [aria-live]')).toBeNull()
+    expect(region.querySelector('.ss-empty')).toBeNull()
+  })
+
+  it('says no lines match when filters hide everything', async () => {
+    const { container, getByLabelText } = render(LogStream, { lines: sample })
+    await fireEvent.input(getByLabelText('Filter log text'), { target: { value: 'zzz' } })
+    expect(container.textContent).toContain('No lines match the current filters.')
   })
 
   it('marks the region busy and shows a connecting indicator when loading', () => {
@@ -159,5 +183,16 @@ describe('LogStream — uses the code surface token', () => {
     const root = container.querySelector('.ss-logs')!
     expect(root).toBeTruthy()
     expect(root.querySelector('.scroll[role="log"]')).toBeTruthy()
+  })
+})
+
+describe('LogStream — switched-off chip contrast', () => {
+  const src = readFileSync(resolve(process.cwd(), 'src/lib/components/LogStream.svelte'), 'utf8')
+  const off = src.match(/&\[aria-pressed='false'\]\s*\{([^}]*)\}/)?.[1] ?? ''
+
+  it('dims off chips with the AA faint token + a dashed border, not opacity', () => {
+    expect(off).not.toMatch(/opacity/)
+    expect(off).toMatch(/color:\s*var\(--ss-fg-muted\)/)
+    expect(off).toMatch(/border-style:\s*dashed/)
   })
 })

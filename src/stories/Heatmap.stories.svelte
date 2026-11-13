@@ -20,7 +20,11 @@
       columns: { control: 'object', description: 'Column labels, left→right.' },
       values: { control: 'object', description: 'values[r][c]; null renders a blank cell.' },
       domain: { control: 'object', description: 'Value range mapped to colour intensity.' },
-      showValues: { control: 'boolean', description: 'Render the value text inside each cell.' },
+      showValues: {
+        control: 'boolean',
+        description:
+          'Render the value text inside each cell; when false a min→max legend is shown.',
+      },
       xLabel: { control: 'text', description: 'X axis caption.' },
       yLabel: { control: 'text', description: 'Y axis caption.' },
       cellSize: { control: 'number', description: 'Square cell size in px.' },

@@ -70,7 +70,12 @@ export { default as Spinner } from './components/Spinner.svelte'
 export { SPINNER_VARIANTS, type SpinnerFrames } from './spinner-frames.js'
 
 // geossoca component gaps (DS-0090).
-export { default as Chart, type ChartSeries, type ChartPoint } from './components/Chart.svelte'
+export {
+  default as Chart,
+  type ChartSeries,
+  type ChartPoint,
+  CHART_DASH_CYCLE,
+} from './components/Chart.svelte'
 export { default as Table, type TableColumn, type TableSort } from './components/Table.svelte'
 export { default as Select } from './components/Select.svelte'
 export type { SelectOption, SelectOptGroup } from './components/Select.svelte'

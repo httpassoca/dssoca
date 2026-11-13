@@ -142,7 +142,7 @@
       letter-spacing: 0.08em;
       .req {
         color: var(--ss-red);
-        margin-left: 2px;
+        margin-inline-start: 2px;
       }
     }
 
@@ -184,9 +184,8 @@
       pointer-events: none;
       width: 0;
       height: 0;
-      margin-left: var(--ss-gap-sm);
-      border-left: var(--ss-select-chevron, 5px) solid transparent;
-      border-right: var(--ss-select-chevron, 5px) solid transparent;
+      margin-inline-start: var(--ss-gap-sm);
+      border-inline: var(--ss-select-chevron, 5px) solid transparent;
       border-top: var(--ss-select-chevron, 5px) solid var(--ss-fg-muted);
       transition: border-top-color var(--ss-dur-fast) var(--ss-ease);
     }

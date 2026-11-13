@@ -195,6 +195,7 @@
         role="region"
         aria-labelledby={headerId(item)}
         hidden={!expanded}
+        inert={!expanded}
       >
         <div class="panel-clip">
           <div class="panel-inner">
@@ -258,7 +259,7 @@
       padding: var(--ss-acc-head-py) var(--ss-acc-head-px);
       background: none;
       border: 0;
-      text-align: left;
+      text-align: start;
       cursor: pointer;
       color: var(--ss-fg);
       font: 500 var(--ss-ui-md) var(--ss-font-mono);
@@ -321,17 +322,32 @@
     // Animated reveal — grid-rows trick gives a height transition without a
     // hardcoded max-height. Collapses instantly under prefers-reduced-motion
     // because --ss-dur is 0ms there (see _tokens.scss).
+    //
+    // `display: grid` beats the UA `[hidden] { display: none }` so the collapse
+    // can animate — which on its own would leave the closed content in the a11y
+    // tree and in the Tab order. `visibility: hidden` takes it out of both; the
+    // visibility switch is delayed by --ss-dur on close (instant on open) so the
+    // content stays painted while the track shrinks — the Menu/Tooltip approach.
+    // The panel also carries `inert` while closed (DS-0162).
     .panel {
       display: grid;
       grid-template-rows: 0fr;
-      transition: grid-template-rows var(--ss-dur) var(--ss-ease);
+      visibility: hidden;
+      transition:
+        grid-template-rows var(--ss-dur) var(--ss-ease),
+        visibility 0s linear var(--ss-dur);
 
       &[hidden] {
         display: grid; // keep the grid so the collapse can animate
         grid-template-rows: 0fr;
+        visibility: hidden;
       }
       &:not([hidden]) {
         grid-template-rows: 1fr;
+        visibility: visible;
+        transition:
+          grid-template-rows var(--ss-dur) var(--ss-ease),
+          visibility 0s linear 0s;
       }
     }
 

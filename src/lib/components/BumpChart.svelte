@@ -15,6 +15,7 @@
   import { line as shapeLine } from 'd3-shape'
   import { max } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
+  import { chartNavStep } from '../chart-nav.js'
 
   interface Props {
     /** One series per competitor; each carries a `label`, `ranks` and optional `color`. */
@@ -81,10 +82,12 @@
     Array.from({ length: Math.max(1, Math.round(maxRank)) }, (_, i) => i + 1),
   )
 
-  // One node per (series, stage) where the rank is finite.
-  const seriesNodes = $derived(
-    cleanSeries.map((s, i) => {
-      const color = colorFor(s, i)
+  // One node per (series, stage) where the rank is finite. `i` is the series-major flat index
+  // used by the roving tabindex (1-D: walking a series' line stage by stage, then the next series).
+  const seriesNodes = $derived.by(() => {
+    let i = 0
+    return cleanSeries.map((s, si) => {
+      const color = colorFor(s, si)
       const nodes = cleanStages
         .map((stage, j) => {
           const rank = s.ranks[j]
@@ -99,9 +102,11 @@
           }
         })
         .filter((n): n is NonNullable<typeof n> => n !== null)
+        .map((n) => ({ ...n, i: i++ }))
       return { label: s.label, color, nodes }
-    }),
-  )
+    })
+  })
+  const nodeCount = $derived(seriesNodes.reduce((sum, s) => sum + s.nodes.length, 0))
 
   const lineGen = $derived(
     shapeLine<{ cx: number; cy: number }>()
@@ -150,6 +155,34 @@
   function hide() {
     active = null
   }
+  // WCAG 1.4.13: Escape dismisses the tooltip even when it was opened by hover (focus elsewhere).
+  $effect(() => {
+    if (!active) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') hide()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
+  // Roving tabindex: the whole chart is one tab stop (DS-0161 / chart-nav.ts).
+  let focusIndex = $state(0)
+  const tabStop = $derived(Math.min(focusIndex, Math.max(0, nodeCount - 1)))
+  let nodesEl = $state<SVGGElement | null>(null)
+
+  function onNodeKeydown(e: KeyboardEvent, i: number) {
+    if (e.key === 'Escape') {
+      hide()
+      return
+    }
+    // SVG geometry does not mirror in RTL, so Left/Right stay physical.
+    const next = chartNavStep(e.key, i, nodeCount)
+    if (next === null) return
+    e.preventDefault()
+    focusIndex = next
+    nodesEl?.querySelector<SVGElement>(`[data-index="${next}"]`)?.focus()
+  }
+
   function nodeLabel(label: string, stage: string, rank: number): string {
     return `${label}: ${stage}, rank ${rank}`
   }
@@ -190,25 +223,34 @@
             <path class="line" d={p.d} style="stroke:{p.color}" />
           {/each}
 
-          <!-- nodes -->
-          {#each seriesNodes as s}
-            {#each s.nodes as n}
-              <circle
-                class="node"
-                cx={n.cx}
-                cy={n.cy}
-                r="5"
-                style="fill:{n.color}"
-                tabindex="0"
-                role="button"
-                aria-label={nodeLabel(n.label, n.stage, n.rank)}
-                onfocus={() => show(n.label, n.stage, n.rank, n.cx, n.cy)}
-                onblur={hide}
-                onmouseenter={() => show(n.label, n.stage, n.rank, n.cx, n.cy)}
-                onmouseleave={hide}
-              />
+          <!-- nodes (series-major roving tabindex) -->
+          <g class="nodes" bind:this={nodesEl}>
+            {#each seriesNodes as s}
+              {#each s.nodes as n}
+                <!-- role="img" marks with a roving tabindex: the chart is one tab stop (DS-0161) -->
+                <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+                <circle
+                  class="node"
+                  cx={n.cx}
+                  cy={n.cy}
+                  r="5"
+                  style="fill:{n.color}"
+                  tabindex={n.i === tabStop ? 0 : -1}
+                  data-index={n.i}
+                  role="img"
+                  aria-label={nodeLabel(n.label, n.stage, n.rank)}
+                  onfocus={() => {
+                    focusIndex = n.i
+                    show(n.label, n.stage, n.rank, n.cx, n.cy)
+                  }}
+                  onblur={hide}
+                  onkeydown={(e) => onNodeKeydown(e, n.i)}
+                  onmouseenter={() => show(n.label, n.stage, n.rank, n.cx, n.cy)}
+                  onmouseleave={hide}
+                />
+              {/each}
             {/each}
-          {/each}
+          </g>
 
           <!-- direct series labels -->
           {#each endLabels as l}
@@ -222,7 +264,7 @@
       {#if tooltip && active}
         <div
           class="tooltip"
-          role="status"
+          aria-hidden="true"
           style="left:{((active.cx + M.left) / width) * 100}%;top:{((active.cy + M.top) / height) *
             100}%"
         >
@@ -315,7 +357,7 @@
     }
 
     .node {
-      cursor: pointer;
+      cursor: default; // data marks are not clickable
       transition: r var(--ss-dur-fast) var(--ss-ease);
       &:hover,
       &:focus-visible {

@@ -9,12 +9,19 @@
     component: FileDrop,
     tags: ['autodocs'],
     argTypes: {
-      label: { control: 'text', description: "Field label, part of the zone's accessible name." },
+      label: {
+        control: 'text',
+        description: 'Field label; names the zone with the visible title (aria-labelledby).',
+      },
       accept: { control: 'text', description: "Native accept filter (e.g. 'application/json')." },
       multiple: { control: 'boolean', description: 'Allow more than one file.' },
       disabled: { control: 'boolean', description: 'Disable pointer + keyboard activation.' },
       hint: { control: 'text', description: 'Helper text under the zone.' },
       error: { control: 'text', description: 'Error text, announced via role="alert".' },
+      onreject: {
+        action: 'reject',
+        description: 'Files discarded by accept / multiple; also announced politely.',
+      },
       size: {
         control: { type: 'inline-radio' },
         options: ['sm', 'md', 'lg'],

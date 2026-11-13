@@ -21,7 +21,11 @@
     onclick?: (e: MouseEvent) => void
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
-    /** Icon-only square button — `label` is required and becomes the aria-label. */
+    /**
+     * Icon-only square button — `label` is required and becomes the aria-label.
+     * Rendering `iconOnly` without `label` (or a forwarded `aria-label` /
+     * `aria-labelledby`) logs a console warning: the button would have no name.
+     */
     iconOnly?: boolean
     /** Accessible name; required for icon-only buttons (→ aria-label). */
     label?: string
@@ -69,6 +73,24 @@
   let busy = $derived(isLoading)
   let ariaLabel = $derived(iconOnly ? label : rest['aria-label'])
   let accessibleName = $derived(isLoading ? (loadingLabel ?? ariaLabel) : ariaLabel)
+
+  // An icon-only button has no text content, so without `label` (or a forwarded
+  // aria-label / aria-labelledby) it renders with no accessible name. The prop
+  // types can't require `label` without breaking `iconOnly={someBoolean}`
+  // callers, so flag the misuse at runtime instead (same pattern as Icon).
+  let missingIconOnlyName = $derived(
+    iconOnly &&
+      !label?.trim() &&
+      !String(rest['aria-label'] ?? '').trim() &&
+      !String(rest['aria-labelledby'] ?? '').trim(),
+  )
+  $effect(() => {
+    if (missingIconOnlyName && typeof console !== 'undefined') {
+      console.warn(
+        '[dssoca] Button: `iconOnly` needs a `label` (or aria-label / aria-labelledby); this button has no accessible name.',
+      )
+    }
+  })
 
   function handleClick(e: MouseEvent) {
     if (isLoading || disabled) {

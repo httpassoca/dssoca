@@ -16,18 +16,6 @@
   overflow: hidden;
 }
 
-.rl-sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 /* ---- header ---- */
 .rl-user {
   font-family: var(--ss-font-mono);
@@ -86,14 +74,28 @@
   flex-direction: column;
   min-width: 0;
 }
-.rl-grid .ss-card > .foot {
-  margin-top: auto;
+/* Titles wrap to one, two or three lines: the head takes the slack, so the status row and the
+   footer land on the same line across a row of cards. */
+.rl-grid .ss-card > .head {
+  flex: 1 0 auto;
 }
 .rl-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--ss-gap-xs);
+  gap: var(--ss-gap-xs) var(--ss-gap-sm);
   align-items: center;
+  justify-content: space-between;
+}
+/* Score is quiet mono text — only the status badge carries a tone. */
+.rl-score {
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ss-fg-faint);
+}
+.rl-score-v {
+  color: var(--ss-fg);
 }
 
 /* Poster placeholders (own SVG, coloured with tokens) */
@@ -122,17 +124,6 @@
   stroke-width: 5;
   opacity: 0.3;
 }
-.rl-band {
-  fill: var(--ss-bg);
-  opacity: 0.82;
-}
-.rl-poster-title {
-  fill: var(--ss-fg);
-  font-family: var(--ss-font-display);
-  font-size: 17px;
-  letter-spacing: 0.02em;
-}
-
 .rl-table {
   overflow-x: auto;
 }
@@ -179,6 +170,10 @@
 @media (max-width: 600px) {
   .rl-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* Two narrow columns: "added …" and the rate action stack instead of overflowing the card. */
+  .rl-grid .ss-card > .foot {
+    flex-wrap: wrap;
   }
   .rl-rate-form {
     grid-template-columns: 1fr;

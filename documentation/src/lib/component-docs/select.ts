@@ -20,6 +20,8 @@ export const select: ComponentDoc = {
   description:
     'A native `<select>` wrapped in the shared field chrome — best-in-class keyboard and mobile a11y, with a custom CSS chevron and zero runtime deps. Pass a flat `options` list or grouped `SelectOptGroup[]` (auto-detected); add a `placeholder` for an empty first choice, and wire `hint`/`error` text via `aria-describedby` exactly like `Input`.',
   storyId: 'components-select--default',
+  notes:
+    'Right-to-left ready: the required marker and the chevron are spaced with logical properties (`margin-inline-start`), so under `dir="rtl"` the chevron sits on the left and the asterisk follows the label text.',
   usage: `<script>
   import { Select } from 'dssoca';
 

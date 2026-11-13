@@ -20,7 +20,7 @@ export const table: ComponentDoc = {
   },
   tagline: 'Generic data table with sortable, numeric-aware columns.',
   description:
-    'A semantic data table built on real `<table>`/`<thead>`/`<tbody>` markup. Columns are declared once (`label`, `align`, `numeric`, `sortable`, plus an optional `format` or custom `cell` snippet); numeric columns right-align and use the mono font. Sortable headers are real `<button>`s that toggle `asc`/`desc` and re-sort rows (numeric-aware), driving the `aria-sort` on each `<th>`. Bind `sort` to control or observe ordering, and supply an `empty` snippet for the no-data state.',
+    'A semantic data table built on real `<table>`/`<thead>`/`<tbody>` markup. Columns are declared once (`label`, `align`, `numeric`, `sortable`, plus an optional `format` or custom `cell` snippet); numeric columns end-align and use the mono font. Sortable headers are real `<button>`s that toggle `asc`/`desc` and re-sort rows (numeric-aware), driving the `aria-sort` on each `<th>`. Bind `sort` to control or observe ordering, and supply an `empty` snippet for the no-data state.',
   storyId: 'components-table--default',
   usage: `<script>
   import { Table } from 'dssoca';
@@ -42,7 +42,7 @@ export const table: ComponentDoc = {
     {
       name: 'columns',
       type: 'TableColumn[]',
-      desc: 'Required. Column definitions: key, label, align, sortable, numeric, format, cell.',
+      desc: 'Required. Column definitions: key, label, align (`start` | `end` | `center`; legacy `left`/`right` map to `start`/`end`), sortable, numeric, format, cell.',
     },
     { name: 'rows', type: 'any[]', desc: 'Required. Row data, each keyed by column `key`.' },
     {
@@ -73,5 +73,5 @@ export const table: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Sortable header cells render a `<button>` inside the `<th>`, and the `<th>` carries `aria-sort` (ascending | descending | none). Numeric columns are right-aligned and use --ss-font-mono; rows highlight on hover via --ss-hover and the header has an --ss-line-strong bottom border. Zero border-radius throughout.',
+    'Sortable header cells render a `<button>` inside the `<th>`, and the `<th>` carries `aria-sort` (ascending | descending | none). Alignment is logical: cells render `data-align="start" | "end" | "center"` and use `text-align: start`/`end`, so tables mirror under `dir="rtl"`; the legacy `align: \'left\' | \'right\'` values (and `data-align="left" | "right"` in plain-HTML markup) still work and map to start/end. Numeric columns default to `end` and use --ss-font-mono. Sort buttons keep the base focus ring (2px solid --ss-primary outline); rows highlight on hover via --ss-hover and the header has an --ss-line-strong bottom border. Zero border-radius throughout.',
 }

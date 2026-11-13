@@ -14,7 +14,7 @@ export const segmentedControl: ComponentDoc = {
       label: 'Range',
     },
     behaviour: 'js',
-    note: "vanilla.js moves the selection (click, arrows, Home/End) and emits ss:change with the segment's data-value.",
+    note: "vanilla.js moves the selection (click, arrows mirrored under RTL, Home/End) and emits ss:change with the segment's data-value.",
   },
   tagline: 'Compact row of mutually-exclusive options.',
   description:
@@ -67,5 +67,5 @@ export const segmentedControl: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'WCAG 2.2 AA: `role="radiogroup"` with `role="radio"` segments, roving tabindex (one tab stop), and arrow / Home / End navigation that moves focus and selection together while skipping disabled segments. A `label` is required so the choice has an accessible name. For switching mutually-exclusive views/panels, a tablist/tab + tabpanel pattern is the alternative; this component implements the radiogroup pattern for value selection.',
+    'WCAG 2.2 AA: `role="radiogroup"` with `role="radio"` segments, roving tabindex (one tab stop), and arrow / Home / End navigation that moves focus and selection together while skipping disabled segments. Left/Right follow the visual order: under RTL (`dir="rtl"` on any ancestor) ArrowLeft moves to the next segment; Up/Down always move to the next/previous. Dividers use logical (inline-start) borders so they mirror in RTL, and keyboard focus shows a solid inset `--ss-primary` ring (an inset `--ss-bg` ring on the selected segment). A `label` is required so the choice has an accessible name. For switching mutually-exclusive views/panels, a tablist/tab + tabpanel pattern is the alternative; this component implements the radiogroup pattern for value selection.',
 }

@@ -8,9 +8,9 @@ export const link: ComponentDoc = {
     children: 'external docs',
     behaviour: 'css',
   },
-  tagline: 'Navigation, with an animated underline.',
+  tagline: 'Navigation, always underlined.',
   description:
-    'A semantic `<a>` for navigation. The default `inline` variant draws an animated underline that reveals on hover/focus with a primary-tinted glow; the `button` variant styles the link as a solid primary action (no underline) without duplicating Button’s API. Off-site `http(s)` URLs are auto-detected as external — they open in a new tab with `rel="noopener noreferrer"`, gain a trailing external-link glyph, and announce “opens in a new tab”. Forwards any remaining native anchor attributes.',
+    'A semantic `<a>` for navigation. The default `inline` variant is always underlined (a 1px line at rest, so it never relies on colour alone) and the line thickens with a primary-tinted glow on hover/focus; the `button` variant styles the link as a solid primary action (no underline) without duplicating Button’s API. Off-site `http(s)` URLs are auto-detected as external — they open in a new tab and gain a trailing external-link glyph. Any link that opens a new tab (auto-detected or an explicit `target="_blank"`) gets `noopener noreferrer` merged into its `rel` and announces “opens in a new tab”. Forwards any remaining native anchor attributes.',
   storyId: 'components-link--default',
   usage: `<script>
   import { Link } from 'dssoca';
@@ -25,12 +25,12 @@ export const link: ComponentDoc = {
       name: 'variant',
       type: "'inline' | 'button'",
       default: "'inline'",
-      desc: 'Animated-underline link (inline) or solid primary button-styled link (button).',
+      desc: 'Underlined link that thickens on hover/focus (inline) or solid primary button-styled link (button).',
     },
     {
       name: 'external',
       type: 'boolean',
-      desc: 'Open in a new tab + safe rel + external glyph. Auto-detected for absolute http(s) URLs when left undefined; pass false to force same-tab.',
+      desc: 'Open in a new tab + external glyph. Auto-detected for absolute http(s) URLs when left undefined; pass false to force same-tab.',
     },
     {
       name: 'disabled',
@@ -44,9 +44,9 @@ export const link: ComponentDoc = {
     {
       name: '...rest',
       type: 'HTMLAnchorAttributes',
-      desc: 'Any remaining native anchor attributes / handlers are forwarded (including an explicit target/rel that override the external defaults).',
+      desc: 'Any remaining native anchor attributes / handlers are forwarded (an explicit target overrides the external default; a custom rel is merged with `noopener noreferrer` whenever the resolved target is `_blank`).',
     },
   ],
   notes:
-    'Use Link for navigation (renders an `<a>`, gets the browser’s link affordances and keyboard model) and Button for in-page actions (renders a `<button>`). The `button` variant is purely visual — reach for an actual Button when there is no destination URL. Honours reduced motion (the `--ss-dur-*` tokens collapse to 0ms), shows a visible `:focus-visible` ring (not just the underline), and dims visited inline links.',
+    'Use Link for navigation (renders an `<a>`, gets the browser’s link affordances and keyboard model) and Button for in-page actions (renders a `<button>`). The `button` variant is purely visual — reach for an actual Button when there is no destination URL. Honours reduced motion (the `--ss-dur-*` tokens collapse to 0ms), shows a visible `:focus-visible` ring (not just the underline), and dims visited inline links. The component cancels theme.css’s global `a::before` underline and draws its own, so it looks the same on the tokens.css-only path.',
 }

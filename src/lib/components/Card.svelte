@@ -24,7 +24,10 @@
      * convention.
      */
     external?: boolean
-    /** Makes the whole card clickable; pairs with keyboard activation. */
+    /**
+     * Makes the whole card clickable via a stretched overlay `<button>` (native Enter/Space).
+     * Ignored as the target when `href` is set (it then runs as the link's click handler).
+     */
     onclick?: (e: MouseEvent | KeyboardEvent) => void
     /** Surface style: outlined (default) or elevated (shadow tokens). */
     variant?: 'outlined' | 'elevated'
@@ -54,26 +57,21 @@
 
   const isTitleSnippet = $derived(typeof title === 'function')
   const interactive = $derived(Boolean(href || onclick))
-
-  function onKeydown(e: KeyboardEvent) {
-    if (onclick && !href && (e.key === 'Enter' || e.key === ' ')) {
-      e.preventDefault()
-      onclick(e)
-    }
-  }
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_tabindex -- role is set to "button" in the same condition -->
+<!--
+  The root is never itself interactive (DS-0183): a clickable card renders ONE stretched
+  overlay control (an <a> for `href`, a <button> for `onclick`) so the heading and the `action`
+  controls keep their own semantics and keyboard handling. A titled card is a named region —
+  aria-labelledby is not allowed on a role-less <div>.
+-->
 <div
   class="ss-card"
   class:elevated={variant === 'elevated'}
   class:interactive
   data-size-variant={resolveComponentSize('Card', size)}
-  role={interactive && !href ? 'button' : undefined}
-  tabindex={interactive && !href ? 0 : undefined}
+  role={title ? 'region' : undefined}
   aria-labelledby={title ? titleId : undefined}
-  onclick={!href ? onclick : undefined}
-  onkeydown={!href ? onKeydown : undefined}
 >
   {#if media}
     <div class="media">{@render media()}</div>
@@ -109,13 +107,16 @@
       target={external ? '_blank' : undefined}
       rel={external ? 'noopener noreferrer' : undefined}
       {onclick}
-      onkeydown={onKeydown}
       aria-labelledby={title ? titleId : undefined}
     >
       <span class="sr-only"
         >{typeof title === 'string' ? title : 'Open'}{external ? ' (opens in a new tab)' : ''}</span
       >
     </a>
+  {:else if onclick}
+    <button type="button" class="overlay" {onclick} aria-labelledby={title ? titleId : undefined}>
+      <span class="sr-only">{typeof title === 'string' ? title : 'Open'}</span>
+    </button>
   {/if}
 </div>
 
@@ -224,14 +225,35 @@
     color: var(--ss-fg-faint);
   }
 
-  // Single primary link spanning the whole card via an ::after overlay.
+  // Single primary link/button spanning the whole card via an ::after overlay. The control
+  // itself is visually empty (sr-only label), so the focus ring is drawn on the stretched
+  // ::after, inset so the card's own box never clips it.
   .overlay {
     position: static;
+    // Take no room in the card's flow: a <button> is inline-block, so left alone it adds an
+    // empty line box (a visible gap) under the footer.
+    display: block;
+    block-size: 0;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
     &::after {
       content: '';
       position: absolute;
       inset: 0;
       z-index: 0;
+    }
+    &:focus-visible {
+      outline: none;
+    }
+    &:focus-visible::after {
+      outline: 2px solid var(--ss-primary);
+      outline-offset: -2px;
     }
   }
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
 
   interface Props {
@@ -20,6 +21,12 @@
     files?: File[]
     /** Fired with the resolved file list whenever the selection changes. */
     onfiles?: (files: File[]) => void
+    /**
+     * Fired with the files a selection/drop discarded (wrong type for `accept`,
+     * or extras when `multiple` is false). Rejections are also announced
+     * through a polite live region.
+     */
+    onreject?: (files: File[]) => void
   }
   let {
     label,
@@ -31,10 +38,13 @@
     error,
     files = $bindable([]),
     onfiles,
+    onreject,
   }: Props = $props()
 
   const uid = $props.id()
   const inputId = `${uid}-input`
+  const labelId = `${uid}-label`
+  const titleId = `${uid}-title`
   const hintId = `${uid}-hint`
   const errorId = `${uid}-error`
 
@@ -43,14 +53,17 @@
   )
   const resolvedSize = $derived(resolveComponentSize('FileDrop', size))
 
-  // The zone's accessible name: explicit label, else a sensible default; hint
-  // is folded in for extra context when present.
-  const accName = $derived(
-    [label || 'Upload files', hint].filter(Boolean).join('. ') || 'Upload files',
-  )
+  // The zone is named by its visible text (label + "Drop files here") so the
+  // accessible name matches what speech-input users see (WCAG 2.5.3). The hint
+  // stays in aria-describedby only, so it isn't read twice.
+  const labelledBy = $derived(label ? `${labelId} ${titleId}` : titleId)
 
+  let rootEl = $state<HTMLDivElement>()
+  let zoneEl = $state<HTMLDivElement>()
   let inputEl = $state<HTMLInputElement>()
   let dragging = $state(false)
+  // Polite live region text; the region is always mounted so updates announce.
+  let status = $state('')
 
   /** Human-readable byte size (1 KB = 1024 B). */
   function humanSize(bytes: number): string {
@@ -81,13 +94,35 @@
       })
   }
 
-  /** Apply accept/multiple, update state, notify. */
+  /** Set the live-region text, clearing first so a repeat message re-announces. */
+  async function announce(message: string) {
+    status = ''
+    if (!message) return
+    await tick()
+    status = message
+  }
+
+  /** Apply accept/multiple, update state, notify (and report rejections). */
   function applyFiles(list: File[]) {
     if (disabled) return
-    let next = list.filter(matchesAccept)
-    if (!multiple) next = next.slice(0, 1)
+    const reasons: string[] = []
+    const rejected: File[] = []
+    let next: File[] = []
+    for (const file of list) {
+      if (!matchesAccept(file)) {
+        rejected.push(file)
+        reasons.push(`${file.name} (file type not accepted)`)
+      } else if (!multiple && next.length) {
+        rejected.push(file)
+        reasons.push(`${file.name} (only one file allowed)`)
+      } else {
+        next.push(file)
+      }
+    }
     files = next
     onfiles?.(next)
+    if (rejected.length) onreject?.(rejected)
+    void announce(rejected.length ? `Not added: ${reasons.join(', ')}.` : '')
   }
 
   function openPicker() {
@@ -126,24 +161,37 @@
     applyFiles(Array.from(e.dataTransfer?.files ?? []))
   }
 
-  function removeAt(index: number) {
+  async function removeAt(index: number) {
     if (disabled) return
     const next = files.filter((_, i) => i !== index)
     files = next
     onfiles?.(next)
+    // The focused button just unmounted: land on the next remove button, else
+    // the previous one, else the zone (WCAG 2.4.3).
+    await tick()
+    const buttons = rootEl?.querySelectorAll<HTMLButtonElement>('.files .remove') ?? []
+    ;(buttons[index] ?? buttons[index - 1] ?? zoneEl)?.focus()
   }
 
-  function clear() {
+  async function clear() {
     if (disabled) return
     files = []
     if (inputEl) inputEl.value = ''
     onfiles?.([])
+    await tick()
+    zoneEl?.focus()
   }
 </script>
 
-<div class="ss-filedrop" data-size-variant={resolvedSize} class:invalid={!!error} class:disabled>
+<div
+  bind:this={rootEl}
+  class="ss-filedrop"
+  data-size-variant={resolvedSize}
+  class:invalid={!!error}
+  class:disabled
+>
   {#if label}
-    <span class="lbl" id={`${uid}-label`}>{label}</span>
+    <span class="lbl" id={labelId}>{label}</span>
   {/if}
 
   <input
@@ -159,11 +207,12 @@
     onchange={onChange}
   />
   <div
+    bind:this={zoneEl}
     class="zone"
     class:dragging
     role="button"
     tabindex={disabled ? -1 : 0}
-    aria-label={accName}
+    aria-labelledby={labelledBy}
     aria-disabled={disabled || undefined}
     aria-describedby={describedBy}
     onclick={openPicker}
@@ -174,7 +223,7 @@
     ondrop={onDrop}
   >
     <span class="prompt">
-      <span class="title">Drop files here</span>
+      <span class="title" id={titleId}>Drop files here</span>
       <span class="sub">or click to browse</span>
     </span>
   </div>
@@ -200,6 +249,7 @@
 
   {#if error}<span class="msg error" id={errorId} role="alert">{error}</span>{/if}
   {#if hint}<span class="msg hint" id={hintId}>{hint}</span>{/if}
+  <span class="sr-only" role="status" aria-live="polite">{status}</span>
 </div>
 
 <style lang="scss">
@@ -247,6 +297,19 @@
 
     // Visually-hidden native input; activated programmatically via the zone.
     .native {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    // Visually-hidden polite live region announcing rejected files.
+    .sr-only {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -313,8 +376,15 @@
       }
     }
 
+    // Hit area grown to the WCAG 2.5.8 floor (24×24 CSS px); the glyph/text
+    // stays its size and is centred inside.
     .remove,
     .clear {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-inline-size: 24px;
+      min-block-size: 24px;
       font-family: var(--ss-font-body);
       background: transparent;
       border: none;
@@ -335,6 +405,7 @@
 
     .clear {
       align-self: flex-start;
+      padding-inline: var(--ss-s-1, 4px);
       font-family: var(--ss-font-mono);
       font-size: var(--ss-ui-xs);
       text-transform: uppercase;

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render } from '@testing-library/svelte'
 import Icon, { PATHS, registerIcon, type IconName } from '$lib/components/Icon.svelte'
+import { sanitizeIconMarkup } from '$lib/icons'
 
 describe('Icon', () => {
   it('renders an svg with a 0 0 24 24 viewBox and currentColor stroke', () => {
@@ -311,6 +312,60 @@ describe('Icon', () => {
       const { container } = render(Icon, { name: 'totally-unknown' as never, paths: RAW })
       expect(container.querySelector('svg')!.innerHTML).toBe(normalise(RAW))
       expect(warn).not.toHaveBeenCalled()
+    })
+  })
+
+  // DS-0176: the raw-markup escape hatches stay working but get a light script filter.
+  describe('escape-hatch sanitiser', () => {
+    it('leaves every built-in glyph byte-identical', () => {
+      for (const [name, markup] of Object.entries(PATHS)) {
+        expect(sanitizeIconMarkup(markup), name).toBe(markup)
+      }
+    })
+
+    it('keeps legitimate SVG drawing markup untouched', () => {
+      const LEGIT =
+        '<defs><style>.a{fill:none}</style><linearGradient id="g"><stop offset="0"/></linearGradient></defs>' +
+        '<g class="a online" transform="rotate(45 12 12)"><path d="M3 12h4l3-8 4 16" opacity="0.5"/>' +
+        '<use href="#g"/><text x="2" y="20">on = off</text></g>'
+      expect(sanitizeIconMarkup(LEGIT)).toBe(LEGIT)
+    })
+
+    it('strips <script>, <foreignObject>, on* handlers and javascript: links', () => {
+      const out = sanitizeIconMarkup(
+        '<path d="M1 1" onload="x()"/><script>alert(1)</script>' +
+          '<foreignObject><img src=x onerror=alert(1)></foreignObject>' +
+          '<a href="javascript:alert(1)"><circle cx="1" cy="1" r="1" ONCLICK=\'y()\'/></a>' +
+          '<path/onmouseover=z() d="M2 2"/><scr<script></script>ipt>bad()</script>',
+      )
+      expect(out).not.toMatch(/<script|foreignObject|\son\w+=|\/on\w+=|javascript:/i)
+      expect(out).toMatch(/<path d="M1 1" ?\/>/)
+      expect(out).toContain('d="M2 2"')
+    })
+
+    it('paths prop renders sanitised markup (no script, no handler)', () => {
+      const { container } = render(Icon, {
+        name: 'nope' as never,
+        paths: '<circle cx="12" cy="12" r="6" onclick="x()"/><script>x()</script>',
+      })
+      const svg = container.querySelector('svg')!
+      expect(svg.querySelector('script')).toBeNull()
+      expect(svg.querySelector('circle')!.hasAttribute('onclick')).toBe(false)
+      expect(svg.querySelector('circle')).toHaveAttribute('r', '6')
+    })
+
+    it('registerIcon markup is sanitised on render, even if PATHS is written directly', () => {
+      registerIcon(
+        'evil',
+        '<path d="M1 1" onload="x()"/><foreignObject><div>x</div></foreignObject>',
+      )
+      PATHS['evil-direct'] = '<path d="M2 2"/><script>x()</script>'
+      for (const name of ['evil', 'evil-direct']) {
+        const { container } = render(Icon, { name: name as never })
+        const svg = container.querySelector('svg')!
+        expect(svg.querySelector('script, foreignObject')).toBeNull()
+        expect(svg.querySelector('path')!.hasAttribute('onload')).toBe(false)
+      }
     })
   })
 

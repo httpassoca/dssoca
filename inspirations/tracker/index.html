@@ -98,13 +98,13 @@
     <main class="ss-main" id="main">
       <div class="ss-pageHead rl-hero">
         <div class="rl-hero-text">
-          <h1>my <span class="accent">list</span></h1>
+          <h1 class="ss-heading accent"><span class="txt">My list</span></h1>
           <p class="sub">148 titles · last activity 2 h ago</p>
         </div>
         <div class="rl-stats">
           <div class="ss-metric">
             <div class="label">watched</div>
-            <div class="val" role="status" aria-live="polite">148</div>
+            <div class="val">148</div>
             <div class="delta positive" role="img" aria-label="up 6 this month">
               <span aria-hidden="true">↑ 6</span>
               <span class="period" aria-hidden="true">this month</span>
@@ -112,7 +112,7 @@
           </div>
           <div class="ss-metric">
             <div class="label">hours</div>
-            <div class="val" role="status" aria-live="polite">412<span class="small">h</span></div>
+            <div class="val">412<span class="small">h</span></div>
             <div class="delta positive" role="img" aria-label="up 18 hours this month">
               <span aria-hidden="true">↑ 18h</span>
               <span class="period" aria-hidden="true">this month</span>
@@ -120,7 +120,7 @@
           </div>
           <div class="ss-metric">
             <div class="label">mean score</div>
-            <div class="val" role="status" aria-live="polite">7.4</div>
+            <div class="val">7.4</div>
             <div class="delta negative" role="img" aria-label="down 0.1 since last month">
               <span aria-hidden="true">↓ 0.1</span>
               <span class="period" aria-hidden="true">vs last month</span>
@@ -252,9 +252,6 @@
                 <rect width="200" height="300" fill="url(#rl-g1)" />
                 <circle cx="140" cy="96" r="54" class="rl-shape" />
                 <circle cx="140" cy="96" r="30" class="rl-shape" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Lanterns of</text>
-                <text x="16" y="286" class="rl-poster-title">the Salt Sea</text>
               </svg>
             </div>
             <div class="head">
@@ -268,11 +265,11 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge positive rl-score"
-                  ><span class="rl-sr-only">score </span>8</span
-                >
                 <span class="ss-badge brand rl-status"
                   ><span class="dot" aria-hidden="true"></span>watching</span
+                >
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">8</span></span
                 >
               </span>
             </div>
@@ -308,9 +305,6 @@
                 <circle cx="60" cy="80" r="70" class="rl-shape" />
                 <line x1="0" y1="180" x2="200" y2="120" class="rl-line" />
                 <line x1="0" y1="200" x2="200" y2="140" class="rl-line" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Orbital</text>
-                <text x="16" y="286" class="rl-poster-title">Lullaby</text>
               </svg>
             </div>
             <div class="head">
@@ -322,10 +316,10 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge positive rl-score"
-                  ><span class="rl-sr-only">score </span>9</span
-                >
                 <span class="ss-badge positive rl-status">completed</span>
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">9</span></span
+                >
               </span>
             </div>
             <div class="foot">
@@ -359,9 +353,6 @@
                 <rect width="200" height="300" fill="url(#rl-g4)" />
                 <polygon points="100,40 170,170 30,170" class="rl-shape" />
                 <polygon points="100,90 140,160 60,160" class="rl-shape" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Paper</text>
-                <text x="16" y="286" class="rl-poster-title">Wolves</text>
               </svg>
             </div>
             <div class="head">
@@ -373,8 +364,10 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge info rl-score"><span class="rl-sr-only">score </span>7</span>
                 <span class="ss-badge positive rl-status">completed</span>
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">7</span></span
+                >
               </span>
             </div>
             <div class="foot">
@@ -414,9 +407,6 @@
                 <rect x="30" y="140" width="40" height="40" class="rl-shape" />
                 <rect x="80" y="140" width="40" height="40" class="rl-shape" />
                 <rect x="130" y="140" width="40" height="40" class="rl-shape" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Ninefold</text>
-                <text x="16" y="286" class="rl-poster-title">Garden</text>
               </svg>
             </div>
             <div class="head">
@@ -428,9 +418,11 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge info rl-score"><span class="rl-sr-only">score </span>6</span>
                 <span class="ss-badge brand rl-status"
                   ><span class="dot" aria-hidden="true"></span>watching</span
+                >
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">6</span></span
                 >
               </span>
             </div>
@@ -468,9 +460,6 @@
                 <line x1="0" y1="120" x2="200" y2="120" class="rl-line" />
                 <line x1="0" y1="150" x2="200" y2="150" class="rl-line" />
                 <circle cx="100" cy="110" r="36" class="rl-shape" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Static</text>
-                <text x="16" y="286" class="rl-poster-title">Bloom</text>
               </svg>
             </div>
             <div class="head">
@@ -482,10 +471,10 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge neutral rl-score"
-                  ><span class="rl-sr-only">score </span>—</span
-                >
                 <span class="ss-badge neutral rl-status">planned</span>
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">—</span></span
+                >
               </span>
             </div>
             <div class="foot">
@@ -520,9 +509,6 @@
                 <path d="M0 200 C 40 120, 80 220, 120 140 S 180 100, 200 160" class="rl-stroke" />
                 <path d="M0 230 C 50 160, 90 250, 140 170 S 190 130, 200 190" class="rl-stroke" />
                 <circle cx="120" cy="140" r="6" class="rl-shape" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">The Cartographer's</text>
-                <text x="16" y="286" class="rl-poster-title">Daughter</text>
               </svg>
             </div>
             <div class="head">
@@ -536,10 +522,10 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge positive rl-score"
-                  ><span class="rl-sr-only">score </span>10</span
-                >
                 <span class="ss-badge positive rl-status">completed</span>
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">10</span></span
+                >
               </span>
             </div>
             <div class="foot">
@@ -576,9 +562,6 @@
                 <rect x="88" y="40" width="16" height="140" class="rl-shape" />
                 <rect x="120" y="110" width="16" height="70" class="rl-shape" />
                 <rect x="152" y="70" width="16" height="110" class="rl-shape" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Rust</text>
-                <text x="16" y="286" class="rl-poster-title">Choir</text>
               </svg>
             </div>
             <div class="head">
@@ -590,10 +573,10 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge critical rl-score"
-                  ><span class="rl-sr-only">score </span>4</span
-                >
                 <span class="ss-badge caution rl-status">dropped</span>
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">4</span></span
+                >
               </span>
             </div>
             <div class="foot">
@@ -628,9 +611,6 @@
                 <polygon points="0,220 200,60 200,90 0,250" class="rl-shape" />
                 <polygon points="0,170 200,10 200,30 0,190" class="rl-shape" />
                 <circle cx="150" cy="60" r="18" class="rl-shape" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Meridian</text>
-                <text x="16" y="286" class="rl-poster-title">Express</text>
               </svg>
             </div>
             <div class="head">
@@ -642,10 +622,10 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge neutral rl-score"
-                  ><span class="rl-sr-only">score </span>—</span
-                >
                 <span class="ss-badge neutral rl-status">planned</span>
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">—</span></span
+                >
               </span>
             </div>
             <div class="foot">
@@ -681,9 +661,6 @@
                 <polygon points="40,150 70,80 100,150" class="rl-shape" />
                 <polygon points="90,150 130,60 170,150" class="rl-shape" />
                 <circle cx="40" cy="50" r="14" class="rl-shape" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Glass</text>
-                <text x="16" y="286" class="rl-poster-title">Harbour</text>
               </svg>
             </div>
             <div class="head">
@@ -695,10 +672,10 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge positive rl-score"
-                  ><span class="rl-sr-only">score </span>8</span
-                >
                 <span class="ss-badge positive rl-status">completed</span>
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">8</span></span
+                >
               </span>
             </div>
             <div class="foot">
@@ -736,9 +713,6 @@
                 />
                 <circle cx="100" cy="130" r="60" class="rl-ring" />
                 <circle cx="100" cy="130" r="80" class="rl-ring" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Hollow</text>
-                <text x="16" y="286" class="rl-poster-title">Frequency</text>
               </svg>
             </div>
             <div class="head">
@@ -750,9 +724,11 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge info rl-score"><span class="rl-sr-only">score </span>7</span>
                 <span class="ss-badge brand rl-status"
                   ><span class="dot" aria-hidden="true"></span>watching</span
+                >
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">7</span></span
                 >
               </span>
             </div>
@@ -787,9 +763,6 @@
                 <rect width="200" height="300" fill="url(#rl-g2)" />
                 <polygon points="100,30 160,130 100,230 40,130" class="rl-shape" />
                 <polygon points="100,70 130,130 100,190 70,130" class="rl-shape" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Ember</text>
-                <text x="16" y="286" class="rl-poster-title">Protocol</text>
               </svg>
             </div>
             <div class="head">
@@ -801,10 +774,10 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge critical rl-score"
-                  ><span class="rl-sr-only">score </span>3</span
-                >
                 <span class="ss-badge caution rl-status">dropped</span>
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">3</span></span
+                >
               </span>
             </div>
             <div class="foot">
@@ -840,9 +813,6 @@
                 <circle cx="100" cy="120" r="46" class="rl-ring" />
                 <circle cx="100" cy="120" r="22" class="rl-ring" />
                 <circle cx="100" cy="120" r="5" class="rl-shape" />
-                <rect x="0" y="238" width="200" height="62" class="rl-band" />
-                <text x="16" y="264" class="rl-poster-title">Small Hours</text>
-                <text x="16" y="286" class="rl-poster-title">Radio</text>
               </svg>
             </div>
             <div class="head">
@@ -854,10 +824,10 @@
             </div>
             <div class="body">
               <span class="rl-tags">
-                <span class="ss-badge neutral rl-score"
-                  ><span class="rl-sr-only">score </span>—</span
-                >
                 <span class="ss-badge neutral rl-status">planned</span>
+                <span class="rl-score"
+                  ><span class="rl-score-k">score</span> <span class="rl-score-v">—</span></span
+                >
               </span>
             </div>
             <div class="foot">
@@ -886,26 +856,26 @@
             </caption>
             <thead>
               <tr>
-                <th scope="col" class="head" data-align="left" aria-sort="none">
+                <th scope="col" class="head" data-align="start" aria-sort="none">
                   <button type="button" class="sort" data-sort="title">
                     <span class="label">Title</span>
                     <span class="indicator" aria-hidden="true">↕</span>
                   </button>
                 </th>
-                <th scope="col" class="head" data-align="left"><span class="label">Type</span></th>
-                <th scope="col" class="head numeric" data-align="right" aria-sort="none">
+                <th scope="col" class="head" data-align="start"><span class="label">Type</span></th>
+                <th scope="col" class="head numeric" data-align="end" aria-sort="none">
                   <button type="button" class="sort" data-sort="progress">
                     <span class="label">Progress</span>
                     <span class="indicator" aria-hidden="true">↕</span>
                   </button>
                 </th>
-                <th scope="col" class="head numeric" data-align="right" aria-sort="none">
+                <th scope="col" class="head numeric" data-align="end" aria-sort="none">
                   <button type="button" class="sort" data-sort="score">
                     <span class="label">Score</span>
                     <span class="indicator" aria-hidden="true">↕</span>
                   </button>
                 </th>
-                <th scope="col" class="head" data-align="left">
+                <th scope="col" class="head" data-align="start">
                   <span class="label">Status</span>
                 </th>
               </tr>
@@ -919,11 +889,11 @@
                 data-progress="0.58"
                 data-added="2026-08-21"
               >
-                <td class="cell" data-align="left">Lanterns of the Salt Sea</td>
-                <td class="cell" data-align="left">TV</td>
-                <td class="cell numeric" data-align="right">14 / 24</td>
-                <td class="cell numeric rl-score-cell" data-align="right">8</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Lanterns of the Salt Sea</td>
+                <td class="cell" data-align="start">TV</td>
+                <td class="cell numeric" data-align="end">14 / 24</td>
+                <td class="cell numeric rl-score-cell" data-align="end">8</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge brand rl-status"
                     ><span class="dot" aria-hidden="true"></span>watching</span
                   >
@@ -937,11 +907,11 @@
                 data-progress="1"
                 data-added="2026-08-14"
               >
-                <td class="cell" data-align="left">Orbital Lullaby</td>
-                <td class="cell" data-align="left">Film</td>
-                <td class="cell numeric" data-align="right">1 / 1</td>
-                <td class="cell numeric rl-score-cell" data-align="right">9</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Orbital Lullaby</td>
+                <td class="cell" data-align="start">Film</td>
+                <td class="cell numeric" data-align="end">1 / 1</td>
+                <td class="cell numeric rl-score-cell" data-align="end">9</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge positive rl-status">completed</span>
                 </td>
               </tr>
@@ -953,11 +923,11 @@
                 data-progress="1"
                 data-added="2026-08-02"
               >
-                <td class="cell" data-align="left">Paper Wolves</td>
-                <td class="cell" data-align="left">TV</td>
-                <td class="cell numeric" data-align="right">12 / 12</td>
-                <td class="cell numeric rl-score-cell" data-align="right">7</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Paper Wolves</td>
+                <td class="cell" data-align="start">TV</td>
+                <td class="cell numeric" data-align="end">12 / 12</td>
+                <td class="cell numeric rl-score-cell" data-align="end">7</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge positive rl-status">completed</span>
                 </td>
               </tr>
@@ -969,11 +939,11 @@
                 data-progress="0.23"
                 data-added="2026-07-30"
               >
-                <td class="cell" data-align="left">Ninefold Garden</td>
-                <td class="cell" data-align="left">TV</td>
-                <td class="cell numeric" data-align="right">3 / 13</td>
-                <td class="cell numeric rl-score-cell" data-align="right">6</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Ninefold Garden</td>
+                <td class="cell" data-align="start">TV</td>
+                <td class="cell numeric" data-align="end">3 / 13</td>
+                <td class="cell numeric rl-score-cell" data-align="end">6</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge brand rl-status"
                     ><span class="dot" aria-hidden="true"></span>watching</span
                   >
@@ -987,11 +957,11 @@
                 data-progress="0"
                 data-added="2026-07-19"
               >
-                <td class="cell" data-align="left">Static Bloom</td>
-                <td class="cell" data-align="left">OVA</td>
-                <td class="cell numeric" data-align="right">0 / 4</td>
-                <td class="cell numeric rl-score-cell" data-align="right">—</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Static Bloom</td>
+                <td class="cell" data-align="start">OVA</td>
+                <td class="cell numeric" data-align="end">0 / 4</td>
+                <td class="cell numeric rl-score-cell" data-align="end">—</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge neutral rl-status">planned</span>
                 </td>
               </tr>
@@ -1003,11 +973,11 @@
                 data-progress="1"
                 data-added="2026-07-05"
               >
-                <td class="cell" data-align="left">The Cartographer's Daughter</td>
-                <td class="cell" data-align="left">Film</td>
-                <td class="cell numeric" data-align="right">1 / 1</td>
-                <td class="cell numeric rl-score-cell" data-align="right">10</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">The Cartographer's Daughter</td>
+                <td class="cell" data-align="start">Film</td>
+                <td class="cell numeric" data-align="end">1 / 1</td>
+                <td class="cell numeric rl-score-cell" data-align="end">10</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge positive rl-status">completed</span>
                 </td>
               </tr>
@@ -1019,11 +989,11 @@
                 data-progress="0.19"
                 data-added="2026-06-22"
               >
-                <td class="cell" data-align="left">Rust Choir</td>
-                <td class="cell" data-align="left">TV</td>
-                <td class="cell numeric" data-align="right">5 / 26</td>
-                <td class="cell numeric rl-score-cell" data-align="right">4</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Rust Choir</td>
+                <td class="cell" data-align="start">TV</td>
+                <td class="cell numeric" data-align="end">5 / 26</td>
+                <td class="cell numeric rl-score-cell" data-align="end">4</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge caution rl-status">dropped</span>
                 </td>
               </tr>
@@ -1035,11 +1005,11 @@
                 data-progress="0"
                 data-added="2026-06-10"
               >
-                <td class="cell" data-align="left">Meridian Express</td>
-                <td class="cell" data-align="left">TV</td>
-                <td class="cell numeric" data-align="right">0 / 12</td>
-                <td class="cell numeric rl-score-cell" data-align="right">—</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Meridian Express</td>
+                <td class="cell" data-align="start">TV</td>
+                <td class="cell numeric" data-align="end">0 / 12</td>
+                <td class="cell numeric rl-score-cell" data-align="end">—</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge neutral rl-status">planned</span>
                 </td>
               </tr>
@@ -1051,11 +1021,11 @@
                 data-progress="1"
                 data-added="2026-05-27"
               >
-                <td class="cell" data-align="left">Glass Harbour</td>
-                <td class="cell" data-align="left">Film</td>
-                <td class="cell numeric" data-align="right">1 / 1</td>
-                <td class="cell numeric rl-score-cell" data-align="right">8</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Glass Harbour</td>
+                <td class="cell" data-align="start">Film</td>
+                <td class="cell numeric" data-align="end">1 / 1</td>
+                <td class="cell numeric rl-score-cell" data-align="end">8</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge positive rl-status">completed</span>
                 </td>
               </tr>
@@ -1067,11 +1037,11 @@
                 data-progress="0.75"
                 data-added="2026-05-09"
               >
-                <td class="cell" data-align="left">Hollow Frequency</td>
-                <td class="cell" data-align="left">TV</td>
-                <td class="cell numeric" data-align="right">9 / 12</td>
-                <td class="cell numeric rl-score-cell" data-align="right">7</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Hollow Frequency</td>
+                <td class="cell" data-align="start">TV</td>
+                <td class="cell numeric" data-align="end">9 / 12</td>
+                <td class="cell numeric rl-score-cell" data-align="end">7</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge brand rl-status"
                     ><span class="dot" aria-hidden="true"></span>watching</span
                   >
@@ -1085,11 +1055,11 @@
                 data-progress="0.08"
                 data-added="2026-04-18"
               >
-                <td class="cell" data-align="left">Ember Protocol</td>
-                <td class="cell" data-align="left">TV</td>
-                <td class="cell numeric" data-align="right">2 / 24</td>
-                <td class="cell numeric rl-score-cell" data-align="right">3</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Ember Protocol</td>
+                <td class="cell" data-align="start">TV</td>
+                <td class="cell numeric" data-align="end">2 / 24</td>
+                <td class="cell numeric rl-score-cell" data-align="end">3</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge caution rl-status">dropped</span>
                 </td>
               </tr>
@@ -1101,11 +1071,11 @@
                 data-progress="0"
                 data-added="2026-03-30"
               >
-                <td class="cell" data-align="left">Small Hours Radio</td>
-                <td class="cell" data-align="left">OVA</td>
-                <td class="cell numeric" data-align="right">0 / 6</td>
-                <td class="cell numeric rl-score-cell" data-align="right">—</td>
-                <td class="cell" data-align="left">
+                <td class="cell" data-align="start">Small Hours Radio</td>
+                <td class="cell" data-align="start">OVA</td>
+                <td class="cell numeric" data-align="end">0 / 6</td>
+                <td class="cell numeric rl-score-cell" data-align="end">—</td>
+                <td class="cell" data-align="start">
                   <span class="ss-badge neutral rl-status">planned</span>
                 </td>
               </tr>
@@ -1154,7 +1124,14 @@
               <div class="ss-numberfield">
                 <label class="lbl" for="rl-score">Score</label>
                 <div class="control">
-                  <button type="button" class="step dec" aria-label="Decrease">−</button>
+                  <button
+                    type="button"
+                    class="step dec"
+                    aria-label="Decrease"
+                    aria-controls="rl-score"
+                  >
+                    −
+                  </button>
                   <input
                     class="ss-input"
                     id="rl-score"
@@ -1166,8 +1143,16 @@
                     step="1"
                     aria-describedby="rl-score-hint"
                   />
-                  <button type="button" class="step inc" aria-label="Increase">+</button>
+                  <button
+                    type="button"
+                    class="step inc"
+                    aria-label="Increase"
+                    aria-controls="rl-score"
+                  >
+                    +
+                  </button>
                 </div>
+                <span class="live" aria-live="polite" aria-atomic="true"></span>
                 <span class="msg hint" id="rl-score-hint"
                   >1 is a mistake, 10 is a masterpiece.</span
                 >

@@ -10,7 +10,7 @@ export const card: ComponentDoc = {
   },
   tagline: 'Titled panel container.',
   description:
-    'A bordered panel with an optional title (string or snippet), meta, description, and action slot, plus full-bleed `media` and a `footer` band. Becomes a link (`href`) or button (`onclick`) when interactive, with keyboard activation. `outlined` or `elevated` surface; the title renders at a configurable heading level for a correct document outline.',
+    'A bordered panel with an optional title (string or snippet), meta, description, and action slot, plus full-bleed `media` and a `footer` band. Becomes a link (`href`) or button (`onclick`) when interactive: one stretched overlay `<a>`/`<button>` covers the card, so the heading and `action` controls keep their own semantics and keyboard handling. A titled card is a named `region`. `outlined` or `elevated` surface; the title renders at a configurable heading level for a correct document outline.',
   storyId: 'components-card--title-and-meta',
   usage: `<script>
   import { Card } from 'dssoca';
@@ -54,7 +54,7 @@ export const card: ComponentDoc = {
     {
       name: 'onclick',
       type: '(e: MouseEvent | KeyboardEvent) => void',
-      desc: 'Makes the whole card clickable; pairs with keyboard activation.',
+      desc: "Makes the whole card clickable via a stretched overlay `<button>` named by the title (native Enter/Space; nested `action` controls are not affected). With `href` set it runs as the link's click handler instead.",
     },
     {
       name: 'variant',

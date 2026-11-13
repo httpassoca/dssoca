@@ -90,5 +90,5 @@ export const textarea: ComponentDoc = {
     },
   ],
   notes:
-    'Shares `Input`’s field tokens (`--ss-input-*`) and focus/error treatment. The label is auto-associated even without an explicit `id`; `aria-describedby` orders error, then hint, then any caller-supplied ids, and the error is announced via `role="alert"`. Without `autosize` the field is manually resizable (vertical only); with it, resizing is handled by the content.',
+    'Shares `Input`’s field tokens (`--ss-input-*`) and focus/error treatment. The label is auto-associated even without an explicit `id`; `aria-describedby` orders error, then hint, then any caller-supplied ids, and the error is announced via `role="alert"`. Without `autosize` the field is manually resizable (vertical only); with it, resizing is handled by the content. The required marker is spaced with a logical margin, so it sits on the correct side in right-to-left layouts.',
 }

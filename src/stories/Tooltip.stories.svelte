@@ -48,7 +48,7 @@
 </script>
 
 <!-- A snippet tip (DS-0144): phrasing content only and nothing interactive — the
-     tip is pointer-events: none and hidden while closed (WAI-ARIA tooltip pattern). -->
+     tip never takes focus and is hidden while closed (WAI-ARIA tooltip pattern). -->
 {#snippet richTip()}
   <strong>Copy path</strong>
   <code>/srv/app</code>

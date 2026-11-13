@@ -77,7 +77,11 @@ export const menu: ComponentDoc = {
       default: "'bottom'",
       desc: 'Vertical side the panel opens toward.',
     },
-    { name: 'label', type: 'string', desc: 'Accessible name for the panel (`role="menu"`).' },
+    {
+      name: 'label',
+      type: 'string',
+      desc: 'Accessible name for the panel (`role="menu"`). When omitted the panel is named by the trigger text via `aria-labelledby`.',
+    },
     {
       name: 'children',
       type: 'Snippet',
@@ -86,5 +90,5 @@ export const menu: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Trigger exposes aria-haspopup="menu" + aria-expanded/aria-controls; the panel is role="menu" with role="menuitem" (or menuitemradio + aria-checked when selectable). Keyboard: ArrowDown/ArrowUp open from the trigger; ArrowUp/Down/Home/End rove focus (skipping disabled rows), Enter/Space activate, Esc closes and returns focus to the trigger. Closes on item select, outside pointerdown, and Esc. Per-item leading visuals (`leading` snippet / `swatch` color chip / `emoji`) are decorative (aria-hidden) — the row\'s accessible name is always its `label`. WCAG 2.2 AA.',
+    'Trigger exposes aria-haspopup="menu" + aria-expanded/aria-controls; the panel is role="menu" (named by `label`, else aria-labelledby → the trigger) with role="menuitem" (or menuitemradio + aria-checked when selectable). Keyboard: ArrowDown/ArrowUp open from the trigger; ArrowUp/Down/Home/End rove focus (skipping disabled rows), Enter/Space activate, Esc closes and returns focus to the trigger. Closes on item select, outside pointerdown, and Esc. Per-item leading visuals (`leading` snippet / `swatch` color chip / `emoji`) are decorative (aria-hidden) — the row\'s accessible name is always its `label`. RTL-aware: `align` start/end and row text use logical properties, and the focused row\'s bar sits on the inline-start edge. Plain HTML: vanilla.js adds aria-labelledby → trigger to an unnamed panel on first open. WCAG 2.2 AA.',
 }

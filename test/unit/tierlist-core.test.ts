@@ -6,6 +6,7 @@ import {
   announceText,
   buildZones,
   insertionIndex,
+  keyMoveFor,
   keyboardTarget,
   locate,
   moveItem,
@@ -106,10 +107,10 @@ describe('tierlist-core — keyboardTarget', () => {
   const z = buildZones(tiers, items, { S: ['a', 'b', 'c'], B: ['d'] })
 
   it('steps within the row and refuses to pass the edges', () => {
-    expect(keyboardTarget(z, order, 'b', 'left')).toEqual({ zone: 'S', index: 0 })
-    expect(keyboardTarget(z, order, 'b', 'right')).toEqual({ zone: 'S', index: 2 })
-    expect(keyboardTarget(z, order, 'a', 'left')).toBeNull()
-    expect(keyboardTarget(z, order, 'c', 'right')).toBeNull()
+    expect(keyboardTarget(z, order, 'b', 'prev')).toEqual({ zone: 'S', index: 0 })
+    expect(keyboardTarget(z, order, 'b', 'next')).toEqual({ zone: 'S', index: 2 })
+    expect(keyboardTarget(z, order, 'a', 'prev')).toBeNull()
+    expect(keyboardTarget(z, order, 'c', 'next')).toBeNull()
   })
 
   it('home/end jump within the row', () => {
@@ -129,7 +130,7 @@ describe('tierlist-core — keyboardTarget', () => {
   })
 
   it('returns null for an unknown item', () => {
-    expect(keyboardTarget(z, order, 'nope', 'left')).toBeNull()
+    expect(keyboardTarget(z, order, 'nope', 'prev')).toBeNull()
   })
 })
 
@@ -150,6 +151,39 @@ describe('tierlist-core — insertionIndex', () => {
     expect(insertionIndex(cells, 200, 150)).toBe(4)
     expect(insertionIndex(cells, 500, 500)).toBe(4)
     expect(insertionIndex([], 5, 5)).toBe(0)
+  })
+
+  it('under RTL counts the tiles right of the pointer on its row (rows flow right to left)', () => {
+    // The same two rows mirrored: the first tile of each row is the rightmost.
+    const rtl = [
+      { left: 110, right: 210, top: 0, bottom: 100 },
+      { left: 0, right: 100, top: 0, bottom: 100 },
+      { left: 110, right: 210, top: 110, bottom: 210 },
+      { left: 0, right: 100, top: 110, bottom: 210 },
+    ]
+    expect(insertionIndex(rtl, 200, 50, true)).toBe(0)
+    expect(insertionIndex(rtl, 120, 50, true)).toBe(1)
+    expect(insertionIndex(rtl, 10, 50, true)).toBe(2)
+    expect(insertionIndex(rtl, 200, 150, true)).toBe(2)
+    expect(insertionIndex(rtl, 10, 150, true)).toBe(4)
+    // the LTR reading of the same pointer would be the mirror image
+    expect(insertionIndex(rtl, 200, 50)).toBe(2)
+  })
+})
+
+describe('tierlist-core — keyMoveFor', () => {
+  it('maps the arrows onto reading-order steps, mirrored under RTL', () => {
+    expect(keyMoveFor('ArrowLeft')).toBe('prev')
+    expect(keyMoveFor('ArrowRight')).toBe('next')
+    expect(keyMoveFor('ArrowLeft', true)).toBe('next')
+    expect(keyMoveFor('ArrowRight', true)).toBe('prev')
+    for (const rtl of [false, true]) {
+      expect(keyMoveFor('ArrowUp', rtl)).toBe('up')
+      expect(keyMoveFor('ArrowDown', rtl)).toBe('down')
+      expect(keyMoveFor('Home', rtl)).toBe('home')
+      expect(keyMoveFor('End', rtl)).toBe('end')
+    }
+    expect(keyMoveFor('a')).toBeUndefined()
   })
 })
 

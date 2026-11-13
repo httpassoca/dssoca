@@ -100,6 +100,25 @@ describe('Badge', () => {
       expect(container.querySelector('.ss-badge')).toHaveAttribute('role', 'img')
     })
 
+    it('falls back to the visible count text as the name when label is missing (DS-0175)', () => {
+      const { container } = render(BadgeHarness, { noLabel: true, count: 7 })
+      const badge = container.querySelector('.ss-badge')!
+      expect(badge).toHaveAttribute('role', 'img')
+      expect(badge).toHaveAttribute('aria-label', '7')
+    })
+
+    it('uses the clamped count text as the fallback name (DS-0175)', () => {
+      const { container } = render(BadgeHarness, { noLabel: true, count: 150 })
+      expect(container.querySelector('.ss-badge')).toHaveAttribute('aria-label', '99+')
+    })
+
+    it('omits role="img" when a label-less badge has no name at all (DS-0175)', () => {
+      const { container } = render(BadgeHarness, { noLabel: true, dot: true })
+      const badge = container.querySelector('.ss-badge')!
+      expect(badge).not.toHaveAttribute('role')
+      expect(badge).not.toHaveAttribute('aria-label')
+    })
+
     it('does not set an aria-label when a label snippet is present', () => {
       const { container } = render(BadgeHarness, { text: 'visible', label: 'ignored' })
       expect(container.querySelector('.ss-badge')).not.toHaveAttribute('aria-label')
@@ -169,6 +188,11 @@ describe('Badge', () => {
         tone: 'critical',
         label: 'down',
       })
+      expect(await axe(container, axeOpts)).toHaveNoViolations()
+    })
+
+    it('count-only badge without a label has no violations (DS-0175)', async () => {
+      const { container } = render(BadgeHarness, { noLabel: true, count: 3, tone: 'info' })
       expect(await axe(container, axeOpts)).toHaveNoViolations()
     })
 

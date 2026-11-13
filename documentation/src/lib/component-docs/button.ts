@@ -51,7 +51,7 @@ export const button: ComponentDoc = {
       name: 'iconOnly',
       type: 'boolean',
       default: 'false',
-      desc: 'Square icon-only button; `label` is required and becomes the aria-label.',
+      desc: 'Square icon-only button; `label` is required and becomes the aria-label. Without `label` (or a forwarded `aria-label` / `aria-labelledby`) the button has no accessible name, so it logs a console warning.',
     },
     { name: 'label', type: 'string', desc: 'Accessible name; required for icon-only buttons.' },
     {

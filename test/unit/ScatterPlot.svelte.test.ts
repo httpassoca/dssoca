@@ -21,12 +21,18 @@ const points: ScatterPoint[] = [
 ]
 
 describe('ScatterPlot — points', () => {
-  it('renders one focusable circle per point', () => {
+  it('renders one circle per point, each a named role="img"', () => {
     const { container } = render(ScatterPlot, { points })
     const dots = container.querySelectorAll('.ss-scatter circle.point')
     expect(dots).toHaveLength(4)
-    expect(dots[0]).toHaveAttribute('tabindex', '0')
+    for (const d of dots) expect(d).toHaveAttribute('role', 'img')
     expect(dots[0].getAttribute('aria-label')).toContain('Ana')
+  })
+
+  it('hides the visible point labels from AT (the circle already carries the name)', () => {
+    const { container } = render(ScatterPlot, { points })
+    for (const t of container.querySelectorAll('.ss-scatter .point-label'))
+      expect(t).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('draws a label next to each point by default and hides them when showLabels=false', () => {
@@ -68,7 +74,67 @@ describe('ScatterPlot — quadrants', () => {
   })
 })
 
+describe('ScatterPlot — keyboard (roving tabindex)', () => {
+  const dotsOf = (c: HTMLElement) => [...c.querySelectorAll<SVGElement>('.ss-scatter circle.point')]
+
+  it('is a single tab stop: first point tabindex 0, the rest -1', () => {
+    const { container } = render(ScatterPlot, { points })
+    expect(dotsOf(container).map((d) => d.getAttribute('tabindex'))).toEqual([
+      '0',
+      '-1',
+      '-1',
+      '-1',
+    ])
+  })
+
+  it('arrow keys / Home / End move focus and the tab stop between points', async () => {
+    const { container } = render(ScatterPlot, { points })
+    const dots = dotsOf(container)
+    dots[0].focus()
+    await fireEvent.keyDown(dots[0], { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(dots[1])
+    expect(dots[1]).toHaveAttribute('tabindex', '0')
+    expect(dots[0]).toHaveAttribute('tabindex', '-1')
+    await fireEvent.keyDown(dots[1], { key: 'End' })
+    expect(document.activeElement).toBe(dots[3])
+    await fireEvent.keyDown(dots[3], { key: 'ArrowUp' })
+    expect(document.activeElement).toBe(dots[2])
+    await fireEvent.keyDown(dots[2], { key: 'Home' })
+    expect(document.activeElement).toBe(dots[0])
+    await fireEvent.keyDown(dots[0], { key: 'ArrowLeft' })
+    expect(document.activeElement).toBe(dots[0])
+  })
+
+  it('remembers the last focused point as the tab stop', async () => {
+    const { container } = render(ScatterPlot, { points })
+    const dots = dotsOf(container)
+    await fireEvent.focus(dots[2])
+    expect(dots[2]).toHaveAttribute('tabindex', '0')
+    expect(dots[0]).toHaveAttribute('tabindex', '-1')
+  })
+})
+
 describe('ScatterPlot — tooltip', () => {
+  it('is aria-hidden and not a live region', async () => {
+    const { container } = render(ScatterPlot, { points })
+    await fireEvent.focus(container.querySelector('.ss-scatter circle.point')!)
+    const tip = container.querySelector('.ss-scatter .tooltip')!
+    expect(tip).toHaveAttribute('aria-hidden', 'true')
+    expect(tip).not.toHaveAttribute('role')
+  })
+
+  it('hides on Escape (focus and hover)', async () => {
+    const { container } = render(ScatterPlot, { points })
+    const dot = container.querySelector('.ss-scatter circle.point')!
+    await fireEvent.focus(dot)
+    await fireEvent.keyDown(dot, { key: 'Escape' })
+    expect(container.querySelector('.ss-scatter .tooltip')).toBeNull()
+    await fireEvent.mouseEnter(dot)
+    expect(container.querySelector('.ss-scatter .tooltip')).not.toBeNull()
+    await fireEvent.keyDown(window, { key: 'Escape' })
+    expect(container.querySelector('.ss-scatter .tooltip')).toBeNull()
+  })
+
   it('reveals tooltip text on focusing a point and hides it on blur', async () => {
     const { container } = render(ScatterPlot, { points })
     expect(container.querySelector('.ss-scatter .tooltip')).toBeNull()

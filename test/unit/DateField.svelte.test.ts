@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
+import { compileString } from 'sass'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import DateFieldHarness from '../harness/DateFieldHarness.svelte'
 
 const axeOpts = {
@@ -131,5 +134,20 @@ describe('DateField', () => {
       error: 'Date is required.',
     })
     expect(await axe(container, axeOpts)).toHaveNoViolations()
+  })
+
+  // DS-0169 — Front-End Checklist `logical-properties`: the required-asterisk gap
+  // must follow the writing direction, so RTL puts it on the correct side.
+  it('spaces the required asterisk with a logical (RTL-safe) margin', () => {
+    const src = readFileSync(
+      resolve(__dirname, '../../src/lib/components/DateField.svelte'),
+      'utf8',
+    )
+    const scss = /<style lang="scss">([\s\S]*?)<\/style>/.exec(src)![1]
+    const css = compileString(scss, { syntax: 'scss', style: 'expanded' }).css
+    const req = /\.ss-datefield \.lbl \.req \{([^}]*)\}/.exec(css)
+    expect(req, '.req rule').not.toBeNull()
+    expect(req![1]).toMatch(/margin-inline-start:/)
+    expect(css).not.toMatch(/(margin|padding)-(left|right)\s*:/)
   })
 })

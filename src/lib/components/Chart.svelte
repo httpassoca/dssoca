@@ -10,6 +10,11 @@
     color?: string
   }
   export type ChartVariant = 'line' | 'area' | 'bar'
+  /**
+   * Fixed stroke-dasharray cycle for line/area series (SVG user units). Series 0 is solid; the
+   * rest cycle through distinct dash patterns so series never differ by colour alone (WCAG 1.4.1).
+   */
+  export const CHART_DASH_CYCLE: readonly string[] = ['', '6 4', '2 3', '10 3 2 3', '1 5', '12 6']
 </script>
 
 <script lang="ts">
@@ -18,6 +23,7 @@
   import { line as shapeLine, area as shapeArea } from 'd3-shape'
   import { extent, max } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
+  import { chartNavStep } from '../chart-nav.js'
 
   type XType = 'linear' | 'time' | 'band'
 
@@ -38,8 +44,15 @@
     width?: number
     /** Stretch to the container width via the viewBox (width:100%). */
     fluid?: boolean
-    /** Show the series legend (labels + colour swatches). Default true. */
+    /** Show the series legend (labels + colour swatches; line/area swatches carry the dash). Default true. */
     legend?: boolean
+    /**
+     * Line/area: give each series after the first its own dash pattern (from `CHART_DASH_CYCLE`)
+     * so series are told apart without colour. Default true.
+     */
+    dashes?: boolean
+    /** Line/area: print each series' label directly at the end of its line. Default false. */
+    endLabels?: boolean
     /** Show a tooltip on hover/focus of a datum. Default true. */
     tooltip?: boolean
     /** SR summary + accessible name; auto-generated when absent. */
@@ -58,6 +71,8 @@
     width = 480,
     fluid = false,
     legend = true,
+    dashes = true,
+    endLabels = false,
     tooltip = true,
     summary,
     size,
@@ -65,14 +80,28 @@
 
   const PALETTE = CHART_PALETTE
 
-  const M = { top: 8, right: 12, bottom: 24, left: 40 }
-
   const cleanSeries = $derived((series ?? []).filter((s) => s && Array.isArray(s.data)))
+  const isLineish = $derived(variant === 'line' || variant === 'area')
+
+  // Approximate advance of one mono glyph at the tick font size, in SVG user units; used only to
+  // reserve right-hand room for direct end-labels.
+  const END_LABEL_CHAR = 7
+  const END_LABEL_GAP = 6
+  const endLabelRoom = $derived(
+    endLabels && isLineish
+      ? END_LABEL_GAP + Math.max(0, ...cleanSeries.map((s) => s.label.length)) * END_LABEL_CHAR
+      : 0,
+  )
+  const M = $derived({ top: 8, right: 12 + endLabelRoom, bottom: 24, left: 40 })
   const allPoints = $derived(cleanSeries.flatMap((s) => s.data))
   const isEmpty = $derived(allPoints.length === 0)
 
   function colorFor(s: ChartSeries, i: number): string {
     return s.color ?? PALETTE[i % PALETTE.length]
+  }
+  /** Dash pattern for series `i` ('' = solid). Only line/area strokes use it. */
+  function dashFor(i: number): string {
+    return dashes ? CHART_DASH_CYCLE[i % CHART_DASH_CYCLE.length] : ''
   }
 
   function toNum(x: ChartXValue): number {
@@ -176,8 +205,27 @@
     return cleanSeries.map((s, i) => ({
       d: lineGen(s.data) ?? '',
       color: colorFor(s, i),
+      dash: dashFor(i),
       label: s.label,
     }))
+  })
+
+  // Direct end-labels: one per series at its last datum, nudged apart vertically so they
+  // never overlap.
+  const END_LABEL_MIN_GAP = 12
+  const endLabelItems = $derived.by(() => {
+    if (!endLabels || !isLineish) return []
+    const items = cleanSeries
+      .filter((s) => s.data.length > 0)
+      .map((s) => {
+        const last = s.data[s.data.length - 1]
+        return { label: s.label, x: xPos(last.x) + END_LABEL_GAP, y: yScale(last.y) }
+      })
+      .sort((a, b) => a.y - b.y)
+    for (let k = 1; k < items.length; k++) {
+      items[k].y = Math.max(items[k].y, items[k - 1].y + END_LABEL_MIN_GAP)
+    }
+    return items
   })
   const areaPaths = $derived.by(() => {
     if (variant !== 'area') return []
@@ -218,7 +266,7 @@
     })
   })
 
-  // Focusable point markers (line/area datums).
+  // Point markers (line/area datums); one roving tab stop across all of them.
   const pointMarkers = $derived.by(() => {
     if (variant !== 'line' && variant !== 'area') return []
     return cleanSeries.flatMap((s, i) =>
@@ -232,6 +280,32 @@
       })),
     )
   })
+
+  // Bars flattened in render order (category, then series) for the roving tabindex.
+  const flatBars = $derived(barGroups.flatMap((g) => g.bars))
+
+  // Roving tabindex: the chart is ONE tab stop; arrow keys move between marks (chart-nav.ts).
+  const markCount = $derived(variant === 'bar' ? flatBars.length : pointMarkers.length)
+  let focusIndex = $state(0)
+  const tabStop = $derived(Math.min(focusIndex, Math.max(0, markCount - 1)))
+  let marksEl = $state<SVGGElement | null>(null)
+
+  function onMarkKeydown(e: KeyboardEvent, i: number) {
+    if (e.key === 'Escape') {
+      hide()
+      return
+    }
+    // SVG geometry does not mirror in RTL, so Left/Right stay physical.
+    const next = chartNavStep(e.key, i, markCount)
+    if (next === null) return
+    e.preventDefault()
+    focusIndex = next
+    marksEl?.querySelector<SVGElement>(`[data-index="${next}"]`)?.focus()
+  }
+  // Escape also dismisses a hover-opened tooltip (WCAG 1.4.13).
+  function onWindowKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && active) hide()
+  }
 
   // Auto SR summary.
   const autoSummary = $derived.by(() => {
@@ -263,6 +337,8 @@
   }
 </script>
 
+<svelte:window onkeydown={onWindowKeydown} />
+
 <div
   class="ss-chart"
   class:fluid
@@ -284,7 +360,7 @@
         preserveAspectRatio="xMidYMid meet"
         role="presentation"
       >
-        <g transform="translate({M.left},{M.top})">
+        <g transform="translate({M.left},{M.top})" bind:this={marksEl}>
           <!-- gridlines + y axis -->
           {#each yTicks as t}
             <line class="grid" x1="0" x2={innerW} y1={yScale(t)} y2={yScale(t)} />
@@ -307,19 +383,35 @@
 
           {#if variant === 'line' || variant === 'area'}
             {#each linePaths as p}
-              <path class="line" d={p.d} style="stroke:{p.color}" />
+              <path
+                class="line"
+                class:dashed={p.dash !== ''}
+                d={p.d}
+                style="stroke:{p.color}"
+                stroke-dasharray={p.dash || undefined}
+              />
             {/each}
-            {#each pointMarkers as m}
+            {#each endLabelItems as l, k (k)}
+              <text class="end-label" x={l.x} y={l.y} dy="0.32em" aria-hidden="true">{l.label}</text
+              >
+            {/each}
+            {#each pointMarkers as m, i (i)}
+              <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
               <circle
                 class="point"
                 cx={m.cx}
                 cy={m.cy}
                 r="4"
                 style="fill:{m.color}"
-                tabindex="0"
-                role="button"
+                tabindex={i === tabStop ? 0 : -1}
+                role="img"
+                data-index={i}
                 aria-label={datumLabel(m.label, m.x, m.value)}
-                onfocus={() => show(m.label, m.x, m.value, m.cx, m.cy)}
+                onkeydown={(e) => onMarkKeydown(e, i)}
+                onfocus={() => {
+                  focusIndex = i
+                  show(m.label, m.x, m.value, m.cx, m.cy)
+                }}
                 onblur={hide}
                 onmouseenter={() => show(m.label, m.x, m.value, m.cx, m.cy)}
                 onmouseleave={hide}
@@ -328,24 +420,28 @@
           {/if}
 
           {#if variant === 'bar'}
-            {#each barGroups as g}
-              {#each g.bars as b}
-                <rect
-                  class="bar"
-                  x={b.x}
-                  y={b.y}
-                  width={b.w}
-                  height={b.h}
-                  style="fill:{b.color}"
-                  tabindex="0"
-                  role="button"
-                  aria-label={datumLabel(b.label, b.cat, b.value)}
-                  onfocus={() => show(b.label, b.cat, b.value, b.x + b.w / 2, b.y)}
-                  onblur={hide}
-                  onmouseenter={() => show(b.label, b.cat, b.value, b.x + b.w / 2, b.y)}
-                  onmouseleave={hide}
-                />
-              {/each}
+            {#each flatBars as b, i (i)}
+              <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+              <rect
+                class="bar"
+                x={b.x}
+                y={b.y}
+                width={b.w}
+                height={b.h}
+                style="fill:{b.color}"
+                tabindex={i === tabStop ? 0 : -1}
+                role="img"
+                data-index={i}
+                aria-label={datumLabel(b.label, b.cat, b.value)}
+                onkeydown={(e) => onMarkKeydown(e, i)}
+                onfocus={() => {
+                  focusIndex = i
+                  show(b.label, b.cat, b.value, b.x + b.w / 2, b.y)
+                }}
+                onblur={hide}
+                onmouseenter={() => show(b.label, b.cat, b.value, b.x + b.w / 2, b.y)}
+                onmouseleave={hide}
+              />
             {/each}
           {/if}
         </g>
@@ -354,7 +450,7 @@
       {#if tooltip && active}
         <div
           class="tooltip"
-          role="status"
+          aria-hidden="true"
           style="left:{((active.cx + M.left) / width) * 100}%;top:{((active.cy + M.top) / height) *
             100}%"
         >
@@ -368,7 +464,26 @@
       <ul class="legend">
         {#each cleanSeries as s, i}
           <li class="legend-item">
-            <span class="swatch" style="background:{colorFor(s, i)}" aria-hidden="true"></span>
+            {#if isLineish}
+              <svg
+                class="swatch-line"
+                viewBox="0 0 24 10"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+                data-dash={dashFor(i) || 'solid'}
+              >
+                <line
+                  x1="0"
+                  x2="24"
+                  y1="5"
+                  y2="5"
+                  style="stroke:{colorFor(s, i)}"
+                  stroke-dasharray={dashFor(i) || undefined}
+                />
+              </svg>
+            {:else}
+              <span class="swatch" style="background:{colorFor(s, i)}" aria-hidden="true"></span>
+            {/if}
             <span class="legend-label">{s.label}</span>
           </li>
         {/each}
@@ -457,13 +572,24 @@
       stroke-linecap: round;
     }
 
+    .line.dashed {
+      /* round caps would swallow short dash gaps */
+      stroke-linecap: butt;
+    }
+
+    .end-label {
+      font-family: var(--ss-font-mono);
+      font-size: var(--ss-ui-xs);
+      fill: var(--ss-fg);
+    }
+
     .area {
       opacity: 0.18;
       stroke: none;
     }
 
     .point {
-      cursor: pointer;
+      cursor: default; // data marks are not clickable
       transition: r var(--ss-dur-fast) var(--ss-ease);
       &:hover,
       &:focus-visible {
@@ -477,7 +603,7 @@
     }
 
     .bar {
-      cursor: pointer;
+      cursor: default; // data marks are not clickable
       transition: opacity var(--ss-dur-fast) var(--ss-ease);
       &:hover {
         opacity: 0.85;
@@ -537,6 +663,19 @@
       height: 10px;
       flex: none;
       display: inline-block;
+    }
+
+    /* line/area legend key: a short stroke with the series' dash pattern */
+    .swatch-line {
+      inline-size: calc(var(--ss-icon) * 1.2);
+      block-size: calc(var(--ss-icon) * 0.5);
+      flex: none;
+      display: inline-block;
+      overflow: visible;
+
+      line {
+        stroke-width: 2;
+      }
     }
   }
 </style>

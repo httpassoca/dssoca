@@ -242,3 +242,103 @@ describe('Modal — a11y', () => {
     expect(await axe(container, axeOpts)).toHaveNoViolations()
   })
 })
+
+// DS-0178: a custom `header` snippet used to drop aria-labelledby, leaving the dialog unnamed.
+describe('Modal — custom header naming', () => {
+  const headerWithId = createRawSnippet((id: () => string) => ({
+    render: () => `<h2 id="${id()}">Custom heading</h2>`,
+  }))
+  const headerNoId = snippet('<div><strong>Custom heading</strong></div>')
+
+  it('passes titleId to the header snippet and labels the dialog with it', () => {
+    const { container } = render(Modal, {
+      open: true,
+      header: headerWithId,
+      children: snippet('<p>x</p>'),
+    })
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
+    const labelledby = dialog.getAttribute('aria-labelledby')
+    expect(labelledby).toBeTruthy()
+    expect(container.querySelector(`[id="${labelledby}"]`)).toHaveTextContent('Custom heading')
+  })
+
+  it('keeps `title` as an aria-label fallback when a header replaces the title row', () => {
+    const { container } = render(Modal, {
+      open: true,
+      title: 'Confirm',
+      header: headerNoId,
+      children: snippet('<p>x</p>'),
+    })
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
+    expect(dialog).toHaveAttribute('aria-label', 'Confirm')
+  })
+
+  it('uses aria-label (not a dangling labelledby) when header + aria-label are given', () => {
+    const { container } = render(Modal, {
+      open: true,
+      'aria-label': 'Settings',
+      header: headerNoId,
+      children: snippet('<p>x</p>'),
+    })
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
+    expect(dialog).toHaveAttribute('aria-label', 'Settings')
+    expect(dialog).not.toHaveAttribute('aria-labelledby')
+  })
+
+  it('warns in dev when a custom header leaves the dialog unnamed', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    render(Modal, { open: true, header: headerNoId, children: snippet('<p>x</p>') })
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('Modal'))
+    warn.mockRestore()
+  })
+
+  it('does not warn when the header uses titleId', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    render(Modal, { open: true, header: headerWithId, children: snippet('<p>x</p>') })
+    expect(warn).not.toHaveBeenCalled()
+    warn.mockRestore()
+  })
+
+  it('has no axe violations with a custom header', async () => {
+    const { container } = render(Modal, {
+      open: true,
+      header: headerWithId,
+      children: snippet('<p>x</p>'),
+    })
+    expect(await axe(container, axeOpts)).toHaveNoViolations()
+  })
+})
+
+// DS-0178: the page behind an open modal must not scroll.
+describe('Modal — scroll lock', () => {
+  const html = () => document.documentElement
+
+  it('locks <html> overflow while open and restores it on close', async () => {
+    html().style.overflow = 'scroll'
+    const { getByLabelText } = render(Modal, baseProps())
+    expect(html().style.overflow).toBe('hidden')
+    await fireEvent.click(getByLabelText('Close'))
+    expect(html().style.overflow).toBe('scroll')
+    html().style.overflow = ''
+  })
+
+  it('does not lock while closed, and releases on unmount', () => {
+    const closed = render(Modal, { ...baseProps(), open: false })
+    expect(html().style.overflow).toBe('')
+    closed.unmount()
+    const opened = render(Modal, baseProps())
+    expect(html().style.overflow).toBe('hidden')
+    opened.unmount()
+    expect(html().style.overflow).toBe('')
+  })
+
+  it('keeps the lock until the last of two stacked modals closes', async () => {
+    const a = render(Modal, baseProps())
+    const b = render(Modal, baseProps())
+    expect(html().style.overflow).toBe('hidden')
+    a.unmount()
+    expect(html().style.overflow).toBe('hidden')
+    b.unmount()
+    expect(html().style.overflow).toBe('')
+  })
+})

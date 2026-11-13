@@ -52,10 +52,10 @@ export const sidebar: ComponentDoc = {
     {
       name: 'onToggleCollapsed',
       type: '(collapsed: boolean) => void',
-      desc: 'Fired when the built-in collapse toggle is pressed.',
+      desc: 'Fired when the built-in collapse toggle is pressed. The toggle renders only when this is set; it is named "Sidebar" and reports its state with `aria-expanded` (true while the rail is expanded).',
     },
     SIZE_PROP,
   ],
   notes:
-    'Exports the `SideItem`, `SideGroup`, and `SideStatus` types from `dssoca`. `SideItem` gains `href`, `external` (off-site `href`: new tab, safe `rel`, external glyph, announced — the docs nav uses it for the Inspirations site), `badge`, optional `icon` (omit for a text-only item), and one level of nested `children`. The rail stretches to fill its host container’s height (`min-height: 100%`), so the border/background span the full screen or column; it still grows past the viewport when the nav is long.',
+    'Exports the `SideItem`, `SideGroup`, and `SideStatus` types from `dssoca`. `SideItem` gains `href`, `external` (off-site `href`: new tab, safe `rel`, external glyph, announced — the docs nav uses it for the Inspirations site), `badge`, optional `icon` (omit for a text-only item), and one level of nested `children`. The rail stretches to fill its host container’s height (`min-height: 100%`), so the border/background span the full screen or column; it still grows past the viewport when the nav is long. A degraded/down `status` is never colour-only: next to the dot a visually hidden word (", degraded" / ", down") joins the item name, and in the collapsed rail it is folded into the `aria-label`. Section and sub-panel ids are prefixed with a per-instance `$props.id()`, so several Sidebars can share a page. Borders, indents and the disclosure caret use logical properties, so the rail mirrors under `dir="rtl"`.',
 }

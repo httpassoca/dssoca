@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
+import { compileString } from 'sass'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import SelectHarness from '../harness/SelectHarness.svelte'
 
 const axeOpts = {
@@ -161,5 +164,34 @@ describe('Select', () => {
       error: 'Required field.',
     })
     expect(await axe(container, axeOpts)).toHaveNoViolations()
+  })
+})
+
+// DS-0170 — RTL: the required marker and the chevron use logical properties so
+// their spacing flips with `dir="rtl"` (jsdom does no layout, so pin the CSS).
+describe('Select RTL styles', () => {
+  const src = readFileSync(resolve(__dirname, '../../src/lib/components/Select.svelte'), 'utf8')
+  const scss = /<style lang="scss">([\s\S]*?)<\/style>/.exec(src)![1]
+  const css = compileString(scss, { syntax: 'scss', style: 'expanded' }).css
+  const rule = (selector: string) => {
+    const esc = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const m = new RegExp(`(?:^|\\n)${esc} \\{([^}]*)\\}`).exec(css)
+    expect(m, selector).not.toBeNull()
+    return m![1]
+  }
+
+  it('uses no physical left/right properties', () => {
+    expect(css).not.toMatch(/(margin|padding|border)-(left|right)\s*:/)
+    expect(css).not.toMatch(/(^|[\s;{])(left|right)\s*:/)
+  })
+
+  it('spaces the required marker from the label text on the inline-start side', () => {
+    expect(rule('.ss-select .lbl .req')).toMatch(/margin-inline-start:\s*2px/)
+  })
+
+  it('spaces the chevron from the select on the inline-start side', () => {
+    const chevron = rule('.ss-select .chevron')
+    expect(chevron).toMatch(/margin-inline-start:\s*var\(--ss-gap-sm\)/)
+    expect(chevron).toMatch(/border-inline:\s*var\(--ss-select-chevron, 5px\) solid transparent/)
   })
 })

@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, screen, fireEvent } from '@testing-library/svelte'
 import InputHarness from '../harness/InputHarness.svelte'
 import InputAffixHarness from '../harness/InputAffixHarness.svelte'
@@ -191,5 +193,40 @@ describe('Input', () => {
     expect(inv.container.querySelector('.ss-field.invalid')).not.toBeNull()
     const dis = render(InputHarness, { disabled: true })
     expect(dis.container.querySelector('.ss-field.disabled')).not.toBeNull()
+  })
+})
+
+// Front-End Checklist fixes (DS-0166). These are pure CSS contracts that jsdom
+// can't compute from scoped styles, so assert them at the source.
+describe('Input styles (DS-0166)', () => {
+  const source = readFileSync(resolve(process.cwd(), 'src/lib/components/Input.svelte'), 'utf8')
+  const block = (sel: string): string => {
+    const start = source.indexOf(`${sel} {`)
+    expect(start).toBeGreaterThan(-1)
+    let depth = 0
+    for (let i = source.indexOf('{', start); i < source.length; i++) {
+      if (source[i] === '{') depth++
+      else if (source[i] === '}' && --depth === 0) return source.slice(start, i + 1)
+    }
+    return ''
+  }
+
+  it('clear button keeps the base solid focus ring (no faint --ss-primary-soft halo)', () => {
+    const clear = block('.clear')
+    expect(clear).not.toMatch(/--ss-primary-soft/)
+    expect(clear).not.toMatch(/outline:\s*none/)
+  })
+
+  it('clear button has a 24x24 minimum hit area from the size scale', () => {
+    const clear = block('.clear')
+    expect(clear).toMatch(/min-inline-size:\s*var\(--ss-s-6\)/)
+    expect(clear).toMatch(/min-block-size:\s*var\(--ss-s-6\)/)
+    expect(clear).toMatch(/justify-content:\s*center/)
+  })
+
+  it('required marker spacing is logical (RTL-safe)', () => {
+    const req = block('.req')
+    expect(req).toMatch(/margin-inline-start:/)
+    expect(req).not.toMatch(/margin-(left|right):/)
   })
 })

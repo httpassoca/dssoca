@@ -66,6 +66,16 @@
   flex: 1;
 }
 
+/* A bare .ss-link inherits the 20px root; chrome links take the chrome size. */
+.stg-top-docs,
+.stg-strip {
+  font-size: var(--ss-ui-md);
+}
+
+.stg-login-links {
+  font-size: var(--ss-size-sm);
+}
+
 .stg-top-name {
   font-family: var(--ss-font-body);
 }
@@ -166,7 +176,9 @@
   min-width: 0;
 }
 
+/* Same size as the switch labels in the sibling rows (a bare span inherits the 20px root). */
 .stg-row-title {
+  font-size: var(--ss-control-font);
   font-weight: 500;
 }
 
@@ -174,6 +186,14 @@
   margin: 0;
   color: var(--ss-fg-muted);
   font-size: var(--ss-size-sm);
+}
+
+/* Row-trailing meta (delivery channel, "this device"): quiet text, not a badge. */
+.stg-row-meta {
+  flex: none;
+  color: var(--ss-fg-muted);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-sm);
 }
 
 .stg-table-wrap {
@@ -246,8 +266,7 @@
 
   .stg-top .stg-top-crumb,
   .stg-top .stg-top-docs,
-  .stg-top .stg-top-name,
-  .stg-sync {
+  .stg-top .stg-top-name {
     display: none;
   }
 
@@ -262,13 +281,12 @@
 
   .stg-row > .ss-switch,
   .stg-row > .ss-btn,
-  .stg-row > .ss-badge {
+  .stg-row > .stg-row-meta {
     align-self: flex-end;
   }
 }
 
 /* Row-trailing controls never shrink below their label. */
-.stg-row > .ss-btn,
-.stg-row > .ss-badge {
+.stg-row > .ss-btn {
   flex: none;
 }

@@ -118,6 +118,13 @@
     ),
   )
 
+  // DS-0182: the roving tab stop is the active tab; when `active` matches no
+  // tab, fall back to the first button tab so the strip stays reachable by Tab.
+  const rovingIdx = $derived.by(() => {
+    const i = items.findIndex((t) => t.id === active)
+    return i >= 0 ? i : items.findIndex((t) => !t.href)
+  })
+
   // DS-0081: resolve the services prop to data-or-nothing.
   const svc = $derived(services === true ? DEFAULT_SERVICES : services === false ? null : services)
 
@@ -239,7 +246,7 @@
           type="button"
           class="tab {current ? 'active' : ''}"
           aria-current={current ? 'page' : undefined}
-          tabindex={current ? 0 : -1}
+          tabindex={i === rovingIdx ? 0 : -1}
           onclick={() => onTab?.(tab.id)}
           onkeydown={(e) => onTabKeydown(e, i)}
         >
@@ -321,8 +328,8 @@
     // Skip link: visually hidden until focused, then it overlays the bar.
     .skip {
       position: absolute;
-      left: var(--ss-s-1);
-      top: var(--ss-s-1);
+      inset-inline-start: var(--ss-s-1);
+      inset-block-start: var(--ss-s-1);
       z-index: 20;
       padding: var(--ss-chip-py) var(--ss-badge-px);
       background: var(--ss-primary);
@@ -343,13 +350,13 @@
       align-items: center;
       gap: var(--ss-s-2);
       padding: 0 var(--ss-panel-head-px);
-      border-right: 1px solid var(--ss-line);
+      border-inline-end: 1px solid var(--ss-line);
       cursor: default;
       flex: none;
 
       &.right {
-        border-right: none;
-        border-left: 1px solid var(--ss-line);
+        border-inline-end: none;
+        border-inline-start: 1px solid var(--ss-line);
       }
       &.click {
         cursor: pointer;
@@ -362,15 +369,14 @@
     // Right-side controls authored as <button> reset their chrome.
     button.seg {
       background: transparent;
-      border-top: 0;
-      border-bottom: 0;
-      border-right: 0;
+      border-block: 0;
+      border-inline-end: 0;
       color: inherit;
       font: inherit;
       min-height: var(--ss-s-6); // ≥24px hit target at every size
     }
     button.seg.right {
-      border-left: 1px solid var(--ss-line);
+      border-inline-start: 1px solid var(--ss-line);
     }
 
     .logo {
@@ -403,13 +409,12 @@
         padding: 0 var(--ss-row-px);
         min-height: var(--ss-s-6); // ≥24px hit target at sm
         color: var(--ss-fg-faint);
-        border-right: 1px solid var(--ss-line);
+        border-inline-end: 1px solid var(--ss-line);
         cursor: pointer;
         font: 500 var(--ss-ui-md) var(--ss-font-mono);
         background: transparent;
-        border-top: 0;
-        border-bottom: 0;
-        border-left: 0;
+        border-block: 0;
+        border-inline-start: 0;
         text-decoration: none;
         transition: all var(--ss-dur-fast) var(--ss-ease);
 
@@ -419,7 +424,7 @@
         }
         .n {
           color: var(--ss-fg-faint);
-          margin-right: 6px;
+          margin-inline-end: 6px;
         }
         &.active {
           color: var(--ss-fg);
@@ -448,7 +453,7 @@
       // than inventing new tokens.
       .k {
         color: var(--ss-fg-faint);
-        margin-right: var(--ss-s-1);
+        margin-inline-end: var(--ss-s-1);
       }
       .v {
         color: var(--ss-fg);

@@ -91,6 +91,9 @@
     disabled={disabled || atFirst}
     onclick={() => go(current - 1)}
   >
+    <!-- ‹ › are Bidi_Mirrored (UAX #9, rule L4): in an RTL context the browser
+         already draws them flipped, so no transform is needed (one would
+         double-mirror them back). -->
     <span aria-hidden="true">‹</span>
   </button>
 
@@ -144,8 +147,9 @@
       color: var(--ss-fg-muted);
       background: transparent;
       border: 0;
-      // Hairline divider between cells via the leading border.
-      border-left: 1px solid var(--ss-line);
+      // Hairline divider between cells via the leading (inline-start) border,
+      // so it follows the reading direction in RTL.
+      border-inline-start: 1px solid var(--ss-line);
       padding: var(--ss-pagination-py, 0.5em) var(--ss-pagination-px, 0.625em);
       cursor: pointer;
       white-space: nowrap;
@@ -154,7 +158,7 @@
         background var(--ss-dur-fast) var(--ss-ease);
 
       &:first-child {
-        border-left: 0;
+        border-inline-start: 0;
       }
 
       &:hover:not(.active):not(:disabled) {
@@ -170,8 +174,9 @@
 
       &:focus-visible {
         outline: none;
-        // Inset ring so the highlight reads inside the shared frame.
-        box-shadow: inset 0 0 0 2px var(--ss-primary-soft);
+        // Inset ring so the highlight reads inside the shared frame. Solid
+        // --ss-primary (not the 12-18% soft wash) keeps it at 3:1 (WCAG 1.4.11).
+        box-shadow: inset 0 0 0 2px var(--ss-primary);
         z-index: 1;
       }
 
@@ -202,7 +207,7 @@
       justify-content: center;
       min-width: var(--ss-pagination-min, 2.25em);
       padding: var(--ss-pagination-py, 0.5em) var(--ss-pagination-px, 0.625em);
-      border-left: 1px solid var(--ss-line);
+      border-inline-start: 1px solid var(--ss-line);
       color: var(--ss-fg-muted);
       font-family: var(--ss-font-mono);
       line-height: 1;

@@ -158,10 +158,36 @@ export function zonesEqual(a: TierListZones, b: TierListZones): boolean {
   return true
 }
 
-export type TierListKeyMove = 'left' | 'right' | 'up' | 'down' | 'home' | 'end'
+/**
+ * A keyboard sorting step. `prev`/`next` are positions in the row's reading order, not screen
+ * directions — {@link keyMoveFor} maps the physical arrow keys onto them per writing direction.
+ */
+export type TierListKeyMove = 'prev' | 'next' | 'up' | 'down' | 'home' | 'end'
 
 /**
- * Keyboard sorting target: left/right step within the zone (wrapping is deliberately off —
+ * The sorting step a key stands for, or `undefined` for any other key. In a right-to-left
+ * layout the row reads right to left, so ArrowLeft steps *forward* and ArrowRight back.
+ */
+export function keyMoveFor(key: string, rtl = false): TierListKeyMove | undefined {
+  switch (key) {
+    case 'ArrowLeft':
+      return rtl ? 'next' : 'prev'
+    case 'ArrowRight':
+      return rtl ? 'prev' : 'next'
+    case 'ArrowUp':
+      return 'up'
+    case 'ArrowDown':
+      return 'down'
+    case 'Home':
+      return 'home'
+    case 'End':
+      return 'end'
+  }
+  return undefined
+}
+
+/**
+ * Keyboard sorting target: prev/next step within the zone (wrapping is deliberately off —
  * the edges are meaningful), home/end jump within it, up/down move to the neighbouring zone
  * keeping the same position (clamped). `zoneOrder` is the visual order, tray last.
  * Returns `null` when the move is impossible (already at the edge).
@@ -177,9 +203,9 @@ export function keyboardTarget(
   const len = zones[at.zone].length
   const zi = zoneOrder.indexOf(at.zone)
   switch (move) {
-    case 'left':
+    case 'prev':
       return at.index > 0 ? { zone: at.zone, index: at.index - 1 } : null
-    case 'right':
+    case 'next':
       return at.index < len - 1 ? { zone: at.zone, index: at.index + 1 } : null
     case 'home':
       return at.index > 0 ? { zone: at.zone, index: 0 } : null
@@ -204,14 +230,16 @@ export interface Box {
 
 /**
  * Insertion index for a pointer at (x, y) among wrapped tiles: every tile whose row ends above
- * the pointer counts as "before", and on the pointer's own row every tile whose centre is left
- * of it. The dragged tile's own box must not be in `cells`.
+ * the pointer counts as "before", and on the pointer's own row every tile whose centre is
+ * before it in reading order — left of it, or right of it when `rtl` (the row then flows right
+ * to left). The dragged tile's own box must not be in `cells`.
  */
-export function insertionIndex(cells: readonly Box[], x: number, y: number): number {
+export function insertionIndex(cells: readonly Box[], x: number, y: number, rtl = false): number {
   let index = 0
   for (const c of cells) {
+    const centre = (c.left + c.right) / 2
     if (c.bottom <= y) index++
-    else if (c.top <= y && (c.left + c.right) / 2 <= x) index++
+    else if (c.top <= y && (rtl ? centre >= x : centre <= x)) index++
   }
   return index
 }
