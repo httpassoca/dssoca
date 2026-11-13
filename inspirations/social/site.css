@@ -67,6 +67,34 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* the base `a` underline is accent-coloured; the wordmark and timestamps stay quiet */
+.sig-brand::before,
+.sig-post-time::before {
+  display: none;
+}
+
+/* quiet text link: takes the size and colour of the text around it */
+.sig-link {
+  font-weight: 400;
+}
+
+.sig-link::before {
+  background: currentColor;
+}
+
+.sig-link:hover,
+.sig-link:focus-visible {
+  color: var(--ss-fg);
+}
+
+/* square status dot */
+.sig-dot {
+  flex: none;
+  width: var(--ss-badge-dot);
+  height: var(--ss-badge-dot);
+  background: var(--ss-success);
+}
+
 .sig-brand-mark {
   width: var(--ss-icon);
   height: var(--ss-icon);
@@ -195,6 +223,9 @@ body {
 }
 
 .sig-post-context {
+  display: flex;
+  align-items: center;
+  gap: var(--ss-s-1);
   margin: 0 0 var(--ss-s-1);
   font-family: var(--ss-font-mono);
   font-size: var(--ss-ui-xs);
@@ -219,8 +250,14 @@ body {
   display: inline-flex;
   align-items: center;
   gap: var(--ss-s-1);
+  font-size: var(--ss-size-body);
   font-weight: 600;
   line-height: 1.2;
+}
+
+.sig-verified {
+  display: inline-flex;
+  color: var(--ss-fg-muted);
 }
 
 .sig-post-handle,
@@ -236,6 +273,7 @@ body {
 .sig-post-time {
   font-family: var(--ss-font-mono);
   font-size: var(--ss-ui-xs);
+  font-weight: 400;
   color: var(--ss-fg-faint);
   text-decoration: none;
 }
@@ -260,8 +298,10 @@ body {
 .sig-post-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--ss-s-1);
+  gap: var(--ss-gap-sm);
   margin-top: var(--ss-gap-sm);
+  font-size: var(--ss-size-sm);
+  color: var(--ss-fg-muted);
 }
 
 .sig-post-quote {
@@ -293,6 +333,7 @@ body {
   gap: var(--ss-s-1);
   width: 100%;
   justify-content: space-between;
+  font-variant-numeric: tabular-nums;
 }
 
 .sig-actions .ss-btn[aria-pressed='true'] {
@@ -344,6 +385,25 @@ body {
   gap: var(--ss-gap-sm);
   padding-bottom: var(--ss-s-1);
   border-bottom: 1px solid var(--ss-line);
+  font-size: var(--ss-size-sm);
+}
+
+.sig-trend-count {
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-ui-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--ss-fg-faint);
+}
+
+.sig-more-link {
+  font-size: var(--ss-ui-sm);
+  color: var(--ss-fg-muted);
+}
+
+.sig-health {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ss-s-1);
 }
 
 .sig-trend:last-child {
@@ -370,7 +430,8 @@ body {
   margin: var(--ss-s-1) 0 0;
   font-family: var(--ss-font-mono);
   font-size: var(--ss-size-h3);
-  color: var(--ss-primary);
+  font-variant-numeric: tabular-nums;
+  color: var(--ss-fg);
 }
 
 /* ---------- footer ---------- */
@@ -426,5 +487,9 @@ body {
   }
   .sig-composer-tools {
     gap: 0;
+  }
+  /* four actions on one row: share drops to its glyph (the button keeps its aria-label) */
+  .sig-actions [data-action='share'] .label {
+    display: none;
   }
 }
