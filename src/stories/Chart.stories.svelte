@@ -96,6 +96,14 @@
         control: 'boolean',
         description: 'Show the series legend.',
       },
+      dashes: {
+        control: 'boolean',
+        description: 'Line/area: dash every series after the first (non-colour encoding).',
+      },
+      endLabels: {
+        control: 'boolean',
+        description: 'Line/area: label each series directly at the end of its line.',
+      },
       tooltip: {
         control: 'boolean',
         description: 'Reveal a tooltip on hover/focus of a datum.',
@@ -116,6 +124,8 @@
 <Story name="Default" args={{ series: lineSeries }} />
 
 <Story name="Area" args={{ series: lineSeries, variant: 'area' }} />
+
+<Story name="End labels" args={{ series: lineSeries, endLabels: true }} />
 
 <Story name="Grouped Bars" args={{ series: barSeries, variant: 'bar' }} />
 
