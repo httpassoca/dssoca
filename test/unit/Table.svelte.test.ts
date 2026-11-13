@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, fireEvent } from '@testing-library/svelte'
 import { createRawSnippet } from 'svelte'
 import { axe } from 'vitest-axe'
@@ -113,13 +115,57 @@ describe('Table — sorting', () => {
 })
 
 describe('Table — numeric alignment', () => {
-  it('right-aligns numeric columns via data-align and adds the numeric class', () => {
+  it('end-aligns numeric columns via data-align and adds the numeric class', () => {
     const { container } = render(Table, { columns, rows })
     const numericCell = container.querySelectorAll('tbody tr:first-child td')[1]
     expect(numericCell).toHaveClass('numeric')
-    expect(numericCell).toHaveAttribute('data-align', 'right')
+    expect(numericCell).toHaveAttribute('data-align', 'end')
     const numericHead = container.querySelectorAll('thead th')[1]
-    expect(numericHead).toHaveAttribute('data-align', 'right')
+    expect(numericHead).toHaveAttribute('data-align', 'end')
+  })
+
+  it('defaults text columns to logical start alignment', () => {
+    const { container } = render(Table, { columns, rows })
+    expect(container.querySelectorAll('thead th')[0]).toHaveAttribute('data-align', 'start')
+    expect(firstCell(container)).toHaveAttribute('data-align', 'start')
+  })
+
+  it('maps legacy left/right to start/end and accepts start/end/center as-is', () => {
+    const cols: TableColumn[] = [
+      { key: 'a', label: 'A', align: 'left' },
+      { key: 'b', label: 'B', align: 'right' },
+      { key: 'c', label: 'C', align: 'start' },
+      { key: 'd', label: 'D', align: 'end' },
+      { key: 'e', label: 'E', align: 'center' },
+    ]
+    const { container } = render(Table, {
+      columns: cols,
+      rows: [{ a: 1, b: 2, c: 3, d: 4, e: 5 }],
+    })
+    const heads = [...container.querySelectorAll('thead th')].map((th) =>
+      th.getAttribute('data-align'),
+    )
+    const cells = [...container.querySelectorAll('tbody td')].map((td) =>
+      td.getAttribute('data-align'),
+    )
+    const expected = ['start', 'end', 'start', 'end', 'center']
+    expect(heads).toEqual(expected)
+    expect(cells).toEqual(expected)
+  })
+})
+
+describe('Table — styles (source)', () => {
+  const src = readFileSync(resolve(process.cwd(), 'src/lib/components/Table.svelte'), 'utf8')
+  // Strip `//` comments so prose mentioning the old ring isn't matched.
+  const style = src.slice(src.indexOf('<style')).replace(/\/\/.*$/gm, '')
+
+  it('does not replace the base focus ring with the faint --ss-primary-soft shadow', () => {
+    expect(style).not.toContain('--ss-primary-soft')
+    expect(style).not.toMatch(/outline:\s*none/)
+  })
+
+  it('uses logical text alignment (no physical left/right)', () => {
+    expect(style).not.toMatch(/text-align:\s*(left|right)/)
   })
 })
 
