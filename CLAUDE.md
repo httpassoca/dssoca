@@ -268,8 +268,12 @@ Rules:
 1. From `develop`: bump `version` in `package.json` (semver; until `1.0.0` minors may break),
    branch `release/<x.y.z>`.
 2. Run `pnpm release` — it validates the bump against the last tag and the branch name, and
-   drafts a CHANGELOG stub from conventional commits (`--write` inserts it under
-   `## [Unreleased]`; polish it by hand).
+   drafts a CHANGELOG stub from conventional commits (`--write` splices the release in, keeping
+   pending `## [Unreleased]` notes on top and updating the compare links; polish it by hand).
+   **`CHANGELOG.md` is also the docs site's changelog** (agile `DS-0196`): `/changelog` renders
+   it, and each component page shows the bullets that name that component in backticks. So name
+   the component (``- **`Switch`**: …``) — a commit scoped `fix(switch): …` is drafted that way
+   for you — and there is nothing else to update.
 3. PR `release/<x.y.z>` into `main`; merge when green (CI's `pnpm pack` is the release dry-run);
    tag `vX.Y.Z` + GitHub release.
 4. Publishing is **automated via npm Trusted Publishing** (agile `DS-0143`): creating the GitHub

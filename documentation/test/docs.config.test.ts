@@ -61,7 +61,7 @@ describe('docs.config — nav', () => {
     expect(byGroup).toMatchObject({
       'getting-started': ['/introduction', '/installation', '/vanilla'],
       configuration: ['/theming', '/tokens', '/theme-builder', '/keyboard'],
-      explore: ['/inspirations', '/color-theory', '/components'],
+      explore: ['/inspirations', '/color-theory', '/components', '/changelog'],
     })
   })
 
@@ -75,7 +75,7 @@ describe('docs.config — nav', () => {
     const entries = guideEntries()
     const hrefs = entries.map((e) => e.item.href)
     expect(new Set(hrefs).size).toBe(hrefs.length)
-    expect(hrefs).toHaveLength(10)
+    expect(hrefs).toHaveLength(11)
     for (const { group, item } of entries) {
       expect(GUIDE_SECTIONS, item.href).toContain(group.section)
       expect(item.icon, `icon for ${item.href}`).toBeTruthy()

@@ -8,4 +8,4 @@
   <meta name="description" content={data.doc.tagline} />
 </svelte:head>
 
-<ComponentPage doc={data.doc} html={data.html} />
+<ComponentPage doc={data.doc} html={data.html} changelog={data.changelog} />

@@ -1,0 +1,57 @@
+{
+  "component": "Chart",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`dashes` (default `true`) gives every line and area series after the first its own `stroke-dasharray`, so series are told apart without colour; set `dashes={false}` for all-solid lines. The patterns come from `CHART_DASH_CYCLE`, now exported from `dssoca`.",
+          "breaking": true,
+          "refs": ["DS-0184", "#139", "#140"]
+        },
+        {
+          "type": "added",
+          "text": "`endLabels` (default `false`) prints each series label at the end of its line for `line` and `area` charts; labels are nudged apart so they never overlap and the right margin grows to fit them.",
+          "refs": ["DS-0184", "#140"]
+        },
+        {
+          "type": "changed",
+          "text": "The whole chart is one tab stop instead of one per datum: arrow keys, Home and End move between marks. Points and bars are `role=\"img\"` (were `role=\"button\"`) and use `cursor: default`.",
+          "breaking": true,
+          "refs": ["DS-0184", "DS-0161", "#139", "#140"]
+        },
+        {
+          "type": "changed",
+          "text": "Legend keys for `line` and `area` are a short SVG stroke (`.swatch-line`) with the same colour and dash pattern as the series; `bar` keeps the `.swatch` colour block.",
+          "refs": ["DS-0184", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The tooltip is `aria-hidden=\"true\"` instead of `role=\"status\"`, so it no longer repeats what the mark's `aria-label` already says, and Escape dismisses it on both focus and hover.",
+          "refs": ["DS-0184", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "Series colours come from the shared `CHART_PALETTE` (exported from the package root), built on the palette slots: `--ss-accent`, `--ss-blue`, `--ss-magenta`, `--ss-cyan`, `--ss-yellow`, `--ss-green` (was `--ss-primary`, `--ss-blue`, `--ss-purple`, `--ss-cyan`, `--ss-yellow`, `--ss-lime`). A custom palette now recolours every series.",
+          "refs": ["DS-0128"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a D3-backed multi-series chart with `line`, `area` and grouped `bar` variants, axes, a legend and hover/focus tooltips. Accepts `number | string | Date` x-values (linear, band or time scale) and adds the library's first runtime dependencies: `d3-scale`, `d3-shape` and `d3-array`.",
+          "refs": ["DS-0091", "#78"]
+        }
+      ]
+    }
+  ]
+}

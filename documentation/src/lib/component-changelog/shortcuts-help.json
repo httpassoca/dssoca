@@ -1,0 +1,40 @@
+{
+  "component": "ShortcutsHelp",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The \"(off)\" tag on a disabled shortcut row uses `margin-inline-start` instead of `margin-left`, so its gap sits on the correct side under `dir=\"rtl\"`.",
+          "refs": ["DS-0194", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.19.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "Rows render their `Kbd` key caps with `hideOnMobile={false}`, so the overlay keeps showing its bindings on touch devices where `Kbd` now hides itself by default.",
+          "refs": ["DS-0157", "#134"]
+        }
+      ]
+    },
+    {
+      "version": "0.13.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: the GitHub/Slack-style \"?\" keyboard shortcuts overlay, built on `Modal` and always in sync with the live `shortcuts` registry, with a section per `group`, `Kbd` key caps showing the effective (remapped) combos, disabled rows struck through with a visible \"(off)\", and a `groupOrder` prop. It registers its own hotkey through the registry (`hotkey`, default `'?, mod+/'`, id `ss:shortcuts-help`; `null` registers nothing), so it can itself be disabled and remapped.",
+          "refs": ["DS-0138", "DS-0135", "#108"]
+        },
+        {
+          "type": "added",
+          "text": "`editable` prop turns the overlay into a built-in WCAG 2.1.4 settings UI: a per-row enable `Switch`, a Change button that records the next keydown as the new binding (reserved browser combos are rejected, Escape cancels), a per-row Reset, the global single-key switch (`characterKeys`) and Restore defaults, all announced through a live region.",
+          "refs": ["DS-0141", "#108"]
+        }
+      ]
+    }
+  ]
+}

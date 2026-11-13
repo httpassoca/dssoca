@@ -1,0 +1,55 @@
+{
+  "component": "SegmentedControl",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "A focused, unselected segment shows a solid inset `--ss-primary` ring (was a `--ss-primary-soft` wash at about 1.5:1).",
+          "refs": ["DS-0172", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Under `dir=\"rtl\"`, ArrowLeft / ArrowRight follow reading direction, in the Svelte component and in `dssoca/vanilla.js`. Up / Down and Home / End stay logical.",
+          "refs": ["DS-0172", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The hairline dividers use `border-inline-start` instead of `border-left`, so they sit between segments in RTL.",
+          "refs": ["DS-0172", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML behaviour in `dssoca/vanilla.js`: click and Arrow / Home / End selection over `.ss-segmented > .segment[role=\"radio\"]` markup. The root emits a bubbling `ss:change` event with `{ value, index }`, where `value` is the segment's `data-value` attribute or its label text.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`disabled` prop disables the whole control: every segment is `disabled` and skipped by keyboard navigation, and the group carries `aria-disabled=\"true\"`. Per-option `disabled` still works.",
+          "refs": ["DS-0078"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a compact row of mutually exclusive options (`role=\"radiogroup\"` with `role=\"radio\"` segments) with a bindable `value`, `onChange`, `fullWidth`, `size`, a required `label`, per-option `icon` and `disabled`, and Arrow / Home / End keys that move focus and selection together.",
+          "refs": ["DS-0047", "DS-0053", "#49"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "component": "Accordion",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Collapsed panels are `inert` and `visibility: hidden`, so their content no longer stays in the tab order and the accessibility tree. The `dssoca/vanilla.js` behaviour toggles `inert` together with `hidden`.",
+          "refs": ["DS-0162", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The header label uses `text-align: start` (was `left`), so it aligns correctly under `dir=\"rtl\"`.",
+          "refs": ["DS-0162", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML behaviour in `dssoca/vanilla.js`: headers toggle their panel, Arrow / Home / End move between headers, `data-ss-multiple` on the root allows several open sections, and the root emits `ss:change` with the open ids.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New `overflow` prop (`'truncate' | 'wrap'`, default `wrap`) controls how a long header label behaves; `truncate` keeps it on one line with an ellipsis. The root carries it as `data-overflow`.",
+          "refs": ["DS-0117", "#99"]
+        },
+        {
+          "type": "changed",
+          "text": "The chevron renders through the shared `Icon` `chevron` glyph instead of a CSS-border caret, and its size follows the resolved `size` of the accordion.",
+          "refs": ["DS-0110", "DS-0111", "#97"]
+        },
+        {
+          "type": "changed",
+          "text": "Panel markup gains a wrapper: `.panel` → `.panel-clip` → `.panel-inner` (was `.panel` → `.panel-inner`). Plain-HTML markup and custom selectors that target the panel need the new `.panel-clip` level.",
+          "refs": ["DS-0115", "#99"]
+        },
+        {
+          "type": "removed",
+          "text": "The `--ss-acc-chevron` token is gone; the chevron size now comes from the icon scale.",
+          "refs": ["DS-0110", "#97"]
+        },
+        {
+          "type": "fixed",
+          "text": "Panel padding is present from the first reveal frame, so content animates as a stable padded block instead of snapping in.",
+          "refs": ["DS-0115", "#99"]
+        },
+        {
+          "type": "fixed",
+          "text": "The chevron stays centered with no vertical drift between the open and closed states.",
+          "refs": ["DS-0116", "#99"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Generated header and panel ids derive from `$props.id()` instead of `Math.random()`, so server- and client-rendered ids match. `idBase` still overrides them.",
+          "refs": ["DS-0067"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a stack of collapsible sections built from `items` and a `panel` snippet, single-open by default or `multiple`, with controlled (`value`, bindable) or uncontrolled (`defaultValue`) state, `onChange`, an optional `header` snippet, `size`, `headingLevel` and `idBase`. Arrow / Home / End move focus between headers.",
+          "refs": ["DS-0045", "DS-0051", "#52"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "component": "Image",
+  "releases": [
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Styles ship in `dssoca/vanilla.css`, so the `.ss-image` markup can be used in plain HTML. The lightbox behaviour is not ported to `dssoca/vanilla.js`.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The skeleton shimmer token `--ss-image-shimmer` derives from the palette slot `--ss-bright-white` through `color-mix()` (6% in dark, 50% in light) instead of a hardcoded white `rgba()`, so it follows custom palettes.",
+          "refs": ["DS-0126", "#104"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The lightbox focus trap excludes disabled focusables and `tabindex=\"-1\"` elements, so the backdrop no longer takes part in the Tab cycle.",
+          "refs": ["DS-0078"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a responsive `<figure>` image with `<picture>` `sources` / `srcset`, an aspect-ratio box from `ratio` or `width`/`height` that prevents layout shift, lazy loading with an `eager` override, a loading skeleton, an error fallback, an optional `caption` and a built-in `lightbox` dialog (focus trap, `Esc` or backdrop click to close). It reads the new `--ss-image-*` tokens.",
+          "refs": ["DS-0049", "DS-0055", "#54"]
+        }
+      ]
+    }
+  ]
+}

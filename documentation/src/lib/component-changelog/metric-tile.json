@@ -1,0 +1,117 @@
+{
+  "component": "MetricTile",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "No longer a live region by default: `.val` drops its `role=\"status\"` / `aria-live=\"polite\"`, so value updates are not announced unless you pass the new `live` prop.",
+          "refs": ["DS-0191", "#139", "#140"]
+        },
+        {
+          "type": "added",
+          "text": "New `live` prop (default `false`). When set, the tile root is one `role=\"status\"` region with `aria-live=\"polite\"` and `aria-atomic=\"true\"`, so an update reads as \"label value delta\" rather than a bare number.",
+          "refs": ["DS-0191", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.18.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Contrast on the tile now passes WCAG AA: the `prefix` / `suffix` unit (`.small`) uses `--ss-fg-muted` instead of half-transparent text, the negative `emphasis` chip lifts its text toward `--ss-fg`, and the `deltaLabel` inside a chip inherits the chip colour.",
+          "refs": ["DS-0150", "#127"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML support: the `.ss-metric` styles ship in `dssoca/vanilla.css`, so the same markup can be used without Svelte. No `vanilla.js` behaviour is needed.",
+          "refs": ["DS-0148", "#124"]
+        },
+        {
+          "type": "changed",
+          "text": "The loading skeleton's `@keyframes` is renamed from `skeleton-pulse` to `ss-metric-skeleton-pulse` so it is safe in a global stylesheet. No visual change.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New `trend` prop (`'positive'` | `'negative'` | `'neutral'`) colours the delta independently of the arrow `dir`, so a rising error rate can read as negative. Without it, `up` is positive and `down` is negative.",
+          "refs": ["DS-0037", "#40"]
+        },
+        {
+          "type": "added",
+          "text": "New `deltaLabel` (comparison period after the delta, e.g. \"vs prev 7d\"), `prefix` (leading unit such as `$`), `emphasis` (delta as a soft zero-radius sentiment chip) and `chart` (snippet below the delta, e.g. for a `Sparkline`).",
+          "refs": ["DS-0037", "#40"]
+        },
+        {
+          "type": "added",
+          "text": "New `loading` prop: sets `aria-busy` on the tile and shows `aria-hidden` skeleton bars in place of the value and delta. The pulse stops under `prefers-reduced-motion`.",
+          "refs": ["DS-0037", "#40"]
+        },
+        {
+          "type": "changed",
+          "text": "The delta's classes are now the sentiment (`.positive` / `.negative` / `.neutral`) instead of the direction (`.up` / `.down`), and its colours come from the new `--ss-success` / `--ss-danger` tokens (were `--ss-primary` / `--ss-red`).",
+          "refs": ["DS-0037", "#40"]
+        },
+        {
+          "type": "changed",
+          "text": "The delta is exposed as `role=\"img\"` with a worded label (\"increased 12% vs prev 7d\") and the arrow glyph is `aria-hidden`, so colour and arrow are not the only signal. The value (`.val`) becomes a polite `role=\"status\"` live region.",
+          "refs": ["DS-0037", "#40"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Styles moved from the global `theme.css` into the component's own scoped styles. Hand-written `.ss-metric` markup styled only by `theme.css` is no longer styled; use the component.",
+          "refs": ["DS-0009", "#6"]
+        },
+        {
+          "type": "added",
+          "text": "New `size` prop (`'sm'` | `'md'` | `'lg'`), applied as `data-size-variant` on the root. When unset it follows `componentsSize.MetricTile` from the config, then the global `sizeVariant`.",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "fixed",
+          "text": "The delta carries an `aria-label` that words the direction (\"up 12%\"), so the arrow glyph is not the only cue for screen readers.",
+          "refs": ["DS-0013", "#10"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Root class renamed from `hub-metric` to `ss-metric`, and the tokens it reads from `--hs-*` to `--ss-*`.",
+          "refs": ["DS-0005"]
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a stat tile that shows a `label`, a large `value` with an optional `suffix`, and an optional `delta` with an up or down arrow set by `dir`."
+        }
+      ]
+    }
+  ]
+}

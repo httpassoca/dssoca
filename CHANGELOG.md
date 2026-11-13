@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
+## [Unreleased]
+
+### Docs
+
+- **Changelog on the docs site** (`DS-0196`). `/changelog` renders this file release by release,
+  and every component page ends with its own changelog: what changed in that component, per
+  release. Both are built from this file, so writing the release notes updates them; a bullet
+  reaches a component's page by naming the component in backticks. History up to `0.20.0` was
+  researched per component from the git history, pull requests and agile items.
+- **GitHub repository link** in the docs top bar (icon and label) and on the landing page.
+- `pnpm release` drafts a commit scoped to a component (`fix(switch): …`) as a bullet led by
+  that component's name, keeps pending `[Unreleased]` notes on top of the new release, and
+  updates the compare links.
+
 ## [0.20.0] — Accessibility & quality audit — 2026-11-13
 
 A full Front-End Checklist audit of every component ([#139](https://github.com/httpassoca/dssoca/issues/139),

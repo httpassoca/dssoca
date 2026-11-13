@@ -1,0 +1,61 @@
+{
+  "component": "Table",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "Header and body cells render `data-align=\"start\" | \"end\" | \"center\"` (was `left` / `right`), and numeric columns default to `end`. `TableColumn.align` accepts `start` / `end` and still takes `left` / `right`, which map to them; plain-HTML markup with `data-align=\"right\"` keeps working.",
+          "refs": ["DS-0188", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The sort button shows the solid `--ss-primary` focus ring (was a `--ss-primary-soft` glow at about 1.5:1).",
+          "refs": ["DS-0188", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Caption, header and cell alignment use logical `text-align: start` / `end`, so columns mirror under `dir=\"rtl\"`.",
+          "refs": ["DS-0188", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.18.0",
+      "changes": [
+        {
+          "type": "removed",
+          "breaking": true,
+          "text": "The legacy global `.ss-table` layout class in `theme.css`, which shared its name with this component's root, is removed. Use `<Table>`, or in plain HTML its markup with `dssoca/vanilla.css`.",
+          "refs": ["DS-0149", "#128"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML styling: `dssoca/vanilla.css` styles the same markup the Svelte component renders. Load it after `theme.css`.",
+          "refs": ["DS-0148", "#124"]
+        },
+        {
+          "type": "deprecated",
+          "text": "The older global `.ss-table` layout class in `theme.css`, which shares its name with this component's root, is deprecated and will be removed in 0.18.0.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a semantic data table driven by typed `columns` (`align`, `numeric`, `format`, `cell` snippet) and `rows`, with client-side sortable headers (`aria-sort`, bindable `sort`, `onsort`), an `empty` snippet, `caption`, `getRowKey` and `size`. Exports the `TableColumn` and `TableSort` types.",
+          "refs": ["DS-0092", "#79"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "component": "EmptyState",
+  "releases": [
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New `ariaLabel` prop names the live region (`aria-label` on the root), to tell apart several status/alert regions on one page.",
+          "refs": ["DS-0078", "#73"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New `no-results` value for `variant`, next to `empty` and `error`.",
+          "refs": ["DS-0042", "DS-0029", "#37"]
+        },
+        {
+          "type": "added",
+          "text": "New `secondaryAction` snippet rendered beside `action`, and a low-emphasis `footer` snippet rendered below everything (`.foot`).",
+          "refs": ["DS-0042", "#37"]
+        },
+        {
+          "type": "added",
+          "text": "New `visual` snippet for an `Icon`, illustration or image, rendered `aria-hidden`; the string `icon` stays as the fallback and its size now reads `--ss-empty-glyph` (was a hardcoded 40px), so it rescales with the size variant.",
+          "refs": ["DS-0042", "#37"]
+        },
+        {
+          "type": "added",
+          "text": "New `compact` prop drops the padding and shrinks the title and glyph (`--ss-empty-glyph-compact`) for use inside cards and table cells.",
+          "refs": ["DS-0042", "#37"]
+        },
+        {
+          "type": "added",
+          "text": "`headingLevel` accepts `false` to render the title as a plain `<p>` with no heading role.",
+          "refs": ["DS-0042", "#37"]
+        },
+        {
+          "type": "changed",
+          "text": "The root is capped at `--ss-empty-max-w` (360px / 420px / 480px for `sm` / `md` / `lg`) and centered with `margin-inline: auto`; the new `fullWidth` prop removes the cap.",
+          "refs": ["DS-0042", "#37"]
+        },
+        {
+          "type": "changed",
+          "text": "Non-error variants now carry `role=\"status\"` and the root has `aria-atomic=\"true\"`, so the state is announced politely without moving focus; `error` keeps `role=\"alert\"`.",
+          "refs": ["DS-0042", "#37"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New `size` prop (`sm` | `md` | `lg`), applied as `data-size-variant` on the root; when unset it follows `componentsSize.EmptyState`, then the global `sizeVariant`.",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "added",
+          "text": "The title has heading semantics (`role=\"heading\"` with `aria-level`), set by the new `headingLevel` prop (default `2`).",
+          "refs": ["DS-0013", "#10"]
+        },
+        {
+          "type": "fixed",
+          "text": "The `error` variant is announced with `role=\"alert\"`, and the decorative `icon` glyph is `aria-hidden`.",
+          "refs": ["DS-0013", "#10"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root class is `ss-empty` (was `hub-empty`) and the tokens it reads are `--ss-*` (were `--hs-*`).",
+          "refs": ["DS-0005"]
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a centered placeholder for \"no data\" and \"something went wrong\" cases, with `variant` (`empty` | `error`), `title`, `message`, an `icon` glyph and an `action` snippet.",
+          "refs": ["DS-0004"]
+        }
+      ]
+    }
+  ]
+}

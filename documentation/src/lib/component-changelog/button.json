@@ -1,0 +1,133 @@
+{
+  "component": "Button",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Logs a `console.warn` when `iconOnly` is set without an accessible name (no `label`, `aria-label` or `aria-labelledby`), since the rendered button would otherwise be unnamed for assistive tech.",
+          "refs": ["DS-0165", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Usable from plain HTML: `dssoca/vanilla.css` ships the component's styles, so `<button class=\"ss-btn primary\">` markup matching the rendered DOM is styled without Svelte. No `vanilla.js` behaviour is needed.",
+          "refs": ["DS-0148"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "`loading` is widened to `boolean | SpinnerVariant` and renders the shared `Spinner` instead of the built-in spinning ring. `loading={true}` uses the configured default variant (`resolveSpinnerVariant()`), and a variant string such as `loading=\"pipe\"` overrides it for one button; existing boolean call sites keep working, only the type and the glyph change.",
+          "refs": ["DS-0113", "DS-0108", "#98"]
+        },
+        {
+          "type": "removed",
+          "text": "The `.spinner` ring element and the `ss-btn-spin` keyframe are gone; the loading glyph now sits in an `aria-hidden` `.affix` span and follows the button's size tier.",
+          "refs": ["DS-0113", "#98"]
+        },
+        {
+          "type": "fixed",
+          "text": "Height no longer changes when a `leading` or `trailing` icon is present: the root gets a `min-height` of `--ss-control-font` plus twice `--ss-control-py`, and `.affix` is clamped to the `1em` text line-box.",
+          "refs": ["DS-0112", "#98"]
+        },
+        {
+          "type": "fixed",
+          "text": "The loading state is centered, with no stray empty `.label` span.",
+          "refs": ["DS-0114", "#98"]
+        }
+      ]
+    },
+    {
+      "version": "0.8.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "A disabled button no longer brightens or shows the brand glow on hover: every hover style is gated behind `:not(:disabled)` and `:disabled` sets `box-shadow: none`.",
+          "refs": ["DS-0059", "#57"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`loading` and `loadingLabel` props: a loading button shows a spinner, blocks clicks, sets `aria-busy` and `aria-disabled`, and stays focusable; `loadingLabel` becomes its accessible name while loading.",
+          "refs": ["DS-0032", "#36"]
+        },
+        {
+          "type": "added",
+          "text": "`danger` variant, filled with `--ss-danger` and using `--ss-fg-on-danger` and `--ss-danger-hover`.",
+          "refs": ["DS-0032", "#36"]
+        },
+        {
+          "type": "added",
+          "text": "`iconOnly` (square padding, `label` becomes the `aria-label`), `fullWidth` (fills the inline axis and centers the content), and `leading` / `trailing` icon snippets.",
+          "refs": ["DS-0032", "#36"]
+        },
+        {
+          "type": "added",
+          "text": "Any other `<button>` attribute is forwarded to the element, and `el` is a bindable reference to it. `children` is now optional.",
+          "refs": ["DS-0032", "#36"]
+        },
+        {
+          "type": "changed",
+          "text": "Markup: the content is wrapped in `<span class=\"label\">` and icons in `<span class=\"affix\" aria-hidden=\"true\">`, the root gains `icon-only`, `full-width` and `loading` state classes, the gap is `--ss-gap-sm` (was `6px`), and `:disabled` dims to 50% opacity with a `not-allowed` cursor.",
+          "refs": ["DS-0032", "#36"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Styles are scoped inside the component instead of living in the global `theme.css`, so `class=\"ss-btn\"` on a hand-written element is no longer styled; use `<Button>`.",
+          "refs": ["DS-0009", "#6"]
+        },
+        {
+          "type": "added",
+          "text": "`size` prop (`sm` | `md` | `lg`) that overrides the global size for one button; the root always renders the resolved value as `data-size-variant`.",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "fixed",
+          "text": "Hover colours come from the theme tokens `--ss-hover` and `--ss-primary-hover` instead of hard-coded dark-theme values, so hover states are correct in the light theme.",
+          "refs": ["DS-0013", "#11"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root class is `ss-btn` (was `hub-btn`) and the tokens it reads are `--ss-*` (were `--hs-*`), following the library-wide prefix rename.",
+          "refs": ["DS-0005"]
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a native `<button>` with `variant` (`primary`, `secondary` by default, `ghost`), `type` (default `button`), `disabled` and `onclick`.",
+          "refs": ["DS-0002"]
+        }
+      ]
+    }
+  ]
+}

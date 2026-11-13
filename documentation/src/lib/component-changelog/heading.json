@@ -1,0 +1,15 @@
+{
+  "component": "Heading",
+  "releases": [
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a display/page-title heading with the primary accent underline behind the text, rendered as `h1`–`h6` through the `level` prop so semantics and styling stay independent. Props `accent` (on by default), `centered` and `size`; the `.ss-heading` recipe and its `--ss-heading-size`, `--ss-heading-mb` and `--ss-heading-shadow` tokens ship inside the component, so it works without importing `theme.css`.",
+          "refs": ["DS-0083", "#75"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "component": "Switch",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Keyboard focus shows the solid 2px `--ss-primary` outline. The track used to replace it with a `--ss-primary-soft` glow at about 1.5:1 contrast, which was close to invisible.",
+          "refs": ["DS-0171", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The thumb mirrors under `dir=\"rtl\"`: it is positioned with `inset-inline-start` instead of physical `left` and `translateX`, so it slides toward the inline end in both directions.",
+          "refs": ["DS-0171", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML behaviour in `dssoca/vanilla.js`: a click on `.ss-switch .track[role=\"switch\"]` or on its sibling `.label` flips `aria-checked` and the `.on` class, and the root emits a bubbling `ss:change` event with `{ checked }`.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.13.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`labelHidden` prop: hides the `label` visually and keeps it as the accessible name, for dense settings rows where the visible context sits elsewhere.",
+          "refs": ["DS-0141", "#108"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: an accessible on/off toggle built on a native `<button role=\"switch\">`, with a square track and thumb, bindable `checked`, an optional clickable `label`, and `disabled`, `size`, `name`, `describedby` and `onchange` props.",
+          "refs": ["DS-0101", "#88"]
+        }
+      ]
+    }
+  ]
+}

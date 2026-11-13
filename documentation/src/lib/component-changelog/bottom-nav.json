@@ -1,0 +1,70 @@
+{
+  "component": "BottomNav",
+  "releases": [
+    {
+      "version": "0.18.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Link tabs (`href`) no longer show the global animated `a::before` underline from `theme.css`; the reset lives in the component's own CSS, so it ships in `vanilla.css` too.",
+          "refs": ["DS-0150"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The top separator is drawn with `box-shadow: 0 -1px 0 var(--ss-line)` instead of `border-top`, so it no longer takes layout space or adds to the bar's height.",
+          "refs": ["DS-0122", "#102"]
+        },
+        {
+          "type": "changed",
+          "text": "The active tab's background wash derives from the `--ss-accent` slot (`color-mix` at 6%) instead of `rgba(var(--ss-primary-rgb), 0.06)`.",
+          "refs": ["DS-0128"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Items accept `disabled`: the tab renders as a natively disabled `<button>` with `aria-disabled` (even when it has an `href`), is dimmed, leaves the tab order and does not navigate or fire `onSelect`.",
+          "refs": ["DS-0078"]
+        },
+        {
+          "type": "changed",
+          "text": "Badge position and size read the size-aware `--ss-bottom-nav-badge-top`, `-dx`, `-min-w`, `-h`, `-fs` and `-px` tokens, so the badge scales with `sm`/`md`/`lg`; `md` matches the former fixed pixel values.",
+          "refs": ["DS-0068"]
+        },
+        {
+          "type": "fixed",
+          "text": "Badge text uses `var(--ss-fg-on-primary)` instead of a hardcoded `#001b04` fallback, so it flips with the theme.",
+          "refs": ["DS-0069"]
+        }
+      ]
+    },
+    {
+      "version": "0.8.2",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The default `services` item used an invalid icon name; it is now `'database'` (was `'flex'`).",
+          "refs": ["DS-0065"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a fixed bottom tab bar with equal-width icon and label tabs, rendered as links (`href`) or buttons, with an `active` highlight (`aria-current=\"page\"`), count badges included in the accessible name, safe-area bottom padding and `--ss-bottom-nav-*` size tokens.",
+          "refs": ["DS-0048", "DS-0054", "#51"]
+        }
+      ]
+    }
+  ]
+}

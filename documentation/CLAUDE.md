@@ -104,6 +104,10 @@ documentation/
                        NAV = three labelled guide groups (DS-0156: `getting-started` →
                        `configuration` → `explore`, keyed by `NavSection`, rendered by
                        `label`) followed by the alphabetical `components` group
+      changelog.ts     Changelog model (DS-0196): parseChangelog, renderInline, and
+                       componentsIn / deriveComponentReleases (which bullets name a component)
+      component-changelog/  <slug>.json = frozen per-component history up to 0.20.0;
+                       index.ts merges it with what CHANGELOG.md says after that
       highlight.ts     Prism highlight() + langClass() (used by CodeBlock)
       prism-setup.js   Prism singleton + language grammars (shared with mdsvex)
       styles/code.css  Prism token theme mapped to --ss-code-* (follows the theme axis)
@@ -121,7 +125,10 @@ documentation/
                        `external` link to its site on the Pages host, thumbnails hot-linked
       components/[slug]/+page.{server.ts,svelte}  one config-driven page per component; the
                        SERVER load renders the component's `htmlExample` with svelte/server
-                       (lib/server/html-example.ts) into the page's HTML section
+                       (lib/server/html-example.ts) into the page's HTML section, and adds the
+                       component's own changelog (lib/server/changelog.ts)
+      changelog/+page.{server.ts,svelte}  /changelog (DS-0196): the repo-root CHANGELOG.md,
+                       parsed at build time — the page has no content of its own
   test/                Vitest: docs.config invariants + highlighter
 ```
 
@@ -152,6 +159,13 @@ build of the library is needed first — the docs track the working tree.
   serialisable props + raw-HTML snippets) — the build server-renders it into the page's HTML
   section and `test/html-examples.test.ts` renders all of them. The nav, the page, and the
   prerender `entries()` all derive from that array.
+- **The changelog has ONE source: the repo-root `CHANGELOG.md`** (DS-0196). `/changelog` and the
+  "Changelog" section at the end of every component page are both built from it — never write
+  release notes anywhere in `documentation/`. A bullet reaches a component's page by naming the
+  component in backticks (`` `Switch` ``); when the bullet opens with a bold lead that names
+  components (``- **`Card`** …``), only those get it. The `component-changelog/*.json` files are
+  frozen history up to `BACKFILLED_THROUGH` (`0.20.0`): don't add later releases to them, and a
+  new component needs no file. `lib/server/changelog.ts` is server-only (it inlines the file).
 - **`lib/server/html-example.ts` is server-only** (`svelte/server`); never import it from client
   code. Vanilla-only markup hooks (`data-ss-*`, empty spinner frame) are added by its `FIXUPS`.
 - **Mdsvex `.svx`** compiles in **legacy** mode (it emits `$$props`); the `runes` override in
