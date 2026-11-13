@@ -121,7 +121,7 @@ describe('Card', () => {
     expect(overlay).not.toBeNull()
     expect(overlay?.getAttribute('href')).toBe('/foo')
     // the root is not a button when linking
-    expect(container.querySelector('.ss-card')?.getAttribute('role')).toBeNull()
+    expect(container.querySelector('.ss-card')?.getAttribute('role')).not.toBe('button')
   })
 
   // DS-0158 — off-site link cards (the docs' Inspirations gallery).
@@ -154,31 +154,78 @@ describe('Card', () => {
     expect(container.querySelector('.title')?.getAttribute('id')).toBe(labelledby)
   })
 
-  it('omits aria-labelledby when there is no title', () => {
+  // DS-0183 — aria-labelledby is not allowed on a role-less <div>.
+  it('a titled card is a named region (role="region")', () => {
+    const { container, getByRole } = render(CardHarness, { title: 'Stats', body: 'x' })
+    expect(container.querySelector('.ss-card')).toHaveAttribute('role', 'region')
+    expect(getByRole('region', { name: 'Stats' })).toBe(container.querySelector('.ss-card'))
+  })
+
+  it('omits aria-labelledby and role when there is no title', () => {
     const { container } = render(CardHarness, { body: 'x' })
-    expect(container.querySelector('.ss-card')?.getAttribute('aria-labelledby')).toBeNull()
-  })
-
-  it('acts as a button (role + keyboard) when onclick is given without href', async () => {
-    const onclick = vi.fn()
-    const { container } = render(CardHarness, { title: 'Stats', onclick, body: 'x' })
     const root = container.querySelector('.ss-card')!
-    expect(root.getAttribute('role')).toBe('button')
-    expect(root.getAttribute('tabindex')).toBe('0')
-
-    await fireEvent.click(root)
-    expect(onclick).toHaveBeenCalledTimes(1)
-
-    await fireEvent.keyDown(root, { key: 'Enter' })
-    expect(onclick).toHaveBeenCalledTimes(2)
-    await fireEvent.keyDown(root, { key: ' ' })
-    expect(onclick).toHaveBeenCalledTimes(3)
+    expect(root.getAttribute('aria-labelledby')).toBeNull()
+    expect(root.getAttribute('role')).toBeNull()
   })
 
-  it('is not interactive (no role/tabindex) by default', () => {
+  // DS-0183 — the clickable card is a stretched overlay <button>, never role="button" on the
+  // root, so the heading and `action` controls are not flattened into a button.
+  it('renders an overlay <button> (not a role=button root) when onclick is given', async () => {
+    const onclick = vi.fn()
+    const { container, getByRole } = render(CardHarness, {
+      title: 'Stats',
+      onclick,
+      withAction: true,
+      body: 'x',
+    })
+    const root = container.querySelector('.ss-card')!
+    expect(root).toHaveAttribute('role', 'region')
+    expect(root).not.toHaveAttribute('tabindex')
+    expect(root.classList.contains('interactive')).toBe(true)
+
+    const overlay = container.querySelector('button.overlay')!
+    expect(overlay).toHaveAttribute('type', 'button')
+    expect(getByRole('button', { name: 'Stats' })).toBe(overlay)
+    // The heading stays a heading, outside any button.
+    expect(getByRole('heading', { name: 'Stats' }).closest('button')).toBeNull()
+    expect(container.querySelector('.card-action')!.closest('button.overlay')).toBeNull()
+
+    await fireEvent.click(overlay)
+    expect(onclick).toHaveBeenCalledTimes(1)
+  })
+
+  it('Enter/Space on a nested action control does not activate the card', async () => {
+    const onclick = vi.fn()
+    const { container } = render(CardHarness, {
+      title: 'Stats',
+      onclick,
+      withAction: true,
+      body: 'x',
+    })
+    const action = container.querySelector('.card-action')!
+    await fireEvent.keyDown(action, { key: 'Enter' })
+    await fireEvent.keyDown(action, { key: ' ' })
+    expect(onclick).not.toHaveBeenCalled()
+  })
+
+  it('untitled clickable card falls back to "Open" as the overlay name', () => {
+    const { getByRole } = render(CardHarness, { onclick: vi.fn(), body: 'x' })
+    expect(getByRole('button', { name: 'Open' })).toHaveClass('overlay')
+  })
+
+  it('href wins over onclick: one overlay <a>, onclick runs as its click handler', async () => {
+    const onclick = vi.fn((e: Event) => e.preventDefault())
+    const { container } = render(CardHarness, { title: 'Stats', href: '/foo', onclick, body: 'x' })
+    expect(container.querySelector('button.overlay')).toBeNull()
+    await fireEvent.click(container.querySelector('a.overlay')!)
+    expect(onclick).toHaveBeenCalledTimes(1)
+  })
+
+  it('is not interactive (no tabindex, no overlay) by default', () => {
     const { container } = render(CardHarness, { title: 'Stats', body: 'x' })
     const root = container.querySelector('.ss-card')!
-    expect(root.getAttribute('role')).toBeNull()
+    expect(root.getAttribute('role')).toBe('region')
     expect(root.getAttribute('tabindex')).toBeNull()
+    expect(container.querySelector('.overlay')).toBeNull()
   })
 })
