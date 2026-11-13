@@ -50,7 +50,15 @@ export const metricTile: ComponentDoc = {
       default: 'false',
       desc: 'Skeleton/loading state: hides the real value behind aria-hidden bars.',
     },
+    {
+      name: 'live',
+      type: 'boolean',
+      default: 'false',
+      desc: 'Announce updates: the whole tile becomes one polite, atomic `role="status"` region, so a change is read as "label value delta". Turn on only for tiles whose value updates in place.',
+    },
     { name: 'chart', type: 'Snippet', desc: 'Slot below the delta — drop in a <Sparkline> here.' },
     SIZE_PROP,
   ],
+  notes:
+    'Not a live region by default. Set `live` on a tile whose value changes in place and it becomes one polite, atomic `role="status"` region, so an update is announced with its label and delta ("req/min 142 increased 12%") instead of a bare number; `aria-busy` is set while `loading`, so the region is read once the value arrives. **Behaviour change (DS-0191):** before this, every tile\'s value was always a polite `role="status"` region, which announced bare numbers from many regions at once; pass `live` to keep updates announced. The delta has a worded `aria-label` ("increased 12% vs prev 7d"), so colour and the arrow are never the only signal.',
 }

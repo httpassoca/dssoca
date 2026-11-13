@@ -26,6 +26,12 @@
     emphasis?: boolean
     /** Skeleton/loading state: hides the real value behind aria-hidden bars. */
     loading?: boolean
+    /**
+     * Announce updates to assistive tech. When `true` the whole tile is one polite, atomic
+     * live region, so a change is read as "label value delta" rather than a bare number.
+     * Off by default: a grid of always-live tiles would talk over each other (DS-0191).
+     */
+    live?: boolean
     /** Snippet slot below the delta — drop in a <Sparkline> here. */
     chart?: Snippet
     /** Token size (sm|md|lg); inherits the global size when unset. */
@@ -42,6 +48,7 @@
     deltaLabel,
     emphasis = false,
     loading = false,
+    live = false,
     chart,
     size,
   }: Props = $props()
@@ -59,6 +66,9 @@
   class="ss-metric"
   data-size-variant={resolveComponentSize('MetricTile', size)}
   aria-busy={loading ? 'true' : undefined}
+  role={live ? 'status' : undefined}
+  aria-live={live ? 'polite' : undefined}
+  aria-atomic={live ? 'true' : undefined}
 >
   <div class="label">{label}</div>
 
@@ -66,7 +76,7 @@
     <div class="skeleton skeleton-val" aria-hidden="true"></div>
     {#if delta}<div class="skeleton skeleton-delta" aria-hidden="true"></div>{/if}
   {:else}
-    <div class="val" role="status" aria-live="polite">
+    <div class="val">
       {#if prefix}<span class="small">{prefix}</span>{/if}{value}{#if suffix}<span class="small"
           >{suffix}</span
         >{/if}
