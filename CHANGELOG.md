@@ -6,6 +6,92 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
+## [0.20.0] — Accessibility & quality audit — 2026-11-13
+
+A full Front-End Checklist audit of every component ([#139](https://github.com/httpassoca/dssoca/issues/139),
+`DS-0161`): 58 findings in 30 components, all fixed. Several fixes change default behaviour; those
+are listed first.
+
+### Changed
+
+- **BREAKING — `MetricTile`** (`DS-0191`) is no longer a live region by default. Pass the new
+  `live` prop to announce updates; the whole tile is then one polite, atomic region, so an update
+  reads as "label value delta" rather than a bare number.
+- **BREAKING — `ServiceCard`** (`DS-0192`) is interactive only with `href` or `onclick`; without
+  them it is a static group, not a focusable button. `spark` defaults to `[]` (shows "No data"
+  rather than a made-up trend). The control is a stretched overlay named by name + status and
+  described by host, latency, `meta` and the sparkline.
+- **BREAKING — `Card`** (`DS-0183`) with `onclick` renders a stretched overlay `<button>`; the root
+  is no longer `role="button"`, so nested actions are no longer inside a button. A titled card is
+  `role="region"`.
+- **`Table`** (`DS-0188`) renders `data-align="start" | "end"` (was `left` / `right`); `align`
+  accepts `start` / `end` and still takes `left` / `right`. Alignment follows text direction.
+- **`Sidebar`** (`DS-0181`): the rail toggle is named "Sidebar" with `aria-expanded` (was
+  "Expand / Collapse sidebar" with `aria-pressed`). Degraded and down status is spoken, not
+  colour-only. Ids are unique per instance.
+- **`FileDrop`** (`DS-0173`) is named by its visible text ("Drop files here"), not "Upload files".
+- **`Toaster`** (`DS-0179`): side positions anchor to the inline edge, so `top-right` renders top
+  left under `dir="rtl"`.
+- **`Modal`** (`DS-0178`): the `header` snippet receives `titleId` (`Snippet<[string]>`), so a
+  custom header keeps the dialog named. Snippets that ignore the argument keep working.
+
+### Added
+
+- **Chart keyboard contract** (`src/lib/chart-nav.ts`): `Chart`, `BoxPlot`, `BumpChart`,
+  `ScatterPlot` and `Heatmap` are each one tab stop; arrows, Home and End move between marks.
+- **`Chart`** (`DS-0184`): `dashes` (default on) tells line and area series apart by dash pattern
+  as well as colour, with matching legend keys; `endLabels` prints each series name at the end of
+  its line. `CHART_DASH_CYCLE` is exported.
+- **`Heatmap`** (`DS-0164`): a min→max legend when `showValues` is off.
+- **`FileDrop`**: `onreject(files)`, and rejected files are announced.
+- **`SearchPalette`** (`DS-0180`): `closeLabel` and `resultsText`; a visible close button below
+  768px and an announced result count.
+- **`lockScroll` / `unlockScroll`** exported from `dssoca/vanilla.js`: the reference-counted page
+  scroll lock that `Modal` and `SearchPalette` share.
+- **`MetricTile`**: `live`.
+
+### Fixed
+
+- **Focus rings** — `Switch`, `Input` (clear button), `NumberField` (steppers), `SegmentedControl`,
+  `Table` (sort button), `Menu` (trigger) and `Pagination` replaced the base ring with a
+  `--ss-primary-soft` glow at about 1.5:1. They now show a solid `--ss-primary` ring.
+- **`Accordion`** (`DS-0162`): collapsed panels are `inert` and `visibility: hidden`; their content
+  no longer stays in the tab order and the accessibility tree.
+- **`Tooltip`** (`DS-0163`): `aria-describedby` goes on the focused trigger, not a wrapper that
+  never takes focus. Escape closes the tip from anywhere and the pointer can move onto it.
+- **`Heatmap`**: value text stays legible on every cell strength (was about 1.1:1 on strong cells).
+- **Charts**: data marks are `role="img"` (Heatmap: `gridcell`), not buttons that do nothing;
+  tooltips are hidden from assistive tech and close on Escape; `BoxPlot` labels include min / max.
+- **`NumberField`** (`DS-0168`): steppers are `aria-disabled` at the bounds, so focus no longer
+  drops to `<body>`; the value is announced.
+- **`FileDrop`**: focus moves to a neighbour after Remove and Clear; 24px targets.
+- **`Toaster`**: persistent polite and assertive live regions; focus is restored when a focused
+  toast is dismissed; the timer does not resume while a toast has focus; 24px dismiss target.
+- **`Link`** (`DS-0174`): inline links show an underline at rest; `noopener noreferrer` and the
+  new-tab hint follow the real `target`; a custom `rel` is merged.
+- **`Badge`** (`DS-0175`): a count-only badge is named by its count; a nameless dot is not `img`.
+- **`Menu`** (`DS-0177`): without `label`, the menu is named by its trigger.
+- **`Modal` / `SearchPalette`**: the page behind no longer scrolls.
+- **`Topbar`** (`DS-0182`): the tab strip stays reachable when `active` matches no tab.
+- **`LogStream`** (`DS-0190`): switched-off chips keep AA contrast; the log scroller is focusable;
+  the empty state is no longer a nested live region.
+- **`Icon`** (`DS-0176`): `paths` and `registerIcon` markup passes a defence-in-depth filter; the
+  trust requirement is documented.
+- **`Button`** (`DS-0165`): warns when `iconOnly` has no accessible name.
+- **`TierList`** (`DS-0189`): the flip animation respects reduced motion; arrow keys and drag
+  insertion mirror under RTL.
+- **RTL** — logical properties replace physical `left` / `right` in `Input`, `Textarea`,
+  `NumberField`, `DateField`, `Select`, `Switch`, `SegmentedControl`, `Table`, `Menu`, `Sidebar`,
+  `Pagination`, `SearchPalette`, `Toaster`, `Topbar` and `ShortcutsHelp`; `SegmentedControl` arrow
+  keys follow reading direction.
+
+### Docs
+
+- `CLAUDE.md` gains **Accessibility & quality rules** for every component change (`DS-0194`), and
+  `test/unit/checklist-guards.test.ts` enforces the mechanical ones across all components.
+- **Inspirations** (`DS-0195`): the twelve example pages and the gallery follow the new component
+  markup and had a polish pass (quiet chrome, accent only where it matters, fewer badges).
+
 ## [0.19.0] — TierList, docs IA & mobile key caps — 2026-09-18
 
 ### Added
@@ -691,7 +777,8 @@ Docs-site only (the published library is unchanged from `0.8.0`).
   component set (`DS-0002`), toast notifications (`DS-0003`), and empty/error-state affordances
   (`DS-0004`).
 
-[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.19.0...HEAD
+[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.20.0...HEAD
+[0.20.0]: https://github.com/httpassoca/dssoca/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/httpassoca/dssoca/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/httpassoca/dssoca/compare/v0.17.0...v0.18.0
 [0.9.0]: https://github.com/httpassoca/dssoca/compare/v0.8.2...v0.9.0
