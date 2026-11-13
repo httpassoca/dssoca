@@ -62,6 +62,13 @@
   display: flex;
   gap: var(--ss-s-5);
   margin-inline-start: var(--ss-s-4);
+  /* A bare .ss-link inherits the 20px root size; navigation reads at chrome size. */
+  font-size: var(--ss-ui-md);
+}
+/* Quiet at rest: only the current page, hover and focus take the accent. */
+.ll-nav .ss-link:not([aria-current]):not(:hover):not(:focus-visible),
+.ll-footer-col .ss-link:not(:hover):not(:focus-visible) {
+  color: var(--ss-fg-muted);
 }
 .ll-header-actions {
   display: flex;
@@ -73,23 +80,14 @@
 /* ---- hero -------------------------------------------------------------------------- */
 
 .ll-hero {
-  padding-block: var(--ss-s-14) var(--ss-s-12);
-  background:
-    linear-gradient(
-      to bottom,
-      color-mix(in oklab, var(--ss-primary) 7%, transparent),
-      transparent 60%
-    ),
-    var(--ss-bg);
+  padding-block: var(--ss-s-16) var(--ss-s-12);
+  background: var(--ss-bg);
 }
 .ll-hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   gap: var(--ss-s-12);
   align-items: center;
-}
-.ll-hero-copy > .ss-badge {
-  margin-bottom: var(--ss-s-5);
 }
 .ll-lede {
   max-width: 52ch;
@@ -104,7 +102,7 @@
   gap: var(--ss-s-3);
 }
 .ll-hint {
-  margin: var(--ss-s-5) 0 0;
+  margin: var(--ss-s-4) 0 0;
   font-family: var(--ss-font-mono);
   font-size: var(--ss-ui-sm);
   color: var(--ss-fg-faint);
@@ -114,7 +112,7 @@
 .ll-window {
   border: 1px solid var(--ss-line-strong);
   background: var(--ss-bg-elev);
-  box-shadow: var(--ss-shadow-2), var(--ss-shadow-glow);
+  box-shadow: var(--ss-shadow-2);
   overflow: hidden;
 }
 .ll-window-bar {
@@ -180,8 +178,17 @@
 /* ---- trusted-by --------------------------------------------------------------------- */
 
 .ll-logos {
-  padding-block: var(--ss-s-8);
+  padding-block: var(--ss-s-5);
   border-block: 1px solid var(--ss-line);
+}
+.ll-logos-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ss-s-2) var(--ss-s-8);
+}
+.ll-logos .ll-eyebrow {
+  margin: 0;
 }
 .ll-eyebrow {
   margin: 0 0 var(--ss-s-3);
@@ -197,12 +204,10 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--ss-s-4) var(--ss-s-8);
+  gap: var(--ss-s-2) var(--ss-s-6);
   font-family: var(--ss-font-mono);
-  font-size: var(--ss-ui-lg);
-  letter-spacing: 0.06em;
-  color: var(--ss-fg-muted);
+  font-size: var(--ss-ui-sm);
+  color: var(--ss-fg-faint);
 }
 
 /* ---- sections ------------------------------------------------------------------------ */
@@ -251,7 +256,7 @@
   height: 40px;
   margin-bottom: var(--ss-s-3);
   fill: none;
-  stroke: var(--ss-primary);
+  stroke: var(--ss-fg-muted);
   stroke-width: 1.5;
   stroke-linecap: square;
   stroke-linejoin: miter;
@@ -274,6 +279,11 @@
 }
 .ll-integrate .ll-checks {
   margin-bottom: var(--ss-s-5);
+}
+/* Bare links inherit the 20px root size; match the body text they sit with. */
+.ll-integrate .ss-link,
+.ll-cta .ss-link {
+  font-size: var(--ss-size-body);
 }
 .ll-code {
   margin: 0;
@@ -323,6 +333,8 @@
   padding: 0;
   display: grid;
   gap: var(--ss-s-2);
+  /* Without a size these inherit the 20px root and outgrow the body text around them. */
+  font-size: var(--ss-size-body);
 }
 .ll-checks li {
   display: flex;
@@ -330,7 +342,7 @@
   align-items: baseline;
 }
 .ll-checks li > span[aria-hidden] {
-  color: var(--ss-primary);
+  color: var(--ss-fg-muted);
   font-family: var(--ss-font-mono);
 }
 .ll-plan-hot {
@@ -368,6 +380,7 @@
   flex-direction: column;
 }
 .ll-quote-name {
+  font-size: var(--ss-size-body);
   color: var(--ss-fg);
 }
 .ll-quote-role {
@@ -379,8 +392,8 @@
 /* ---- CTA band + footer ---------------------------------------------------------------- */
 
 .ll-cta {
-  padding-block: var(--ss-s-14);
-  background: color-mix(in oklab, var(--ss-primary) 10%, var(--ss-bg));
+  padding-block: var(--ss-s-12);
+  background: var(--ss-bg);
   border-top: 1px solid var(--ss-line);
 }
 .ll-cta-row {
@@ -417,6 +430,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--ss-s-2);
+  font-size: var(--ss-ui-md);
 }
 .ll-footer-col h2 {
   margin: 0 0 var(--ss-s-2);
@@ -470,9 +484,6 @@
   }
   .ll-window-metrics {
     grid-template-columns: 1fr;
-  }
-  .ll-logo-row {
-    justify-content: flex-start;
   }
   .ll-footer-grid {
     grid-template-columns: 1fr;
