@@ -16,7 +16,7 @@ export const boxPlot: ComponentDoc = {
   },
   tagline: 'Box-and-whisker distributions with an optional point overlay.',
   description:
-    'A token-driven box plot for comparing the score distributions of a few players (or any groups) at a glance — a short box means a consistent scorer. Each group draws Tukey whiskers, a quartile box (Q1–Q3) tinted in the group `color`, and a median line; pass `showPoints` to overlay every value as a deterministically jittered dot (no SSR/hydration randomness). The y axis uses the padded data extent across all values, every box is keyboard-focusable with a five-number-summary tooltip, and empty input shows an em-dash placeholder.',
+    'A token-driven box plot for comparing the score distributions of a few players (or any groups) at a glance — a short box means a consistent scorer. Each group draws Tukey whiskers, a quartile box (Q1–Q3) tinted in the group `color`, and a median line; pass `showPoints` to overlay every value as a deterministically jittered dot (no SSR/hydration randomness). The y axis uses the padded data extent across all values, the chart is a single tab stop whose boxes (`role="img"`, each labelled with its median, quartiles, min and max) are traversed with the arrow keys, Home and End, a five-number-summary tooltip follows hover/focus (decorative, `aria-hidden`; Escape dismisses it), and empty input shows an em-dash placeholder.',
   storyId: 'components-boxplot--default',
   usage: `<script>
   import { BoxPlot } from 'dssoca';
@@ -64,7 +64,7 @@ export const boxPlot: ComponentDoc = {
       name: 'tooltip',
       type: 'boolean',
       default: 'true',
-      desc: 'Reveal a five-number-summary tooltip on hover/focus of a box. Each box is keyboard-focusable.',
+      desc: 'Reveal a five-number-summary tooltip on hover/focus of a box (hidden from assistive tech; the same data is in each box label). Escape dismisses it.',
     },
     {
       name: 'summary',
