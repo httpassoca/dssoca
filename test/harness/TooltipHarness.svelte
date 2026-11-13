@@ -11,6 +11,8 @@
     rich?: boolean
     /** Collision avoidance switch (DS-0146). */
     avoidCollisions?: boolean
+    /** An id the trigger button is already described by (DS-0163: tokens are merged). */
+    describedBy?: string
   }
   let {
     text = 'More info',
@@ -19,6 +21,7 @@
     trigger = 'Help',
     rich = false,
     avoidCollisions = true,
+    describedBy,
   }: Props = $props()
 </script>
 
@@ -28,5 +31,5 @@
 {/snippet}
 
 <Tooltip text={rich ? richTip : text} {placement} {size} {avoidCollisions}>
-  <button type="button">{trigger}</button>
+  <button type="button" aria-describedby={describedBy}>{trigger}</button>
 </Tooltip>

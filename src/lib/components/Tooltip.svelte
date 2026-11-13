@@ -10,7 +10,7 @@
      * Tooltip content (the accessible description of the trigger): a plain string, or a
      * snippet for a small rendered template. Snippets must stay **phrasing content**
      * (`code`, `strong`, `kbd`, `br`, `Icon`, …) and must not contain interactive
-     * elements — the tip is `pointer-events: none` and hidden while closed, per the
+     * elements — the tip is never focusable and is hidden while closed, per the
      * WAI-ARIA tooltip pattern.
      */
     text: string | Snippet
@@ -47,18 +47,70 @@
   /** Cross-axis nudge in px (x for top/bottom, y for left/right). */
   let shift = $state(0)
 
-  function show() {
+  /** Focusable elements inside the trigger snippet, in the order a hover falls back on. */
+  const FOCUSABLE =
+    'a[href], button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]'
+
+  /**
+   * The element that carries `aria-describedby` while open: the focused trigger on
+   * focusin, else the first focusable element in the trigger (a hover), else the
+   * trigger's first element. The wrapper `<span>` is never focused, so a description on
+   * it would never be read (DS-0163).
+   */
+  let describedEl: HTMLElement | null = null
+
+  function describedTarget(from?: EventTarget | null): HTMLElement | null {
+    if (!triggerEl) return null
+    if (from instanceof HTMLElement && from !== triggerEl && triggerEl.contains(from)) return from
+    return (
+      triggerEl.querySelector<HTMLElement>(FOCUSABLE) ??
+      (triggerEl.firstElementChild as HTMLElement | null) ??
+      triggerEl
+    )
+  }
+
+  /** Add/remove `tipId` as one token, so a trigger's own description (e.g. a hint) is kept. */
+  function describe(el: HTMLElement | null) {
+    if (describedEl === el) return
+    undescribe()
+    if (!el) return
+    const ids = (el.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(Boolean)
+    if (!ids.includes(tipId)) el.setAttribute('aria-describedby', [...ids, tipId].join(' '))
+    describedEl = el
+  }
+  function undescribe() {
+    const el = describedEl
+    describedEl = null
+    if (!el) return
+    const ids = (el.getAttribute('aria-describedby') ?? '')
+      .split(/\s+/)
+      .filter((id) => id && id !== tipId)
+    if (ids.length) el.setAttribute('aria-describedby', ids.join(' '))
+    else el.removeAttribute('aria-describedby')
+  }
+
+  function show(e?: Event) {
     open = true
+    describe(describedTarget(e?.target))
   }
   function hide() {
     open = false
+    undescribe()
   }
-  function onKeydown(e: KeyboardEvent) {
-    // Escape dismisses the tooltip (WAI-ARIA tooltip pattern).
-    if (e.key === 'Escape' && open) {
-      open = false
+
+  // Escape dismisses the tooltip wherever focus is (WCAG 1.4.13, WAI-ARIA tooltip
+  // pattern): a document-level listener while open, so a hover-opened tip closes too.
+  $effect(() => {
+    if (!open) return
+    const onKeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') hide()
     }
-  }
+    document.addEventListener('keydown', onKeydown)
+    return () => document.removeEventListener('keydown', onKeydown)
+  })
+
+  // Unmounting while open must not leave a dangling id on the trigger.
+  $effect(() => () => undescribe())
 
   const sizeAttr = $derived(resolveComponentSize('Tooltip', size))
 
@@ -173,9 +225,12 @@
 <!--
   Inline-block wrapper around the trigger snippet. Hover (mouseenter/leave) and
   focus (focusin/out — bubbling, so a focusable child trigger counts) toggle the
-  tooltip; Escape dismisses it. While open the wrapper carries aria-describedby
-  pointing at the tooltip; the tip itself is kept in the DOM but hidden (and
-  given `hidden`) when closed so it is never announced.
+  tooltip; Escape (a document-level listener while open) dismisses it. While open
+  the focusable trigger inside the snippet (not this wrapper) carries
+  aria-describedby pointing at the tooltip; the tip itself is kept in the DOM but
+  hidden (and given `hidden`) when closed so it is never announced. While open the
+  tip is hoverable (it is a child of the wrapper, and a pseudo-element bridges the
+  offset gap), so moving the pointer onto it does not close it (WCAG 1.4.13).
 
   `text` is either a string or a snippet (DS-0144); a snippet renders inside the
   same tip element, so the accessible description stays whatever the tip contains.
@@ -186,17 +241,15 @@
 -->
 <!-- svelte-ignore a11y_no_static_element_interactions -- the wrapper is a passive
   container; the real interactive element is the trigger snippet inside it, and the
-  hover/focus/keydown handlers only react to that child's bubbling events. -->
+  hover/focus handlers only react to that child's bubbling events. -->
 <span
   class="ss-tooltip"
   data-size-variant={sizeAttr}
   data-placement={resolved}
-  aria-describedby={open ? tipId : undefined}
   onmouseenter={show}
   onmouseleave={hide}
   onfocusin={show}
   onfocusout={hide}
-  onkeydown={onKeydown}
 >
   <span class="trigger" bind:this={triggerEl}>{@render children()}</span>
   <span
@@ -255,9 +308,20 @@
       transform var(--ss-dur) var(--ss-ease),
       visibility 0s linear var(--ss-dur);
 
+    // Hover bridge: covers the offset gap between trigger and tip so the pointer can
+    // travel onto an open tip without leaving the wrapper (WCAG 1.4.13). Positioned
+    // per placement below; inherits the tip's pointer-events.
+    &::before {
+      content: '';
+      position: absolute;
+    }
+
     &.open {
       opacity: 1;
       visibility: visible;
+      // Hoverable while open (WCAG 1.4.13): the tip is inside the wrapper, so the
+      // pointer resting on it keeps the tooltip open.
+      pointer-events: auto;
       transform: scale(1);
       transition:
         opacity var(--ss-dur) var(--ss-ease),
@@ -302,6 +366,32 @@
   }
   .ss-tooltip[data-placement='right'] .tip.open {
     transform: translateY(calc(-50% + var(--shift))) scale(1);
+  }
+
+  // Hover bridge geometry: a strip the size of the offset on the trigger-facing edge.
+  .ss-tooltip[data-placement='top'] .tip::before,
+  .ss-tooltip[data-placement='bottom'] .tip::before {
+    left: 0;
+    right: 0;
+    height: var(--ss-tooltip-offset, 6px);
+  }
+  .ss-tooltip[data-placement='top'] .tip::before {
+    top: 100%;
+  }
+  .ss-tooltip[data-placement='bottom'] .tip::before {
+    bottom: 100%;
+  }
+  .ss-tooltip[data-placement='left'] .tip::before,
+  .ss-tooltip[data-placement='right'] .tip::before {
+    top: 0;
+    bottom: 0;
+    width: var(--ss-tooltip-offset, 6px);
+  }
+  .ss-tooltip[data-placement='left'] .tip::before {
+    left: 100%;
+  }
+  .ss-tooltip[data-placement='right'] .tip::before {
+    right: 100%;
   }
 
   // Respect reduced motion: drop the transition/scale, just toggle visibility.
