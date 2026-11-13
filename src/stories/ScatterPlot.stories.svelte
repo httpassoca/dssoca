@@ -35,7 +35,11 @@
       height: { control: 'number', description: 'Intrinsic drawing height in px.' },
       width: { control: 'number', description: 'Intrinsic drawing width in px.' },
       fluid: { control: 'boolean', description: 'Stretch to the container width via the viewBox.' },
-      tooltip: { control: 'boolean', description: 'Reveal a tooltip on hover/focus of a point.' },
+      tooltip: {
+        control: 'boolean',
+        description:
+          'Reveal a visual (aria-hidden) tooltip on hover/focus of a point; Escape hides it.',
+      },
       size: {
         control: { type: 'inline-radio' },
         options: ['sm', 'md', 'lg'],

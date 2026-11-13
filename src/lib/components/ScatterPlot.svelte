@@ -16,6 +16,7 @@
   import { scaleLinear, scaleSqrt } from 'd3-scale'
   import { extent, max } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
+  import { chartNavStep } from '../chart-nav.js'
 
   interface Props {
     /** One dot per datum. Two encoded axes (x, y), optional `size` and `color`. */
@@ -165,10 +166,38 @@
   function hide() {
     active = null
   }
+
+  // Roving tabindex (DS-0161): the chart is ONE tab stop; arrow keys / Home / End move focus
+  // between points. The last-focused point keeps tabindex 0 (the first by default).
+  let focusIndex = $state(0)
+  const tabIndex = $derived(Math.min(focusIndex, Math.max(0, marks.length - 1)))
+  let pointEls: (SVGCircleElement | null)[] = $state([])
+
+  function onPointKeydown(e: KeyboardEvent, i: number) {
+    if (e.key === 'Escape') {
+      if (active) {
+        hide()
+        e.preventDefault()
+      }
+      return
+    }
+    const next = chartNavStep(e.key, i, marks.length)
+    if (next === null) return
+    e.preventDefault()
+    focusIndex = next
+    pointEls[next]?.focus()
+  }
+
+  // WCAG 1.4.13: Escape dismisses a hover-opened tooltip too, wherever focus is.
+  function onWindowKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && active) hide()
+  }
   function datumLabel(label: string, x: number, y: number): string {
     return `${label}: ${fmtX(x)}, ${fmtY(y)}`
   }
 </script>
+
+<svelte:window onkeydown={onWindowKeydown} />
 
 <div
   class="ss-scatter"
@@ -220,23 +249,31 @@
           {/each}
 
           <!-- points -->
-          {#each marks as m}
+          {#each marks as m, i}
+            <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
             <circle
+              bind:this={pointEls[i]}
               class="point"
               cx={m.cx}
               cy={m.cy}
               r={m.r}
               style="fill:{m.color}"
-              tabindex="0"
-              role="button"
+              tabindex={i === tabIndex ? 0 : -1}
+              role="img"
               aria-label={datumLabel(m.label, m.x, m.y)}
-              onfocus={() => show(m.label, m.x, m.y, m.cx, m.cy)}
+              onkeydown={(e) => onPointKeydown(e, i)}
+              onfocus={() => {
+                focusIndex = i
+                show(m.label, m.x, m.y, m.cx, m.cy)
+              }}
               onblur={hide}
               onmouseenter={() => show(m.label, m.x, m.y, m.cx, m.cy)}
               onmouseleave={hide}
             />
             {#if showLabels}
-              <text class="point-label" x={m.cx + m.r + 4} y={m.cy} dy="0.32em">{m.label}</text>
+              <text class="point-label" aria-hidden="true" x={m.cx + m.r + 4} y={m.cy} dy="0.32em"
+                >{m.label}</text
+              >
             {/if}
           {/each}
 
@@ -259,7 +296,7 @@
       {#if tooltip && active}
         <div
           class="tooltip"
-          role="status"
+          aria-hidden="true"
           style="left:{((active.cx + M.left) / width) * 100}%;top:{((active.cy + M.top) / height) *
             100}%"
         >
@@ -365,7 +402,7 @@
     }
 
     .point {
-      cursor: pointer;
+      cursor: default;
       fill-opacity: 0.85;
       transition: fill-opacity var(--ss-dur-fast) var(--ss-ease);
       &:hover {

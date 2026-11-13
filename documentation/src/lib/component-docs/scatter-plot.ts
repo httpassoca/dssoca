@@ -18,8 +18,10 @@ export const scatterPlot: ComponentDoc = {
   },
   tagline: 'Two-axis scatter with optional quadrants and bubble sizing.',
   description:
-    'A token-driven scatter plot for comparing entities on two metrics at once. Each datum is a dot positioned by `x`/`y`, optionally sized by `size` (sqrt-scaled so area is true) and tinted by `color`. Pass `xRef`/`yRef` to split the plane into quadrants and `quadrantLabels` to caption them — ideal for "high score vs low wins"-style comparisons. Axes use the padded data extent (not forced to zero), every point is keyboard-focusable with an accessible tooltip, and empty input shows an em-dash placeholder.',
+    'A token-driven scatter plot for comparing entities on two metrics at once. Each datum is a dot positioned by `x`/`y`, optionally sized by `size` (sqrt-scaled so area is true) and tinted by `color`. Pass `xRef`/`yRef` to split the plane into quadrants and `quadrantLabels` to caption them — ideal for "high score vs low wins"-style comparisons. Axes use the padded data extent (not forced to zero), the chart is a single tab stop whose points (each `role="img"` named "label: x, y") are reached with the arrow keys, Home and End, and empty input shows an em-dash placeholder.',
   storyId: 'components-scatterplot--quadrants',
+  notes:
+    'Keyboard: the chart is one tab stop (roving tabindex). Tab lands on the last-focused point (the first by default); ArrowRight/ArrowDown and ArrowLeft/ArrowUp step through points in data order, and Home/End jump to the first/last. Each point is `role="img"` with an `aria-label` of "label: x, y" (using `xFormat`/`yFormat`). The visible point labels and the tooltip are `aria-hidden`, so nothing is announced twice, and Escape hides an open tooltip.',
   usage: `<script>
   import { ScatterPlot } from 'dssoca';
 
@@ -99,7 +101,7 @@ export const scatterPlot: ComponentDoc = {
       name: 'tooltip',
       type: 'boolean',
       default: 'true',
-      desc: 'Reveal a tooltip on hover/focus of a point. Each point is keyboard-focusable.',
+      desc: "Reveal a visual tooltip on hover/focus of a point (aria-hidden: the point's own label carries the same data). Escape dismisses it.",
     },
     {
       name: 'summary',
