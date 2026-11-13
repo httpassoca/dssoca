@@ -35,8 +35,9 @@ describe('vanilla — toast', () => {
     expect(container.dataset.position).toBe('top-right')
     const el = q('.ss-toast')!
     expect(el.classList.contains('success')).toBe(true)
-    expect(el.getAttribute('role')).toBe('status')
-    expect(el.getAttribute('aria-live')).toBe('polite')
+    expect(el.getAttribute('role')).toBe('group')
+    expect(el.hasAttribute('aria-live')).toBe(false)
+    expect(el.getAttribute('aria-labelledby')).toBe(el.querySelector('.msg')!.id)
     expect(el.tabIndex).toBe(-1)
     expect(el.querySelector('.ic')!.textContent).toBe('✓')
     expect(el.querySelector('.msg')!.textContent).toBe('saved')
@@ -51,12 +52,13 @@ describe('vanilla — toast', () => {
     expect(q('.ss-toaster .ss-toast.info')).not.toBeNull()
   })
 
-  it('errors are assertive alerts; loading shows the spinner glyph', () => {
+  it('errors are announced assertively; loading shows the spinner glyph', () => {
     toast.error('boom')
     toast.loading('wait')
-    const [err, load] = qa('.ss-toast')
-    expect(err.getAttribute('role')).toBe('alert')
-    expect(err.getAttribute('aria-live')).toBe('assertive')
+    const [, load] = qa('.ss-toast')
+    vi.advanceTimersByTime(100) // fresh live regions settle before content lands
+    expect(q('.live[role="alert"]')!.textContent).toBe('boom')
+    expect(q('.live[role="status"]')!.textContent).toBe('wait')
     expect(load.querySelector('.ic.spinner')).not.toBeNull()
   })
 

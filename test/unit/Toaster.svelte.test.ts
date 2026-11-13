@@ -1,5 +1,7 @@
+import { readFileSync } from 'node:fs'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, fireEvent } from '@testing-library/svelte'
+import { tick } from 'svelte'
 import Toaster from '$lib/components/Toaster.svelte'
 import { toasts } from '$lib/toast.svelte'
 
@@ -18,16 +20,103 @@ describe('Toaster', () => {
     expect(region).not.toHaveAttribute('aria-live')
   })
 
-  it('announces info/success politely and errors assertively', async () => {
+  it('renders persistent polite + assertive live regions before any toast', () => {
     const { container } = render(Toaster, {})
+    const polite = container.querySelector('.ss-toaster > .live[role="status"]')
+    const assertive = container.querySelector('.ss-toaster > .live[role="alert"]')
+    expect(polite).toHaveAttribute('aria-live', 'polite')
+    expect(assertive).toHaveAttribute('aria-live', 'assertive')
+    expect(polite!.textContent).toBe('')
+    expect(assertive!.textContent).toBe('')
+  })
+
+  it('announces info/success politely and errors assertively via the persistent regions', async () => {
+    const { container } = render(Toaster, {})
+    const polite = container.querySelector('.live[role="status"]')!
+    const assertive = container.querySelector('.live[role="alert"]')!
     toasts.push('success', 'ok', 0)
     toasts.push('error', 'bad', 0)
-    await Promise.resolve()
-    const els = container.querySelectorAll('.ss-toast')
-    expect(els[0]).toHaveAttribute('role', 'status')
-    expect(els[0]).toHaveAttribute('aria-live', 'polite')
-    expect(els[1]).toHaveAttribute('role', 'alert')
-    expect(els[1]).toHaveAttribute('aria-live', 'assertive')
+    await tick()
+    expect(polite.textContent).toBe('ok')
+    expect(assertive.textContent).toBe('bad')
+    // the same nodes persist — the toasts themselves carry no live role
+    expect(container.querySelector('.live[role="status"]')).toBe(polite)
+    for (const el of container.querySelectorAll('.ss-toast')) {
+      expect(el).toHaveAttribute('role', 'group')
+      expect(el).not.toHaveAttribute('aria-live')
+      const name = document.getElementById(el.getAttribute('aria-labelledby')!)
+      expect(name).toBe(el.querySelector('.msg'))
+    }
+  })
+
+  it('moves the announcement to the assertive region when a toast flips to error', async () => {
+    const { container } = render(Toaster, {})
+    const id = toasts.push('loading', 'saving', 0)
+    await tick()
+    expect(container.querySelector('.live[role="status"]')!.textContent).toBe('saving')
+    toasts.update(id, { kind: 'error', message: 'failed' })
+    await tick()
+    expect(container.querySelector('.live[role="status"]')!.textContent).toBe('')
+    expect(container.querySelector('.live[role="alert"]')!.textContent).toBe('failed')
+  })
+
+  it('moves focus to a neighbouring toast when the focused one is dismissed', async () => {
+    const { container } = render(Toaster, {})
+    toasts.push('info', 'a', 0)
+    toasts.push('info', 'b', 0)
+    await tick()
+    const [a, b] = container.querySelectorAll<HTMLElement>('.ss-toast')
+    a.querySelector<HTMLButtonElement>('.x')!.focus()
+    await fireEvent.click(a.querySelector('.x')!)
+    expect(document.activeElement).toBe(b)
+  })
+
+  it('returns focus to where it came from when the last focused toast is dismissed', async () => {
+    const outside = document.createElement('button')
+    document.body.appendChild(outside)
+    try {
+      const { container } = render(Toaster, {})
+      toasts.push('info', 'only', 0)
+      await tick()
+      outside.focus()
+      const el = container.querySelector<HTMLElement>('.ss-toast')!
+      el.focus()
+      await fireEvent.keyDown(el, { key: 'Escape' })
+      expect(toasts.items).toHaveLength(0)
+      expect(document.activeElement).toBe(outside)
+    } finally {
+      outside.remove()
+    }
+  })
+
+  it('pointerleave does not resume the timer while the toast holds focus', async () => {
+    const { container } = render(Toaster, {})
+    const resume = vi.spyOn(toasts, 'resume')
+    toasts.push('info', 'kbd', 1000)
+    await tick()
+    const el = container.querySelector<HTMLElement>('.ss-toast')!
+    el.focus()
+    await fireEvent.pointerEnter(el)
+    await fireEvent.pointerLeave(el)
+    expect(resume).not.toHaveBeenCalled()
+    el.blur()
+    expect(resume).toHaveBeenCalledOnce()
+    resume.mockRestore()
+  })
+
+  it('focusout does not resume the timer while the pointer is still over the toast', async () => {
+    const { container } = render(Toaster, {})
+    const resume = vi.spyOn(toasts, 'resume')
+    toasts.push('info', 'hover', 1000)
+    await tick()
+    const el = container.querySelector<HTMLElement>('.ss-toast')!
+    await fireEvent.pointerEnter(el)
+    el.focus()
+    el.blur()
+    expect(resume).not.toHaveBeenCalled()
+    await fireEvent.pointerLeave(el)
+    expect(resume).toHaveBeenCalledOnce()
+    resume.mockRestore()
   })
 
   it('renders nothing when the store is empty', () => {
@@ -165,5 +254,14 @@ describe('Toaster', () => {
     const el = container.querySelector('.ss-toast')!
     await fireEvent.keyDown(el, { key: 'Escape' })
     expect(toasts.items).toHaveLength(0)
+  })
+})
+
+describe('Toaster — dismiss target size (DS-0179)', () => {
+  it('gives the × button a 24×24 hit area without growing the glyph', () => {
+    const src = readFileSync('src/lib/components/Toaster.svelte', 'utf8')
+    const x = src.slice(src.indexOf('    .x {'), src.indexOf('&:hover', src.indexOf('    .x {')))
+    expect(x).toContain('min-inline-size: var(--ss-s-6)')
+    expect(x).toContain('min-block-size: var(--ss-s-6)')
   })
 })
