@@ -230,6 +230,10 @@
   // ::after, inset so the card's own box never clips it.
   .overlay {
     position: static;
+    // Take no room in the card's flow: a <button> is inline-block, so left alone it adds an
+    // empty line box (a visible gap) under the footer.
+    display: block;
+    block-size: 0;
     appearance: none;
     margin: 0;
     padding: 0;

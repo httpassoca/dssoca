@@ -229,3 +229,16 @@ describe('Card', () => {
     expect(container.querySelector('.overlay')).toBeNull()
   })
 })
+
+describe('Card — overlay takes no layout space (DS-0183)', () => {
+  it('collapses the overlay control so a <button> overlay adds no empty line under the footer', async () => {
+    const { readFileSync } = await import('node:fs')
+    const src = readFileSync('src/lib/components/Card.svelte', 'utf8')
+    const rule = src.slice(
+      src.indexOf('  .overlay {'),
+      src.indexOf('&::after', src.indexOf('  .overlay {')),
+    )
+    expect(rule).toContain('display: block')
+    expect(rule).toContain('block-size: 0')
+  })
+})
