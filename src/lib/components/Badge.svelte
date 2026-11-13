@@ -26,7 +26,8 @@
     live?: boolean
     /**
      * Accessible label. Required for dot-only / label-less badges so the
-     * status isn't conveyed by colour alone (WCAG 1.4.1).
+     * status isn't conveyed by colour alone (WCAG 1.4.1). A count-only badge
+     * without it falls back to its visible count text as the name.
      */
     label?: string
     /** Badge text. Optional: omit for a dot-only or count-only badge. */
@@ -50,12 +51,16 @@
 
   const hasLabel = $derived(children !== undefined)
   // Dot-only / count-only badges have no visible text → carry an aria-label so
-  // the status isn't conveyed by colour alone (WCAG 1.4.1).
-  const ariaLabel = $derived(!hasLabel ? label : undefined)
-  // `live` wins (role=status). Otherwise a label-less badge needs a role for
-  // its aria-label to be valid (a bare span + aria-label is prohibited); use
-  // `img` so AT announces it as a single named status indicator.
-  const role = $derived(live ? 'status' : !hasLabel ? 'img' : undefined)
+  // the status isn't conveyed by colour alone (WCAG 1.4.1). With no `label`,
+  // a count-only badge falls back to its visible count text as the name.
+  const ariaLabel = $derived(
+    hasLabel ? undefined : label || (showCount ? countText : undefined) || undefined,
+  )
+  // `live` wins (role=status). Otherwise a label-less badge that HAS a name
+  // needs a role for its aria-label to be valid (a bare span + aria-label is
+  // prohibited); use `img` so AT announces it as a single named status
+  // indicator. With no name at all, stay a plain span rather than an unnamed img.
+  const role = $derived(live ? 'status' : ariaLabel !== undefined ? 'img' : undefined)
 </script>
 
 <span

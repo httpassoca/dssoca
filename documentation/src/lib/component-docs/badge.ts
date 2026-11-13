@@ -15,7 +15,7 @@ export const badge: ComponentDoc = {
 <Badge tone="positive" dot>up</Badge>
 <Badge tone="critical">down</Badge>
 <Badge tone="info">to_watch</Badge>
-<Badge count={42} label="unread" />`,
+<Badge count={42} label="42 unread" />`,
   props: [
     {
       name: 'tone',
@@ -45,7 +45,7 @@ export const badge: ComponentDoc = {
     {
       name: 'label',
       type: 'string',
-      desc: 'Accessible label; required for dot- / count- / label-less badges so status is not colour-only (WCAG 1.4.1).',
+      desc: 'Accessible label for dot- / count- / label-less badges so status is not colour-only (WCAG 1.4.1). A count-only badge without `label` falls back to its visible count text; a dot-only badge without `label` gets no name and stays a plain span (no `role="img"`). Include the count in `label` if both matter, since `label` replaces it.',
     },
     {
       name: 'children',
