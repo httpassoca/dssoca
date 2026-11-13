@@ -19,11 +19,11 @@
       value: { control: 'number', description: 'Bindable current value; null when empty.' },
       min: {
         control: 'number',
-        description: 'Lower bound; clamps the steppers and disables − at the floor.',
+        description: 'Lower bound; clamps the steppers and marks − aria-disabled at the floor.',
       },
       max: {
         control: 'number',
-        description: 'Upper bound; clamps the steppers and disables + at the ceiling.',
+        description: 'Upper bound; clamps the steppers and marks + aria-disabled at the ceiling.',
       },
       step: { control: 'number', description: 'Increment/decrement applied by the steppers.' },
       size: {

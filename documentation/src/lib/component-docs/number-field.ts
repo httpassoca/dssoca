@@ -6,11 +6,11 @@ export const numberField: ComponentDoc = {
   htmlExample: {
     props: { label: 'Quantity', id: 'qty', min: 0, max: 10, step: 1, value: 2 },
     behaviour: 'js',
-    note: 'vanilla.js wires the − / + steppers (clamped to min/max, disabled at the bounds).',
+    note: 'vanilla.js wires the − / + steppers (clamped to min/max, aria-disabled at the bounds) and writes each nudge to the polite `.live` region.',
   },
   tagline: 'Numeric input with steppers.',
   description:
-    'A numeric text field built on a native `<input type="number">` with monospace value display and a pair of − / + stepper buttons. Steppers increment/decrement by `step`, clamp to `min`/`max`, and disable at their bound. Clearing the field yields `null`. Mirrors the Input chrome — label, hint/error text, focus ring on the wrapper, and `aria-describedby` ordering (error → hint → describedby).',
+    'A numeric text field built on a native `<input type="number">` with monospace value display and a pair of − / + stepper buttons. Steppers increment/decrement by `step`, clamp to `min`/`max`, and become `aria-disabled` no-ops at their bound. Clearing the field yields `null`. Mirrors the Input chrome — label, hint/error text, focus ring on the wrapper, and `aria-describedby` ordering (error → hint → describedby).',
   storyId: 'components-numberfield--default',
   usage: `<script>
   import { NumberField } from 'dssoca';
@@ -24,12 +24,12 @@ export const numberField: ComponentDoc = {
     {
       name: 'min',
       type: 'number',
-      desc: 'Lower bound; clamps the steppers and disables − at the floor.',
+      desc: 'Lower bound; clamps the steppers and marks − aria-disabled at the floor.',
     },
     {
       name: 'max',
       type: 'number',
-      desc: 'Upper bound; clamps the steppers and disables + at the ceiling.',
+      desc: 'Upper bound; clamps the steppers and marks + aria-disabled at the ceiling.',
     },
     {
       name: 'step',
@@ -55,7 +55,7 @@ export const numberField: ComponentDoc = {
       name: 'readonly',
       type: 'boolean',
       default: 'false',
-      desc: 'Value visible but not editable; steppers inert.',
+      desc: 'Value visible but not editable; steppers natively disabled.',
     },
     {
       name: 'invalid',
@@ -85,5 +85,5 @@ export const numberField: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'WCAG 2.2 AA. The native spinner is hidden in favour of accessible − / + buttons labelled "Decrease" / "Increase"; each is disabled at its bound or when the field is disabled/readonly. The value is rendered monospace.',
+    'WCAG 2.2 AA. The native spinner is hidden in favour of accessible − / + buttons labelled "Decrease" / "Increase", each with `aria-controls` pointing at the input. At its bound a stepper stays focusable but is `aria-disabled` and does nothing, so keyboard focus never drops to the page; it is natively disabled only when the field is disabled/readonly. Values set by the steppers are announced through a visually hidden `aria-live="polite"` region (typed values are voiced by the input itself). Focused steppers draw a solid inset `--ss-primary` ring. The value is rendered monospace.',
 }
