@@ -9,7 +9,11 @@
   import { resolveComponentSize, type Size } from '../config.js'
   // Aliased: the module script re-exports the same names, and eslint-plugin-svelte
   // merges both scopes.
-  import { resolveIcon as lookupIcon, type IconName as GlyphName } from '../icons.js'
+  import {
+    resolveIcon as lookupIcon,
+    sanitizeIconMarkup,
+    type IconName as GlyphName,
+  } from '../icons.js'
 
   /**
    * Icon-local size scale (DS-0109). Distinct from the global `Size` axis
@@ -37,6 +41,10 @@
      * Raw SVG inner markup escape hatch — rendered when `name` is not a known
      * (built-in or runtime-registered) glyph. Lets callers pass one-off icons
      * without registering them globally.
+     *
+     * **Must be trusted markup** (authored by you, never user input): it is injected as HTML.
+     * A light filter strips `<script>`, `<foreignObject>`, `on*` handlers and `javascript:`
+     * links, but it is not a security boundary.
      */
     paths?: string
     /** Accessible name; rendered as a real <title> and wired via aria-labelledby. */
@@ -88,7 +96,7 @@
 
   // Resolve the glyph: explicit `paths` escape hatch → registered/built-in → warn.
   const markup = $derived.by(() => {
-    if (paths != null) return paths
+    if (paths != null) return sanitizeIconMarkup(paths)
     const found = lookupIcon(name)
     if (found != null) return found
     if (typeof console !== 'undefined') {
@@ -132,7 +140,6 @@
   )
 </script>
 
-<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 <svg
   viewBox="0 0 24 24"
   fill={isSolid ? 'currentColor' : 'none'}
@@ -152,6 +159,8 @@
   aria-hidden={isDecorative ? 'true' : undefined}
   focusable="false"
 >
+  <!-- Trusted glyph markup only (DS-0176): title/desc are escaped, glyphs pass sanitizeIconMarkup. -->
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
   {@html inner}
 </svg>
 
