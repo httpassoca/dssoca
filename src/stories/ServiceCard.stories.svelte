@@ -82,6 +82,19 @@
   args={{ name: 'movies-api', host: 'movies.home', status: 'up', latency: '4ms', href: '#movies' }}
 />
 
+<Story
+  name="Static"
+  args={{
+    name: 'caddy',
+    host: ':80 :443',
+    status: 'up',
+    latency: '2ms',
+    onclick: undefined,
+  }}
+/>
+
+<Story name="No Spark Data" args={{ name: 'backup', host: 'nas.home', spark: [] }} />
+
 <Story name="Loading" args={{ loading: true }} />
 
 <Story

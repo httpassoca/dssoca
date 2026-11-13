@@ -164,6 +164,7 @@
           status={v.status}
           latency={v.lat}
           updatedAt={demoDate}
+          spark={[4, 8, 6, 10, 7, 12, 9, 13, 10]}
         />
       </div>
     {:else if slug === 'sparkline'}
