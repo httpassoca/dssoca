@@ -14,7 +14,7 @@
   import { scaleBand, scaleLinear } from 'd3-scale'
   import { extent, quantile } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
-  import { chartNavStep } from '../core/chart-nav.js'
+  import { chartMarkKey, chartTabStop, chartWindowKey } from '../core/chart-nav.js'
 
   interface Props {
     /** One box per group. Each group has a `label`, `values`, and optional `color`. */
@@ -190,12 +190,13 @@
 
   // Roving tabindex (DS-0161): the chart is ONE tab stop; arrow keys move between boxes.
   let focusIdx = $state(0)
-  const tabIdx = $derived(Math.min(focusIdx, Math.max(0, boxes.length - 1)))
+  const tabIdx = $derived(chartTabStop(focusIdx, boxes.length))
   const boxEls: (SVGRectElement | null)[] = $state([])
   function onBoxKeydown(e: KeyboardEvent, i: number) {
-    const next = chartNavStep(e.key, i, boxes.length)
-    if (next === null) return
-    e.preventDefault()
+    const result = chartMarkKey({ index: i, count: boxes.length }, e.key)
+    if (!result || result.action.type !== 'focus') return
+    if (result.preventDefault) e.preventDefault()
+    const next = result.action.index
     focusIdx = next
     boxEls[next]?.focus()
   }
@@ -205,7 +206,7 @@
   }
   // Escape dismisses the tooltip whether it came from hover or focus (WCAG 1.4.13).
   function onWindowKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape' && active) hide()
+    if (chartWindowKey(active !== null, e.key)) hide()
   }
 </script>
 
