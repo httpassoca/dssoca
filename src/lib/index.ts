@@ -53,6 +53,7 @@ export { default as EmptyState } from './components/EmptyState.svelte'
 // single, complete public surface for that component, so the per-component
 // implementation PRs (DS-0050…0055) need not edit this barrel.
 export { default as Menu, type MenuItem } from './components/Menu.svelte'
+export type { MenuReason, MenuOpenChangeDetails } from './core/menu.js'
 export { default as Accordion, type AccordionItem } from './components/Accordion.svelte'
 export { default as Link } from './components/Link.svelte'
 export {
