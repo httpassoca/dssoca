@@ -54,9 +54,14 @@ export interface ModalCancelResult {
   reason: ModalReason | null
 }
 
-/** Escape was pressed: the browser fired `cancel` and will close the dialog unless prevented. */
-export function modalCancel(state: ModalState): ModalCancelResult {
-  return state.closeOnEsc
+/**
+ * Escape was pressed: the browser fired `cancel` and will close the dialog unless prevented.
+ * `cancelable` is the event's own flag: a browser makes `cancel` non-cancelable when the page
+ * has already blocked one Escape with no interaction since (its anti-trap rule), and then
+ * closes the dialog whatever `closeOnEsc` says — so that close is still an `escape`.
+ */
+export function modalCancel(state: ModalState, cancelable = true): ModalCancelResult {
+  return state.closeOnEsc || !cancelable
     ? { preventDefault: false, reason: 'escape' }
     : { preventDefault: true, reason: null }
 }

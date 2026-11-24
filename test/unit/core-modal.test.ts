@@ -71,6 +71,15 @@ describe('core/modal — Escape (native cancel)', () => {
       reason: null,
     })
   })
+
+  it('reports escape when closeOnEsc is off but the browser will close anyway', () => {
+    // Chromium's anti-trap rule: a second Escape with no interaction in between fires a
+    // non-cancelable `cancel` and closes the dialog regardless.
+    expect(modalCancel(state({ closeOnEsc: false }), false)).toEqual({
+      preventDefault: false,
+      reason: 'escape',
+    })
+  })
 })
 
 describe('core/modal — closed', () => {

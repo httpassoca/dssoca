@@ -144,7 +144,7 @@ export function installModal(): void {
     'dialog.ss-modal',
     (dialog, e) => {
       if (!(dialog instanceof HTMLDialogElement)) return
-      const result = modalCancel(stateOf(dialog))
+      const result = modalCancel(stateOf(dialog), e.cancelable)
       if (result.preventDefault) e.preventDefault()
       if (result.reason) pending.set(dialog, result.reason)
       else pending.delete(dialog)

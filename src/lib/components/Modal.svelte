@@ -160,7 +160,7 @@
 
   // Esc dispatches `cancel` before `close`; swallow it when Esc is disabled.
   function onCancel(e: Event) {
-    const result = modalCancel(modal)
+    const result = modalCancel(modal, e.cancelable)
     if (result.preventDefault) e.preventDefault()
     pending = result.reason
   }

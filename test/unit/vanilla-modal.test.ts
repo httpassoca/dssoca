@@ -133,6 +133,15 @@ describe('vanilla — Modal close reason', () => {
     expect(reasons).toEqual(['programmatic'])
   })
 
+  it('emits "escape" when a non-cancelable cancel closes a data-ss-no-esc dialog', () => {
+    // The browser's anti-trap rule: a second Escape with no interaction in between cannot be
+    // prevented, and the dialog closes whatever the page asked for.
+    const { dialog, reasons } = setup('data-ss-no-esc')
+    dialog.dispatchEvent(new Event('cancel', { cancelable: false }))
+    dialog.close()
+    expect(reasons).toEqual(['escape'])
+  })
+
   it('emits "programmatic" for a direct close() and for closeModal()', () => {
     const { dialog, reasons } = setup()
     dialog.close()
