@@ -2,7 +2,7 @@
   import { scaleLinear } from 'd3-scale'
   import { extent } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
-  import { chartNavStep } from '../core/chart-nav.js'
+  import { chartMarkKey, chartTabStop, chartWindowKey } from '../core/chart-nav.js'
 
   interface Props {
     /** Row labels, top→bottom. */
@@ -121,14 +121,14 @@
 
   // Roving tabindex: the whole grid is one tab stop (DS-0161 / core/chart-nav.ts).
   let focusIndex = $state(0)
-  const tabStop = $derived(Math.min(focusIndex, Math.max(0, cellCount - 1)))
+  const tabStop = $derived(chartTabStop(focusIndex, cellCount))
   let gridEl = $state<SVGGElement | null>(null)
 
   function onCellKeydown(e: KeyboardEvent, i: number) {
-    // SVG geometry does not mirror in RTL, so Left/Right stay physical.
-    const next = chartNavStep(e.key, i, cellCount, cleanCols.length)
-    if (next === null) return
-    e.preventDefault()
+    const result = chartMarkKey({ index: i, count: cellCount, cols: cleanCols.length }, e.key)
+    if (!result || result.action.type !== 'focus') return
+    if (result.preventDefault) e.preventDefault()
+    const next = result.action.index
     focusIndex = next
     gridEl?.querySelector<SVGElement>(`[data-index="${next}"]`)?.focus()
   }
@@ -158,7 +158,7 @@
 <!-- Escape dismisses the tooltip wherever focus is, incl. one opened by hover (WCAG 1.4.13). -->
 <svelte:window
   onkeydown={(e) => {
-    if (active && e.key === 'Escape') hide()
+    if (chartWindowKey(active !== null, e.key)) hide()
   }}
 />
 
