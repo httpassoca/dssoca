@@ -41,6 +41,13 @@
 
 <script lang="ts">
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    tableAriaSort,
+    tableColumnAlign,
+    tableSortIndicator,
+    tableSortRows,
+    tableToggleSort,
+  } from '../core/table.js'
 
   interface Props {
     /** Column definitions. */
@@ -74,33 +81,12 @@
 
   const resolvedSize = $derived(resolveComponentSize('Table', size))
 
-  // Sorted view: only sort when an active sort targets a known column.
-  const sortedRows = $derived.by(() => {
-    if (!sort) return rows
-    const col = columns.find((c) => c.key === sort!.key)
-    if (!col) return rows
-    const dir = sort.dir === 'desc' ? -1 : 1
-    const copy = [...rows]
-    copy.sort((a, b) => {
-      const av = a?.[sort!.key]
-      const bv = b?.[sort!.key]
-      if (col.numeric) return (Number(av) - Number(bv)) * dir
-      return String(av ?? '').localeCompare(String(bv ?? '')) * dir
-    })
-    return copy
-  })
-
-  function ariaSort(key: string): 'ascending' | 'descending' | 'none' {
-    if (!sort || sort.key !== key) return 'none'
-    return sort.dir === 'asc' ? 'ascending' : 'descending'
-  }
+  // Sorting lives in `core/table.ts`: what a header press does, the row order and the
+  // attributes that reflect the sort. This file holds the bound `sort` and applies the result.
+  const sortedRows = $derived(tableSortRows(rows, columns, sort))
 
   function toggleSort(key: string) {
-    // Same column → flip direction; new column → start ascending.
-    const next: TableSort =
-      sort && sort.key === key
-        ? { key, dir: sort.dir === 'asc' ? 'desc' : 'asc' }
-        : { key, dir: 'asc' }
+    const next = tableToggleSort(sort, key)
     sort = next
     onsort?.(next)
   }
@@ -108,14 +94,6 @@
   function display(col: TableColumn, row: TableRow): string {
     const value = row?.[col.key]
     return col.format ? col.format(value, row) : String(value ?? '')
-  }
-
-  // Logical alignment: legacy `left`/`right` map to `start`/`end` so RTL mirrors.
-  function colAlign(col: TableColumn): 'start' | 'end' | 'center' {
-    const a = col.align ?? (col.numeric ? 'end' : 'start')
-    if (a === 'left') return 'start'
-    if (a === 'right') return 'end'
-    return a
   }
 
   const isEmpty = $derived(rows.length === 0)
@@ -130,14 +108,14 @@
           scope="col"
           class="head"
           class:numeric={col.numeric}
-          data-align={colAlign(col)}
-          aria-sort={col.sortable ? ariaSort(col.key) : undefined}
+          data-align={tableColumnAlign(col)}
+          aria-sort={col.sortable ? tableAriaSort(sort, col.key) : undefined}
         >
           {#if col.sortable}
             <button type="button" class="sort" onclick={() => toggleSort(col.key)}>
               <span class="label">{col.label}</span>
               <span class="indicator" aria-hidden="true">
-                {#if sort && sort.key === col.key}{sort.dir === 'asc' ? '↑' : '↓'}{:else}↕{/if}
+                {tableSortIndicator(sort, col.key)}
               </span>
             </button>
           {:else}
@@ -158,7 +136,7 @@
       {#each sortedRows as row, i (getRowKey ? getRowKey(row, i) : i)}
         <tr class="row">
           {#each columns as col (col.key)}
-            <td class="cell" class:numeric={col.numeric} data-align={colAlign(col)}>
+            <td class="cell" class:numeric={col.numeric} data-align={tableColumnAlign(col)}>
               {#if col.cell}{@render col.cell(row)}{:else}{display(col, row)}{/if}
             </td>
           {/each}
