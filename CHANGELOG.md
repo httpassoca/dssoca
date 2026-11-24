@@ -8,6 +8,23 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+### Added
+
+- **`Menu`**: `onOpenChange(open, details)` fires when the menu opens or closes itself, and
+  `details.reason` says why: `trigger`, `key`, `escape`, `tab`, `outside` or `item`. On the
+  plain-HTML path the root emits `ss:openchange` with `{ open, reason }`.
+- **`Switch`**: `onchange` receives a second argument, `details.reason` (`track` or `label`);
+  the plain-HTML `ss:change` detail carries the same `reason`.
+
+### Changed
+
+- **Behaviour core** (`DS-0197`). What a key press, a click or an outside press does is now
+  decided in one framework-free place, `src/lib/core/`, and both the Svelte components and
+  `vanilla.js` call it, instead of each carrying its own copy. **`Menu`** and **`Switch`** are
+  the first two on it; the markup, classes and existing events are unchanged.
+- **`Menu`** (plain HTML): an item marked only with `aria-disabled="true"` is no longer
+  activated by a click, matching the Svelte component and the keyboard, which already skipped it.
+
 ### Docs
 
 - **Changelog on the docs site** (`DS-0196`). `/changelog` renders this file release by release,
