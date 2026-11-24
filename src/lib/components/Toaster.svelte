@@ -4,6 +4,14 @@
   import { untrack } from 'svelte'
   import { toasts, type Toast, type ToastKind } from '../toast.svelte.js'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    toastActionDismisses,
+    toastFocusAfterDismiss,
+    toastKey,
+    toastPressStartsSwipe,
+    toastShouldResume,
+    toastSwipeDismisses,
+  } from '../core/toast.js'
 
   type Position =
     | 'top-right'
@@ -63,12 +71,9 @@
   let dragStartX = 0
   let dragPointer: number | null = null
 
-  const SWIPE_THRESHOLD = 64
-
   function onPointerDown(e: PointerEvent, t: Toast) {
-    if (reduce || e.button !== 0) return
-    // Ignore drags that start on the controls (buttons own their clicks).
-    if ((e.target as HTMLElement).closest('button')) return
+    const onControl = (e.target as HTMLElement).closest('button') !== null
+    if (!toastPressStartsSwipe({ button: e.button, onControl, reducedMotion: reduce })) return
     dragId = t.id
     dragDx = 0
     dragStartX = e.clientX
@@ -84,27 +89,25 @@
 
   function endDrag(e: PointerEvent, t: Toast) {
     if (dragId !== t.id || e.pointerId !== dragPointer) return
-    const passed = Math.abs(dragDx) >= SWIPE_THRESHOLD
+    const passed = toastSwipeDismisses(dragDx)
     dragId = null
     dragPointer = null
     if (passed) toasts.dismiss(t.id)
     else {
       dragDx = 0
-      const el = e.currentTarget as HTMLElement
-      if (hoverId !== t.id && !el.contains(document.activeElement)) toasts.resume(t.id)
+      resumeIfFree(t, holdsFocus(e.currentTarget as HTMLElement))
     }
   }
 
   function runAction(t: Toast) {
-    const keep = t.action?.onClick() === false
-    if (!keep) toasts.dismiss(t.id)
+    if (toastActionDismisses(t.action?.onClick())) toasts.dismiss(t.id)
   }
 
   function onKeydown(e: KeyboardEvent, t: Toast) {
-    if (e.key === 'Escape') {
-      e.stopPropagation()
-      toasts.dismiss(t.id)
-    }
+    const result = toastKey(e.key)
+    if (!result) return
+    if (result.stopPropagation) e.stopPropagation()
+    toasts.dismiss(t.id)
   }
 
   // ── pause / resume ────────────────────────────────────────────────
@@ -113,6 +116,13 @@
   // restart the clock under a keyboard user, and vice versa).
   let hoverId: number | null = null
 
+  const holdsFocus = (el: HTMLElement) => el.contains(document.activeElement)
+
+  function resumeIfFree(t: Toast, focused: boolean) {
+    const hold = { hovered: hoverId === t.id, focused, dragging: dragId === t.id }
+    if (toastShouldResume(hold)) toasts.resume(t.id)
+  }
+
   function onPointerEnter(t: Toast) {
     hoverId = t.id
     toasts.pause(t.id)
@@ -120,17 +130,13 @@
 
   function onPointerLeave(e: PointerEvent, t: Toast) {
     if (hoverId === t.id) hoverId = null
-    if (dragId === t.id) return
-    const el = e.currentTarget as HTMLElement
-    if (el.contains(document.activeElement)) return
-    toasts.resume(t.id)
+    resumeIfFree(t, holdsFocus(e.currentTarget as HTMLElement))
   }
 
   function onFocusOut(e: FocusEvent, t: Toast) {
     const el = e.currentTarget as HTMLElement
-    if (el.contains(e.relatedTarget as Node | null)) return
-    if (hoverId === t.id || dragId === t.id) return
-    toasts.resume(t.id)
+    // Focus is only leaving when it lands outside the toast.
+    resumeIfFree(t, el.contains(e.relatedTarget as Node | null))
   }
 
   // ── focus management ──────────────────────────────────────────────
@@ -171,14 +177,8 @@
   })
 
   function moveFocusFrom(id: number, alive: Set<number>) {
-    const i = order.indexOf(id)
-    const after = order.slice(i + 1).find((n) => alive.has(n) && toastEls.has(n))
-    const before = order
-      .slice(0, i)
-      .reverse()
-      .find((n) => alive.has(n) && toastEls.has(n))
-    const next = after ?? before
-    if (next !== undefined) {
+    const next = toastFocusAfterDismiss(order, id, (n) => alive.has(n) && toastEls.has(n))
+    if (next !== null) {
       toastEls.get(next)!.focus()
     } else if (returnFocus?.isConnected) {
       returnFocus.focus()
