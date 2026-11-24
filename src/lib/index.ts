@@ -123,6 +123,10 @@ export { default as RadioGroup, type RadioOption } from './components/RadioGroup
 export { default as Tabs, type TabItem } from './components/Tabs.svelte'
 export type { TabsReason, TabsActivation, TabsChangeDetails } from './core/tabs.js'
 
+// Popover (DS-0197): non-modal floating panel anchored to a trigger.
+export { default as Popover } from './components/Popover.svelte'
+export type { PopoverReason, PopoverOpenChangeDetails } from './core/popover.js'
+
 // Keyboard-shortcuts feature (DS-0135): registry core + display chip.
 export { default as Kbd } from './components/Kbd.svelte'
 export { default as ShortcutsHelp } from './components/ShortcutsHelp.svelte'

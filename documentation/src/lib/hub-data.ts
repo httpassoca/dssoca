@@ -223,6 +223,8 @@ export const LANDING_EXCLUDED = new Set<string>([
   'tier-list',
   // DS-0197: tabs need their panels to read as tabs; they live on the docs page.
   'tabs',
+  // DS-0197: a closed popover is only its trigger; it lives on the docs page.
+  'popover',
   'image',
   'chart',
   'table',

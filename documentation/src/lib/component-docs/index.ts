@@ -56,6 +56,8 @@ import { radioGroup } from './radio-group'
 
 // Tabs (DS-0197).
 import { tabs } from './tabs'
+// Popover (DS-0197).
+import { popover } from './popover'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -116,4 +118,6 @@ export const COMPONENTS: ComponentDoc[] = [
 
   // DS-0197 — WAI-ARIA tabs.
   tabs,
+  // DS-0197 — non-modal floating panel.
+  popover,
 ]

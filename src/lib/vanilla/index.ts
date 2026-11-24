@@ -18,6 +18,7 @@ import { installSwitch } from './switch.js'
 import { installSegmented } from './segmented.js'
 import { installTierlist } from './tierlist.js'
 import { installTabs } from './tabs.js'
+import { installPopover } from './popover.js'
 import { installFields, mountFields } from './fields.js'
 import { installCheckbox, mountCheckboxes } from './checkbox.js'
 import { installRadio } from './radio.js'
@@ -42,6 +43,7 @@ export { toggleSwitch } from './switch.js'
 export { selectSegment } from './segmented.js'
 export { toggleGrab, readPlacements } from './tierlist.js'
 export { selectTab } from './tabs.js'
+export { openPopover, closePopover } from './popover.js'
 export { clearInput, nudgeNumber, autosize } from './fields.js'
 export { setCheckbox } from './checkbox.js'
 export { selectRadio } from './radio.js'
@@ -78,6 +80,7 @@ export function install(): void {
   installSegmented()
   installTierlist()
   installTabs()
+  installPopover()
   installFields()
   installCheckbox()
   installRadio()

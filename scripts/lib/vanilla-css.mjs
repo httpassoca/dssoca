@@ -56,6 +56,7 @@ export const ROOT_CLASSES = Object.freeze({
   Modal: ['ss-modal'],
   NumberField: ['ss-numberfield'],
   Pagination: ['ss-pagination'],
+  Popover: ['ss-popover'],
   RadioGroup: ['ss-radio-group'],
   ScatterPlot: ['ss-scatter'],
   SearchPalette: ['ss-search-palette'],

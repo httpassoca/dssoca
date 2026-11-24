@@ -121,6 +121,7 @@ describe('docs.config — nav', () => {
       'Modal',
       'NumberField',
       'Pagination',
+      'Popover',
       'RadioGroup',
       'ScatterPlot',
       'SearchPalette',

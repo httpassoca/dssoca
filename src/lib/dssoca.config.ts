@@ -140,6 +140,7 @@ export const COMPONENT_NAMES = [
   'Modal',
   'NumberField',
   'Pagination',
+  'Popover',
   'RadioGroup',
   'SearchPalette',
   'SegmentedControl',

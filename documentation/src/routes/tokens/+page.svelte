@@ -124,6 +124,16 @@
       ],
     },
     {
+      title: 'component tokens — Popover',
+      note: 'size axis · src/styles/components/_popover.scss',
+      tokens: [
+        '--ss-popover-pad',
+        '--ss-popover-min-w',
+        '--ss-popover-max-w',
+        '--ss-popover-offset',
+      ],
+    },
+    {
       title: 'component tokens — Accordion',
       note: 'size axis · src/styles/components/_accordion.scss',
       tokens: [

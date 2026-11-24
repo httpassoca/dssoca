@@ -42,6 +42,7 @@
     Kbd,
     TierList,
     Tabs,
+    Popover,
   } from 'dssoca'
   import { componentsByCategory } from '$lib/categories'
   import { COMPONENTS } from '$lib/docs.config'
@@ -417,6 +418,11 @@
         {#snippet panel(tab)}<p class="card-body">Content for {tab.label}.</p>{/snippet}
       </Tabs>
     </div>
+  {:else if slug === 'popover'}
+    <Popover label="Filters" open={false}>
+      {#snippet trigger()}Filters{/snippet}
+      <p class="card-body">Status, region and owner.</p>
+    </Popover>
   {:else if slug === 'shortcuts-help'}
     <!-- A live overlay is a top-layer <dialog> and would escape the inert
          card, so show a static stand-in of the shortcut list (like

@@ -242,6 +242,15 @@ inner sizes_).
 | `--ss-tabs-gap`      | `6px`        | `8px`        | `10px`       | Icon / label gap       |
 | `--ss-tabs-panel-py` | `10px`       | `16px`       | `20px`       | Panel vertical padding |
 
+**Popover** (`--ss-popover-*`)
+
+| Token                 | `sm`    | `md`    | `lg`    | Role                         |
+| --------------------- | ------- | ------- | ------- | ---------------------------- |
+| `--ss-popover-pad`    | `10px`  | `14px`  | `18px`  | Floating-panel inner padding |
+| `--ss-popover-min-w`  | `160px` | `200px` | `240px` | Panel min width              |
+| `--ss-popover-max-w`  | `280px` | `340px` | `400px` | Panel max width              |
+| `--ss-popover-offset` | `5px`   | `6px`   | `8px`   | Trigger→panel offset         |
+
 **Accordion** (`--ss-acc-*`)
 
 | Token              | `sm`       | `md`          | `lg`       | Role                      |

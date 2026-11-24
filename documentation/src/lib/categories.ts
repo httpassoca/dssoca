@@ -68,7 +68,7 @@ export const CATEGORIES: Category[] = [
   {
     id: 'feedback',
     label: 'Feedback',
-    slugs: ['toaster', 'empty-state', 'spinner', 'modal', 'shortcuts-help', 'tooltip'],
+    slugs: ['toaster', 'empty-state', 'spinner', 'modal', 'shortcuts-help', 'tooltip', 'popover'],
   },
   { id: 'media', label: 'Media', slugs: ['icon', 'image', 'avatar'] },
 ]
