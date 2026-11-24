@@ -1,5 +1,11 @@
 <script lang="ts">
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    numberFieldAnnouncement,
+    numberFieldParse,
+    numberFieldStep,
+    numberFieldStepperAttrs,
+  } from '../core/number-field.js'
 
   interface Props {
     label?: string
@@ -68,31 +74,26 @@
   // Steppers are natively disabled only when the whole field can't be edited. At a bound
   // they stay focusable and become `aria-disabled` no-ops, so a keyboard user who presses
   // − down to `min` keeps focus on the button instead of dropping to <body>.
+  // Parsing, stepping and that stepper state are decided in core/number-field.ts (shared with
+  // vanilla.js); this file holds the value and applies the result.
   const locked = $derived(disabled || readonly)
-  const atMin = $derived(value != null && min != null && value <= min)
-  const atMax = $derived(value != null && max != null && value >= max)
+  const field = $derived({ value, min, max, step, locked })
+  const decAttrs = $derived(numberFieldStepperAttrs(field, -1))
+  const incAttrs = $derived(numberFieldStepperAttrs(field, 1))
 
   // Polite live region text: set only by the steppers (typing in the input is already
   // voiced by AT). The region itself is always rendered so updates are announced.
   let announcement = $state('')
 
-  function clamp(n: number): number {
-    if (min != null && n < min) return min
-    if (max != null && n > max) return max
-    return n
-  }
-
   function onInput(e: Event & { currentTarget: HTMLInputElement }) {
-    const raw = e.currentTarget.value
-    value = raw === '' ? null : e.currentTarget.valueAsNumber
-    if (value != null && Number.isNaN(value)) value = null
+    value = numberFieldParse(e.currentTarget.value, e.currentTarget.valueAsNumber)
   }
 
   function nudge(dir: 1 | -1) {
-    if (locked || (dir < 0 ? atMin : atMax)) return
-    const base = value ?? (dir > 0 ? (min ?? 0) : (max ?? 0))
-    value = clamp(base + dir * step)
-    announcement = String(value)
+    const next = numberFieldStep(field, dir)
+    if (next === null) return
+    value = next
+    announcement = numberFieldAnnouncement(next)
   }
 </script>
 
@@ -115,8 +116,7 @@
       class="step dec"
       aria-label="Decrease"
       aria-controls={inputId}
-      disabled={locked}
-      aria-disabled={!locked && atMin ? 'true' : undefined}
+      {...decAttrs}
       onclick={() => nudge(-1)}
     >
       −
@@ -146,8 +146,7 @@
       class="step inc"
       aria-label="Increase"
       aria-controls={inputId}
-      disabled={locked}
-      aria-disabled={!locked && atMax ? 'true' : undefined}
+      {...incAttrs}
       onclick={() => nudge(1)}
     >
       +
