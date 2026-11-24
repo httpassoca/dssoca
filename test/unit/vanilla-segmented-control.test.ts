@@ -74,3 +74,39 @@ describe('vanilla — SegmentedControl RTL arrow keys (DS-0172)', () => {
     expect(document.activeElement).toBe(segs[1])
   })
 })
+
+describe('vanilla — SegmentedControl on core/segmented (DS-0197)', () => {
+  const OPTIONS = [
+    { value: 'day', label: 'Day' },
+    { value: 'week', label: 'Week' },
+  ]
+  const setup = (disabled = false) => {
+    document.body.innerHTML = svelteHtml(SegmentedControl, {
+      options: OPTIONS,
+      value: 'day',
+      label: 'Range',
+      disabled,
+    })
+    mount(document.body)
+    return Array.from(document.querySelectorAll<HTMLButtonElement>('.segment'))
+  }
+
+  it('ss:change says what moved the selection', () => {
+    const segs = setup()
+    const reasons: string[] = []
+    const root = document.querySelector('.ss-segmented') as HTMLElement
+    root.addEventListener('ss:change', (e) => reasons.push((e as CustomEvent).detail.reason))
+    segs[1].click()
+    key(segs[1], 'ArrowLeft')
+    segs[0].click() // already selected: no event
+    expect(reasons).toEqual(['press', 'key'])
+  })
+
+  it('a disabled group lets the arrow keys through untouched', () => {
+    const segs = setup(true)
+    const e = new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true })
+    segs[0].dispatchEvent(e)
+    expect(e.defaultPrevented).toBe(false)
+    expect(segs[0].getAttribute('aria-checked')).toBe('true')
+  })
+})
