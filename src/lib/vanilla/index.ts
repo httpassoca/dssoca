@@ -18,6 +18,7 @@ import { installSwitch } from './switch.js'
 import { installSegmented } from './segmented.js'
 import { installTierlist } from './tierlist.js'
 import { installFields, mountFields } from './fields.js'
+import { installCheckbox, mountCheckboxes } from './checkbox.js'
 import { hydrateIcons } from './icons.js'
 
 export { toast, toasts } from './toast.js'
@@ -39,6 +40,7 @@ export { toggleSwitch } from './switch.js'
 export { selectSegment } from './segmented.js'
 export { toggleGrab, readPlacements } from './tierlist.js'
 export { clearInput, nudgeNumber, autosize } from './fields.js'
+export { setCheckbox } from './checkbox.js'
 export {
   applyDesignConfig,
   designAttributes,
@@ -53,6 +55,7 @@ export {
 export function mount(root: ParentNode = document): void {
   hydrateIcons(root)
   mountFields(root)
+  mountCheckboxes(root)
 }
 
 const FLAG = '__dssocaVanilla'
@@ -71,6 +74,7 @@ export function install(): void {
   installSegmented()
   installTierlist()
   installFields()
+  installCheckbox()
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => mount(), { once: true })
   } else {

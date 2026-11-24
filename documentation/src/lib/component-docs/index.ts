@@ -49,6 +49,8 @@ import { kbd } from './kbd'
 import { shortcutsHelp } from './shortcuts-help'
 // TierList (DS-0159).
 import { tierList } from './tier-list'
+// Checkbox (DS-0197).
+import { checkbox } from './checkbox'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -102,4 +104,6 @@ export const COMPONENTS: ComponentDoc[] = [
   shortcutsHelp,
   // DS-0159 — ranked rows with drag-and-drop + keyboard sorting.
   tierList,
+  // DS-0197 — native checkbox with a mixed state.
+  checkbox,
 ]

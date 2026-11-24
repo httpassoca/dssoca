@@ -233,6 +233,7 @@ export const LANDING_EXCLUDED = new Set<string>([
   'avatar',
   'pagination',
   'switch',
+  'checkbox',
   'scatter-plot',
   'box-plot',
   'bump-chart',

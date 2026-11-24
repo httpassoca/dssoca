@@ -38,6 +38,7 @@ export const ROOT_CLASSES = Object.freeze({
   Button: ['ss-btn'],
   Card: ['ss-card'],
   Chart: ['ss-chart'],
+  Checkbox: ['ss-checkbox'],
   Container: ['ss-container'],
   DateField: ['ss-datefield'],
   EmptyState: ['ss-empty'],

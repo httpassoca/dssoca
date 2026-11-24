@@ -123,6 +123,7 @@ export const COMPONENT_NAMES = [
   'Button',
   'Card',
   'Chart',
+  'Checkbox',
   'Container',
   'DateField',
   'EmptyState',

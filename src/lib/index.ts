@@ -113,6 +113,9 @@ export {
   type TierListChangeReason,
 } from './core/tierlist.js'
 
+// Checkbox (DS-0197): native checkbox with a mixed state.
+export { default as Checkbox } from './components/Checkbox.svelte'
+
 // Keyboard-shortcuts feature (DS-0135): registry core + display chip.
 export { default as Kbd } from './components/Kbd.svelte'
 export { default as ShortcutsHelp } from './components/ShortcutsHelp.svelte'

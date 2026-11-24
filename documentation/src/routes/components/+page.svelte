@@ -33,6 +33,7 @@
     Avatar,
     Pagination,
     Switch,
+    Checkbox,
     ScatterPlot,
     BoxPlot,
     BumpChart,
@@ -364,6 +365,8 @@
     <Pagination page={2} total={50} pageSize={10} />
   {:else if slug === 'switch'}
     <Switch checked label="Dark theme" />
+  {:else if slug === 'checkbox'}
+    <Checkbox checked label="Email me updates" />
   {:else if slug === 'tooltip'}
     <Tooltip text="Lower position sum wins">
       <Button variant="secondary">What's this?</Button>
