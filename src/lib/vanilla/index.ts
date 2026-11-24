@@ -19,6 +19,7 @@ import { installSegmented } from './segmented.js'
 import { installTierlist } from './tierlist.js'
 import { installFields, mountFields } from './fields.js'
 import { installCheckbox, mountCheckboxes } from './checkbox.js'
+import { installRadio } from './radio.js'
 import { hydrateIcons } from './icons.js'
 
 export { toast, toasts } from './toast.js'
@@ -41,6 +42,7 @@ export { selectSegment } from './segmented.js'
 export { toggleGrab, readPlacements } from './tierlist.js'
 export { clearInput, nudgeNumber, autosize } from './fields.js'
 export { setCheckbox } from './checkbox.js'
+export { selectRadio } from './radio.js'
 export {
   applyDesignConfig,
   designAttributes,
@@ -75,6 +77,7 @@ export function install(): void {
   installTierlist()
   installFields()
   installCheckbox()
+  installRadio()
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => mount(), { once: true })
   } else {

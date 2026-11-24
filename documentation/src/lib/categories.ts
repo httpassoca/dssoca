@@ -28,6 +28,7 @@ export const CATEGORIES: Category[] = [
       'file-drop',
       'switch',
       'checkbox',
+      'radio-group',
     ],
   },
   {

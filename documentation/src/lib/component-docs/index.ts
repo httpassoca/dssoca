@@ -51,6 +51,8 @@ import { shortcutsHelp } from './shortcuts-help'
 import { tierList } from './tier-list'
 // Checkbox (DS-0197).
 import { checkbox } from './checkbox'
+// RadioGroup (DS-0197).
+import { radioGroup } from './radio-group'
 
 export type { PropDoc, ComponentDoc } from './types'
 
@@ -106,4 +108,6 @@ export const COMPONENTS: ComponentDoc[] = [
   tierList,
   // DS-0197 — native checkbox with a mixed state.
   checkbox,
+  // DS-0197 — native radios in a named radiogroup.
+  radioGroup,
 ]

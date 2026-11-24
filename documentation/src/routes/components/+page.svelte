@@ -34,6 +34,7 @@
     Pagination,
     Switch,
     Checkbox,
+    RadioGroup,
     ScatterPlot,
     BoxPlot,
     BumpChart,
@@ -367,6 +368,15 @@
     <Switch checked label="Dark theme" />
   {:else if slug === 'checkbox'}
     <Checkbox checked label="Email me updates" />
+  {:else if slug === 'radio-group'}
+    <RadioGroup
+      label="Plan"
+      value="pro"
+      options={[
+        { value: 'free', label: 'Free' },
+        { value: 'pro', label: 'Pro' },
+      ]}
+    />
   {:else if slug === 'tooltip'}
     <Tooltip text="Lower position sum wins">
       <Button variant="secondary">What's this?</Button>

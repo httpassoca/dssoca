@@ -234,6 +234,7 @@ export const LANDING_EXCLUDED = new Set<string>([
   'pagination',
   'switch',
   'checkbox',
+  'radio-group',
   'scatter-plot',
   'box-plot',
   'bump-chart',
