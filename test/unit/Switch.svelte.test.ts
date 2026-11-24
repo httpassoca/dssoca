@@ -36,7 +36,7 @@ describe('Switch', () => {
     const { container } = render(Switch, { label: 'Notifications', onchange })
     const sw = container.querySelector<HTMLButtonElement>('[role="switch"]')!
     await fireEvent.click(sw)
-    expect(onchange).toHaveBeenCalledWith(true)
+    expect(onchange).toHaveBeenCalledWith(true, { reason: 'track' })
     expect(sw).toHaveAttribute('aria-checked', 'true')
   })
 
@@ -45,7 +45,7 @@ describe('Switch', () => {
     const { container } = render(Switch, { label: 'Notifications', checked: true, onchange })
     const sw = container.querySelector<HTMLButtonElement>('[role="switch"]')!
     await fireEvent.click(sw)
-    expect(onchange).toHaveBeenCalledWith(false)
+    expect(onchange).toHaveBeenCalledWith(false, { reason: 'track' })
     expect(sw).toHaveAttribute('aria-checked', 'false')
   })
 
@@ -57,7 +57,7 @@ describe('Switch', () => {
     // real browser dispatches when Space is released on a focused button.
     await fireEvent.keyDown(sw, { key: ' ' })
     await fireEvent.click(sw)
-    expect(onchange).toHaveBeenCalledWith(true)
+    expect(onchange).toHaveBeenCalledWith(true, { reason: 'track' })
     expect(sw).toHaveAttribute('aria-checked', 'true')
   })
 
@@ -67,7 +67,7 @@ describe('Switch', () => {
     const sw = container.querySelector<HTMLButtonElement>('[role="switch"]')!
     await fireEvent.keyDown(sw, { key: 'Enter' })
     await fireEvent.click(sw)
-    expect(onchange).toHaveBeenCalledWith(true)
+    expect(onchange).toHaveBeenCalledWith(true, { reason: 'track' })
     expect(sw).toHaveAttribute('aria-checked', 'true')
   })
 
@@ -93,7 +93,7 @@ describe('Switch', () => {
     const onchange = vi.fn()
     const { container, getByText } = render(Switch, { label: 'Dark mode', onchange })
     await fireEvent.click(getByText('Dark mode'))
-    expect(onchange).toHaveBeenCalledWith(true)
+    expect(onchange).toHaveBeenCalledWith(true, { reason: 'label' })
     expect(container.querySelector('[role="switch"]')).toHaveAttribute('aria-checked', 'true')
   })
 

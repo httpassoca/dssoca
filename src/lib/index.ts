@@ -88,6 +88,7 @@ export { default as Tooltip } from './components/Tooltip.svelte'
 export { default as Avatar } from './components/Avatar.svelte'
 export { default as Pagination } from './components/Pagination.svelte'
 export { default as Switch } from './components/Switch.svelte'
+export type { SwitchReason, SwitchChangeDetails } from './core/switch.js'
 export { default as SearchPalette, type SearchPaletteItem } from './components/SearchPalette.svelte'
 
 // geossoca stats-dashboard charts (DS-0102).

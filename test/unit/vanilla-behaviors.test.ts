@@ -287,7 +287,11 @@ describe('vanilla — Switch', () => {
     const root = mountHtml(svelteHtml(Switch, { label: 'Wifi', id: 'w' }))
       .firstElementChild as HTMLElement
     const seen: boolean[] = []
-    root.addEventListener('ss:change', (e) => seen.push((e as CustomEvent).detail.checked))
+    const reasons: string[] = []
+    root.addEventListener('ss:change', (e) => {
+      seen.push((e as CustomEvent).detail.checked)
+      reasons.push((e as CustomEvent).detail.reason)
+    })
     const track = q<HTMLButtonElement>('.track')
     click(track)
     expect(track.getAttribute('aria-checked')).toBe('true')
@@ -298,6 +302,7 @@ describe('vanilla — Switch', () => {
     click(q('.label'))
     expect(track.getAttribute('aria-checked')).toBe('false')
     expect(seen).toEqual([true, false])
+    expect(reasons).toEqual(['track', 'label'])
   })
 
   it('has no axe violations', async () => {
