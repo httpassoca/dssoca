@@ -14,7 +14,7 @@
   import { scaleBand, scaleLinear } from 'd3-scale'
   import { extent, quantile } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
-  import { chartNavStep } from '../chart-nav.js'
+  import { chartNavStep } from '../core/chart-nav.js'
 
   interface Props {
     /** One box per group. Each group has a `label`, `values`, and optional `color`. */

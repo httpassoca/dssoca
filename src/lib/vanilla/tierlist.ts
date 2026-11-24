@@ -2,7 +2,7 @@
  * TierList (DS-0159) — plain-HTML behaviour for the markup `TierList.svelte` renders: pointer
  * drag between/within rows (Pointer Events, so touch works) and the keyboard path (Space picks
  * a tile up, arrows move it, Space drops, Escape cancels) with a polite live region. The move
- * math and the wording come from `../tierlist-core.js`, shared with the Svelte component.
+ * math and the wording come from `../core/tierlist.js`, shared with the Svelte component.
  * Emits `ss:change` on the root with `{ placements }` (tier id → item ids; the tray is
  * implicit). `data-ss-readonly` on the root makes the list inert.
  */
@@ -16,7 +16,7 @@ import {
   type TierListKeyMove,
   type TierListPlacements,
   type TierListZones,
-} from '../tierlist-core.js'
+} from '../core/tierlist.js'
 
 const ROOT = '.ss-tierlist'
 const TILE = `${ROOT} .tile[data-item]`

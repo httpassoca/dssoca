@@ -16,7 +16,7 @@
   import { scaleLinear, scaleSqrt } from 'd3-scale'
   import { extent, max } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
-  import { chartNavStep } from '../chart-nav.js'
+  import { chartNavStep } from '../core/chart-nav.js'
 
   interface Props {
     /** One dot per datum. Two encoded axes (x, y), optional `size` and `color`. */

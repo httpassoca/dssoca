@@ -6,7 +6,7 @@
     TierListTier as CoreTier,
     TierListItem as CoreItem,
     TierListPlacements as CorePlacements,
-  } from '../tierlist-core.js'
+  } from '../core/tierlist.js'
   export type TierListTier = CoreTier
   export type TierListItem = CoreItem
   export type TierListPlacements = CorePlacements
@@ -51,7 +51,7 @@
     tierColor,
     zonesEqual,
     type TierListZones,
-  } from '../tierlist-core.js'
+  } from '../core/tierlist.js'
 
   interface Props {
     /** The rows, top to bottom. Defaults to S / A / B / C / D. */

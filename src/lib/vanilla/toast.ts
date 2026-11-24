@@ -28,7 +28,7 @@ import {
   resolveTimeout,
   normalizeOptions,
   ToastTimer,
-} from '../toast-core.js'
+} from '../core/toast.js'
 
 export type {
   Toast,
@@ -37,7 +37,7 @@ export type {
   ToastPatch,
   ToastAction,
   PromiseMessages,
-} from '../toast-core.js'
+} from '../core/toast.js'
 
 const GLYPH: Record<ToastKind, string> = { success: '✓', error: '✕', info: 'i', loading: '' }
 const LEAVE_FALLBACK_MS = 400

@@ -102,7 +102,7 @@ export {
   type TierListTier,
   type TierListItem,
   type TierListPlacements,
-} from './tierlist-core.js'
+} from './core/tierlist.js'
 
 // Keyboard-shortcuts feature (DS-0135): registry core + display chip.
 export { default as Kbd } from './components/Kbd.svelte'

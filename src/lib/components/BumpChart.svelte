@@ -15,7 +15,7 @@
   import { line as shapeLine } from 'd3-shape'
   import { max } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
-  import { chartNavStep } from '../chart-nav.js'
+  import { chartNavStep } from '../core/chart-nav.js'
 
   interface Props {
     /** One series per competitor; each carries a `label`, `ranks` and optional `color`. */
@@ -165,7 +165,7 @@
     return () => window.removeEventListener('keydown', onKey)
   })
 
-  // Roving tabindex: the whole chart is one tab stop (DS-0161 / chart-nav.ts).
+  // Roving tabindex: the whole chart is one tab stop (DS-0161 / core/chart-nav.ts).
   let focusIndex = $state(0)
   const tabStop = $derived(Math.min(focusIndex, Math.max(0, nodeCount - 1)))
   let nodesEl = $state<SVGGElement | null>(null)

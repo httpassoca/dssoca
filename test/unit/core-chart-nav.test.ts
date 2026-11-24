@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chartNavStep } from '../../src/lib/chart-nav'
+import { chartNavStep } from '../../src/lib/core/chart-nav'
 
 describe('chartNavStep', () => {
   it('moves linearly in 1-D and clamps at the edges', () => {

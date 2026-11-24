@@ -2,7 +2,7 @@
   import { scaleLinear } from 'd3-scale'
   import { extent } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
-  import { chartNavStep } from '../chart-nav.js'
+  import { chartNavStep } from '../core/chart-nav.js'
 
   interface Props {
     /** Row labels, top→bottom. */
@@ -119,7 +119,7 @@
     ),
   )
 
-  // Roving tabindex: the whole grid is one tab stop (DS-0161 / chart-nav.ts).
+  // Roving tabindex: the whole grid is one tab stop (DS-0161 / core/chart-nav.ts).
   let focusIndex = $state(0)
   const tabStop = $derived(Math.min(focusIndex, Math.max(0, cellCount - 1)))
   let gridEl = $state<SVGGElement | null>(null)

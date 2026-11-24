@@ -23,7 +23,7 @@
   import { line as shapeLine, area as shapeArea } from 'd3-shape'
   import { extent, max } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
-  import { chartNavStep } from '../chart-nav.js'
+  import { chartNavStep } from '../core/chart-nav.js'
 
   type XType = 'linear' | 'time' | 'band'
 
@@ -284,7 +284,7 @@
   // Bars flattened in render order (category, then series) for the roving tabindex.
   const flatBars = $derived(barGroups.flatMap((g) => g.bars))
 
-  // Roving tabindex: the chart is ONE tab stop; arrow keys move between marks (chart-nav.ts).
+  // Roving tabindex: the chart is ONE tab stop; arrow keys move between marks (core/chart-nav.ts).
   const markCount = $derived(variant === 'bar' ? flatBars.length : pointMarkers.length)
   let focusIndex = $state(0)
   const tabStop = $derived(Math.min(focusIndex, Math.max(0, markCount - 1)))

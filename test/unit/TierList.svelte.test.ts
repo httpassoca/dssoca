@@ -3,10 +3,10 @@ import { render, fireEvent } from '@testing-library/svelte'
 import { tick } from 'svelte'
 import { axe } from 'vitest-axe'
 import TierListHarness from '../harness/TierListHarness.svelte'
-import { TRAY } from '$lib/tierlist-core'
+import { TRAY } from '$lib/core/tierlist'
 
 // DS-0159 — TierList: rows + tray, tiles, keyboard sorting, pointer drag, placements out.
-// The pure maths lives in tierlist-core.test.ts; these pin the component contract.
+// The pure maths lives in core-tierlist.test.ts; these pin the component contract.
 
 const axeOpts = { rules: { 'color-contrast': { enabled: false } } }
 

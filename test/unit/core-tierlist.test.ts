@@ -14,7 +14,7 @@ import {
   tierColor,
   zonesEqual,
   type TierListZones,
-} from '$lib/tierlist-core'
+} from '$lib/core/tierlist'
 
 // DS-0159 — the framework-free half of TierList: shared by TierList.svelte and
 // vanilla/tierlist.ts, so the maths is pinned once here.
@@ -27,7 +27,7 @@ const items = [
   { id: 'd', label: 'D' },
 ]
 
-describe('tierlist-core — buildZones', () => {
+describe('core/tierlist — buildZones', () => {
   it('puts every item in the tray when there are no placements, in items order', () => {
     const z = buildZones(tiers, items)
     expect(Object.keys(z)).toEqual(['S', 'A', 'B', 'C', 'D', TRAY])
@@ -56,7 +56,7 @@ describe('tierlist-core — buildZones', () => {
   })
 })
 
-describe('tierlist-core — moveItem / locate / placementsOf', () => {
+describe('core/tierlist — moveItem / locate / placementsOf', () => {
   const base = buildZones(tiers, items, { S: ['a', 'b'], A: ['c'] })
 
   it('locates an item', () => {
@@ -102,7 +102,7 @@ describe('tierlist-core — moveItem / locate / placementsOf', () => {
   })
 })
 
-describe('tierlist-core — keyboardTarget', () => {
+describe('core/tierlist — keyboardTarget', () => {
   const order = [...tiers.map((t) => t.id), TRAY]
   const z = buildZones(tiers, items, { S: ['a', 'b', 'c'], B: ['d'] })
 
@@ -134,7 +134,7 @@ describe('tierlist-core — keyboardTarget', () => {
   })
 })
 
-describe('tierlist-core — insertionIndex', () => {
+describe('core/tierlist — insertionIndex', () => {
   // Two rows of two 100×100 tiles.
   const cells = [
     { left: 0, right: 100, top: 0, bottom: 100 },
@@ -171,7 +171,7 @@ describe('tierlist-core — insertionIndex', () => {
   })
 })
 
-describe('tierlist-core — keyMoveFor', () => {
+describe('core/tierlist — keyMoveFor', () => {
   it('maps the arrows onto reading-order steps, mirrored under RTL', () => {
     expect(keyMoveFor('ArrowLeft')).toBe('prev')
     expect(keyMoveFor('ArrowRight')).toBe('next')
@@ -187,7 +187,7 @@ describe('tierlist-core — keyMoveFor', () => {
   })
 })
 
-describe('tierlist-core — colours and wording', () => {
+describe('core/tierlist — colours and wording', () => {
   it('defaults a row colour by index, cycling through the slot list', () => {
     expect(tierColor({}, 0)).toBe('var(--ss-accent)')
     expect(tierColor({}, 4)).toBe('var(--ss-red)')
