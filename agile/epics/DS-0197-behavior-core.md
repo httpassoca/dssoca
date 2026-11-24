@@ -49,7 +49,7 @@ Combobox, Slider, Drawer, Calendar.
 - [x] Every interactive component decides its behaviour in `core/`; the key-handling guard's
       legacy list is empty (DS-0199).
 - [ ] Rendered DOM, classes and existing `ss:*` events unchanged for existing components.
-- [ ] Tabs, Checkbox, Radio and Popover ship with a core, a vanilla twin, docs, a story and tests.
+- [x] Tabs, Checkbox, Radio and Popover ship with a core, a vanilla twin, docs, a story and tests (DS-0200).
 - [ ] `pnpm test`, `pnpm docs:test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green.
 - [ ] Browser pass in both themes and under `dir="rtl"`.
 - [ ] Documentation updated (component pages for every new `details.reason`, CLAUDE.md, CHANGELOG).

@@ -10,6 +10,23 @@ may include breaking changes (flagged **BREAKING**).
 
 ### Added
 
+- **`Tabs`**: new component. The WAI-ARIA tabs pattern in one tag (`tabs` array plus a `panel`
+  snippet): one tab stop with roving tabindex, arrows mirrored under RTL, Home/End, disabled
+  tabs skipped, `activation="auto" | "manual"`. `onChange(id, { reason })` reports `press` or
+  `key`. Plain HTML: `vanilla.js` toggles authored panels and emits `ss:change`.
+- **`Popover`**: new component. A non-modal floating panel anchored to a trigger button
+  (`trigger` snippet plus children), with `Menu`'s `side` / `align` placement. Opening moves
+  focus into the panel; Escape returns it to the trigger; an outside press or tabbing out closes
+  it. `onOpenChange(open, { reason })` reports `trigger`, `escape`, `outside` or `tab`. Plain
+  HTML: `ss:openchange`, `openPopover()`, `closePopover()`.
+- **`Checkbox`**: new component. A native checkbox drawn as a square box, with bindable
+  `checked` and `indeterminate` (check glyph or dash), `label` / `labelHidden` and form
+  `name` / `value`. Plain HTML: `ss:change`, `data-indeterminate`, `setCheckbox()`.
+- **`RadioGroup`**: new component. Native radios sharing a `name` inside a labelled
+  `role="radiogroup"`, square with a filled inner square for the selection; bindable `value`,
+  per-option and group `disabled`, `vertical` / `horizontal`. Plain HTML: `ss:change`,
+  `selectRadio()`.
+
 Components that change their own state now say why: their callback receives a `details` object
 with a `reason`, and the matching `ss:*` event on the plain-HTML path carries the same `reason`.
 All of it is additive.
