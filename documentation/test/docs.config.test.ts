@@ -133,6 +133,7 @@ describe('docs.config — nav', () => {
       'Spinner',
       'Switch',
       'Table',
+      'Tabs',
       'Textarea',
       'TierList',
       'Toaster',

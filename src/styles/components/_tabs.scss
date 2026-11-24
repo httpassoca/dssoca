@@ -1,0 +1,32 @@
+// --- tabs tokens (DS-0197) ----------------------------------------------------
+// Component-scoped --ss-* size tokens for the Tabs component. The tab strip follows
+// the chrome scale (--ss-ui-*) like the Topbar strip it is modelled on; padding and
+// gaps step with the size axis. Zero border-radius (house rule). md is the default
+// on :root; sm / lg override per the size axis.
+
+:root,
+[data-size-variant='md'] {
+  --ss-tabs-font: var(--ss-ui-md);
+  --ss-tabs-py: 9px;
+  --ss-tabs-px: 14px;
+  // Gap between a tab's icon and its label.
+  --ss-tabs-gap: 8px;
+  // Space between the tab strip and the panel content (and below it).
+  --ss-tabs-panel-py: 16px;
+}
+
+[data-size-variant='sm'] {
+  --ss-tabs-font: var(--ss-ui-sm);
+  --ss-tabs-py: 5px;
+  --ss-tabs-px: 10px;
+  --ss-tabs-gap: 6px;
+  --ss-tabs-panel-py: 10px;
+}
+
+[data-size-variant='lg'] {
+  --ss-tabs-font: var(--ss-ui-lg);
+  --ss-tabs-py: 12px;
+  --ss-tabs-px: 18px;
+  --ss-tabs-gap: 10px;
+  --ss-tabs-panel-py: 20px;
+}

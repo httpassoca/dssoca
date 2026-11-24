@@ -41,6 +41,7 @@
     Heatmap,
     Kbd,
     TierList,
+    Tabs,
   } from 'dssoca'
   import { componentsByCategory } from '$lib/categories'
   import { COMPONENTS } from '$lib/docs.config'
@@ -401,6 +402,20 @@
       <div class="pm-row active">Tokens</div>
       <div class="pm-row">Theming</div>
       <div class="pm-foot">↑↓ navigate · ↵ open · esc close</div>
+    </div>
+  {:else if slug === 'tabs'}
+    <div class="w-full">
+      <Tabs
+        label="Service"
+        value="overview"
+        tabs={[
+          { id: 'overview', label: 'Overview' },
+          { id: 'logs', label: 'Logs' },
+          { id: 'shell', label: 'Shell' },
+        ]}
+      >
+        {#snippet panel(tab)}<p class="card-body">Content for {tab.label}.</p>{/snippet}
+      </Tabs>
     </div>
   {:else if slug === 'shortcuts-help'}
     <!-- A live overlay is a top-layer <dialog> and would escape the inert

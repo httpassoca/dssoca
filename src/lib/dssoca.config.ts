@@ -150,6 +150,7 @@ export const COMPONENT_NAMES = [
   'Spinner',
   'Switch',
   'Table',
+  'Tabs',
   'Textarea',
   'TierList',
   'Toaster',

@@ -54,6 +54,9 @@ import { checkbox } from './checkbox'
 // RadioGroup (DS-0197).
 import { radioGroup } from './radio-group'
 
+// Tabs (DS-0197).
+import { tabs } from './tabs'
+
 export type { PropDoc, ComponentDoc } from './types'
 
 export const COMPONENTS: ComponentDoc[] = [
@@ -110,4 +113,7 @@ export const COMPONENTS: ComponentDoc[] = [
   checkbox,
   // DS-0197 — native radios in a named radiogroup.
   radioGroup,
+
+  // DS-0197 — WAI-ARIA tabs.
+  tabs,
 ]

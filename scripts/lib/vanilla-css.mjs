@@ -68,6 +68,7 @@ export const ROOT_CLASSES = Object.freeze({
   Spinner: ['ss-spinner'],
   Switch: ['ss-switch'],
   Table: ['ss-table'],
+  Tabs: ['ss-tabs'],
   Textarea: ['ss-textarea'],
   TierList: ['ss-tierlist'],
   Toaster: ['ss-toaster'],

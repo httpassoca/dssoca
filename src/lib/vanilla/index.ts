@@ -17,6 +17,7 @@ import { installTooltip } from './tooltip.js'
 import { installSwitch } from './switch.js'
 import { installSegmented } from './segmented.js'
 import { installTierlist } from './tierlist.js'
+import { installTabs } from './tabs.js'
 import { installFields, mountFields } from './fields.js'
 import { installCheckbox, mountCheckboxes } from './checkbox.js'
 import { installRadio } from './radio.js'
@@ -40,6 +41,7 @@ export { showTooltip, hideTooltip } from './tooltip.js'
 export { toggleSwitch } from './switch.js'
 export { selectSegment } from './segmented.js'
 export { toggleGrab, readPlacements } from './tierlist.js'
+export { selectTab } from './tabs.js'
 export { clearInput, nudgeNumber, autosize } from './fields.js'
 export { setCheckbox } from './checkbox.js'
 export { selectRadio } from './radio.js'
@@ -75,6 +77,7 @@ export function install(): void {
   installSwitch()
   installSegmented()
   installTierlist()
+  installTabs()
   installFields()
   installCheckbox()
   installRadio()

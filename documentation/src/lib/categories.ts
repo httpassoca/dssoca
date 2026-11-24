@@ -34,7 +34,16 @@ export const CATEGORIES: Category[] = [
   {
     id: 'navigation',
     label: 'Navigation',
-    slugs: ['sidebar', 'topbar', 'bottom-nav', 'menu', 'link', 'pagination', 'search-palette'],
+    slugs: [
+      'sidebar',
+      'topbar',
+      'bottom-nav',
+      'menu',
+      'link',
+      'pagination',
+      'search-palette',
+      'tabs',
+    ],
   },
   { id: 'layout', label: 'Layout', slugs: ['card', 'accordion', 'container', 'heading'] },
   {

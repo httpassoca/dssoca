@@ -232,6 +232,16 @@ inner sizes_).
 | `--ss-seg-px`   | `9px`        | `14px`        | `20px`       | Segment horizontal padding |
 | `--ss-seg-gap`  | `6px`        | `--ss-gap-sm` | `12px`       | Gap between segments       |
 
+**Tabs** (`--ss-tabs-*`)
+
+| Token                | `sm`         | `md`         | `lg`         | Role                   |
+| -------------------- | ------------ | ------------ | ------------ | ---------------------- |
+| `--ss-tabs-font`     | `--ss-ui-sm` | `--ss-ui-md` | `--ss-ui-lg` | Tab label size         |
+| `--ss-tabs-py`       | `5px`        | `9px`        | `12px`       | Tab vertical padding   |
+| `--ss-tabs-px`       | `10px`       | `14px`       | `18px`       | Tab horizontal padding |
+| `--ss-tabs-gap`      | `6px`        | `8px`        | `10px`       | Icon / label gap       |
+| `--ss-tabs-panel-py` | `10px`       | `16px`       | `20px`       | Panel vertical padding |
+
 **Accordion** (`--ss-acc-*`)
 
 | Token              | `sm`       | `md`          | `lg`       | Role                      |

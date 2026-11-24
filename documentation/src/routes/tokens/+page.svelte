@@ -113,6 +113,17 @@
       tokens: ['--ss-seg-font', '--ss-seg-py', '--ss-seg-px', '--ss-seg-gap'],
     },
     {
+      title: 'component tokens — Tabs',
+      note: 'size axis · src/styles/components/_tabs.scss',
+      tokens: [
+        '--ss-tabs-font',
+        '--ss-tabs-py',
+        '--ss-tabs-px',
+        '--ss-tabs-gap',
+        '--ss-tabs-panel-py',
+      ],
+    },
+    {
       title: 'component tokens — Accordion',
       note: 'size axis · src/styles/components/_accordion.scss',
       tokens: [

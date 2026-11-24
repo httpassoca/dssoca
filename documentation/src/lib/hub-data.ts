@@ -221,6 +221,8 @@ export const LANDING_EXCLUDED = new Set<string>([
   // DS-0159: a tier list is rows of tiles — far larger than a hub cell, and its
   // drag affordance would read as interactive; it lives on its docs page.
   'tier-list',
+  // DS-0197: tabs need their panels to read as tabs; they live on the docs page.
+  'tabs',
   'image',
   'chart',
   'table',
