@@ -49,7 +49,7 @@ src/lib/
   config.ts        applyDesignConfig / designAttributes / getDesignConfig (derives types+defaults from the manifest)
   core/            behaviour layer shared by the components and vanilla.js (DS-0197): pure,
                    framework-free, DOM-free. `behaviors/` = reusable pieces (roving focus, …),
-                   `<component>.ts` = one core per component (menu, switch, toast, tierlist, chart-nav)
+                   `<component>.ts` = one core per interactive component (menu, modal, toast, …)
   toast.svelte.ts  reactive toast store + imperative `toast` API (types + timer in core/toast.ts)
   icons.ts         BUILTIN_PATHS + registerIcon (shared by Icon.svelte and vanilla.js)
   spinner-frames.ts SPINNER_VARIANTS (shared by Spinner.svelte and the vanilla CSS generator)
@@ -109,7 +109,7 @@ Published surface (`exports`): `dssoca` (components + config), `dssoca/theme.css
   `vanilla/*.ts` file reads the state from the DOM, calls the same functions and writes the
   result back. Never decide what a key does in a component or a vanilla module, and never touch
   the DOM, Svelte or runes inside `core/` (guarded by `core-purity.test.ts` and the key-handling
-  guard in `checklist-guards.test.ts`, whose `LEGACY` list only shrinks). Reusable logic goes in
+  guard in `checklist-guards.test.ts`). Reusable logic goes in
   `core/behaviors/`. A change the component makes itself reports why through a `details.reason`
   on its callback and on the matching `ss:*` event. `core/` is internal: only types are
   re-exported from `index.ts`. Reference pair: `core/menu.ts` + `Menu.svelte` + `vanilla/menu.ts`.

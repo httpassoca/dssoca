@@ -71,31 +71,6 @@ describe('checklist guards — every component', () => {
 describe('checklist guards — key handling lives in core/', () => {
   const KEY_LOGIC = /\.key\s*(===|!==)|switch\s*\(\s*\w+\.key\s*\)/
 
-  /** Not migrated yet. Remove a file when it moves onto its core; never add one. */
-  const LEGACY = [
-    'components/Accordion.svelte',
-    'components/BoxPlot.svelte',
-    'components/BumpChart.svelte',
-    'components/Chart.svelte',
-    'components/FileDrop.svelte',
-    'components/Heatmap.svelte',
-    'components/Image.svelte',
-    'components/ScatterPlot.svelte',
-    'components/SearchPalette.svelte',
-    'components/SegmentedControl.svelte',
-    'components/Sidebar.svelte',
-    'components/Table.svelte',
-    'components/TierList.svelte',
-    'components/Toaster.svelte',
-    'components/Tooltip.svelte',
-    'components/Topbar.svelte',
-    'vanilla/accordion.ts',
-    'vanilla/segmented.ts',
-    'vanilla/tierlist.ts',
-    'vanilla/toast.ts',
-    'vanilla/tooltip.ts',
-  ]
-
   const handlesKeys = [
     ...components.map(({ name, markup }) => ({ file: `components/${name}`, code: markup })),
     ...readdirSync('src/lib/vanilla')
@@ -106,11 +81,7 @@ describe('checklist guards — key handling lives in core/', () => {
     .map(({ file }) => file)
     .sort()
 
-  it('no file outside the legacy list decides what a key does', () => {
-    expect(handlesKeys.filter((f) => !LEGACY.includes(f))).toEqual([])
-  })
-
-  it('the legacy list only names files that still handle keys (it shrinks as they migrate)', () => {
-    expect(LEGACY.filter((f) => !handlesKeys.includes(f))).toEqual([])
+  it('no component and no vanilla module decides what a key does', () => {
+    expect(handlesKeys).toEqual([])
   })
 })

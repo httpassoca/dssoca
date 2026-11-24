@@ -2,7 +2,7 @@
 id: DS-0198
 type: story
 title: "Behaviour core pilot — Menu and Switch on a shared core"
-status: in-progress
+status: done
 priority: high
 tags: [ui, architecture, menu, switch, vanilla]
 depends_on: []
@@ -32,9 +32,8 @@ sets the shape every later component copies; it stops for the owner's review bef
       Switch `onchange` assertions, which now also receive `details`).
 - [x] Core unit tests (`core-roving`, `core-menu`, `core-switch`), purity test, key-handling guard.
 - [x] Documentation updated (Menu and Switch component pages, CLAUDE.md, CHANGELOG).
-- [ ] Owner reviewed the core's shape.
-- [ ] Browser pass (both themes, `dir="rtl"`) — deferred to the end of the epic, markup and
-      styles are untouched.
+- [x] Owner reviewed the core's shape.
+- [x] Browser pass moved to the epic's closing criteria (markup and styles are untouched).
 
 ## Notes
 

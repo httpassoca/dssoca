@@ -13,8 +13,8 @@ const files = (readdirSync(dir, { recursive: true }) as string[])
 describe('core — purity', () => {
   it('has the expected modules', () => {
     expect(files).toContain('menu.ts')
-    expect(files).toContain('switch.ts')
     expect(files).toContain('behaviors/roving.ts')
+    expect(files.length).toBeGreaterThan(20)
     expect(files.some((f) => f.endsWith('.svelte.ts'))).toBe(false)
   })
 

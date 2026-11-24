@@ -31,7 +31,7 @@ Decisions locked with the owner:
 - **Callbacks** gain an additive `details.reason`; `cancel()` / `source` wait until needed.
 - **Guards**: `core-purity.test.ts` + a key-handling guard with a shrinking legacy list.
 - **Delivery**: one PR (`feature/behavior-core`), one commit per component, a checkpoint after
-  the pilot ([[DS-0198-behavior-core-pilot]]), release `0.21.0`.
+  the pilot ([[DS-0198-behavior-core-pilot]]), then [[DS-0199-behavior-core-all-components]], release `0.21.0`.
 
 Order: pilot (Menu, Switch) → the duplicated components (Accordion, Modal, SegmentedControl,
 Tooltip, Input/Textarea/NumberField) → Svelte-only interactive components (Select, Pagination,
@@ -45,9 +45,9 @@ Combobox, Slider, Drawer, Calendar.
 
 ## Acceptance criteria
 
-- [ ] Pilot merged into the branch and reviewed by the owner (DS-0198).
-- [ ] Every interactive component decides its behaviour in `core/`; the key-handling guard's
-      legacy list is empty.
+- [x] Pilot merged into the branch and reviewed by the owner (DS-0198).
+- [x] Every interactive component decides its behaviour in `core/`; the key-handling guard's
+      legacy list is empty (DS-0199).
 - [ ] Rendered DOM, classes and existing `ss:*` events unchanged for existing components.
 - [ ] Tabs, Checkbox, Radio and Popover ship with a core, a vanilla twin, docs, a story and tests.
 - [ ] `pnpm test`, `pnpm docs:test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green.

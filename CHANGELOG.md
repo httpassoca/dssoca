@@ -10,20 +10,42 @@ may include breaking changes (flagged **BREAKING**).
 
 ### Added
 
-- **`Menu`**: `onOpenChange(open, details)` fires when the menu opens or closes itself, and
-  `details.reason` says why: `trigger`, `key`, `escape`, `tab`, `outside` or `item`. On the
-  plain-HTML path the root emits `ss:openchange` with `{ open, reason }`.
-- **`Switch`**: `onchange` receives a second argument, `details.reason` (`track` or `label`);
-  the plain-HTML `ss:change` detail carries the same `reason`.
+Components that change their own state now say why: their callback receives a `details` object
+with a `reason`, and the matching `ss:*` event on the plain-HTML path carries the same `reason`.
+All of it is additive.
+
+- **`Menu`**: new `onOpenChange(open, details)`; reasons `trigger`, `key`, `escape`, `tab`,
+  `outside`, `item`. Plain HTML: new `ss:openchange` event with `{ open, reason }`.
+- **`Modal`**: `onclose` receives `{ reason }`: `escape`, `backdrop`, `button` or
+  `programmatic`. Plain HTML: new `ss:close` event with the same detail, and
+  `closeModal(dialog, reason)` takes an optional reason.
+- **`SearchPalette`**: `onopen` and `onclose` receive `{ reason }`: `shortcut` or `prop` on
+  open; `escape`, `backdrop`, `close-button`, `select`, `shortcut` or `prop` on close.
+- **`Switch`**: `onchange` and `ss:change` carry `reason`: `track` or `label`.
+- **`SegmentedControl`**: `onChange` and `ss:change` carry `reason`: `press` or `key`.
+- **`Pagination`**: `onchange` carries `reason`: `page`, `prev` or `next`.
+- **`FileDrop`**: `onfiles` carries `reason`: `select`, `drop`, `remove` or `clear`.
+- **`TierList`**: `onchange` and `ss:change` carry `reason`: `pointer` or `keyboard`.
 
 ### Changed
 
 - **Behaviour core** (`DS-0197`). What a key press, a click or an outside press does is now
   decided in one framework-free place, `src/lib/core/`, and both the Svelte components and
-  `vanilla.js` call it, instead of each carrying its own copy. **`Menu`** and **`Switch`** are
-  the first two on it; the markup, classes and existing events are unchanged.
-- **`Menu`** (plain HTML): an item marked only with `aria-disabled="true"` is no longer
-  activated by a click, matching the Svelte component and the keyboard, which already skipped it.
+  `vanilla.js` call it, instead of each carrying its own copy. Every interactive component is
+  on it; the markup, classes and existing events are unchanged. A test asserting a callback was
+  called with exactly one argument needs the new `details` added.
+- **`Pagination`**: when Prev or Next reaches its bound and becomes disabled, focus moves to the
+  current page button instead of being lost.
+- **`Tooltip`**: a focus move that stays inside the tooltip no longer hides and re-shows the tip.
+
+Sharing one core also aligned a few plain-HTML (`vanilla.js`) edge cases with the components:
+
+- **`Menu`**: an item marked only with `aria-disabled="true"` is no longer activated by a click.
+- **`SegmentedControl`**: with `aria-disabled="true"` on the root, arrow keys are ignored even
+  when the segments are not natively disabled.
+- **`Input`**: `clearInput()` does nothing on a readonly or disabled input.
+- **`NumberField`**: a non-numeric `min`, `max` or `step` attribute is treated as absent, and a
+  stepper press at a bound is a no-op.
 
 ### Docs
 
