@@ -15,7 +15,7 @@ export const tierList: ComponentDoc = {
       label: 'Games',
     },
     behaviour: 'js',
-    note: 'vanilla.js adds pointer drag between and within rows (Pointer Events, so touch works) and the keyboard path — Space picks a tile up, arrows move it, Space drops, Escape cancels — announced through the `.live` region. Emits `ss:change` on the root with `{ placements }`; `data-ss-readonly` on the root makes it display-only.',
+    note: 'vanilla.js adds pointer drag between and within rows (Pointer Events, so touch works) and the keyboard path — Space picks a tile up, arrows move it, Space drops, Escape cancels — announced through the `.live` region. Emits `ss:change` on the root with `{ placements, reason }` (`reason` is `pointer` or `keyboard`); `data-ss-readonly` on the root makes it display-only.',
   },
   tagline: 'Ranked tier rows with drag-and-drop and keyboard sorting.',
   description:
@@ -62,8 +62,8 @@ export const tierList: ComponentDoc = {
     },
     {
       name: 'onchange',
-      type: '(placements: Record<string, string[]>) => void',
-      desc: 'Fired after every completed move (pointer drop or keyboard drop) with the new placements.',
+      type: "(placements: Record<string, string[]>, details: { reason: 'pointer' | 'keyboard' }) => void",
+      desc: 'Fired after every completed move with the new placements. `details.reason` says what committed it: `pointer` (a drag was dropped) or `keyboard` (a picked-up tile was dropped with Space / Enter).',
     },
     {
       name: 'onselect',

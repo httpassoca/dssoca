@@ -400,7 +400,9 @@ describe('vanilla — TierList (DS-0159)', () => {
     expect(a.getAttribute('aria-pressed')).toBe('false')
     expect(root.classList.contains('sorting')).toBe(false)
     expect(live()).toBe('Dropped Alpha in B, position 1 of 1.')
-    expect(seen).toEqual([{ placements: { S: ['b'], A: [], B: ['a'], C: [], D: [] } }])
+    expect(seen).toEqual([
+      { placements: { S: ['b'], A: [], B: ['a'], C: [], D: [] }, reason: 'keyboard' },
+    ])
   })
 
   it('Escape puts the tile back where it was; a blur while grabbed cancels too', async () => {
@@ -479,7 +481,9 @@ describe('vanilla — TierList (DS-0159)', () => {
     pointer('pointerup', 150, 50)
     expect(root.classList.contains('dragging')).toBe(false)
     expect(q('.ss-tierlist .ghost')).toBeNull()
-    expect(seen).toEqual([{ placements: { S: ['a', 'c', 'b'], A: [], B: [], C: [], D: [] } }])
+    expect(seen).toEqual([
+      { placements: { S: ['a', 'c', 'b'], A: [], B: [], C: [], D: [] }, reason: 'pointer' },
+    ])
     expect(live()).toBe('Dropped Gamma in S, position 2 of 3.')
   })
 

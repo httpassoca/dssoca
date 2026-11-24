@@ -147,7 +147,10 @@ describe('TierList — keyboard sorting', () => {
     expect(tile(container, 'alpha')).toHaveAttribute('aria-pressed', 'false')
     expect(live(container)).toBe('Dropped Alpha in A, position 1 of 1.')
     expect(onchange).toHaveBeenCalledTimes(1)
-    expect(onchange).toHaveBeenLastCalledWith({ S: ['beta'], A: ['alpha'], B: [], C: [], D: [] })
+    expect(onchange).toHaveBeenLastCalledWith(
+      { S: ['beta'], A: ['alpha'], B: [], C: [], D: [] },
+      { reason: 'keyboard' },
+    )
   })
 
   it('Escape restores the origin and announces it; blur cancels too', async () => {
@@ -307,7 +310,10 @@ describe('TierList — pointer drag', () => {
     await fireEvent.pointerUp(tile(container, 'beta'))
     expect(container.querySelector('.ghost')).toBeNull()
     expect(container.querySelector('.ss-tierlist')).not.toHaveClass('dragging')
-    expect(onchange).toHaveBeenCalledWith({ S: ['alpha', 'beta'], A: [], B: [], C: [], D: [] })
+    expect(onchange).toHaveBeenCalledWith(
+      { S: ['alpha', 'beta'], A: [], B: [], C: [], D: [] },
+      { reason: 'pointer' },
+    )
     expect(live(container)).toBe('Dropped Beta in S, position 2 of 2.')
     // the drop's synthetic click is swallowed; a later real click still activates
     await fireEvent.click(tile(container, 'beta'))
@@ -328,13 +334,10 @@ describe('TierList — pointer drag', () => {
     await fireEvent.pointerMove(t, { clientX: 20, clientY: 60 }) // left of alpha's centre
     expect(zoneIds(container, 'S')).toEqual(['gamma', 'alpha', 'beta'])
     await fireEvent.pointerUp(tile(container, 'gamma'))
-    expect(onchange).toHaveBeenLastCalledWith({
-      S: ['gamma', 'alpha', 'beta'],
-      A: [],
-      B: [],
-      C: [],
-      D: [],
-    })
+    expect(onchange).toHaveBeenLastCalledWith(
+      { S: ['gamma', 'alpha', 'beta'], A: [], B: [], C: [], D: [] },
+      { reason: 'pointer' },
+    )
   })
 
   it('pointercancel restores the origin; a release without movement changes nothing', async () => {
@@ -420,13 +423,10 @@ describe('TierList — RTL', () => {
     await fireEvent.pointerMove(t, { clientX: 980, clientY: 60 }) // right of alpha's centre
     expect(zoneIds(container, 'S')).toEqual(['gamma', 'alpha', 'beta'])
     await fireEvent.pointerUp(tile(container, 'gamma'))
-    expect(onchange).toHaveBeenLastCalledWith({
-      S: ['gamma', 'alpha', 'beta'],
-      A: [],
-      B: [],
-      C: [],
-      D: [],
-    })
+    expect(onchange).toHaveBeenLastCalledWith(
+      { S: ['gamma', 'alpha', 'beta'], A: [], B: [], C: [], D: [] },
+      { reason: 'pointer' },
+    )
   })
 })
 

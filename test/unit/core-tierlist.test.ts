@@ -4,6 +4,7 @@ import {
   TIER_COLOR_VARS,
   TRAY,
   announceText,
+  DRAG_THRESHOLD,
   buildZones,
   insertionIndex,
   keyMoveFor,
@@ -12,7 +13,12 @@ import {
   moveItem,
   placementsOf,
   tierColor,
+  tierListClickSelects,
+  tierListDragStarts,
+  tierListPressArmsDrag,
+  tierListTileKey,
   zonesEqual,
+  type TierListTileState,
   type TierListZones,
 } from '$lib/core/tierlist'
 
@@ -208,5 +214,101 @@ describe('core/tierlist — colours and wording', () => {
 
   it('ships the five classic tiers', () => {
     expect(DEFAULT_TIERS.map((t) => t.id)).toEqual(['S', 'A', 'B', 'C', 'D'])
+  })
+})
+
+describe('core/tierlist — tierListTileKey', () => {
+  const idle: TierListTileState = { readonly: false, grabbed: false, select: 'none', rtl: false }
+  const held: TierListTileState = { ...idle, grabbed: true }
+  const hit = (action: unknown) => ({ action, preventDefault: true })
+
+  it('Space picks the tile up, and drops it when it is the one picked up', () => {
+    expect(tierListTileKey(idle, ' ')).toEqual(hit({ type: 'toggle' }))
+    expect(tierListTileKey(held, ' ')).toEqual(hit({ type: 'toggle' }))
+  })
+
+  it('Enter behaves like Space when there is nothing to activate', () => {
+    expect(tierListTileKey(idle, 'Enter')).toEqual(hit({ type: 'toggle' }))
+    expect(tierListTileKey(held, 'Enter')).toEqual(hit({ type: 'toggle' }))
+  })
+
+  it('Enter activates through the callback when the caller has one', () => {
+    const state: TierListTileState = { ...idle, select: 'callback' }
+    expect(tierListTileKey(state, 'Enter')).toEqual(hit({ type: 'select' }))
+    expect(tierListTileKey({ ...state, grabbed: true }, 'Enter')).toEqual(hit({ type: 'select' }))
+    // Space still sorts.
+    expect(tierListTileKey(state, ' ')).toEqual(hit({ type: 'toggle' }))
+  })
+
+  it('Enter is left to the native click when the host activates that way', () => {
+    const state: TierListTileState = { ...idle, select: 'native' }
+    expect(tierListTileKey(state, 'Enter')).toBeNull()
+    expect(tierListTileKey({ ...state, grabbed: true }, 'Enter')).toBeNull()
+    expect(tierListTileKey(state, ' ')).toEqual(hit({ type: 'toggle' }))
+  })
+
+  it('Escape cancels only while the tile is picked up', () => {
+    expect(tierListTileKey(held, 'Escape')).toEqual(hit({ type: 'cancel' }))
+    expect(tierListTileKey(idle, 'Escape')).toBeNull()
+  })
+
+  it('arrows, Home and End move only while the tile is picked up', () => {
+    expect(tierListTileKey(held, 'ArrowRight')).toEqual(hit({ type: 'move', move: 'next' }))
+    expect(tierListTileKey(held, 'ArrowLeft')).toEqual(hit({ type: 'move', move: 'prev' }))
+    expect(tierListTileKey(held, 'ArrowUp')).toEqual(hit({ type: 'move', move: 'up' }))
+    expect(tierListTileKey(held, 'ArrowDown')).toEqual(hit({ type: 'move', move: 'down' }))
+    expect(tierListTileKey(held, 'Home')).toEqual(hit({ type: 'move', move: 'home' }))
+    expect(tierListTileKey(held, 'End')).toEqual(hit({ type: 'move', move: 'end' }))
+    for (const key of ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Home', 'End']) {
+      expect(tierListTileKey(idle, key)).toBeNull()
+    }
+  })
+
+  it('mirrors Left/Right in a right-to-left layout', () => {
+    const rtl = { ...held, rtl: true }
+    expect(tierListTileKey(rtl, 'ArrowLeft')?.action).toEqual({ type: 'move', move: 'next' })
+    expect(tierListTileKey(rtl, 'ArrowRight')?.action).toEqual({ type: 'move', move: 'prev' })
+    expect(tierListTileKey(rtl, 'ArrowUp')?.action).toEqual({ type: 'move', move: 'up' })
+  })
+
+  it('lets every other key through', () => {
+    expect(tierListTileKey(held, 'Tab')).toBeNull()
+    expect(tierListTileKey(held, 'a')).toBeNull()
+    expect(tierListTileKey(idle, 'Tab')).toBeNull()
+  })
+
+  it('a read-only list handles no key at all', () => {
+    for (const select of ['none', 'callback', 'native'] as const) {
+      const state: TierListTileState = { readonly: true, grabbed: true, select, rtl: false }
+      for (const key of [' ', 'Enter', 'Escape', 'ArrowRight', 'Home']) {
+        expect(tierListTileKey(state, key)).toBeNull()
+      }
+    }
+  })
+})
+
+describe('core/tierlist — pointer decisions', () => {
+  it('only a primary press on an editable, idle list arms a drag', () => {
+    expect(tierListPressArmsDrag({ readonly: false, button: 0, grabbing: false })).toBe(true)
+    expect(tierListPressArmsDrag({ readonly: true, button: 0, grabbing: false })).toBe(false)
+    expect(tierListPressArmsDrag({ readonly: false, button: 1, grabbing: false })).toBe(false)
+    expect(tierListPressArmsDrag({ readonly: false, button: 2, grabbing: false })).toBe(false)
+    expect(tierListPressArmsDrag({ readonly: false, button: 0, grabbing: true })).toBe(false)
+  })
+
+  it('a press becomes a drag once the pointer has travelled the threshold', () => {
+    expect(DRAG_THRESHOLD).toBe(4)
+    expect(tierListDragStarts(0, 0)).toBe(false)
+    expect(tierListDragStarts(3, 0)).toBe(false)
+    expect(tierListDragStarts(2, 2)).toBe(false)
+    expect(tierListDragStarts(4, 0)).toBe(true)
+    expect(tierListDragStarts(0, -4)).toBe(true)
+    expect(tierListDragStarts(-3, 3)).toBe(true)
+  })
+
+  it('a click activates unless the list is read-only or the click ends a drag', () => {
+    expect(tierListClickSelects({ readonly: false, afterDrag: false })).toBe(true)
+    expect(tierListClickSelects({ readonly: true, afterDrag: false })).toBe(false)
+    expect(tierListClickSelects({ readonly: false, afterDrag: true })).toBe(false)
   })
 })

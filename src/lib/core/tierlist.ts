@@ -220,6 +220,90 @@ export function keyboardTarget(
   }
 }
 
+// --- decisions ------------------------------------------------------------------------------
+// What a key or a press on a tile does. The callers apply the action: TierList.svelte to its
+// `$state`, `vanilla/tierlist.ts` to the DOM.
+
+/** What committed the new order; passed to `onchange` / `ss:change`. */
+export type TierListChangeReason = 'pointer' | 'keyboard'
+
+export interface TierListChangeDetails {
+  reason: TierListChangeReason
+}
+
+export interface TierListTileState {
+  /** The list is display only. */
+  readonly: boolean
+  /** This tile is the one picked up with the keyboard. */
+  grabbed: boolean
+  /**
+   * How Enter activates a tile. `'callback'`: the caller runs its select handler. `'native'`:
+   * the key is left alone so the button's own click reaches the host. `'none'`: there is
+   * nothing to activate, so Enter picks the tile up like Space.
+   */
+  select: 'callback' | 'native' | 'none'
+  /** The tile sits in a right-to-left layout (read from the DOM by the caller). */
+  rtl: boolean
+}
+
+export type TierListKeyAction =
+  /** Pick the tile up, or drop it when it is the one picked up. */
+  | { type: 'toggle' }
+  /** Activate the tile (a details view). */
+  | { type: 'select' }
+  /** Put the picked-up tile back where it came from, keeping focus on it. */
+  | { type: 'cancel' }
+  /** Step the picked-up tile; see {@link keyboardTarget} for where it lands. */
+  | { type: 'move'; move: TierListKeyMove }
+
+/** A key the tile handles: its action, and whether the browser default must be cancelled. */
+export interface TierListKeyResult {
+  action: TierListKeyAction
+  preventDefault: boolean
+}
+
+/** A key on a tile. `null` = not a tier-list key (or a read-only list), let it through. */
+export function tierListTileKey(state: TierListTileState, key: string): TierListKeyResult | null {
+  if (state.readonly) return null
+  const act = (action: TierListKeyAction): TierListKeyResult => ({ action, preventDefault: true })
+  if (key === ' ') return act({ type: 'toggle' })
+  if (key === 'Enter') {
+    if (state.select === 'none') return act({ type: 'toggle' })
+    return state.select === 'callback' ? act({ type: 'select' }) : null
+  }
+  // Everything below only means something while this tile is picked up.
+  if (!state.grabbed) return null
+  if (key === 'Escape') return act({ type: 'cancel' })
+  const move = keyMoveFor(key, state.rtl)
+  return move ? act({ type: 'move', move }) : null
+}
+
+/** Pointer travel, in px, before a press on a tile becomes a drag. */
+export const DRAG_THRESHOLD = 4
+
+export interface TierListPressState {
+  readonly: boolean
+  /** `PointerEvent.button`; only the primary button drags. */
+  button: number
+  /** A tile is picked up with the keyboard; the pointer must not start a second sort. */
+  grabbing: boolean
+}
+
+/** Whether a press on a tile may turn into a drag. */
+export function tierListPressArmsDrag(state: TierListPressState): boolean {
+  return !state.readonly && state.button === 0 && !state.grabbing
+}
+
+/** Whether the pointer has travelled far enough from the press for it to count as a drag. */
+export function tierListDragStarts(dx: number, dy: number): boolean {
+  return Math.hypot(dx, dy) >= DRAG_THRESHOLD
+}
+
+/** Whether a click on a tile activates it: not in a read-only list, not the click that ends a drag. */
+export function tierListClickSelects(state: { readonly: boolean; afterDrag: boolean }): boolean {
+  return !state.readonly && !state.afterDrag
+}
+
 /** Axis-aligned box, as `getBoundingClientRect()` gives it. */
 export interface Box {
   left: number
