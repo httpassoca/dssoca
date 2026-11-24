@@ -2,6 +2,7 @@
   import type { Snippet } from 'svelte'
   import type { HTMLInputAttributes, FullAutoFill } from 'svelte/elements'
   import { resolveComponentSize, type Size } from '../config.js'
+  import { inputClear, inputShowClear } from '../core/input.js'
 
   interface Props {
     label?: string
@@ -80,12 +81,16 @@
   const resolvedSize = $derived(resolveComponentSize('Input', size))
 
   // The .ss-field wrapper carries the border/focus ring; show the clear button only when useful.
-  const showClear = $derived(clearable && !!value && !readonly && !disabled)
+  // Both decisions come from core/input.ts, shared with vanilla.js.
+  const clearState = $derived({ value: value ? String(value) : '', readonly, disabled })
+  const showClear = $derived(clearable && inputShowClear(clearState))
 
   let inputEl = $state<HTMLInputElement>()
   function clear() {
-    value = ''
-    inputEl?.focus()
+    const result = inputClear(clearState)
+    if (!result) return
+    value = result.value
+    if (result.focusInput) inputEl?.focus()
   }
 </script>
 
