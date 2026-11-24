@@ -157,6 +157,59 @@ describe('Modal — closing', () => {
   })
 })
 
+// DS-0197: `onclose` reports why the dialog closed (decided in core/modal.ts).
+describe('Modal — close reason', () => {
+  const setup = (props: Record<string, unknown> = {}) => {
+    const onclose = vi.fn()
+    const utils = render(Modal, { ...baseProps(), onclose, ...props })
+    const dialog = utils.container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
+    return { ...utils, dialog, onclose }
+  }
+
+  it('reports "button" for the Close button', async () => {
+    const { getByLabelText, onclose } = setup()
+    await fireEvent.click(getByLabelText('Close'))
+    expect(onclose).toHaveBeenCalledWith({ reason: 'button' })
+  })
+
+  it('reports "backdrop" for a backdrop press', async () => {
+    const { dialog, onclose } = setup()
+    await fireEvent.pointerDown(dialog)
+    expect(onclose).toHaveBeenCalledWith({ reason: 'backdrop' })
+  })
+
+  it('reports "escape" when the native cancel precedes the close', () => {
+    const { dialog, onclose } = setup()
+    // What the browser does on Esc: fire `cancel`, then (unless prevented) close.
+    const cancel = new Event('cancel', { cancelable: true })
+    dialog.dispatchEvent(cancel)
+    expect(cancel.defaultPrevented).toBe(false)
+    dialog.close()
+    expect(onclose).toHaveBeenCalledWith({ reason: 'escape' })
+  })
+
+  it('reports "programmatic" for a direct close()', () => {
+    const { dialog, onclose } = setup()
+    dialog.close()
+    expect(onclose).toHaveBeenCalledWith({ reason: 'programmatic' })
+  })
+
+  it('reports "programmatic" when the open prop flips to false', async () => {
+    const { rerender, dialog, onclose } = setup()
+    await rerender({ open: false })
+    expect(dialog.open).toBe(false)
+    expect(onclose).toHaveBeenCalledWith({ reason: 'programmatic' })
+  })
+
+  it('a swallowed Escape (closeOnEsc=false) does not label the next close', () => {
+    const { dialog, onclose } = setup({ closeOnEsc: false })
+    dialog.dispatchEvent(new Event('cancel', { cancelable: true }))
+    expect(onclose).not.toHaveBeenCalled()
+    dialog.close()
+    expect(onclose).toHaveBeenCalledWith({ reason: 'programmatic' })
+  })
+})
+
 describe('Modal — bindable open', () => {
   it('opens when open flips from false to true', async () => {
     const { container, rerender } = render(Modal, {
