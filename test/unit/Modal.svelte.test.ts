@@ -118,17 +118,40 @@ describe('Modal — closing', () => {
     const onclose = vi.fn()
     const { container } = render(Modal, { ...baseProps(), onclose })
     const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
-    // A pointerdown whose target IS the dialog (not the inner panel) = backdrop.
+    // A press whose target IS the dialog (not the inner panel) = backdrop.
     await fireEvent.pointerDown(dialog)
+    await fireEvent.click(dialog)
     expect(dialog.open).toBe(false)
     expect(onclose).toHaveBeenCalledTimes(1)
   })
 
-  it('does not close on a pointerdown that lands on the inner panel', async () => {
+  // Closing on the pointerdown hands focus back to the opener and then lets the same
+  // gesture's mousedown blur it (focus on <body>). The close must wait for the click.
+  it('stays open on the backdrop pointerdown and closes on the click that follows', async () => {
+    const { container } = render(Modal, baseProps())
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
+    await fireEvent.pointerDown(dialog)
+    expect(dialog.open).toBe(true)
+    await fireEvent.click(dialog)
+    expect(dialog.open).toBe(false)
+  })
+
+  it('does not close on a press that lands on the inner panel', async () => {
     const { container } = render(Modal, baseProps())
     const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
     const panel = container.querySelector('.ss-modal .panel')!
     await fireEvent.pointerDown(panel)
+    await fireEvent.click(panel)
+    expect(dialog.open).toBe(true)
+  })
+
+  it('does not close on a drag that starts in the panel and ends on the backdrop', async () => {
+    const { container } = render(Modal, baseProps())
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
+    const panel = container.querySelector('.ss-modal .panel')!
+    await fireEvent.pointerDown(panel)
+    // The browser targets the click at the common ancestor: the dialog.
+    await fireEvent.click(dialog)
     expect(dialog.open).toBe(true)
   })
 
@@ -136,6 +159,7 @@ describe('Modal — closing', () => {
     const { container } = render(Modal, { ...baseProps(), closeOnBackdrop: false })
     const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
     await fireEvent.pointerDown(dialog)
+    await fireEvent.click(dialog)
     expect(dialog.open).toBe(true)
   })
 

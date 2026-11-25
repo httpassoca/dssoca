@@ -5,7 +5,7 @@
  *   <button data-ss-modal="#confirm">Open</button>
  *   <dialog class="ss-modal" id="confirm"> … <button class="close" data-ss-dismiss>×</button>
  *
- * Backdrop pointerdown closes unless the dialog carries `data-ss-static`; Escape is blocked
+ * A backdrop click closes unless the dialog carries `data-ss-static`; Escape is blocked
  * when it carries `data-ss-no-esc` (mirrors `closeOnBackdrop` / `closeOnEsc`).
  *
  * While a modal is open the page behind it must not scroll (DS-0178): `lockScroll()` sets
@@ -81,8 +81,19 @@ export function installModal(): void {
     if (dialog instanceof HTMLDialogElement) closeModal(dialog)
   })
 
-  on('pointerdown', 'dialog.ss-modal', (dialog, e) => {
-    if (e.target !== dialog || dialog.hasAttribute('data-ss-static')) return
+  // A press that starts on the dialog itself is a backdrop hit; the dialog closes on the click
+  // that follows. Closing on the pointerdown would return focus to the opener and then let the
+  // same gesture's mousedown blur it, dropping focus on <body>. Remembering where the press
+  // began keeps a drag from inside the panel to the backdrop from closing.
+  let pressed: Element | null = null
+  document.addEventListener('pointerdown', (e) => {
+    const t = e.target
+    pressed = t instanceof HTMLDialogElement && t.matches('dialog.ss-modal') ? t : null
+  })
+  on('click', 'dialog.ss-modal', (dialog, e) => {
+    const hit = pressed === dialog && e.target === dialog
+    pressed = null
+    if (!hit || dialog.hasAttribute('data-ss-static')) return
     closeModal(dialog as HTMLDialogElement)
   })
 

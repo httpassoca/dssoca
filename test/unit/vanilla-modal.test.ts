@@ -53,13 +53,26 @@ describe('vanilla — Modal scroll lock', () => {
     expect(html().style.overflow).toBe('')
   })
 
-  it('releases on a backdrop pointerdown', () => {
+  it('releases on a backdrop click', () => {
     document.body.innerHTML = markup
     click(q('[data-ss-modal]'))
     const dialog = q<HTMLDialogElement>('dialog')
     dialog.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    // Not on the pointerdown: the same gesture's mousedown would blur the opener that the
+    // close just refocused, leaving focus on <body>.
+    expect(dialog.open).toBe(true)
+    click(dialog)
     expect(dialog.open).toBe(false)
     expect(html().style.overflow).toBe('')
+  })
+
+  it('keeps the dialog open when a press that began in the panel ends on the backdrop', () => {
+    document.body.innerHTML = markup
+    click(q('[data-ss-modal]'))
+    const dialog = q<HTMLDialogElement>('dialog')
+    q('.panel').dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    click(dialog)
+    expect(dialog.open).toBe(true)
   })
 
   it('ref-counts nested locks and restores the previous overflow', () => {

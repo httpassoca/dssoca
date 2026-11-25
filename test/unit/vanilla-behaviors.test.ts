@@ -89,17 +89,20 @@ describe('vanilla — Modal', () => {
     expect(dialog.open).toBe(false)
   })
 
-  it('closes on backdrop pointerdown unless data-ss-static', () => {
+  it('closes on a backdrop click unless data-ss-static', () => {
     mountHtml(html())
     const dialog = q<HTMLDialogElement>('dialog.ss-modal')
     dialog.showModal()
     pointerdown(q('.panel')) // inside the panel: stays
+    click(q('.panel'))
     expect(dialog.open).toBe(true)
     pointerdown(dialog) // the backdrop hit-test: target is the dialog itself
+    click(dialog)
     expect(dialog.open).toBe(false)
     dialog.setAttribute('data-ss-static', '')
     dialog.showModal()
     pointerdown(dialog)
+    click(dialog)
     expect(dialog.open).toBe(true)
   })
 
