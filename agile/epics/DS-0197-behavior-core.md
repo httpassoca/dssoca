@@ -2,14 +2,14 @@
 id: DS-0197
 type: epic
 title: "Behaviour core — one framework-free place for what components do"
-status: in-progress
+status: done
 priority: high
 tags: [ui, epic, architecture, a11y, vanilla]
 depends_on: []
 parent: null
 epic: null
 created: 2026-11-24
-updated: 2026-11-24
+updated: 2026-11-25
 ---
 
 ## Description
@@ -48,8 +48,8 @@ Combobox, Slider, Drawer, Calendar.
 - [x] Pilot merged into the branch and reviewed by the owner (DS-0198).
 - [x] Every interactive component decides its behaviour in `core/`; the key-handling guard's
       legacy list is empty (DS-0199).
-- [ ] Rendered DOM, classes and existing `ss:*` events unchanged for existing components.
+- [x] Rendered DOM, classes and existing `ss:*` events unchanged for existing components.
 - [x] Tabs, Checkbox, Radio and Popover ship with a core, a vanilla twin, docs, a story and tests (DS-0200).
-- [ ] `pnpm test`, `pnpm docs:test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green.
-- [ ] Browser pass in both themes and under `dir="rtl"`.
-- [ ] Documentation updated (component pages for every new `details.reason`, CLAUDE.md, CHANGELOG).
+- [x] `pnpm test`, `pnpm docs:test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green.
+- [x] Browser pass in both themes and under `dir="rtl"` (headless Chromium).
+- [x] Documentation updated (component pages for every new `details.reason`, CLAUDE.md, CHANGELOG).
