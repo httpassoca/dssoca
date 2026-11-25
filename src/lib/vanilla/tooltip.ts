@@ -5,9 +5,20 @@
  * hides any open tip wherever focus is (WCAG 1.4.13). While open the focusable trigger inside
  * `.trigger` (not the wrapper) carries `aria-describedby` → the tip (an id is generated when
  * the markup has none); the token is added alongside any description the trigger already has
- * (DS-0163).
+ * (DS-0163). Which event shows or hides a tip is decided in `core/tooltip.ts`, the same
+ * functions Tooltip.svelte calls.
  */
 import { on, all } from './delegate.js'
+import {
+  tooltipDescribedBy,
+  tooltipFocusIn,
+  tooltipFocusOut,
+  tooltipKey,
+  tooltipPointerEnter,
+  tooltipPointerLeave,
+  type TooltipAction,
+  type TooltipState,
+} from '../core/tooltip.js'
 
 const ROOT = '.ss-tooltip'
 const FOCUSABLE =
@@ -33,17 +44,34 @@ function describedTarget(root: HTMLElement, from?: EventTarget | null): HTMLElem
   )
 }
 
-function ids(el: HTMLElement): string[] {
-  return (el.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(Boolean)
+function setDescribedBy(el: HTMLElement, tipId: string, open: boolean): void {
+  const value = tooltipDescribedBy(el.getAttribute('aria-describedby'), tipId, open)
+  if (value === undefined) el.removeAttribute('aria-describedby')
+  else el.setAttribute('aria-describedby', value)
+}
+
+/** The core's state, read from the DOM. */
+function stateOf(root: HTMLElement): TooltipState {
+  return { open: Boolean(tipOf(root)?.classList.contains('open')) }
+}
+
+/** The other end of a pointer or focus move is still inside `root`. */
+function within(root: HTMLElement, node: EventTarget | null): boolean {
+  return node instanceof Node && root.contains(node)
+}
+
+/** Apply a core action to the DOM. */
+function run(root: HTMLElement, action: TooltipAction | null, from?: EventTarget | null): void {
+  if (!action) return
+  if (action.type === 'show') showTooltip(root, from)
+  else hideTooltip(root)
 }
 
 function undescribe(root: HTMLElement, tipId: string): void {
   const el = described.get(root)
   described.delete(root)
   if (!el) return
-  const rest = ids(el).filter((id) => id !== tipId)
-  if (rest.length) el.setAttribute('aria-describedby', rest.join(' '))
-  else el.removeAttribute('aria-describedby')
+  setDescribedBy(el, tipId, false)
 }
 
 /**
@@ -59,8 +87,7 @@ export function showTooltip(root: HTMLElement, from?: EventTarget | null): void 
   const target = describedTarget(root, from)
   if (described.get(root) !== target) {
     undescribe(root, tip.id)
-    const cur = ids(target)
-    if (!cur.includes(tip.id)) target.setAttribute('aria-describedby', [...cur, tip.id].join(' '))
+    setDescribedBy(target, tip.id, true)
     described.set(root, target)
   }
 }
@@ -76,24 +103,22 @@ export function hideTooltip(root: HTMLElement): void {
 export function installTooltip(): void {
   // mouseenter/leave don't bubble; mouseover/out do — filter by relatedTarget.
   on('mouseover', ROOT, (root, e) => {
-    const from = e.relatedTarget as Node | null
-    if (!from || !root.contains(from)) showTooltip(root)
+    run(root, tooltipPointerEnter(stateOf(root), { within: within(root, e.relatedTarget) }))
   })
   on('mouseout', ROOT, (root, e) => {
-    const to = e.relatedTarget as Node | null
-    if (!to || !root.contains(to)) hideTooltip(root)
+    run(root, tooltipPointerLeave(stateOf(root), { within: within(root, e.relatedTarget) }))
   })
-  on('focusin', ROOT, (root, e) => showTooltip(root, e.target))
+  on('focusin', ROOT, (root, e) => run(root, tooltipFocusIn(stateOf(root)), e.target))
   on('focusout', ROOT, (root, e) => {
-    const to = e.relatedTarget as Node | null
-    if (!to || !root.contains(to)) hideTooltip(root)
+    run(root, tooltipFocusOut(stateOf(root), { within: within(root, e.relatedTarget) }))
   })
   // Document-level Escape: a tip opened by hover closes even when focus is elsewhere.
   document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return
+    // Cheap exit for every key that could not dismiss a tip, before touching the DOM.
+    if (!tooltipKey({ open: true }, e.key)) return
     for (const tip of all(document, `${ROOT} > .tip.open`)) {
       const root = tip.parentElement
-      if (root) hideTooltip(root)
+      if (root) run(root, tooltipKey(stateOf(root), e.key))
     }
   })
 }

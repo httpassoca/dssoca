@@ -28,6 +28,7 @@
     shortcuts,
     type ShortcutPlatform,
   } from '../shortcuts.svelte.js'
+  import { topbarRovingIndex, topbarTabKey, topbarTabs, topbarTabTabindex } from '../core/topbar.js'
   import Kbd from './Kbd.svelte'
   import Icon from './Icon.svelte'
 
@@ -108,22 +109,16 @@
     if (platform === 'other') platform = detectPlatform()
   })
 
+  // Behaviour lives in `core/topbar.ts`: the normalized tab list, the roving tab stop and
+  // what a key on a tab does are decided there.
+
   // DS-0080: normalize both tab shapes to one internal form. `string` tabs
   // keep id === label; object tabs default `label` to `id`.
-  const items = $derived(
-    tabs.map((t): { id: string; label: string; href?: string } =>
-      typeof t === 'string'
-        ? { id: t, label: t }
-        : { id: t.id, label: t.label ?? t.id, href: t.href },
-    ),
-  )
+  const items = $derived(topbarTabs(tabs))
 
   // DS-0182: the roving tab stop is the active tab; when `active` matches no
   // tab, fall back to the first button tab so the strip stays reachable by Tab.
-  const rovingIdx = $derived.by(() => {
-    const i = items.findIndex((t) => t.id === active)
-    return i >= 0 ? i : items.findIndex((t) => !t.href)
-  })
+  const rovingIdx = $derived(topbarRovingIndex(items, active))
 
   // DS-0081: resolve the services prop to data-or-nothing.
   const svc = $derived(services === true ? DEFAULT_SERVICES : services === false ? null : services)
@@ -171,44 +166,13 @@
   // tab stop; link tabs stay in the natural tab order so they remain
   // keyboard-reachable without JS (SSR, DS-0080).
   let tabEls: (HTMLAnchorElement | HTMLButtonElement)[] = $state([])
-  function focusTab(i: number) {
-    const n = items.length
-    if (!n) return
-    const idx = ((i % n) + n) % n
-    tabEls[idx]?.focus()
-  }
   function onTabKeydown(e: KeyboardEvent, i: number) {
-    // RTL: the strip is laid out right-to-left, so ArrowLeft points at the NEXT
-    // tab. Read the computed direction at keydown time (it inherits from any
-    // ancestor `dir`); Up/Down stay logical.
+    // The direction inherits from any ancestor `dir`; read it at keydown time.
     const rtl = getComputedStyle(e.currentTarget as Element).direction === 'rtl'
-    const right: 1 | -1 = rtl ? -1 : 1
-    switch (e.key) {
-      case 'ArrowRight':
-        e.preventDefault()
-        focusTab(i + right)
-        break
-      case 'ArrowLeft':
-        e.preventDefault()
-        focusTab(i - right)
-        break
-      case 'ArrowDown':
-        e.preventDefault()
-        focusTab(i + 1)
-        break
-      case 'ArrowUp':
-        e.preventDefault()
-        focusTab(i - 1)
-        break
-      case 'Home':
-        e.preventDefault()
-        focusTab(0)
-        break
-      case 'End':
-        e.preventDefault()
-        focusTab(items.length - 1)
-        break
-    }
+    const result = topbarTabKey(e.key, i, items.length, rtl)
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    if (result.action) tabEls[result.action.index]?.focus()
   }
 </script>
 
@@ -257,7 +221,7 @@
           type="button"
           class="tab {current ? 'active' : ''}"
           aria-current={current ? 'page' : undefined}
-          tabindex={i === rovingIdx ? 0 : -1}
+          tabindex={topbarTabTabindex(tab, i, rovingIdx)}
           onclick={() => onTab?.(tab.id)}
           onkeydown={(e) => onTabKeydown(e, i)}
         >

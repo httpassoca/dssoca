@@ -1,6 +1,15 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    tooltipDescribedBy,
+    tooltipFocusIn,
+    tooltipFocusOut,
+    tooltipKey,
+    tooltipPointerEnter,
+    tooltipPointerLeave,
+    type TooltipAction,
+  } from '../core/tooltip.js'
 
   /** Side the tooltip attaches to relative to the trigger. */
   type Placement = 'top' | 'bottom' | 'left' | 'right'
@@ -37,6 +46,7 @@
   const tipId = $props.id()
 
   let open = $state(false)
+  let rootEl = $state<HTMLElement | undefined>()
   let triggerEl = $state<HTMLElement | undefined>()
   let tipEl = $state<HTMLElement | undefined>()
 
@@ -74,37 +84,42 @@
     if (describedEl === el) return
     undescribe()
     if (!el) return
-    const ids = (el.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(Boolean)
-    if (!ids.includes(tipId)) el.setAttribute('aria-describedby', [...ids, tipId].join(' '))
+    setDescribedBy(el, true)
     describedEl = el
   }
   function undescribe() {
     const el = describedEl
     describedEl = null
     if (!el) return
-    const ids = (el.getAttribute('aria-describedby') ?? '')
-      .split(/\s+/)
-      .filter((id) => id && id !== tipId)
-    if (ids.length) el.setAttribute('aria-describedby', ids.join(' '))
-    else el.removeAttribute('aria-describedby')
+    setDescribedBy(el, false)
+  }
+  function setDescribedBy(el: HTMLElement, described: boolean) {
+    const value = tooltipDescribedBy(el.getAttribute('aria-describedby'), tipId, described)
+    if (value === undefined) el.removeAttribute('aria-describedby')
+    else el.setAttribute('aria-describedby', value)
   }
 
-  function show(e?: Event) {
-    open = true
-    describe(describedTarget(e?.target))
+  // Which event shows or hides the tip is decided in core/tooltip.ts; this applies the action.
+  function run(action: TooltipAction | null, e?: Event) {
+    if (!action) return
+    if (action.type === 'show') {
+      open = true
+      describe(describedTarget(e?.target))
+    } else {
+      open = false
+      undescribe()
+    }
   }
-  function hide() {
-    open = false
-    undescribe()
-  }
+
+  /** The other end of a focus move is still inside the tooltip. */
+  const within = (node: EventTarget | null) =>
+    node instanceof Node && Boolean(rootEl?.contains(node))
 
   // Escape dismisses the tooltip wherever focus is (WCAG 1.4.13, WAI-ARIA tooltip
   // pattern): a document-level listener while open, so a hover-opened tip closes too.
   $effect(() => {
     if (!open) return
-    const onKeydown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') hide()
-    }
+    const onKeydown = (e: KeyboardEvent) => run(tooltipKey({ open }, e.key))
     document.addEventListener('keydown', onKeydown)
     return () => document.removeEventListener('keydown', onKeydown)
   })
@@ -246,10 +261,11 @@
   class="ss-tooltip"
   data-size-variant={sizeAttr}
   data-placement={resolved}
-  onmouseenter={show}
-  onmouseleave={hide}
-  onfocusin={show}
-  onfocusout={hide}
+  bind:this={rootEl}
+  onmouseenter={(e) => run(tooltipPointerEnter({ open }), e)}
+  onmouseleave={() => run(tooltipPointerLeave({ open }))}
+  onfocusin={(e) => run(tooltipFocusIn({ open }), e)}
+  onfocusout={(e) => run(tooltipFocusOut({ open }, { within: within(e.relatedTarget) }))}
 >
   <span class="trigger" bind:this={triggerEl}>{@render children()}</span>
   <span

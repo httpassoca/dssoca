@@ -27,12 +27,23 @@ export const CATEGORIES: Category[] = [
       'number-field',
       'file-drop',
       'switch',
+      'checkbox',
+      'radio-group',
     ],
   },
   {
     id: 'navigation',
     label: 'Navigation',
-    slugs: ['sidebar', 'topbar', 'bottom-nav', 'menu', 'link', 'pagination', 'search-palette'],
+    slugs: [
+      'sidebar',
+      'topbar',
+      'bottom-nav',
+      'menu',
+      'link',
+      'pagination',
+      'search-palette',
+      'tabs',
+    ],
   },
   { id: 'layout', label: 'Layout', slugs: ['card', 'accordion', 'container', 'heading'] },
   {
@@ -57,7 +68,7 @@ export const CATEGORIES: Category[] = [
   {
     id: 'feedback',
     label: 'Feedback',
-    slugs: ['toaster', 'empty-state', 'spinner', 'modal', 'shortcuts-help', 'tooltip'],
+    slugs: ['toaster', 'empty-state', 'spinner', 'modal', 'shortcuts-help', 'tooltip', 'popover'],
   },
   { id: 'media', label: 'Media', slugs: ['icon', 'image', 'avatar'] },
 ]

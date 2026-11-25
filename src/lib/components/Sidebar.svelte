@@ -29,6 +29,20 @@
 <script lang="ts">
   import Icon from './Icon.svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    SIDEBAR_STATUS_WORD as STATUS_WORD,
+    sidebarActiveWithin,
+    sidebarCollapsePress,
+    sidebarDisclosureAttrs,
+    sidebarDisclosureOpen,
+    sidebarDisclosurePress,
+    sidebarHasBadge,
+    sidebarIsActive,
+    sidebarItemAttrs,
+    sidebarItemKey,
+    sidebarItemName,
+    sidebarToggleAttrs,
+  } from '../core/sidebar.js'
 
   interface Props {
     active?: string
@@ -70,40 +84,30 @@
     onToggleCollapsed,
   }: Props = $props()
 
-  // --- helpers ------------------------------------------------------------
+  // Behaviour lives in `core/sidebar.ts`: which item is active, whether a disclosure is
+  // open, how an item is named in the collapsed rail and what a key does are decided there.
 
-  const STATUS_WORD: Record<SideStatus, string> = {
-    up: '',
-    deg: 'degraded',
-    down: 'down',
-  }
-
-  /** Compose the accessible name so collapsed/icon-only rails and AT users
-   *  keep the label, the degraded/down status, and the badge count. */
-  function accessibleName(item: SideItem): string {
-    const parts = [item.label]
-    if (item.status && STATUS_WORD[item.status]) parts.push(STATUS_WORD[item.status])
-    if (item.badge != null && item.badge !== '') parts.push(`${item.badge}`)
-    if (item.external) parts.push('opens in a new tab')
-    return parts.join(', ')
-  }
-
-  function isActive(item: SideItem): boolean {
-    return item.id === active
-  }
+  const isActive = (item: SideItem): boolean => sidebarIsActive(item, active)
 
   /** A parent disclosure is "active-within" when it or any child is active. */
-  function hasActiveDescendant(item: SideItem): boolean {
-    return isActive(item) || !!item.children?.some(isActive)
-  }
+  const hasActiveDescendant = (item: SideItem): boolean => sidebarActiveWithin(item, active)
 
   // Per-disclosure open state. Auto-expanded when a descendant is active;
   // user toggles override afterwards.
   let openState = $state<Record<string, boolean>>({})
-  const isOpen = (item: SideItem): boolean => openState[item.id] ?? hasActiveDescendant(item)
+  const isOpen = (item: SideItem): boolean =>
+    sidebarDisclosureOpen(item, active, openState[item.id])
 
   function toggleOpen(item: SideItem) {
-    openState[item.id] = !isOpen(item)
+    openState[item.id] = sidebarDisclosurePress(item, active, openState[item.id])
+  }
+
+  // Enter / Space on a button-like (no-href) item selects it, like a native button.
+  function onItemKeydown(item: SideItem, e: KeyboardEvent) {
+    const result = sidebarItemKey(e.key)
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    onSelect?.(item.id)
   }
 
   function selectIfSpa(item: SideItem, e: Event) {
@@ -145,8 +149,8 @@
       type="button"
       class="rail-toggle"
       aria-label="Sidebar"
-      aria-expanded={!collapsed}
-      onclick={() => onToggleCollapsed?.(!collapsed)}
+      {...sidebarToggleAttrs(collapsed)}
+      onclick={() => onToggleCollapsed?.(sidebarCollapsePress(collapsed))}
     >
       <Icon name="arrow" px={13} />
     </button>
@@ -164,15 +168,14 @@
             <button
               type="button"
               class="item disclosure {hasActiveDescendant(item) ? 'active' : ''}"
-              aria-expanded={open}
-              aria-controls={panelId}
-              aria-label={collapsed ? accessibleName(item) : undefined}
-              title={collapsed ? accessibleName(item) : undefined}
+              {...sidebarDisclosureAttrs(open, panelId)}
+              aria-label={collapsed ? sidebarItemName(item) : undefined}
+              title={collapsed ? sidebarItemName(item) : undefined}
               onclick={() => toggleOpen(item)}
             >
               {#if item.icon}<Icon name={item.icon} px={13} />{/if}
               <span class="label">{item.label}</span>
-              {#if item.badge != null && item.badge !== ''}
+              {#if sidebarHasBadge(item.badge)}
                 <span class="badge">{item.badge}</span>
               {/if}
               {@render statusDot(item.status)}
@@ -187,9 +190,7 @@
                       href={child.href}
                       target={child.external ? '_blank' : undefined}
                       rel={child.external ? 'noopener noreferrer' : undefined}
-                      aria-current={isActive(child) ? 'page' : undefined}
-                      aria-label={collapsed ? accessibleName(child) : undefined}
-                      title={collapsed ? accessibleName(child) : undefined}
+                      {...sidebarItemAttrs(child, active, collapsed)}
                       onclick={(e) => selectIfSpa(child, e)}
                     >
                       {#if child.icon}<Icon name={child.icon} px={13} />{/if}
@@ -198,7 +199,7 @@
                         <span class="ext" aria-hidden="true"><Icon name="external" px={11} /></span>
                         <span class="sr-only">(opens in a new tab)</span>
                       {/if}
-                      {#if child.badge != null && child.badge !== ''}
+                      {#if sidebarHasBadge(child.badge)}
                         <span class="badge">{child.badge}</span>
                       {/if}
                       {@render statusDot(child.status)}
@@ -208,20 +209,13 @@
                       class="item child {isActive(child) ? 'active' : ''}"
                       role="button"
                       tabindex="0"
-                      aria-current={isActive(child) ? 'page' : undefined}
-                      aria-label={collapsed ? accessibleName(child) : undefined}
-                      title={collapsed ? accessibleName(child) : undefined}
+                      {...sidebarItemAttrs(child, active, collapsed)}
                       onclick={() => onSelect?.(child.id)}
-                      onkeydown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          onSelect?.(child.id)
-                        }
-                      }}
+                      onkeydown={(e) => onItemKeydown(child, e)}
                     >
                       {#if child.icon}<Icon name={child.icon} px={13} />{/if}
                       <span class="label">{child.label}</span>
-                      {#if child.badge != null && child.badge !== ''}
+                      {#if sidebarHasBadge(child.badge)}
                         <span class="badge">{child.badge}</span>
                       {/if}
                       {@render statusDot(child.status)}
@@ -236,9 +230,7 @@
               href={item.href}
               target={item.external ? '_blank' : undefined}
               rel={item.external ? 'noopener noreferrer' : undefined}
-              aria-current={isActive(item) ? 'page' : undefined}
-              aria-label={collapsed ? accessibleName(item) : undefined}
-              title={collapsed ? accessibleName(item) : undefined}
+              {...sidebarItemAttrs(item, active, collapsed)}
               onclick={(e) => selectIfSpa(item, e)}
             >
               {#if item.icon}<Icon name={item.icon} px={13} />{/if}
@@ -247,7 +239,7 @@
                 <span class="ext" aria-hidden="true"><Icon name="external" px={11} /></span>
                 <span class="sr-only">(opens in a new tab)</span>
               {/if}
-              {#if item.badge != null && item.badge !== ''}
+              {#if sidebarHasBadge(item.badge)}
                 <span class="badge">{item.badge}</span>
               {/if}
               {@render statusDot(item.status)}
@@ -257,20 +249,13 @@
               class="item {isActive(item) ? 'active' : ''}"
               role="button"
               tabindex="0"
-              aria-current={isActive(item) ? 'page' : undefined}
-              aria-label={collapsed ? accessibleName(item) : undefined}
-              title={collapsed ? accessibleName(item) : undefined}
+              {...sidebarItemAttrs(item, active, collapsed)}
               onclick={() => onSelect?.(item.id)}
-              onkeydown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  onSelect?.(item.id)
-                }
-              }}
+              onkeydown={(e) => onItemKeydown(item, e)}
             >
               {#if item.icon}<Icon name={item.icon} px={13} />{/if}
               <span class="label">{item.label}</span>
-              {#if item.badge != null && item.badge !== ''}
+              {#if sidebarHasBadge(item.badge)}
                 <span class="badge">{item.badge}</span>
               {/if}
               {@render statusDot(item.status)}

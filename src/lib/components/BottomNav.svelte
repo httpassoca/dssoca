@@ -21,6 +21,12 @@
 <script lang="ts">
   import Icon from './Icon.svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    bottomNavHasBadge,
+    bottomNavPress,
+    bottomNavTabAttrs,
+    bottomNavTabElement,
+  } from '../core/bottom-nav.js'
 
   interface Props {
     /** Tabs to render, left → right, in equal-width columns. */
@@ -44,26 +50,12 @@
 
   let { items = DEFAULT_ITEMS, active, onSelect, ariaLabel = 'Primary', size }: Props = $props()
 
-  const isActive = (item: BottomNavItem): boolean => item.id === active
-
-  const hasBadge = (item: BottomNavItem): boolean => item.badge != null && item.badge !== ''
-
-  /** Fold the count badge into the accessible name so it isn't lost to AT. */
-  function accessibleName(item: BottomNavItem): string {
-    return hasBadge(item) ? `${item.label}, ${item.badge}` : item.label
-  }
-
+  // Behaviour lives in `core/bottom-nav.ts`: which element a tab is, what a press does and
+  // the state attributes are decided there; this file renders the result.
   function activate(item: BottomNavItem, e: MouseEvent) {
-    // Disabled tabs are inert (DS-0078): no navigation, no onSelect. The
-    // <button> branch is natively disabled; this also guards the <a> branch.
-    if (item.disabled) {
-      e.preventDefault()
-      return
-    }
-    // Real links navigate natively; intercept only the SPA (no-href) path so a
-    // plain <button> never submits/scrolls. onSelect fires either way.
-    if (!item.href) e.preventDefault()
-    onSelect?.(item.id)
+    const press = bottomNavPress(item)
+    if (press.preventDefault) e.preventDefault()
+    if (press.select) onSelect?.(item.id)
   }
 
   const sizeAttr = $derived(resolveComponentSize('BottomNav', size))
@@ -72,19 +64,19 @@
 <nav class="ss-bottom-nav" aria-label={ariaLabel} data-size-variant={sizeAttr}>
   <ul class="list">
     {#each items as item (item.id)}
-      {@const current = isActive(item)}
+      {@const attrs = bottomNavTabAttrs(item, active)}
+      {@const current = attrs['aria-current'] === 'page'}
       <li class="row">
-        {#if item.href && !item.disabled}
+        {#if bottomNavTabElement(item) === 'a'}
           <a
             class="tab {current ? 'active' : ''}"
             href={item.href}
-            aria-current={current ? 'page' : undefined}
-            aria-label={hasBadge(item) ? accessibleName(item) : undefined}
+            {...attrs}
             onclick={(e) => activate(item, e)}
           >
             <span class="glyph">
               <Icon name={item.icon} px={20} />
-              {#if hasBadge(item)}
+              {#if bottomNavHasBadge(item)}
                 <span class="badge" aria-hidden="true">{item.badge}</span>
               {/if}
             </span>
@@ -99,14 +91,12 @@
             class="tab {current ? 'active' : ''}"
             class:disabled={item.disabled}
             disabled={item.disabled || undefined}
-            aria-disabled={item.disabled ? 'true' : undefined}
-            aria-current={current ? 'page' : undefined}
-            aria-label={hasBadge(item) ? accessibleName(item) : undefined}
+            {...attrs}
             onclick={(e) => activate(item, e)}
           >
             <span class="glyph">
               <Icon name={item.icon} px={20} />
-              {#if hasBadge(item)}
+              {#if bottomNavHasBadge(item)}
                 <span class="badge" aria-hidden="true">{item.badge}</span>
               {/if}
             </span>

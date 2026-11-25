@@ -11,7 +11,7 @@ export const modal: ComponentDoc = {
         '<button class="ss-btn secondary" type="button" data-ss-dismiss>cancel</button><button class="ss-btn danger" type="button" data-ss-dismiss>delete</button>',
     },
     behaviour: 'js',
-    note: 'A native <dialog>. vanilla.js opens it from any [data-ss-modal="#id"] element and closes it from [data-ss-dismiss] or a backdrop click, locking page scroll while it is open (add data-ss-static to keep it open; data-ss-no-esc blocks Escape).',
+    note: 'A native <dialog>. vanilla.js opens it from any [data-ss-modal="#id"] element and closes it from [data-ss-dismiss] or a backdrop click, locking page scroll while it is open (add data-ss-static to keep it open; data-ss-no-esc blocks Escape). Every close emits ss:close on the dialog with { reason } (escape, backdrop, button or programmatic).',
   },
   tagline: 'Accessible overlay dialog built on native <dialog>.',
   description:
@@ -86,8 +86,8 @@ export const modal: ComponentDoc = {
     },
     {
       name: 'onclose',
-      type: '() => void',
-      desc: 'Called after the dialog closes (Esc, backdrop, or button).',
+      type: '(details: { reason }) => void',
+      desc: "Called after the dialog closes, with why: `details.reason` is `'escape'`, `'backdrop'`, `'button'` (the close button) or `'programmatic'` (the `open` prop, a direct `.close()` or a `<form method=\"dialog\">`).",
     },
     {
       name: 'header',

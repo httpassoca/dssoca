@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { tick } from 'svelte'
 import { render, fireEvent } from '@testing-library/svelte'
 import { axe } from 'vitest-axe'
 import Pagination from '$lib/components/Pagination.svelte'
@@ -80,7 +81,7 @@ describe('Pagination', () => {
     const { container } = render(Pagination, { page: 1, pageCount: 5, onchange })
     const btn = numberButtons(container).find((b) => b.textContent?.trim() === '5')!
     await fireEvent.click(btn)
-    expect(onchange).toHaveBeenCalledWith(5)
+    expect(onchange).toHaveBeenCalledWith(5, { reason: 'page' })
     // the clicked page becomes current
     const cur = numberButtons(container).find((b) => b.getAttribute('aria-current') === 'page')!
     expect(cur.textContent?.trim()).toBe('5')
@@ -98,14 +99,33 @@ describe('Pagination', () => {
     const onchange = vi.fn()
     const { container } = render(Pagination, { page: 2, pageCount: 5, onchange })
     await fireEvent.click(container.querySelector('[aria-label="Next page"]')!)
-    expect(onchange).toHaveBeenCalledWith(3)
+    expect(onchange).toHaveBeenCalledWith(3, { reason: 'next' })
   })
 
   it('moves by one when Prev is clicked', async () => {
     const onchange = vi.fn()
     const { container } = render(Pagination, { page: 4, pageCount: 5, onchange })
     await fireEvent.click(container.querySelector('[aria-label="Previous page"]')!)
-    expect(onchange).toHaveBeenCalledWith(3)
+    expect(onchange).toHaveBeenCalledWith(3, { reason: 'prev' })
+  })
+
+  it('hands focus to the current page when a stepper reaches its bound', async () => {
+    const { container } = render(Pagination, { page: 4, pageCount: 5 })
+    const next = container.querySelector<HTMLButtonElement>('[aria-label="Next page"]')!
+    next.focus()
+    await fireEvent.click(next)
+    await tick()
+    expect(next).toBeDisabled()
+    const current = container.querySelector('[aria-current="page"]')
+    expect(current).toHaveTextContent('5')
+    expect(document.activeElement).toBe(current)
+
+    const prev = container.querySelector<HTMLButtonElement>('[aria-label="Previous page"]')!
+    prev.focus()
+    await fireEvent.click(prev)
+    await tick()
+    // Not at a bound: the stepper keeps focus.
+    expect(document.activeElement).toBe(prev)
   })
 
   it('disables every button when disabled and ignores clicks', async () => {
