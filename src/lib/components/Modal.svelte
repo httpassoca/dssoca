@@ -7,9 +7,9 @@
   // showModal()/close(). The dialog's native `close` event syncs `open` back
   // to false and fires `onclose`. Esc is native; when `closeOnEsc` is false we
   // intercept the `cancel` event and preventDefault(). Backdrop click closes
-  // when `closeOnBackdrop` by detecting a pointerdown whose target IS the
-  // dialog itself (the inner .panel covers the dialog's content box, so any
-  // hit on the dialog element is the surrounding backdrop area).
+  // when `closeOnBackdrop`: a press that starts on the dialog itself (the inner
+  // .panel covers the dialog's content box, so any hit on the dialog element is
+  // the surrounding backdrop area) closes it on the click that follows.
   //
   // Naming (DS-0178): a custom `header` snippet receives the title id so it can
   // put `id={titleId}` on its heading; the dialog stays aria-labelledby that id.
@@ -165,11 +165,21 @@
     pending = result.reason
   }
 
-  // A pointerdown landing on the <dialog> itself (not the inner .panel) is a
-  // backdrop hit. Using pointerdown avoids closing on a drag that began inside
-  // the panel and released on the backdrop.
+  // A press that starts on the <dialog> itself (not the inner .panel) is a
+  // backdrop hit. Remembering where the press began avoids closing on a drag that
+  // started inside the panel and was released on the backdrop.
+  //
+  // The dialog closes on the `click`, not on the pointerdown: closing hands focus
+  // back to the opener, and if that happened on pointerdown the same gesture's
+  // mousedown would then land on the page and blur it, leaving focus on <body>.
+  let pressedBackdrop = false
   function onPointerDown(e: PointerEvent) {
-    run(modalBackdropPress(modal, e.target === dialog))
+    pressedBackdrop = e.target === dialog
+  }
+  function onClick(e: MouseEvent) {
+    const hit = pressedBackdrop && e.target === dialog
+    pressedBackdrop = false
+    run(modalBackdropPress(modal, hit))
   }
 </script>
 
@@ -184,6 +194,7 @@
   onclose={onDialogClose}
   oncancel={onCancel}
   onpointerdown={onPointerDown}
+  onclick={onClick}
 >
   <div class="panel">
     <header class="head">

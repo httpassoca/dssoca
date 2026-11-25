@@ -47,6 +47,15 @@ describe('core/topbar — tab keys', () => {
     expect(topbarTabKey(key, 0, 3)).toEqual(focus(2))
   })
 
+  it('under rtl ArrowLeft / ArrowRight swap; Up / Down, Home and End stay logical (DS-0204)', () => {
+    expect(topbarTabKey('ArrowLeft', 0, 3, true)).toEqual(focus(1))
+    expect(topbarTabKey('ArrowRight', 0, 3, true)).toEqual(focus(2))
+    expect(topbarTabKey('ArrowDown', 0, 3, true)).toEqual(focus(1))
+    expect(topbarTabKey('ArrowUp', 0, 3, true)).toEqual(focus(2))
+    expect(topbarTabKey('Home', 2, 3, true)).toEqual(focus(0))
+    expect(topbarTabKey('End', 0, 3, true)).toEqual(focus(2))
+  })
+
   it('Home / End jump to the ends', () => {
     expect(topbarTabKey('Home', 2, 3)).toEqual(focus(0))
     expect(topbarTabKey('End', 0, 3)).toEqual(focus(2))

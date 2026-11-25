@@ -64,6 +64,23 @@ Sharing one core also aligned a few plain-HTML (`vanilla.js`) edge cases with th
 - **`NumberField`**: a non-numeric `min`, `max` or `step` attribute is treated as absent, and a
   stepper press at a bound is a no-op.
 
+### Fixed
+
+Three defects found in a browser pass (`DS-0201`).
+
+- **`Sidebar`**: a closed disclosure group no longer shows its children or leaves them in the tab
+  order. The `.sublist { display: flex }` rule outranked the `hidden` attribute, so the closed
+  list still rendered (and Tab from the parent landed on the first child). Storybook gains two
+  stories with nested `children`.
+- **`Modal`**: a backdrop click no longer leaves focus on `<body>`. The dialog closed on the
+  pointerdown, focus went back to the opener, and the same click's mousedown then blurred it. It
+  now closes on the click (a press that starts and ends on the backdrop), so focus stays on the
+  opener. Same fix in `vanilla.js`. A drag from inside the panel to the backdrop still does not
+  close.
+- **`Topbar`**: ArrowLeft / ArrowRight in the tab strip follow the reading direction. Under
+  `dir="rtl"` ArrowRight used to move to the tab on the left; the two keys now swap, as they do
+  in `SegmentedControl` and `TierList`. ArrowUp / ArrowDown, Home and End are unchanged.
+
 ### Docs
 
 - **Changelog on the docs site** (`DS-0196`). `/changelog` renders this file release by release,

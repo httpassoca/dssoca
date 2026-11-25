@@ -167,7 +167,9 @@
   // keyboard-reachable without JS (SSR, DS-0080).
   let tabEls: (HTMLAnchorElement | HTMLButtonElement)[] = $state([])
   function onTabKeydown(e: KeyboardEvent, i: number) {
-    const result = topbarTabKey(e.key, i, items.length)
+    // The direction inherits from any ancestor `dir`; read it at keydown time.
+    const rtl = getComputedStyle(e.currentTarget as Element).direction === 'rtl'
+    const result = topbarTabKey(e.key, i, items.length, rtl)
     if (!result) return
     if (result.preventDefault) e.preventDefault()
     if (result.action) tabEls[result.action.index]?.focus()

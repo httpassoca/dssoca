@@ -15,6 +15,16 @@ describe('Sidebar — fills its container height', () => {
   })
 })
 
+describe('Sidebar — a closed disclosure is really hidden', () => {
+  // jsdom applies no scoped styles, so lock the rule at source: `.sublist` sets
+  // `display: flex`, which outranks the UA's `[hidden] { display: none }`. Without
+  // restating it, a closed group still renders its children and keeps them tabbable.
+  it('restates display: none for .sublist[hidden]', () => {
+    const source = readFileSync(resolve(process.cwd(), 'src/lib/components/Sidebar.svelte'), 'utf8')
+    expect(source).toMatch(/\.sublist\[hidden\]\s*\{\s*display:\s*none;?\s*\}/)
+  })
+})
+
 describe('Sidebar', () => {
   it('renders a nav landmark labelled "Sidebar"', () => {
     const { container } = render(Sidebar, {})

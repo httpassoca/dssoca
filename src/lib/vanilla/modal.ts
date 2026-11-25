@@ -5,7 +5,7 @@
  *   <button data-ss-modal="#confirm">Open</button>
  *   <dialog class="ss-modal" id="confirm"> … <button class="close" data-ss-dismiss>×</button>
  *
- * Backdrop pointerdown closes unless the dialog carries `data-ss-static`; Escape is blocked
+ * A backdrop click closes unless the dialog carries `data-ss-static`; Escape is blocked
  * when it carries `data-ss-no-esc` (mirrors `closeOnBackdrop` / `closeOnEsc`). Those decisions
  * come from `core/modal.ts`, the same functions Modal.svelte calls. Every close emits `ss:close`
  * on the dialog with `{ reason }` (escape · backdrop · button · programmatic).
@@ -117,9 +117,20 @@ export function installModal(): void {
     if (dialog instanceof HTMLDialogElement) run(dialog, modalDismissPress(stateOf(dialog)))
   })
 
-  on('pointerdown', 'dialog.ss-modal', (dialog, e) => {
+  // A press that starts on the dialog itself is a backdrop hit; the dialog closes on the click
+  // that follows. Closing on the pointerdown would return focus to the opener and then let the
+  // same gesture's mousedown blur it, dropping focus on <body>. Remembering where the press
+  // began keeps a drag from inside the panel to the backdrop from closing.
+  let pressed: Element | null = null
+  document.addEventListener('pointerdown', (e) => {
+    const t = e.target
+    pressed = t instanceof HTMLDialogElement && t.matches('dialog.ss-modal') ? t : null
+  })
+  on('click', 'dialog.ss-modal', (dialog, e) => {
+    const hit = pressed === dialog && e.target === dialog
+    pressed = null
     if (!(dialog instanceof HTMLDialogElement)) return
-    run(dialog, modalBackdropPress(stateOf(dialog), e.target === dialog))
+    run(dialog, modalBackdropPress(stateOf(dialog), hit))
   })
 
   // Native closes (Escape, `<form method="dialog">`, a direct `.close()`) release the scroll

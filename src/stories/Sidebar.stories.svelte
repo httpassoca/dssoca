@@ -40,6 +40,33 @@
     },
   ]
 
+  // One level of nested `children`: the parent row is a disclosure button.
+  const NESTED_GROUPS: SideGroup[] = [
+    {
+      section: 'platform',
+      items: [
+        { id: 'hub', label: 'Hub', icon: 'grid', status: 'up' },
+        { id: 'auth', label: 'Auth', icon: 'user', status: 'up' },
+      ],
+    },
+    {
+      section: 'services',
+      items: [
+        {
+          id: 'media',
+          label: 'Media',
+          icon: 'film',
+          children: [
+            { id: 'movies', label: 'Movies', icon: 'film', status: 'up' },
+            { id: 'shows', label: 'Shows', icon: 'film', status: 'deg' },
+          ],
+        },
+        { id: 'notes', label: 'Notes', icon: 'note', status: 'up' },
+        { id: 'tasks', label: 'Tasks', icon: 'check', status: 'up' },
+      ],
+    },
+  ]
+
   const { Story } = defineMeta({
     title: 'Components/Sidebar',
     component: Sidebar,
@@ -107,3 +134,9 @@
 
 <!-- Explicit token size override, independent of the global size axis -->
 <Story name="Compact (sm)" args={{ active: 'hub', groups: DEFAULT_GROUPS, size: 'sm' }} />
+
+<!-- Disclosure group, closed: the children are hidden and out of the tab order -->
+<Story name="Nested (closed)" args={{ active: 'hub', groups: NESTED_GROUPS }} />
+
+<!-- Disclosure group auto-expanded because a child is the active item -->
+<Story name="Nested (active child)" args={{ active: 'movies', groups: NESTED_GROUPS }} />

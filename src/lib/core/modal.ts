@@ -37,8 +37,11 @@ export function modalDismissPress(state: ModalState): ModalAction | null {
 }
 
 /**
- * A pointer went down on the dialog. `onBackdrop` = it landed on the `<dialog>` element itself
- * rather than the panel inside it (the adapter's hit test).
+ * The backdrop was clicked. `onBackdrop` = the press both started and ended on the `<dialog>`
+ * element itself rather than the panel inside it (the adapter's hit test, so a drag from the
+ * panel out to the backdrop does not count). The adapters call this on `click`, not on
+ * `pointerdown`: closing returns focus to the opener, and on pointerdown the same gesture's
+ * mousedown would then land on the page and drop focus on `<body>` (DS-0203).
  */
 export function modalBackdropPress(state: ModalState, onBackdrop: boolean): ModalAction | null {
   return state.open && onBackdrop && state.closeOnBackdrop

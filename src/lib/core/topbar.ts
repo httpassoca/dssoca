@@ -66,10 +66,21 @@ const MOVES: Record<string, RovingMove> = {
 /**
  * A key on tab `index` of `count` tabs: arrows move focus across the strip (wrapping), Home/End
  * jump to the ends. `null` = not a tab-strip key, let it through.
+ *
+ * `rtl` = the strip's computed direction (the adapter reads it at keydown). The strip is laid
+ * out right-to-left there, so ArrowLeft points at the NEXT tab and ArrowRight at the previous
+ * one (DS-0204); Up/Down, Home and End stay logical.
  */
-export function topbarTabKey(key: string, index: number, count: number): TopbarKeyResult | null {
+export function topbarTabKey(
+  key: string,
+  index: number,
+  count: number,
+  rtl = false,
+): TopbarKeyResult | null {
   if (!Object.hasOwn(MOVES, key)) return null
+  const horizontal = key === 'ArrowLeft' || key === 'ArrowRight'
+  const move = rtl && horizontal ? (MOVES[key] === 'next' ? 'prev' : 'next') : MOVES[key]
   const all = Array.from({ length: count }, (_, i) => i)
-  const target = rovingStep(all, index, MOVES[key])
+  const target = rovingStep(all, index, move)
   return { action: target >= 0 ? { type: 'focus', index: target } : null, preventDefault: true }
 }
