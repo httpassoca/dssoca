@@ -1,0 +1,40 @@
+{
+  "component": "Pagination",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The keyboard focus ring on a page button is a solid inset `--ss-primary` ring (was a `--ss-primary-soft` glow at about 1.5:1).",
+          "refs": ["DS-0193", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The dividers between cells use `border-inline-start` instead of `border-left`, so they follow the reversed row under `dir=\"rtl\"`. Class names and markup are unchanged.",
+          "refs": ["DS-0193", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Styles ship in `dssoca/vanilla.css`, so plain-HTML pages can use the `.ss-pagination` markup (`.page`, `.nav-btn`, `.active`, `.ellipsis`) without Svelte. There is no `vanilla.js` behaviour: the page wires the buttons itself.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: windowed page controls with Previous / Next buttons, ellipses for hidden runs and `aria-current=\"page\"` on the current page. Props: bindable `page`, `total`, `pageSize`, `pageCount`, `siblingCount`, `disabled`, `size` and `onchange`.",
+          "refs": ["DS-0100", "#87"]
+        }
+      ]
+    }
+  ]
+}

@@ -64,3 +64,24 @@ describe('checklist guards — every component', () => {
     expect(bad).toEqual([])
   })
 })
+
+// Behaviour lives in `src/lib/core/` (agile DS-0197): a component or a vanilla module passes
+// the key to its core and applies the action that comes back. Deciding what a key does inside
+// the `.svelte` / `vanilla/*.ts` file is how the two paths drifted apart before.
+describe('checklist guards — key handling lives in core/', () => {
+  const KEY_LOGIC = /\.key\s*(===|!==)|switch\s*\(\s*\w+\.key\s*\)/
+
+  const handlesKeys = [
+    ...components.map(({ name, markup }) => ({ file: `components/${name}`, code: markup })),
+    ...readdirSync('src/lib/vanilla')
+      .filter((f) => f.endsWith('.ts'))
+      .map((f) => ({ file: `vanilla/${f}`, code: readFileSync(`src/lib/vanilla/${f}`, 'utf8') })),
+  ]
+    .filter(({ code }) => KEY_LOGIC.test(code))
+    .map(({ file }) => file)
+    .sort()
+
+  it('no component and no vanilla module decides what a key does', () => {
+    expect(handlesKeys).toEqual([])
+  })
+})

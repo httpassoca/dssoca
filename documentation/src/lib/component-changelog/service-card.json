@@ -1,0 +1,154 @@
+{
+  "component": "ServiceCard",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The card is interactive only when `href` or `onclick` is set. Without them it is a static `role=\"group\"` with no tab stop and no \"▸ open\" cue (it used to be a focusable `role=\"button\"` that did nothing).",
+          "refs": ["DS-0192", "#139", "#140"]
+        },
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "`spark` defaults to `[]`, so a card without data shows the sparkline's \"No data\" state instead of a made-up trend. Pass `spark` explicitly to keep a chart.",
+          "refs": ["DS-0192", "#139", "#140"]
+        },
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root is always a `<div class=\"ss-svc\">`; an interactive card renders one stretched `<a class=\"overlay\">` (for `href`) or native `<button class=\"overlay\">` (for `onclick`) as a sibling of the content, and gets the `interactive` class. The `role=\"button\"` div and the `<a class=\"ss-svc\">` root are gone.",
+          "refs": ["DS-0192", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The control is named by the visible name and status (`aria-labelledby`) and described by host, latency, `meta`, the sparkline and the \"last checked\" time (`aria-describedby`), instead of an `aria-label` that replaced the content. Links and buttons inside `meta` sit above the overlay, so they are no longer nested inside a link or button.",
+          "refs": ["DS-0192", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.18.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "A card with `href` no longer shows the global animated link underline along its bottom edge; the reset is in the component's own CSS, so it also ships in `vanilla.css`.",
+          "refs": ["DS-0150", "#127"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The status badge uses the new semantic `Badge` tones: `up` → `positive`, `deg` → `caution`, `down` → `critical`, `maint` → `brand`. The `status` values themselves are unchanged.",
+          "refs": ["DS-0119", "#100"]
+        },
+        {
+          "type": "changed",
+          "text": "The loading badge skeleton reads `--ss-chip-py` instead of the removed `--ss-badge-py` (same values, so it renders the same).",
+          "refs": ["DS-0121", "#100"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The head and footer gaps read the `--ss-gap-sm` spacing token (was a hardcoded `10px`), so they rescale with the size axis; at `md` the card looks the same.",
+          "refs": ["DS-0068"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`href` prop: the card renders as a real `<a>` and navigates natively.",
+          "refs": ["DS-0036", "#35"]
+        },
+        {
+          "type": "added",
+          "text": "`loading` prop: sets `aria-busy`, shows shimmer skeletons for the name, host, badge and sparkline, and suppresses interaction.",
+          "refs": ["DS-0036", "#35"]
+        },
+        {
+          "type": "added",
+          "text": "`disabled` prop: an inert card with `aria-disabled`, no tab stop and no click handling.",
+          "refs": ["DS-0036", "#35"]
+        },
+        {
+          "type": "added",
+          "text": "`updatedAt` prop (`Date` or ISO string): shows a relative \"last checked\" time in a `<time datetime>` element in the footer.",
+          "refs": ["DS-0036", "#35"]
+        },
+        {
+          "type": "added",
+          "text": "`meta` snippet for extra metadata rows (version, IP, tags) below the head.",
+          "refs": ["DS-0036", "#35"]
+        },
+        {
+          "type": "added",
+          "text": "`status=\"maint\"`: a maintenance state with a `--ss-blue` sparkline and a spelled-out \"maintenance\" badge.",
+          "refs": ["DS-0036", "#35"]
+        },
+        {
+          "type": "fixed",
+          "text": "Interactive cards show a `:focus-visible` ring (2px `--ss-primary` outline with a 2px offset); there was no focus indicator before. The accessible name now includes the status (\"name, status\").",
+          "refs": ["DS-0036", "#35"]
+        },
+        {
+          "type": "fixed",
+          "text": "The hover background reads the new theme-aware `--ss-bg-elev-hover` token instead of a hardcoded `#232323`, so hover works in the light theme.",
+          "refs": ["DS-0036", "#35"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Styles are scoped to the component and no longer ship as global `.ss-svc` rules in `theme.css`. Hand-written `class=\"ss-svc\"` markup styled only by `theme.css` must switch to the component.",
+          "refs": ["DS-0009", "#6"]
+        },
+        {
+          "type": "added",
+          "text": "`size` prop (`sm` | `md` | `lg`), applied as `data-size-variant` on the root; when unset the card inherits the `componentsSize` config or the global size.",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "fixed",
+          "text": "Space activates the card as well as Enter, the card has an accessible name, the badge reads \"degraded\" instead of \"deg\", and the \"▸\" glyph is hidden from assistive tech.",
+          "refs": ["DS-0013", "#10"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root class is `ss-svc` (was `hub-svc`) and the tokens it reads are `--ss-*` (were `--hs-*`).",
+          "refs": ["DS-0005"]
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a clickable card for one service that shows its `name`, `host`, a `status` badge (`up`, `deg` or `down`), `latency` and a `spark` sparkline coloured by status."
+        }
+      ]
+    }
+  ]
+}

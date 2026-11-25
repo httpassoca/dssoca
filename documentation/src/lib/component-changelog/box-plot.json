@@ -1,0 +1,51 @@
+{
+  "component": "BoxPlot",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The chart is one tab stop: boxes use a roving `tabindex`, and the arrow keys, Home and End move focus between them.",
+          "refs": ["DS-0185", "#139", "#140"],
+          "breaking": true
+        },
+        {
+          "type": "fixed",
+          "text": "Boxes are `role=\"img\"` instead of `role=\"button\"` (they have no action), and the pointer cursor is gone.",
+          "refs": ["DS-0185", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The tooltip is `aria-hidden=\"true\"` (was `role=\"status\"`) and closes on Escape, whether hover or focus opened it.",
+          "refs": ["DS-0185", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Each box's `aria-label` ends with the whisker ends (`min` and `max`), formatted with `yFormat`; before, they were only in the tooltip.",
+          "refs": ["DS-0185", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "Default box colours come from the shared `CHART_PALETTE`, which reads the palette slots `--ss-accent`, `--ss-blue`, `--ss-magenta`, `--ss-cyan`, `--ss-yellow` and `--ss-green` (was `--ss-primary`, `--ss-purple` and `--ss-lime` for the first, third and sixth), so a custom palette recolours the boxes.",
+          "refs": ["DS-0128"]
+        }
+      ]
+    },
+    {
+      "version": "0.11.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a box-and-whisker distribution chart (quartiles with Tukey whiskers), one box per entry in `groups`, with an optional overlay of every value as a jittered dot (`showPoints`) and a tooltip on hover or focus.",
+          "refs": ["DS-0104", "DS-0102"]
+        }
+      ]
+    }
+  ]
+}

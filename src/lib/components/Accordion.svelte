@@ -19,6 +19,13 @@
   import { untrack, type Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
   import Icon from './Icon.svelte'
+  import {
+    accordionHeaderAttrs,
+    accordionHeaderKey,
+    accordionOpenIds,
+    accordionToggle,
+    accordionValue,
+  } from '../core/accordion.js'
 
   interface Props {
     /** The collapsible sections, top to bottom. */
@@ -80,76 +87,41 @@
   }: Props = $props()
 
   // --- open-state model ----------------------------------------------------
-  // Normalise whatever `value`/`defaultValue` shape we were handed into a Set.
-  function toSet(v: AccordionValue): Set<string> {
-    if (v == null) return new Set()
-    return new Set(Array.isArray(v) ? v : [v])
-  }
+  // The decisions (what a press opens or closes, where a key moves focus) live in
+  // `core/accordion.ts`, shared with vanilla/accordion.ts (DS-0197).
 
   // Uncontrolled fallback store, seeded once from defaultValue. `untrack`
   // marks the read as an intentional one-time snapshot (not a live binding),
   // silencing the "referenced locally" reactivity warning.
-  let internal = $state<Set<string>>(untrack(() => toSet(defaultValue)))
+  let internal = $state<string[]>(untrack(() => accordionOpenIds(defaultValue)))
 
   // Controlled when the consumer passes `value` (incl. bound); else internal.
   const controlled = $derived(value !== undefined)
-  const open = $derived(controlled ? toSet(value) : internal)
+  const open = $derived(controlled ? accordionOpenIds(value) : internal)
 
-  const isOpen = (item: AccordionItem): boolean => open.has(item.id)
-
-  /** Project a Set back to the public value shape for `value`/`onChange`. */
-  function project(next: Set<string>): AccordionValue {
-    if (multiple) return [...next]
-    return next.size ? [...next][0] : undefined
-  }
+  const isOpen = (item: AccordionItem): boolean => open.includes(item.id)
 
   function toggle(item: AccordionItem) {
-    if (item.disabled) return
-    const next = new Set(open)
-    if (next.has(item.id)) {
-      next.delete(item.id)
-    } else {
-      if (!multiple) next.clear() // single-open: opening one closes others
-      next.add(item.id)
-    }
+    const next = accordionToggle({ open, multiple }, item.id, item.disabled)
+    if (!next) return
+    const projected = accordionValue(next, multiple)
     if (controlled) {
-      value = project(next) // keep the bound value in sync
+      value = projected // keep the bound value in sync
     } else {
       internal = next
     }
-    onChange?.(project(next))
+    onChange?.(projected)
   }
 
   // --- roving keyboard nav across headers (WAI-ARIA Accordion pattern) -----
   let headerEls = $state<Array<HTMLButtonElement | null>>([])
 
-  function focusHeader(index: number) {
-    const n = items.length
-    if (n === 0) return
-    const i = ((index % n) + n) % n // wrap
-    headerEls[i]?.focus()
-  }
-
   function onHeaderKeydown(e: KeyboardEvent, index: number) {
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault()
-        focusHeader(index + 1)
-        break
-      case 'ArrowUp':
-        e.preventDefault()
-        focusHeader(index - 1)
-        break
-      case 'Home':
-        e.preventDefault()
-        focusHeader(0)
-        break
-      case 'End':
-        e.preventDefault()
-        focusHeader(items.length - 1)
-        break
-      // Enter / Space activate the native <button>; no extra handling needed.
-    }
+    // Enter / Space activate the native <button>; the core lets them through.
+    const result = accordionHeaderKey(items.length, index, e.key)
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    headerEls[result.focus]?.focus()
   }
 
   const headerId = (item: AccordionItem) => `${idBase}-h-${item.id}`
@@ -172,9 +144,8 @@
           type="button"
           class="head"
           id={headerId(item)}
-          aria-expanded={expanded}
           aria-controls={panelId(item)}
-          aria-disabled={item.disabled || undefined}
+          {...accordionHeaderAttrs(expanded, item.disabled)}
           onclick={() => toggle(item)}
           onkeydown={(e) => onHeaderKeydown(e, i)}
         >

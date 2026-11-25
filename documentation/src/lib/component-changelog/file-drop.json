@@ -1,0 +1,50 @@
+{
+  "component": "FileDrop",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The drop zone is named by its visible text through `aria-labelledby` (the `label` plus \"Drop files here\") instead of an `aria-label` that defaulted to \"Upload files\". The `hint` is now only in the description, so it is no longer read twice.",
+          "refs": ["DS-0173", "#139", "#140"]
+        },
+        {
+          "type": "added",
+          "text": "New `onreject(files)` prop, fired with the files a selection or drop discarded (wrong type for `accept`, or extras when `multiple` is false). Rejected files are also announced through a visually hidden polite live region (`role=\"status\"`).",
+          "refs": ["DS-0173", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Focus no longer falls to `<body>` after removing a file or clearing the list: it moves to the next remove button, else the previous one, else the drop zone.",
+          "refs": ["DS-0173", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The remove and clear buttons have a minimum 24px hit area (`min-inline-size` / `min-block-size`), and the clear button gains `--ss-s-1` inline padding.",
+          "refs": ["DS-0173", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The selected-files list uses the new, tighter `--ss-gap-xs` token (md 6 / sm 4 / lg 8) for the space between files, instead of `--ss-gap-sm`.",
+          "refs": ["DS-0124", "#102"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a drag-and-drop file picker with click-to-browse, `accept` filtering (also enforced on drop), `multiple`, a bindable `files` list with `onfiles`, and a selected-files display with remove and clear. Keyboard operable.",
+          "refs": ["DS-0096", "#83"]
+        }
+      ]
+    }
+  ]
+}

@@ -47,7 +47,10 @@ src/lib/
   index.ts         barrel export (components + config + toast)
   dssoca.config.ts manifest (exported as `dssocaConfig`): axes/values/defaults — config source of truth
   config.ts        applyDesignConfig / designAttributes / getDesignConfig (derives types+defaults from the manifest)
-  toast.svelte.ts  reactive toast store + imperative `toast` API (types + timer in toast-core.ts)
+  core/            behaviour layer shared by the components and vanilla.js (DS-0197): pure,
+                   framework-free, DOM-free. `behaviors/` = reusable pieces (roving focus, …),
+                   `<component>.ts` = one core per interactive component (menu, modal, toast, …)
+  toast.svelte.ts  reactive toast store + imperative `toast` API (types + timer in core/toast.ts)
   icons.ts         BUILTIN_PATHS + registerIcon (shared by Icon.svelte and vanilla.js)
   spinner-frames.ts SPINNER_VARIANTS (shared by Spinner.svelte and the vanilla CSS generator)
   vanilla/         dssoca/vanilla.js — framework-free behaviours for plain HTML (no runes, no
@@ -99,6 +102,17 @@ Published surface (`exports`): `dssoca` (components + config), `dssoca/theme.css
   are generated in the Pages workflow, never committed. Adding a site = a new folder + an
   entry in `inspirations/manifest.json` (the gallery cards and the docs' `/inspirations` page
   both render from it — never hand-write a card).
+- **Behaviour lives in `src/lib/core/`** (agile `DS-0197`). What a key, a press or an outside
+  press does is decided once, in `core/<component>.ts`: pure functions that take a small state
+  object and return an action (plus the part attributes that reflect state, as strings). The
+  `.svelte` file holds the state in `$state`, spreads the attributes and applies the action; the
+  `vanilla/*.ts` file reads the state from the DOM, calls the same functions and writes the
+  result back. Never decide what a key does in a component or a vanilla module, and never touch
+  the DOM, Svelte or runes inside `core/` (guarded by `core-purity.test.ts` and the key-handling
+  guard in `checklist-guards.test.ts`). Reusable logic goes in
+  `core/behaviors/`. A change the component makes itself reports why through a `details.reason`
+  on its callback and on the matching `ss:*` event. `core/` is internal: only types are
+  re-exported from `index.ts`. Reference pair: `core/menu.ts` + `Menu.svelte` + `vanilla/menu.ts`.
 - **Tests are a RULE**: run `pnpm test` and add/extend tests for any change before calling it done.
   A11y is covered by `vitest-axe` (unit) + `@storybook/addon-a11y` (Storybook); target WCAG 2.2 AA.
   axe alone is not enough — follow _Accessibility & quality rules_ below.
@@ -154,7 +168,7 @@ enforced by `test/unit/checklist-guards.test.ts`; the rest need judgement and a 
 **Keyboard**
 
 - Composite widgets are ONE tab stop with roving tabindex; a missing/invalid "active" item must
-  still leave one item at `tabindex="0"`. Charts use `chartNavStep` (`src/lib/chart-nav.ts`).
+  still leave one item at `tabindex="0"`. Charts use `chartNavStep` (`src/lib/core/chart-nav.ts`).
 - Tooltips/popovers: dismissable with Escape from anywhere, hoverable, persistent (WCAG 1.4.13).
 - Arrow keys follow reading direction: read `getComputedStyle(el).direction` at keydown and swap
   Left/Right under `rtl` (not for SVG charts, which don't mirror).
@@ -229,7 +243,8 @@ and CI enforces it as a blocking step.
 
 ## Adding / changing a component
 
-1. Add `src/lib/components/Foo.svelte` — style it in a scoped `<style lang="scss">` using `--ss-*`
+1. If it is interactive, write `src/lib/core/foo.ts` first (see _Behaviour lives in `core/`_) with
+   a `test/unit/core-foo.test.ts`. Then add `src/lib/components/Foo.svelte` — style it in a scoped `<style lang="scss">` using `--ss-*`
    tokens; `.ss-foo` for the root identity, plain unprefixed names for internals. Don't add
    component rules to global `theme.css`.
 2. Export it from `src/lib/index.ts`, and register its root class in `ROOT_CLASSES`
@@ -268,8 +283,12 @@ Rules:
 1. From `develop`: bump `version` in `package.json` (semver; until `1.0.0` minors may break),
    branch `release/<x.y.z>`.
 2. Run `pnpm release` — it validates the bump against the last tag and the branch name, and
-   drafts a CHANGELOG stub from conventional commits (`--write` inserts it under
-   `## [Unreleased]`; polish it by hand).
+   drafts a CHANGELOG stub from conventional commits (`--write` splices the release in, keeping
+   pending `## [Unreleased]` notes on top and updating the compare links; polish it by hand).
+   **`CHANGELOG.md` is also the docs site's changelog** (agile `DS-0196`): `/changelog` renders
+   it, and each component page shows the bullets that name that component in backticks. So name
+   the component (``- **`Switch`**: …``) — a commit scoped `fix(switch): …` is drafted that way
+   for you — and there is nothing else to update.
 3. PR `release/<x.y.z>` into `main`; merge when green (CI's `pnpm pack` is the release dry-run);
    tag `vX.Y.Z` + GitHub release.
 4. Publishing is **automated via npm Trusted Publishing** (agile `DS-0143`): creating the GitHub

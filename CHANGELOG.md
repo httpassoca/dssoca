@@ -6,6 +6,103 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
+## [0.21.0] — Behaviour core — 2026-11-25
+
+Behaviour now lives in one framework-free core that both the Svelte components and `vanilla.js`
+call (`DS-0197`), four components are new, and components say why they changed. Nothing is
+removed and the rendered markup is unchanged; the behaviour differences are listed under
+**Changed** and **Fixed**.
+
+### Added
+
+- **`Tabs`**: new component. The WAI-ARIA tabs pattern in one tag (`tabs` array plus a `panel`
+  snippet): one tab stop with roving tabindex, arrows mirrored under RTL, Home/End, disabled
+  tabs skipped, `activation="auto" | "manual"`. `onChange(id, { reason })` reports `press` or
+  `key`. Plain HTML: `vanilla.js` toggles authored panels and emits `ss:change`.
+- **`Popover`**: new component. A non-modal floating panel anchored to a trigger button
+  (`trigger` snippet plus children), with `Menu`'s `side` / `align` placement. Opening moves
+  focus into the panel; Escape returns it to the trigger; an outside press or tabbing out closes
+  it. `onOpenChange(open, { reason })` reports `trigger`, `escape`, `outside` or `tab`. Plain
+  HTML: `ss:openchange`, `openPopover()`, `closePopover()`.
+- **`Checkbox`**: new component. A native checkbox drawn as a square box, with bindable
+  `checked` and `indeterminate` (check glyph or dash), `label` / `labelHidden` and form
+  `name` / `value`. Plain HTML: `ss:change`, `data-indeterminate`, `setCheckbox()`.
+- **`RadioGroup`**: new component. Native radios sharing a `name` inside a labelled
+  `role="radiogroup"`, square with a filled inner square for the selection; bindable `value`,
+  per-option and group `disabled`, `vertical` / `horizontal`. Plain HTML: `ss:change`,
+  `selectRadio()`.
+
+Components that change their own state now say why: their callback receives a `details` object
+with a `reason`, and the matching `ss:*` event on the plain-HTML path carries the same `reason`.
+All of it is additive.
+
+- **`Menu`**: new `onOpenChange(open, details)`; reasons `trigger`, `key`, `escape`, `tab`,
+  `outside`, `item`. Plain HTML: new `ss:openchange` event with `{ open, reason }`.
+- **`Modal`**: `onclose` receives `{ reason }`: `escape`, `backdrop`, `button` or
+  `programmatic`. Plain HTML: new `ss:close` event with the same detail, and
+  `closeModal(dialog, reason)` takes an optional reason.
+- **`SearchPalette`**: `onopen` and `onclose` receive `{ reason }`: `shortcut` or `prop` on
+  open; `escape`, `backdrop`, `close-button`, `select`, `shortcut` or `prop` on close.
+- **`Switch`**: `onchange` and `ss:change` carry `reason`: `track` or `label`.
+- **`SegmentedControl`**: `onChange` and `ss:change` carry `reason`: `press` or `key`.
+- **`Pagination`**: `onchange` carries `reason`: `page`, `prev` or `next`.
+- **`FileDrop`**: `onfiles` carries `reason`: `select`, `drop`, `remove` or `clear`.
+- **`TierList`**: `onchange` and `ss:change` carry `reason`: `pointer` or `keyboard`.
+
+### Changed
+
+- **Behaviour core** (`DS-0197`). What a key press, a click or an outside press does is now
+  decided in one framework-free place, `src/lib/core/`, and both the Svelte components and
+  `vanilla.js` call it, instead of each carrying its own copy. Every interactive component is
+  on it; the markup, classes and existing events are unchanged. A test asserting a callback was
+  called with exactly one argument needs the new `details` added.
+- **`Pagination`**: when Prev or Next reaches its bound and becomes disabled, focus moves to the
+  current page button instead of being lost.
+- **`Tooltip`**: a focus move that stays inside the tooltip no longer hides and re-shows the tip.
+
+Sharing one core also aligned a few plain-HTML (`vanilla.js`) edge cases with the components:
+
+- **`Menu`**: an item marked only with `aria-disabled="true"` is no longer activated by a click.
+- **`SegmentedControl`**: with `aria-disabled="true"` on the root, arrow keys are ignored even
+  when the segments are not natively disabled.
+- **`Input`**: `clearInput()` does nothing on a readonly or disabled input.
+- **`NumberField`**: a non-numeric `min`, `max` or `step` attribute is treated as absent, and a
+  stepper press at a bound is a no-op.
+
+### Fixed
+
+Defects found in a browser pass (`DS-0201`, `DS-0205`). All four predate this release.
+
+- **`Sidebar`**: a closed disclosure group no longer shows its children or leaves them in the tab
+  order. The `.sublist { display: flex }` rule outranked the `hidden` attribute, so the closed
+  list still rendered (and Tab from the parent landed on the first child). Storybook gains two
+  stories with nested `children`.
+- **`Modal`**: a backdrop click no longer leaves focus on `<body>`. The dialog closed on the
+  pointerdown, focus went back to the opener, and the same click's mousedown then blurred it. It
+  now closes on the click (a press that starts and ends on the backdrop), so focus stays on the
+  opener. Same fix in `vanilla.js`. A drag from inside the panel to the backdrop still does not
+  close.
+- **`Topbar`**: ArrowLeft / ArrowRight in the tab strip follow the reading direction. Under
+  `dir="rtl"` ArrowRight used to move to the tab on the left; the two keys now swap, as they do
+  in `SegmentedControl` and `TierList`. ArrowUp / ArrowDown, Home and End are unchanged.
+- **`SearchPalette`**: a backdrop click no longer leaves focus on `<body>` (`DS-0205`). The
+  palette closed on the pointerdown, focus went back to the opener, and the same click's
+  mousedown then blurred it. It now closes on the click (a press that starts and ends on the
+  backdrop), so focus stays on the opener. A drag from inside the panel to the backdrop still
+  does not close.
+
+### Docs
+
+- **Changelog on the docs site** (`DS-0196`). `/changelog` renders this file release by release,
+  and every component page ends with its own changelog: what changed in that component, per
+  release. Both are built from this file, so writing the release notes updates them; a bullet
+  reaches a component's page by naming the component in backticks. History up to `0.20.0` was
+  researched per component from the git history, pull requests and agile items.
+- **GitHub repository link** in the docs top bar (icon and label) and on the landing page.
+- `pnpm release` drafts a commit scoped to a component (`fix(switch): …`) as a bullet led by
+  that component's name, keeps pending `[Unreleased]` notes on top of the new release, and
+  updates the compare links.
+
 ## [0.20.0] — Accessibility & quality audit — 2026-11-13
 
 A full Front-End Checklist audit of every component ([#139](https://github.com/httpassoca/dssoca/issues/139),
@@ -777,7 +874,8 @@ Docs-site only (the published library is unchanged from `0.8.0`).
   component set (`DS-0002`), toast notifications (`DS-0003`), and empty/error-state affordances
   (`DS-0004`).
 
-[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.20.0...HEAD
+[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.21.0...HEAD
+[0.21.0]: https://github.com/httpassoca/dssoca/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/httpassoca/dssoca/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/httpassoca/dssoca/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/httpassoca/dssoca/compare/v0.17.0...v0.18.0

@@ -1,0 +1,60 @@
+{
+  "component": "Modal",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The `header` snippet receives `titleId` (`Snippet<[string]>`): put it on your heading (`id={titleId}`) so a custom header keeps the dialog named. Snippets that ignore the argument keep working, with `title` / `aria-label` used as an `aria-label` fallback and a dev `console.warn` when the dialog ends up unnamed.",
+          "refs": ["DS-0178", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The page behind no longer scrolls while the dialog is open: `<html>` gets `overflow: hidden` through a reference-counted lock (`data-ss-scroll-lock`), and `.body` uses `overscroll-behavior: contain`. Plain-HTML dialogs driven by `dssoca/vanilla.js` lock and release the same way.",
+          "refs": ["DS-0178", "#139", "#140"]
+        },
+        {
+          "type": "added",
+          "text": "`lockScroll` / `unlockScroll` are exported from `dssoca/vanilla.js`: the scroll lock shared with `SearchPalette`, safe for stacked dialogs.",
+          "refs": ["DS-0178", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The close button is pushed to the inline end with `margin-inline-start: auto` (was `margin-left`), so it sits on the correct side under `dir=\"rtl\"`.",
+          "refs": ["DS-0178", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML behaviour in `dssoca/vanilla.js` for `<dialog class=\"ss-modal\">` markup: `data-ss-modal=\"#id\"` openers, `data-ss-dismiss` closers and backdrop click to close. `data-ss-static` on the dialog disables backdrop close and `data-ss-no-esc` blocks Escape, mirroring `closeOnBackdrop` / `closeOnEsc`.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.15.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New `fullscreen` prop (default `false`) fills the viewport instead of rendering a centred, capped panel: header and footer stay pinned and the body owns the scroll. It renders `data-fullscreen` on the dialog; in this mode `size` has no effect on width and `closeOnBackdrop` is unreachable, so the close button and Esc are the exits.",
+          "refs": ["DS-0145", "#117"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a dialog built on the native `<dialog>` element, with a focus trap, `Esc` and backdrop close (`closeOnEsc`, `closeOnBackdrop`), a bindable `open`, `title`, `size`, `header` / `footer` snippets, `onclose` and a `danger` styling hint.",
+          "refs": ["DS-0094", "#81"]
+        }
+      ]
+    }
+  ]
+}

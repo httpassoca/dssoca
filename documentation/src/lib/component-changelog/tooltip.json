@@ -1,0 +1,87 @@
+{
+  "component": "Tooltip",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "While open, `aria-describedby` is set on the focused trigger (or, on hover, the first focusable element inside `.trigger`) instead of the `.ss-tooltip` wrapper that never takes focus, so screen readers read the tip. The tip id is added as one token next to any description the trigger already has, and is removed on close and on unmount.",
+          "breaking": true,
+          "refs": ["DS-0163", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Escape closes an open tip wherever focus is, including a tip opened by hover (it was only handled on keydown inside the wrapper).",
+          "refs": ["DS-0163", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The open tip is hoverable: `.tip.open` has `pointer-events: auto` and a `.tip::before` strip covers the `--ss-tooltip-offset` gap, so the pointer can move onto the tip without closing it (WCAG 1.4.13).",
+          "refs": ["DS-0163", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Plain-HTML (`dssoca/vanilla.js`) tooltips get the same fixes: `aria-describedby` goes on the trigger inside `.trigger`, and Escape closes every open tip from anywhere.",
+          "refs": ["DS-0163", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML behaviour in `dssoca/vanilla.js`: hover and focus reveal the tip on `.ss-tooltip[data-placement] > .trigger + .tip[role=tooltip]` markup. The `data-placement` in the markup is used as is; there is no collision avoidance.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.16.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "`placement` is now the preferred side. When it has no room inside the viewport or an `overflow`-clipping ancestor, the tip flips to the opposite side, then to the roomier perpendicular side, and shifts along the cross axis so it never overhangs the edge. It repositions on scroll and resize while open.",
+          "breaking": true,
+          "refs": ["DS-0146", "#120"]
+        },
+        {
+          "type": "added",
+          "text": "New `avoidCollisions` prop (default `true`); `false` pins the tip to `placement`.",
+          "refs": ["DS-0146", "#120"]
+        },
+        {
+          "type": "changed",
+          "text": "`data-placement` on the root now holds the resolved side, not always the `placement` prop, and the tip carries an inline `--shift` custom property for the cross-axis nudge.",
+          "refs": ["DS-0146", "#120"]
+        }
+      ]
+    },
+    {
+      "version": "0.15.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`text` accepts `string | Snippet`, so a tip can hold a small rendered template (a `<code>` path, a `Kbd` chip, an emphasised label). Snippets must be non-interactive phrasing content; existing `text=\"…\"` usage is unaffected.",
+          "refs": ["DS-0144", "#116"]
+        },
+        {
+          "type": "changed",
+          "text": "The `.tip` element is `display: block`, so wrapped text and `<br>` in snippet content lay out correctly.",
+          "refs": ["DS-0144", "#116"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a hover / focus tooltip around a trigger (`role=\"tooltip\"`, `aria-describedby`), with `text`, `placement` (`top`, `bottom`, `left`, `right`; default `top`) and `size` props. Escape dismisses it and the animation respects reduced motion.",
+          "refs": ["DS-0098", "#85"]
+        }
+      ]
+    }
+  ]
+}

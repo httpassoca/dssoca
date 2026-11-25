@@ -1,0 +1,125 @@
+{
+  "component": "Input",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The clear button shows the base solid `--ss-primary` focus ring (was a `--ss-primary-soft` glow at about 1.5:1) and has a 24×24px minimum hit area (`--ss-s-6`); the glyph keeps its size.",
+          "refs": ["DS-0166", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The required marker `.req` uses `margin-inline-start`, so its spacing mirrors under `dir=\"rtl\"`.",
+          "refs": ["DS-0166", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.18.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The `.clear` button honours the `hidden` attribute, so in plain HTML with `vanilla.js` the × no longer shows on an empty field.",
+          "refs": ["DS-0150", "#127"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML support: `dssoca/vanilla.css` styles the same markup and `dssoca/vanilla.js` wires the clear button.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The invalid focus glow is built from `--ss-danger` with `color-mix()` instead of the removed `--ss-red-rgb` token.",
+          "refs": ["DS-0126", "#104"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`hint` and `error` text under the field: both are linked through `aria-describedby`, and `error` also sets `aria-invalid` and is announced with `role=\"alert\"`.",
+          "refs": ["DS-0033", "#39"]
+        },
+        {
+          "type": "added",
+          "text": "`prefix` and `suffix` snippets inside the field, and `clearable`, which renders a clear button while the field has a value and is not `readonly` or `disabled`.",
+          "refs": ["DS-0033", "#39"]
+        },
+        {
+          "type": "added",
+          "text": "`readonly`, `autocomplete`, `inputmode` and `maxlength` props; any other native input attribute or event handler is forwarded to the `<input>`.",
+          "refs": ["DS-0033", "#39"]
+        },
+        {
+          "type": "added",
+          "text": "Invalid (red border and focus glow), disabled and read-only styles, and a `*` marker in the label when `required` is set.",
+          "refs": ["DS-0033", "#39"]
+        },
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Markup changed: the root is always a `div.ss-field` (also without `label`) holding `label.lbl`, a `div.control` wrapper that now carries the border and focus ring, and the `input.ss-input`. Before, the root was a `<label class=\"ss-field\">`, or a bare `<input>` when there was no label.",
+          "refs": ["DS-0033", "#39"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`size` prop (`sm`, `md`, `lg`) that overrides the global size for this field; the resolved value is set as `data-size-variant`.",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "added",
+          "text": "`invalid` (sets `aria-invalid`) and `describedby` (sets `aria-describedby`) props.",
+          "refs": ["DS-0013", "#10"]
+        },
+        {
+          "type": "fixed",
+          "text": "The label is always associated with the input: an `id` is generated when none is passed.",
+          "refs": ["DS-0013", "#10"]
+        },
+        {
+          "type": "changed",
+          "text": "Styles ship with the component (scoped) instead of living in `theme.css`.",
+          "refs": ["DS-0009", "#6"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Classes renamed from `hub-field` / `hub-input` to `ss-field` / `ss-input`, following the global `hub-` → `ss-` and `--hs-*` → `--ss-*` rename."
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a text field with an optional `label`, a bindable `value`, and `type`, `placeholder`, `required`, `disabled`, `id`, `name` and `oninput` props."
+        }
+      ]
+    }
+  ]
+}

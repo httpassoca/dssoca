@@ -1,6 +1,18 @@
 <script lang="ts">
   import { tick } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    fileDropDrag,
+    fileDropKey,
+    fileDropPress,
+    fileDropRemove,
+    fileDropSelect,
+    fileDropSize,
+    fileDropZoneAttrs,
+    type FileDropAction,
+    type FileDropChangeDetails,
+    type FileDropReason,
+  } from '../core/file-drop.js'
 
   interface Props {
     /** Field label, doubles as part of the drop zone's accessible name. */
@@ -19,8 +31,11 @@
     error?: string
     /** Selected files. Bindable. */
     files?: File[]
-    /** Fired with the resolved file list whenever the selection changes. */
-    onfiles?: (files: File[]) => void
+    /**
+     * Fired with the resolved file list whenever the selection changes; `details.reason` says
+     * why (`select` from the picker, `drop`, `remove` of one file, or `clear`).
+     */
+    onfiles?: (files: File[], details: FileDropChangeDetails) => void
     /**
      * Fired with the files a selection/drop discarded (wrong type for `accept`,
      * or extras when `multiple` is false). Rejections are also announced
@@ -65,35 +80,6 @@
   // Polite live region text; the region is always mounted so updates announce.
   let status = $state('')
 
-  /** Human-readable byte size (1 KB = 1024 B). */
-  function humanSize(bytes: number): string {
-    if (bytes < 1024) return `${bytes} B`
-    const units = ['KB', 'MB', 'GB', 'TB']
-    let v = bytes / 1024
-    let i = 0
-    while (v >= 1024 && i < units.length - 1) {
-      v /= 1024
-      i++
-    }
-    return `${v.toFixed(v < 10 ? 1 : 0)} ${units[i]}`
-  }
-
-  /** Does a file satisfy the `accept` filter? Empty accept matches everything. */
-  function matchesAccept(file: File): boolean {
-    if (!accept) return true
-    const name = file.name.toLowerCase()
-    const type = file.type.toLowerCase()
-    return accept
-      .split(',')
-      .map((t) => t.trim().toLowerCase())
-      .filter(Boolean)
-      .some((token) => {
-        if (token.startsWith('.')) return name.endsWith(token)
-        if (token.endsWith('/*')) return type.startsWith(token.slice(0, -1))
-        return type === token
-      })
-  }
-
   /** Set the live-region text, clearing first so a repeat message re-announces. */
   async function announce(message: string) {
     status = ''
@@ -102,82 +88,67 @@
     status = message
   }
 
+  // Every decision below comes from core/file-drop.ts; this file holds the state and applies it.
+
   /** Apply accept/multiple, update state, notify (and report rejections). */
-  function applyFiles(list: File[]) {
+  function applyFiles(list: File[], reason: FileDropReason) {
     if (disabled) return
-    const reasons: string[] = []
-    const rejected: File[] = []
-    let next: File[] = []
-    for (const file of list) {
-      if (!matchesAccept(file)) {
-        rejected.push(file)
-        reasons.push(`${file.name} (file type not accepted)`)
-      } else if (!multiple && next.length) {
-        rejected.push(file)
-        reasons.push(`${file.name} (only one file allowed)`)
-      } else {
-        next.push(file)
-      }
-    }
-    files = next
-    onfiles?.(next)
-    if (rejected.length) onreject?.(rejected)
-    void announce(rejected.length ? `Not added: ${reasons.join(', ')}.` : '')
+    const { accepted, rejected, announcement } = fileDropSelect(list, { accept, multiple })
+    files = accepted
+    onfiles?.(accepted, { reason })
+    if (rejected.length) onreject?.(rejected.map((r) => r.file))
+    void announce(announcement)
+  }
+
+  function apply(action: FileDropAction | null) {
+    if (action?.type === 'browse') inputEl?.click()
   }
 
   function openPicker() {
-    if (disabled) return
-    inputEl?.click()
+    apply(fileDropPress({ disabled }))
   }
 
   function onKeydown(e: KeyboardEvent) {
-    if (disabled) return
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      openPicker()
-    }
+    const result = fileDropKey({ disabled }, e.key)
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    apply(result.action)
   }
 
   function onChange(e: Event & { currentTarget: HTMLInputElement }) {
-    applyFiles(Array.from(e.currentTarget.files ?? []))
+    applyFiles(Array.from(e.currentTarget.files ?? []), 'select')
   }
 
-  function onDragOver(e: DragEvent) {
-    if (disabled) return
+  /** Track the drag; `false` when the zone is disabled and the event is not ours. */
+  function drag(e: DragEvent, event: 'over' | 'leave' | 'drop'): boolean {
+    const next = fileDropDrag({ disabled }, event)
+    if (next === null) return false
     e.preventDefault()
-    dragging = true
-  }
-
-  function onDragLeave(e: DragEvent) {
-    if (disabled) return
-    e.preventDefault()
-    dragging = false
+    dragging = next
+    return true
   }
 
   function onDrop(e: DragEvent) {
-    if (disabled) return
-    e.preventDefault()
-    dragging = false
-    applyFiles(Array.from(e.dataTransfer?.files ?? []))
+    if (drag(e, 'drop')) applyFiles(Array.from(e.dataTransfer?.files ?? []), 'drop')
   }
 
   async function removeAt(index: number) {
     if (disabled) return
-    const next = files.filter((_, i) => i !== index)
-    files = next
-    onfiles?.(next)
+    const result = fileDropRemove(files, index)
+    files = result.files
+    onfiles?.(result.files, { reason: 'remove' })
     // The focused button just unmounted: land on the next remove button, else
     // the previous one, else the zone (WCAG 2.4.3).
     await tick()
     const buttons = rootEl?.querySelectorAll<HTMLButtonElement>('.files .remove') ?? []
-    ;(buttons[index] ?? buttons[index - 1] ?? zoneEl)?.focus()
+    ;((result.focus === 'zone' ? undefined : buttons[result.focus]) ?? zoneEl)?.focus()
   }
 
   async function clear() {
     if (disabled) return
     files = []
     if (inputEl) inputEl.value = ''
-    onfiles?.([])
+    onfiles?.([], { reason: 'clear' })
     await tick()
     zoneEl?.focus()
   }
@@ -210,16 +181,14 @@
     bind:this={zoneEl}
     class="zone"
     class:dragging
-    role="button"
-    tabindex={disabled ? -1 : 0}
+    {...fileDropZoneAttrs({ disabled })}
     aria-labelledby={labelledBy}
-    aria-disabled={disabled || undefined}
     aria-describedby={describedBy}
     onclick={openPicker}
     onkeydown={onKeydown}
-    ondragover={onDragOver}
-    ondragenter={onDragOver}
-    ondragleave={onDragLeave}
+    ondragover={(e) => drag(e, 'over')}
+    ondragenter={(e) => drag(e, 'over')}
+    ondragleave={(e) => drag(e, 'leave')}
     ondrop={onDrop}
   >
     <span class="prompt">
@@ -233,7 +202,7 @@
       {#each files as file, i (file.name + i)}
         <li class="file">
           <span class="name">{file.name}</span>
-          <span class="bytes">{humanSize(file.size)}</span>
+          <span class="bytes">{fileDropSize(file.size)}</span>
           <button
             type="button"
             class="remove"

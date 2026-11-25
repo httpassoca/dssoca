@@ -7,7 +7,8 @@
  *
  * Usage:
  *   pnpm release            # validate + print changelog stub + next steps
- *   pnpm release --write    # also insert the stub under ## [Unreleased] in CHANGELOG.md
+ *   pnpm release --write    # also splice the release into CHANGELOG.md (keeps pending
+ *                           # [Unreleased] notes on top, updates the compare links)
  *
  * What it does (read-only unless --write):
  *   1. validates package.json#version is semver and greater than the last tag
@@ -16,9 +17,10 @@
  *   4. prints the remaining manual steps (PR, tag, publish --provenance, back-merge)
  */
 import { execSync } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { draftSections, insertRelease } from './lib/changelog.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const sh = (cmd) => execSync(cmd, { cwd: root, encoding: 'utf8' }).trim()
@@ -64,56 +66,43 @@ if (dirty) console.warn('! working tree is not clean — commit or stash before 
 const range = lastTag ? `${lastTag}..HEAD` : 'HEAD'
 const subjects = sh(`git log ${range} --no-merges --format=%s`).split('\n').filter(Boolean)
 
-const SECTIONS = [
-  ['feat', 'Added'],
-  ['fix', 'Fixed'],
-  ['perf', 'Changed'],
-  ['refactor', 'Changed'],
-  ['docs', 'Docs'],
-  ['test', 'Tests'],
-  ['chore', 'Chores'],
-]
-const groups = new Map()
-for (const s of subjects) {
-  const m = s.match(/^(\w+)(?:\([^)]*\))?(!)?:\s*(.+)$/)
-  const [type, breaking, text] = m ? [m[1], m[2], m[3]] : ['other', '', s]
-  const section = (SECTIONS.find(([t]) => t === type) ?? ['other', 'Other'])[1]
-  if (!groups.has(section)) groups.set(section, [])
-  groups.get(section).push(breaking ? `**BREAKING** ${text}` : text)
-}
+// A commit scoped to a component (`fix(switch): …`) is drafted as "- **`Switch`**: …". The docs
+// site derives every component page's changelog from bullets that name the component in
+// backticks, so that bullet reaches the Switch page with no further step (DS-0196).
+const componentNames = readdirSync(resolve(root, 'src/lib/components'))
+  .filter((f) => f.endsWith('.svelte'))
+  .map((f) => f.replace(/\.svelte$/, ''))
 
 const today = new Date().toISOString().slice(0, 10)
-const stub = [
-  `## [${version}] — ${today}`,
-  '',
-  ...[...groups.entries()].flatMap(([section, items]) => [
-    `### ${section}`,
-    '',
-    ...items.map((i) => `- ${i}`),
-    '',
-  ]),
-].join('\n')
+const sections = draftSections(subjects, componentNames)
+const stub = `## [${version}] — ${today}\n\n${sections}\n`
 
 console.log('\n── changelog stub ──────────────────────────────────────────\n')
 console.log(stub)
 
 if (write) {
   const clPath = resolve(root, 'CHANGELOG.md')
-  const cl = readFileSync(clPath, 'utf8')
-  const anchor = '## [Unreleased]'
-  if (!cl.includes(anchor)) fail(`CHANGELOG.md has no "${anchor}" section to insert under`)
-  if (cl.includes(`## [${version}]`)) {
+  const next = insertRelease(readFileSync(clPath, 'utf8'), {
+    version,
+    date: today,
+    sections,
+    previousTag: lastTag || undefined,
+  })
+  if (next === null) {
     console.warn(`! CHANGELOG.md already has a ${version} entry — not inserting`)
   } else {
-    writeFileSync(clPath, cl.replace(anchor, `${anchor}\n\n${stub.trimEnd()}`))
-    ok(`stub inserted into CHANGELOG.md — now edit it into human-readable notes`)
+    writeFileSync(clPath, next)
+    ok(
+      `release ${version} inserted into CHANGELOG.md (pending [Unreleased] notes kept on top) — now edit it into human-readable notes`,
+    )
   }
 }
 
 // ── 4. Remaining manual steps (git-flow) ────────────────────────────────────
 console.log(`
 ── next steps (manual, git-flow) ───────────────────────────
- 1. polish CHANGELOG.md (the stub is raw commit subjects)
+ 1. polish CHANGELOG.md (the stub is raw commit subjects). Keep component names in
+    backticks — the docs site puts each such bullet on that component's page.
  2. push and open a PR:  ${releaseBranch} → main   (merge when CI is green)
  3. tag the merge commit on main:
       git checkout main && git pull

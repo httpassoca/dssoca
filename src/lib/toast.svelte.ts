@@ -9,9 +9,9 @@ import {
   resolveTimeout,
   normalizeOptions,
   ToastTimer,
-} from './toast-core.js'
+} from './core/toast.js'
 
-// Types + timer live in `toast-core.ts` (framework-free, shared with the vanilla port —
+// Types + timer live in `core/toast.ts` (framework-free, shared with the vanilla port —
 // DS-0148); re-exported here so the public `dssoca` surface is unchanged.
 export type {
   Toast,
@@ -20,7 +20,7 @@ export type {
   ToastOptions,
   ToastPatch,
   PromiseMessages,
-} from './toast-core.js'
+} from './core/toast.js'
 
 /**
  * Module-singleton toast store (Svelte 5 runes). One instance is shared by

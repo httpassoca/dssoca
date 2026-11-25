@@ -1,0 +1,40 @@
+{
+  "component": "TierList",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The tile flip animation is skipped when the user prefers reduced motion.",
+          "refs": ["DS-0189", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Under `dir=\"rtl\"` the Left/Right arrow keys and the drag insertion point follow reading direction, in the Svelte component and in the plain-HTML behaviour (`dssoca/vanilla.js`). Tile text aligns to `start` instead of `left`.",
+          "refs": ["DS-0189", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.19.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: labelled tier rows (S / A / B / C / D by default, or any `{ id, label, color? }` list in `tiers`) plus an unranked tray, holding one tile per item. Tiles move by pointer drag (touch included) and by keyboard (Space picks up, arrows / Home / End move, Space drops, Escape cancels), with every step announced by a polite live region.",
+          "refs": ["DS-0159", "DS-0160", "#136"]
+        },
+        {
+          "type": "added",
+          "text": "The ranking comes back as `placements` (tier id → ordered item ids) through `bind:placements` or `onchange`; `onselect` activates a tile (Enter / click), the `tile` snippet renders tile content, and `readonly` shows a ranking without sorting. Sizes read the new `--ss-tier-*` tokens.",
+          "refs": ["DS-0159", "DS-0160", "#136"]
+        },
+        {
+          "type": "added",
+          "text": "Plain-HTML behaviour: `dssoca/vanilla.js` drives the rendered markup with the same drag and keyboard paths, emits `ss:change` with `{ placements }`, and `data-ss-readonly` makes the list inert.",
+          "refs": ["DS-0159", "DS-0160", "#136"]
+        }
+      ]
+    }
+  ]
+}

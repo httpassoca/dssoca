@@ -1,0 +1,46 @@
+{
+  "component": "ScatterPlot",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The chart is one tab stop (was one per point): Arrow keys, Home and End move focus between points, and the last-focused point keeps the tab stop.",
+          "refs": ["DS-0187", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Points are `role=\"img\"` with their `aria-label` (was `role=\"button\"` with no action) and use `cursor: default`. The `.point-label` text is `aria-hidden=\"true\"`, so each point is announced once.",
+          "refs": ["DS-0187", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The tooltip is `aria-hidden=\"true\"` and no longer `role=\"status\"`, since the point's `aria-label` already carries the same label and values. Escape hides it, on focus and on hover.",
+          "refs": ["DS-0187", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "Point colours come from the shared `CHART_PALETTE`, built from the palette slots: `--ss-accent`, `--ss-blue`, `--ss-magenta`, `--ss-cyan`, `--ss-yellow`, `--ss-green` (was `--ss-primary`, `--ss-blue`, `--ss-purple`, `--ss-cyan`, `--ss-yellow`, `--ss-lime`). A custom palette now recolours the points.",
+          "refs": ["DS-0128", "#104"]
+        }
+      ]
+    },
+    {
+      "version": "0.11.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a two-axis scatter plot with optional quadrant reference lines (`xRef` / `yRef` + `quadrantLabels`), sqrt-scaled bubble sizing, direct point labels and a hover/focus tooltip. Axes use the padded data extent instead of starting at zero.",
+          "refs": ["DS-0102", "DS-0103"]
+        }
+      ]
+    }
+  ]
+}

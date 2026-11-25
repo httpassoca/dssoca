@@ -3,8 +3,14 @@
   import StoryEmbed from './StoryEmbed.svelte'
   import CodeBlock from './CodeBlock.svelte'
   import PropsTable from './PropsTable.svelte'
+  import ComponentChangelog from './ComponentChangelog.svelte'
+  import type { ComponentReleaseView } from '$lib/server/changelog'
 
-  let { doc, html }: { doc: ComponentDoc; html: string } = $props()
+  let {
+    doc,
+    html,
+    changelog,
+  }: { doc: ComponentDoc; html: string; changelog: ComponentReleaseView[] } = $props()
 </script>
 
 <article>
@@ -52,6 +58,11 @@
   <section>
     <h2>Props</h2>
     <PropsTable props={doc.props} />
+  </section>
+
+  <section>
+    <h2 id="changelog">Changelog</h2>
+    <ComponentChangelog releases={changelog} name={doc.name} />
   </section>
 </article>
 

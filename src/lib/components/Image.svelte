@@ -22,6 +22,16 @@
   // ─────────────────────────────────────────────────────────────────────────
   import { tick } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    imageAspect,
+    imageCanOpen,
+    imageDialogAttrs,
+    imageDialogKey,
+    imageFrameAttrs,
+    imageLoadResult,
+    imageTriggerAttrs,
+    type ImageLoadState,
+  } from '../core/image.js'
 
   interface Props {
     /** Image URL. */
@@ -77,20 +87,20 @@
     class: className,
   }: Props = $props()
 
+  // Behaviour lives in `core/image.ts`: the load state, whether the lightbox may open and
+  // what a key inside it does are decided there; this file holds the state and applies it.
+
   // Reserve space before load → no layout shift (CLS). Prefer an explicit
   // ratio, else derive from intrinsic width/height. `null` → no box reserved.
-  const aspect = $derived(
-    ratio && ratio > 0 ? ratio : width && height && height > 0 ? width / height : null,
-  )
+  const aspect = $derived(imageAspect({ ratio, width, height }))
 
-  type State = 'loading' | 'loaded' | 'error'
-  let loadState = $state<State>('loading')
+  let loadState = $state<ImageLoadState>('loading')
 
   function onLoad() {
-    loadState = 'loaded'
+    loadState = imageLoadResult('load')
   }
   function onError() {
-    loadState = 'error'
+    loadState = imageLoadResult('error')
   }
 
   // ── Lightbox ───────────────────────────────────────────────────────────
@@ -99,7 +109,7 @@
   let dialog = $state<HTMLDivElement | null>(null)
   let closeBtn = $state<HTMLButtonElement | null>(null)
 
-  const canOpen = $derived(lightbox && loadState !== 'error')
+  const canOpen = $derived(imageCanOpen(lightbox, loadState))
 
   async function openLightbox() {
     if (!canOpen) return
@@ -114,36 +124,30 @@
     trigger?.focus()
   }
 
-  // Focus trap + Esc, scoped to the dialog (keeps Tab inside the overlay).
+  // DS-0078: exclude disabled focusables (and anything opted out of the tab
+  // order with tabindex="-1", e.g. the backdrop button) so the trap never
+  // wraps relative to an element that cannot actually take tab focus.
+  const FOCUSABLE = [
+    'button:not([disabled]):not([aria-disabled="true"]):not([tabindex="-1"])',
+    '[href]:not([aria-disabled="true"]):not([tabindex="-1"])',
+    '[tabindex]:not([tabindex="-1"]):not([disabled]):not([aria-disabled="true"])',
+  ].join(', ')
+
+  // Focus trap + Esc, scoped to the dialog (keeps Tab inside the overlay). The DOM is read
+  // here; the core decides what the key does.
   function onDialogKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape') {
-      e.preventDefault()
-      e.stopPropagation()
-      closeLightbox()
-      return
-    }
-    if (e.key !== 'Tab' || !dialog) return
-    // DS-0078: exclude disabled focusables (and anything opted out of the tab
-    // order with tabindex="-1", e.g. the backdrop button) so the trap never
-    // wraps relative to an element that cannot actually take tab focus.
-    const focusables = dialog.querySelectorAll<HTMLElement>(
-      [
-        'button:not([disabled]):not([aria-disabled="true"]):not([tabindex="-1"])',
-        '[href]:not([aria-disabled="true"]):not([tabindex="-1"])',
-        '[tabindex]:not([tabindex="-1"]):not([disabled]):not([aria-disabled="true"])',
-      ].join(', '),
-    )
-    if (focusables.length === 0) return
-    const first = focusables[0]
-    const last = focusables[focusables.length - 1]
-    const active = document.activeElement
-    if (e.shiftKey && active === first) {
-      e.preventDefault()
-      last.focus()
-    } else if (!e.shiftKey && active === last) {
-      e.preventDefault()
-      first.focus()
-    }
+    const focusables = dialog ? [...dialog.querySelectorAll<HTMLElement>(FOCUSABLE)] : []
+    const result = imageDialogKey({
+      key: e.key,
+      shiftKey: e.shiftKey,
+      focusableCount: focusables.length,
+      activeIndex: focusables.indexOf(document.activeElement as HTMLElement),
+    })
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    if (result.stopPropagation) e.stopPropagation()
+    if (result.action.type === 'close') closeLightbox()
+    else focusables[result.action.index]?.focus()
   }
 </script>
 
@@ -157,7 +161,7 @@
   <div
     class="frame"
     style:aspect-ratio={aspect != null ? `${aspect}` : undefined}
-    aria-busy={loadState === 'loading'}
+    {...imageFrameAttrs(loadState)}
   >
     {#if loadState === 'error'}
       <div class="fallback" role="img" aria-label={alt || 'Image failed to load'}>
@@ -172,8 +176,7 @@
           bind:this={trigger}
           type="button"
           class="trigger"
-          aria-haspopup="dialog"
-          aria-label={alt ? `View image: ${alt}` : 'View image full size'}
+          {...imageTriggerAttrs(alt)}
           onclick={openLightbox}
         >
           {@render media()}
@@ -215,10 +218,7 @@
     bind:this={dialog}
     class="ss-image-lightbox"
     data-size-variant={resolveComponentSize('Image', size)}
-    role="dialog"
-    aria-modal="true"
-    aria-label={alt ? `Image: ${alt}` : 'Image preview'}
-    tabindex="-1"
+    {...imageDialogAttrs(alt)}
     onkeydown={onDialogKeydown}
   >
     <button type="button" class="backdrop" tabindex="-1" aria-hidden="true" onclick={closeLightbox}

@@ -1,0 +1,25 @@
+{
+  "component": "Avatar",
+  "releases": [
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The initials tile colour now comes from the shared `CHART_PALETTE` (`--ss-accent`, `--ss-blue`, `--ss-magenta`, `--ss-cyan`, `--ss-yellow`, `--ss-green`) instead of a private list using `--ss-primary`, `--ss-purple` and `--ss-lime`, so a theme flip or an imported custom palette recolours it. A given `name` keeps the same palette position; the order and length are stable API.",
+          "refs": ["DS-0128"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a square avatar that shows an image (`src`, `alt`) or up to two initials taken from `name`, on a background colour hashed deterministically from the name. It falls back to the initials if the image fails to load, exposes `name` once through `role=\"img\"` and `aria-label`, and takes `size` (`sm`, `md`, `lg`).",
+          "refs": ["DS-0099", "#86"]
+        }
+      ]
+    }
+  ]
+}

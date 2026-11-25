@@ -38,6 +38,26 @@
   import { resolveComponentSize, type Size } from '../config.js'
   import { shortcuts } from '../shortcuts.svelte.js'
   import { lockScroll, unlockScroll } from '../vanilla/modal.js'
+  import {
+    searchBackdropPress,
+    searchClosePress,
+    searchFilter,
+    searchFirstActive,
+    searchFlat,
+    searchGroups,
+    searchHover,
+    searchInputAttrs,
+    searchInputKey,
+    searchItemPress,
+    searchOptionAttrs,
+    searchShortcut,
+    searchStatus,
+    searchValidActive,
+    type SearchPaletteAction,
+    type SearchPaletteOpenDetails,
+    type SearchPaletteReason,
+    type SearchPaletteState,
+  } from '../core/search-palette.js'
 
   interface Props {
     /** Whether the palette is shown. Bindable — sync it from caller state. */
@@ -72,10 +92,11 @@
     size?: Size
     /** Called with the chosen item on Enter/click. Return false to keep the palette open. */
     onselect?: (item: T) => void | boolean
-    /** Called after the palette opens. */
-    onopen?: () => void
-    /** Called after the palette closes (Esc, backdrop, selection). */
-    onclose?: () => void
+    /** Called after the palette opens, with why (`details.reason`: shortcut · prop). */
+    onopen?: (details: SearchPaletteOpenDetails) => void
+    /** Called after the palette closes, with why (`details.reason`: escape · backdrop ·
+     *  close-button · select · shortcut · prop). */
+    onclose?: (details: SearchPaletteOpenDetails) => void
     /** Replaces the default option row body (label + hint). */
     item?: Snippet<[T, { active: boolean }]>
     /** Replaces the default no-results state; receives the current query. */
@@ -115,50 +136,32 @@
   const listId = `${uid}-listbox`
   const optionId = (index: number) => `${uid}-option-${index}`
 
-  // Case- and diacritic-insensitive fold ("São" matches "sao").
-  const fold = (s: string) =>
-    s
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-
-  const filtered = $derived.by(() => {
-    if (!filter) return items
-    const q = fold(query.trim())
-    if (!q) return items
-    return items.filter((it) => fold([it.label, ...(it.keywords ?? [])].join(' ')).includes(q))
-  })
+  // Behaviour lives in `core/search-palette.ts`: filtering, grouping, the active-option
+  // movement, what a key does and why the palette opens/closes are decided there; this
+  // file holds the state and applies the result.
+  const filtered = $derived(filter ? searchFilter(items, query) : items)
 
   // Buckets in first-appearance order, ungrouped (label null) always first;
   // options carry a flat index so keyboard order equals DOM order.
-  const groups = $derived.by(() => {
-    const buckets: { label: string | null; bucket: T[] }[] = []
-    for (const it of filtered) {
-      const label = it.group ?? null
-      let b = buckets.find((entry) => entry.label === label)
-      if (!b) {
-        b = { label, bucket: [] }
-        buckets.push(b)
-      }
-      b.bucket.push(it)
-    }
-    buckets.sort((a, b) => Number(b.label === null) - Number(a.label === null))
-    let index = 0
-    return buckets.map(({ label, bucket }) => ({
-      label,
-      entries: bucket.map((entry) => ({ item: entry, index: index++ })),
-    }))
-  })
-  const flat = $derived(groups.flatMap((g) => g.entries.map((e) => e.item)))
+  const groups = $derived(searchGroups(filtered))
+  const flat = $derived(searchFlat(groups))
 
-  function firstSelectable(): number {
-    const i = flat.findIndex((it) => !it.disabled)
-    return i === -1 ? 0 : i
+  const palette = $derived<SearchPaletteState>({ open, active, items: flat })
+
+  // Why the next open/close happens. Set when the palette changes `open` itself (or the
+  // native dialog reports Esc through `cancel`); left null when the consumer flips the
+  // prop, which reports as 'prop'.
+  let pending: SearchPaletteReason | null = null
+  const takeReason = (): SearchPaletteReason => {
+    const reason = pending ?? 'prop'
+    pending = null
+    return reason
   }
 
   // Keep the active index valid as the list changes (typing, items swapped).
   $effect(() => {
-    if (active >= flat.length || flat[active]?.disabled) active = firstSelectable()
+    const valid = searchValidActive(palette)
+    if (valid !== active) active = valid
   })
 
   // Mirror `open` onto the native dialog (same guard dance as Modal), then
@@ -169,7 +172,7 @@
     if (open && !el.open) {
       el.showModal()
       input?.focus()
-      onopen?.()
+      onopen?.({ reason: takeReason() })
     } else if (!open && el.open) {
       el.close()
     }
@@ -186,7 +189,36 @@
 
   // Polite live text for the always-rendered status node: silent until the
   // user types, then the result count (or the no-results text).
-  const status = $derived(query.trim() ? (flat.length ? resultsText(flat.length) : emptyText) : '')
+  const status = $derived(searchStatus(query, flat.length, resultsText, emptyText))
+
+  function run(action: SearchPaletteAction | null) {
+    if (!action) return
+    switch (action.type) {
+      case 'open':
+        pending = action.reason
+        open = true
+        break
+      case 'close':
+        pending = action.reason
+        open = false
+        break
+      case 'move':
+        active = action.index
+        void tick().then(() => optionAt(active)?.scrollIntoView({ block: 'nearest' }))
+        break
+      case 'activate':
+        // href options: click the real anchor so the router/native semantics
+        // apply — its click handler runs choose() for us.
+        if (action.via === 'anchor') optionAt(action.index)?.click()
+        else choose(action.index)
+        break
+    }
+  }
+
+  // Esc on the native dialog fires `cancel` right before `close`.
+  function onDialogCancel() {
+    pending = 'escape'
+  }
 
   // Native `close` (Esc, .close()) → sync state, optionally reset, notify.
   function onDialogClose() {
@@ -195,13 +227,26 @@
       query = ''
       active = 0
     }
-    onclose?.()
+    onclose?.({ reason: takeReason() })
   }
 
-  // A pointerdown landing on the <dialog> itself (not the inner panel) is a
-  // backdrop hit (Modal's detection).
+  // A press that starts on the <dialog> itself (not the inner panel) is a
+  // backdrop hit (Modal's detection). Remembering where the press began avoids
+  // closing on a drag that started inside the panel and was released on the
+  // backdrop.
+  //
+  // The dialog closes on the `click`, not on the pointerdown: closing hands
+  // focus back to the opener, and if that happened on pointerdown the same
+  // gesture's mousedown would then land on the page and blur it, leaving focus
+  // on <body>.
+  let pressedBackdrop = false
   function onPointerDown(e: PointerEvent) {
-    if (e.target === dialog) open = false
+    pressedBackdrop = e.target === dialog
+  }
+  function onClick(e: MouseEvent) {
+    const hit = pressedBackdrop && e.target === dialog
+    pressedBackdrop = false
+    run(searchBackdropPress(palette, hit))
   }
 
   // DS-0139: the toggle chord goes through the shortcut registry (id
@@ -218,71 +263,35 @@
       label: 'Open search',
       keys: shortcut,
       allowInInputs: true, // chorded — must fire while typing (incl. the palette's own input)
-      onPress: () => {
-        open = !open
-      },
+      onPress: () => run(searchShortcut(open)),
     }
     const el = dialog
     return open && el ? shortcuts.add({ ...options, scope: 'focus' }, el) : shortcuts.add(options)
   })
 
-  // Step to the next non-disabled option, wrapping; delta 0 re-validates.
-  function move(delta: number, from = active) {
-    const len = flat.length
-    if (!len) return
-    let i = from
-    for (let step = 0; step < len; step++) {
-      i = (i + delta + len) % len
-      if (!flat[i].disabled) {
-        active = i
-        break
-      }
-    }
-    void tick().then(() =>
-      list?.querySelector(`#${CSS.escape(optionId(active))}`)?.scrollIntoView({ block: 'nearest' }),
-    )
-  }
-
   function onInputKeydown(e: KeyboardEvent) {
-    if (e.isComposing) return
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      move(1)
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      move(-1)
-    } else if (e.key === 'PageUp') {
-      // Home/End stay native (caret editing in the textbox, per APG combobox);
-      // PageUp/PageDown jump to the first/last option instead.
-      e.preventDefault()
-      move(1, -1)
-    } else if (e.key === 'PageDown') {
-      e.preventDefault()
-      move(-1, flat.length)
-    } else if (e.key === 'Enter') {
-      e.preventDefault()
-      const it = flat[active]
-      if (!it || it.disabled) return
-      // href options: click the real anchor so the router/native semantics
-      // apply — its click handler runs choose() for us.
-      if (it.href) anchorAt(active)?.click()
-      else choose(it)
-    } else if (e.key === 'Tab') {
-      // Focus stays on the input while the palette is open.
-      e.preventDefault()
-    }
+    const result = searchInputKey(palette, e.key, e.isComposing)
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    run(result.action)
   }
 
-  function anchorAt(index: number): HTMLAnchorElement | null {
-    return list?.querySelector(`#${CSS.escape(optionId(index))}`) as HTMLAnchorElement | null
+  function optionAt(index: number): HTMLElement | null {
+    return list?.querySelector<HTMLElement>(`#${CSS.escape(optionId(index))}`) ?? null
   }
 
   // Shared select path for clicks and Enter; navigation (when any) has
   // already been dispatched on the anchor itself.
-  function choose(it: T) {
-    if (it.disabled) return
-    const keep = onselect?.(it) === false
-    if (!keep) open = false
+  function choose(index: number) {
+    const result = searchItemPress(palette, index)
+    if (!result) return
+    const keep = onselect?.(flat[index]) === false
+    if (!keep) run(result.close)
+  }
+
+  function hover(index: number) {
+    const next = searchHover(palette, index)
+    if (next !== null) active = next
   }
 
   // Focus must never leave the input (aria-activedescendant pattern):
@@ -295,7 +304,7 @@
   // the derived `flat` reflects the new query regardless of handler order.
   async function onQueryInput() {
     await tick()
-    active = firstSelectable()
+    active = searchFirstActive(palette)
   }
 </script>
 
@@ -304,8 +313,10 @@
   class="ss-search-palette"
   data-size-variant={resolveComponentSize('SearchPalette', size)}
   aria-label={ariaLabel}
+  oncancel={onDialogCancel}
   onclose={onDialogClose}
   onpointerdown={onPointerDown}
+  onclick={onClick}
 >
   <div class="panel">
     <div class="bar">
@@ -319,17 +330,17 @@
         {placeholder}
         spellcheck="false"
         autocomplete="off"
-        role="combobox"
         aria-label={ariaLabel}
-        aria-autocomplete="list"
-        aria-expanded={flat.length > 0}
         aria-controls={listId}
-        aria-activedescendant={flat.length ? optionId(active) : undefined}
+        {...searchInputAttrs(flat.length, optionId(active))}
       />
       <!-- Touch exit for the full-screen small-viewport layout (no backdrop to
          tap there); hidden on wider screens, where Esc/backdrop close it. -->
-      <button type="button" class="close" aria-label={closeLabel} onclick={() => (open = false)}
-        >×</button
+      <button
+        type="button"
+        class="close"
+        aria-label={closeLabel}
+        onclick={() => run(searchClosePress(palette))}>×</button
       >
     </div>
 
@@ -359,15 +370,13 @@
                     {#if it.href && !it.disabled}
                       <a
                         id={optionId(index)}
-                        role="option"
-                        aria-selected={index === active}
                         class="row"
                         class:active={index === active}
                         href={it.href}
-                        tabindex="-1"
+                        {...searchOptionAttrs({ index, active })}
                         onpointerdown={onRowPointerDown}
-                        onmousemove={() => (active = index)}
-                        onclick={() => choose(it)}
+                        onmousemove={() => hover(index)}
+                        onclick={() => choose(index)}
                       >
                         {@render body(it, index)}
                       </a>
@@ -375,18 +384,13 @@
                       <button
                         id={optionId(index)}
                         type="button"
-                        role="option"
-                        aria-selected={index === active}
-                        aria-disabled={it.disabled || undefined}
                         class="row"
                         class:active={index === active}
                         class:disabled={it.disabled}
-                        tabindex="-1"
+                        {...searchOptionAttrs({ index, active, disabled: it.disabled })}
                         onpointerdown={onRowPointerDown}
-                        onmousemove={() => {
-                          if (!it.disabled) active = index
-                        }}
-                        onclick={() => choose(it)}
+                        onmousemove={() => hover(index)}
+                        onclick={() => choose(index)}
                       >
                         {@render body(it, index)}
                       </button>

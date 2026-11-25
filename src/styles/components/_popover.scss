@@ -1,0 +1,30 @@
+// --- popover tokens (DS-0197) -------------------------------------------------
+// Component-scoped --ss-* size tokens for the Popover: the floating panel's inner
+// padding, its width bounds and its distance from the trigger. Everything else
+// (trigger metrics, --ss-shadow-pop, colours) is shared. Zero border-radius (house
+// rule). md is the default on :root; sm / lg override per the size axis.
+
+:root,
+[data-size-variant='md'] {
+  // Inner padding of the floating panel.
+  --ss-popover-pad: 14px;
+  // Width bounds: wide enough to read as a panel, narrow enough to stay a popover.
+  --ss-popover-min-w: 200px;
+  --ss-popover-max-w: 340px;
+  // Vertical offset between the trigger and the panel edge.
+  --ss-popover-offset: 6px;
+}
+
+[data-size-variant='sm'] {
+  --ss-popover-pad: 10px;
+  --ss-popover-min-w: 160px;
+  --ss-popover-max-w: 280px;
+  --ss-popover-offset: 5px;
+}
+
+[data-size-variant='lg'] {
+  --ss-popover-pad: 18px;
+  --ss-popover-min-w: 240px;
+  --ss-popover-max-w: 400px;
+  --ss-popover-offset: 8px;
+}

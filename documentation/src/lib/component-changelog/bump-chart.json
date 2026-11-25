@@ -1,0 +1,46 @@
+{
+  "component": "BumpChart",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The chart is one tab stop instead of one per node: a roving `tabindex` keeps the first (then the last-focused) node at `0`, and arrow keys, Home and End move between nodes along each series' line, stage by stage, then on to the next series.",
+          "refs": ["DS-0186", "DS-0161", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Nodes are `role=\"img\"` marks (were `role=\"button\"` with no action) inside a new `<g class=\"nodes\">` wrapper, carry `data-index`, and use the default cursor instead of a pointer.",
+          "refs": ["DS-0186", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The tooltip is `aria-hidden=\"true\"` (was `role=\"status\"`), so a node is no longer announced twice or on hover, and Escape dismisses it, including when it was opened by hover.",
+          "refs": ["DS-0186", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "Series without a `color` cycle through the shared, exported `CHART_PALETTE`, which reads the palette slots `--ss-accent`, `--ss-blue`, `--ss-magenta`, `--ss-cyan`, `--ss-yellow` and `--ss-green` (was `--ss-primary`, `--ss-blue`, `--ss-purple`, `--ss-cyan`, `--ss-yellow`, `--ss-lime`), so a custom palette recolours every series.",
+          "refs": ["DS-0128", "#104"]
+        }
+      ]
+    },
+    {
+      "version": "0.11.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a ranking-over-stages chart that plots each series' finishing rank (1 at the top) across the ordered `stages`, with direct series labels at the line ends (`showLabels`), a hover/focus `tooltip`, and `width`, `height`, `fluid`, `summary` and `size` props.",
+          "refs": ["DS-0105", "DS-0102"]
+        }
+      ]
+    }
+  ]
+}

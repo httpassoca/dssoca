@@ -19,9 +19,9 @@ From npm (`pnpm add dssoca`) or straight from a CDN, in this order:
 ```html
 <html data-theme="dark" data-size-variant="md">
   <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.20/dist/theme.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.20/dist/vanilla.css" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.20/dist/vanilla/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.21/dist/theme.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.21/dist/vanilla.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.21/dist/vanilla/index.js"></script>
   </head>
   <body>
     <button class="ss-btn primary" type="button">deploy</button>
@@ -80,10 +80,14 @@ use a `data-ss-*` attribute.
 | [Modal](/components/modal)                     | `<button data-ss-modal="#id">` opener, `data-ss-dismiss` inside      | Native `<dialog>`: `showModal()` / `close()`, backdrop click closes. `data-ss-static` keeps it open, `data-ss-no-esc` blocks Escape. |
 | [Accordion](/components/accordion)             | `.head[aria-controls]` (as rendered)                                 | Toggles the panel, single-open by default (`data-ss-multiple` on the root allows several), Arrow/Home/End. Emits `ss:change`. |
 | [Menu](/components/menu)                       | `.trigger` + `.panel[role=menu]` (as rendered)                       | Open/close, roving focus, Escape, outside click, focus return; radio items move the check. Emits `ss:select`.            |
+| [Popover](/components/popover)                 | `.trigger` + `.panel[role=dialog]` (as rendered)                     | Open/close, focus into the panel, Escape (focus return), outside click, tab-out; closed panel is `inert`. Emits `ss:openchange` with `{ open, reason }`. |
 | [Tooltip](/components/tooltip)                 | `.ss-tooltip[data-placement]` (as rendered)                          | Shows on hover/focus, hides on leave/blur/Escape. Placement is used as-is (no collision flipping).                        |
 | [Switch](/components/switch)                   | `.track[role=switch]` (as rendered)                                  | Toggles `aria-checked` / `.on` from the track or the label. Emits `ss:change`.                                           |
+| [Checkbox](/components/checkbox)               | `.input[type=checkbox]`, optional `data-indeterminate="true"`        | Native toggle; sets the mixed state from the attribute, toggles mixed → checked. Emits `ss:change` with `{ checked }`.     |
+| [RadioGroup](/components/radio-group)          | `.input[type=radio]` sharing a `name` (as rendered)                  | Native selection and arrow keys; keeps the tab stop on the selection. Emits `ss:change` with `{ value, index }`.         |
 | [SegmentedControl](/components/segmented-control) | `.segment[role=radio]`, optional `data-value`                     | Click / arrows / Home / End select; emits `ss:change` with the `data-value`.                                             |
-| [TierList](/components/tier-list)              | `.tile[data-item]` inside `[data-zone]` rows (as rendered)           | Pointer drag between/within rows + keyboard sorting (Space, arrows, Space, Escape) with live announcements. `data-ss-readonly` on the root makes it inert. Emits `ss:change` with `{ placements }`. |
+| [Tabs](/components/tabs)                       | `.tab[role=tab]` + one `.panel` per tab, optional `data-value`       | Click / arrows / Home / End select and toggle `hidden` on the panels (`data-activation="manual"`: Enter / Space select). Emits `ss:change` with `{ value, index, reason }`. |
+| [TierList](/components/tier-list)              | `.tile[data-item]` inside `[data-zone]` rows (as rendered)           | Pointer drag between/within rows + keyboard sorting (Space, arrows, Space, Escape) with live announcements. `data-ss-readonly` on the root makes it inert. Emits `ss:change` with `{ placements, reason }`. |
 | [Input](/components/input)                     | `.clear` button (as rendered when `clearable`)                       | Empties, refocuses, hides itself until you type.                                                                         |
 | [NumberField](/components/number-field)        | `.step.dec` / `.step.inc` (as rendered)                              | Nudges by `step`, clamps to `min`/`max`, disables at the bounds.                                                          |
 | [Textarea](/components/textarea)               | `.field.autosize` (as rendered)                                      | CSS `field-sizing: content` where supported; `scrollHeight` fallback otherwise.                                            |

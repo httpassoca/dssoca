@@ -1,0 +1,65 @@
+{
+  "component": "NumberField",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "At `min` / `max` a stepper stays focusable with `aria-disabled=\"true\"` and becomes a no-op, so keyboard focus no longer drops to `<body>`. Native `disabled` is kept only when the field is `disabled` or `readonly`.",
+          "refs": ["DS-0168", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Stepper presses are announced: a visually hidden `<span class=\"live\" aria-live=\"polite\" aria-atomic=\"true\">` is always rendered and receives the new value, and both steppers carry `aria-controls` pointing at the input.",
+          "refs": ["DS-0168", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The stepper focus ring is a solid inset `2px` `--ss-primary` outline (was a faint `--ss-primary-soft` glow).",
+          "refs": ["DS-0168", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The required marker uses `margin-inline-start`, so it sits on the correct side under `dir=\"rtl\"`.",
+          "refs": ["DS-0168", "#140"]
+        },
+        {
+          "type": "changed",
+          "text": "Plain-HTML behaviour in `dssoca/vanilla.js` matches: steppers get `aria-disabled` at the bounds (native `disabled` only when the input is disabled or read-only), and a nudge writes the new value into the field's `.live` region when the markup has one.",
+          "refs": ["DS-0168", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML support: `dssoca/vanilla.js` wires the `.ss-numberfield .step` buttons to step the input by its `step`, clamp to `min` / `max`, and fire `input` and `change` events.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The invalid focus ring is built with `color-mix()` from `--ss-danger` instead of `rgba(var(--ss-red-rgb), 0.22)`, so it follows an imported palette.",
+          "refs": ["DS-0128"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a numeric input with `−` / `+` stepper buttons, `min` / `max` / `step` clamping, a bindable `value` (`null` when empty) and a monospace value, with `label`, `hint`, `error` and `size` on the shared field chrome.",
+          "refs": ["DS-0097", "#84"]
+        }
+      ]
+    }
+  ]
+}

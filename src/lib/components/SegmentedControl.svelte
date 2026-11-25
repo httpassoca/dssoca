@@ -21,14 +21,28 @@
   // ─────────────────────────────────────────────────────────────────────────
   import Icon from './Icon.svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    segmentedGroupAttrs,
+    segmentedItemAttrs,
+    segmentedKey,
+    segmentedPress,
+    segmentedTabStop,
+    type SegmentedAction,
+    type SegmentedChangeDetails,
+    type SegmentedState,
+  } from '../core/segmented.js'
 
   interface Props {
     /** Mutually-exclusive options: { value, label, icon?, disabled? }. */
     options?: SegmentOption[]
     /** Selected option value (bindable). */
     value?: string
-    /** Fired when the selection changes (after `value` updates). */
-    onChange?: (value: string) => void
+    /**
+     * Fired when the selection changes (after `value` updates). `details.reason`
+     * says what moved it: `'press'` (a segment was clicked) or `'key'` (arrows /
+     * Home / End).
+     */
+    onChange?: (value: string, details: SegmentedChangeDetails) => void
     /** Stretch segments to equal widths and fill the container. */
     fullWidth?: boolean
     /**
@@ -68,71 +82,39 @@
     options.map((o, i) => (isOptionDisabled(o) ? -1 : i)).filter((i) => i >= 0),
   )
 
-  /** Index that owns the single tab stop (roving tabindex). The selected option
-   *  when it's enabled; otherwise the first enabled option; -1 when none. */
-  const tabbableIndex = $derived.by(() => {
-    const sel = options.findIndex((o) => o.value === value && !isOptionDisabled(o))
-    if (sel >= 0) return sel
-    return enabledIndexes[0] ?? -1
+  // The group's state as `core/segmented.ts` sees it. Every decision (what a press
+  // or a key selects, which segment owns the tab stop) is made there, shared with
+  // vanilla/segmented.ts (DS-0197).
+  const group = $derived<SegmentedState>({
+    selected: options.findIndex((o) => o.value === value),
+    enabled: enabledIndexes,
   })
 
-  function select(index: number) {
-    const opt = options[index]
-    if (!opt || isOptionDisabled(opt)) return
-    if (opt.value !== value) {
+  /** Index that owns the single tab stop (roving tabindex). The selected option
+   *  when it's enabled; otherwise the first enabled option; -1 when none. */
+  const tabbableIndex = $derived(segmentedTabStop(group))
+
+  /** Apply a core action: move the selection (and focus, for the keyboard). */
+  function run(action: SegmentedAction | null) {
+    if (!action) return
+    const opt = options[action.index]
+    if (action.changed && opt) {
       value = opt.value
-      onChange?.(opt.value)
+      onChange?.(opt.value, { reason: action.reason })
     }
-  }
-
-  function focusIndex(index: number) {
-    segments[index]?.focus()
-  }
-
-  /** Next/previous enabled option index, wrapping around the row. */
-  function step(from: number, dir: 1 | -1): number {
-    if (enabledIndexes.length === 0) return from
-    const pos = enabledIndexes.indexOf(from)
-    // `from` might be disabled (shouldn't be focusable) — fall back to an edge.
-    const base = pos === -1 ? (dir === 1 ? -1 : 0) : pos
-    const next = (base + dir + enabledIndexes.length) % enabledIndexes.length
-    return enabledIndexes[next]
+    if (action.focus) segments[action.index]?.focus()
   }
 
   function onKeydown(e: KeyboardEvent, index: number) {
-    let target: number
     // RTL: the row is laid out right-to-left, so ArrowLeft points at the NEXT
     // segment. Read the computed direction at keydown time (it inherits from
-    // any ancestor `dir`). Up/Down stay logical (prev/next).
+    // any ancestor `dir`) and hand it to the core, which stays DOM-free.
     const rtl = getComputedStyle(e.currentTarget as Element).direction === 'rtl'
-    const right: 1 | -1 = rtl ? -1 : 1
-    switch (e.key) {
-      case 'ArrowRight':
-        target = step(index, right)
-        break
-      case 'ArrowLeft':
-        target = step(index, right === 1 ? -1 : 1)
-        break
-      case 'ArrowDown':
-        target = step(index, 1)
-        break
-      case 'ArrowUp':
-        target = step(index, -1)
-        break
-      case 'Home':
-        target = enabledIndexes[0] ?? -1
-        break
-      case 'End':
-        target = enabledIndexes[enabledIndexes.length - 1] ?? -1
-        break
-      default:
-        return
-    }
-    if (target < 0) return
-    e.preventDefault()
+    const result = segmentedKey(group, index, e.key, rtl)
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
     // radiogroup semantics: moving focus also moves the selection.
-    select(target)
-    focusIndex(target)
+    run(result.action)
   }
 
   const sizeAttr = $derived(resolveComponentSize('SegmentedControl', size))
@@ -141,23 +123,20 @@
 <div
   class="ss-segmented"
   class:full={fullWidth}
-  role="radiogroup"
   aria-label={label}
-  aria-disabled={disabled ? 'true' : undefined}
   data-size-variant={sizeAttr}
+  {...segmentedGroupAttrs(disabled)}
 >
   {#each options as opt, i (opt.value)}
-    {@const selected = opt.value === value}
+    {@const selected = i === group.selected}
     <button
       bind:this={segments[i]}
       type="button"
       class="segment"
       class:selected
-      role="radio"
-      aria-checked={selected}
-      tabindex={i === tabbableIndex ? 0 : -1}
+      {...segmentedItemAttrs(i, group.selected, tabbableIndex)}
       disabled={isOptionDisabled(opt)}
-      onclick={() => select(i)}
+      onclick={() => run(segmentedPress(group, i))}
       onkeydown={(e) => onKeydown(e, i)}
     >
       {#if opt.icon}<Icon name={opt.icon} class="ic" />{/if}

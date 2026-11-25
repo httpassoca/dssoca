@@ -12,6 +12,7 @@ import TopbarHarness from '../harness/TopbarHarness.svelte'
 afterEach(() => {
   shortcuts.resetOverrides()
   vi.unstubAllGlobals()
+  vi.restoreAllMocks()
 })
 
 const mockApple = () => vi.stubGlobal('navigator', { platform: 'MacIntel', userAgent: '' })
@@ -218,6 +219,45 @@ describe('Topbar', () => {
 
     await fireEvent.keyDown(tabs[0], { key: 'ArrowLeft' })
     expect(document.activeElement).toBe(tabs[2]) // wraps backward
+
+    await fireEvent.keyDown(tabs[2], { key: 'Home' })
+    expect(document.activeElement).toBe(tabs[0])
+  })
+
+  // jsdom doesn't inherit `direction` from an ancestor `dir`, so stub the computed style the
+  // handler reads at keydown time (same approach as SegmentedControl, DS-0172).
+  it('swaps ArrowLeft/ArrowRight under RTL; Up/Down, Home/End stay logical', async () => {
+    const real = window.getComputedStyle
+    vi.spyOn(window, 'getComputedStyle').mockImplementation((el, pseudo) => {
+      const cs = real(el, pseudo)
+      return new Proxy(cs, {
+        get: (t, k) => (k === 'direction' ? 'rtl' : Reflect.get(t, k)),
+      })
+    })
+    const { container } = render(Topbar, { active: 'overview', tabs: ['a', 'b', 'c'] })
+    const tabs = Array.from(container.querySelectorAll('.ws .tab')) as HTMLElement[]
+    tabs[0].focus()
+
+    await fireEvent.keyDown(tabs[0], { key: 'ArrowLeft' })
+    expect(document.activeElement).toBe(tabs[1]) // visually left = DOM-next
+
+    await fireEvent.keyDown(tabs[1], { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(tabs[0])
+
+    await fireEvent.keyDown(tabs[0], { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(tabs[2]) // wraps backward
+
+    await fireEvent.keyDown(tabs[2], { key: 'ArrowLeft' })
+    expect(document.activeElement).toBe(tabs[0]) // wraps forward
+
+    await fireEvent.keyDown(tabs[0], { key: 'ArrowDown' })
+    expect(document.activeElement).toBe(tabs[1])
+
+    await fireEvent.keyDown(tabs[1], { key: 'ArrowUp' })
+    expect(document.activeElement).toBe(tabs[0])
+
+    await fireEvent.keyDown(tabs[0], { key: 'End' })
+    expect(document.activeElement).toBe(tabs[2])
 
     await fireEvent.keyDown(tabs[2], { key: 'Home' })
     expect(document.activeElement).toBe(tabs[0])

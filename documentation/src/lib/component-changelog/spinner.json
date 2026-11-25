@@ -1,0 +1,35 @@
+{
+  "component": "Spinner",
+  "releases": [
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Works in plain HTML with no JavaScript: `vanilla.css` animates an empty `.frame` through `steps()` keyframes (`ss-spinner-<variant>`), `data-variant` on the `.ss-spinner` root picks the glyph set, and the animation stops under `prefers-reduced-motion`.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "`variant` no longer hardcodes its default: when unset it resolves through `resolveSpinnerVariant()` to the configured `spinnerVariant` (still `boxBounce2` out of the box), so one `applyDesignConfig({ spinnerVariant })` call sets the house spinner. An explicit `variant` still wins.",
+          "refs": ["DS-0108", "#97"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a text-frame loading indicator with ten squared [cli-spinners](https://github.com/sindresorhus/cli-spinners) variants (`variant`, default `boxBounce2`), plus `size`, `label`, `showLabel` and `speed` props. The `.ss-spinner` root is a `role=\"status\"` region, the glyph is coloured by `--ss-spinner-color` and sized by `--ss-spinner-font`, and it stays on a static first frame under `prefers-reduced-motion`.",
+          "refs": ["DS-0086", "#75"]
+        }
+      ]
+    }
+  ]
+}

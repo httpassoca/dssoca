@@ -7,7 +7,7 @@ export const switchDoc: ComponentDoc = {
   htmlExample: {
     props: { label: 'Wi-Fi', id: 'wifi' },
     behaviour: 'js',
-    note: 'vanilla.js toggles aria-checked / .on from the track or the label and emits ss:change.',
+    note: 'vanilla.js toggles aria-checked / .on from the track or the label and emits ss:change with { checked, reason }.',
   },
   tagline: 'Accessible on/off toggle.',
   description:
@@ -45,8 +45,8 @@ export const switchDoc: ComponentDoc = {
     },
     {
       name: 'onchange',
-      type: '(checked: boolean) => void',
-      desc: 'Fired after `checked` flips, with the new value.',
+      type: '(checked: boolean, details: { reason: SwitchReason }) => void',
+      desc: "Fired after `checked` flips, with the new value and what flipped it: `details.reason` is `'track'` or `'label'`.",
     },
     SIZE_PROP,
   ],

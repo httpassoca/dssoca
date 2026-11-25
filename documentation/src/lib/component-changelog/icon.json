@@ -1,0 +1,116 @@
+{
+  "component": "Icon",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Markup passed through `paths` or `registerIcon` goes through a light filter (`sanitizeIconMarkup`) that strips `<script>`, `<foreignObject>`, `on*` handlers and `javascript:` links. It is not a security boundary: the markup must still be trusted, never user input.",
+          "refs": ["DS-0176", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.19.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New built-in glyph `search` (a magnifier).",
+          "refs": ["DS-0157", "#134"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML support in `dssoca/vanilla.js`: `<span data-ss-icon=\"name\">` placeholders are replaced with the same `<svg class=\"ss-icon\">` markup by `hydrateIcons` / `mount(root)`, and `iconSvg(name, options)` returns the markup as a string.",
+          "refs": ["DS-0148", "#124"]
+        },
+        {
+          "type": "changed",
+          "text": "The glyph table and registry (`PATHS`, `registerIcon`, `resolveIcon`, `IconName`) now live in `src/lib/icons.ts`; the component re-exports them, so the public API is unchanged.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "`size` is now a fixed pixel scale, `xs` 12 / `sm` 16 / `md` 20 / `lg` 24, with the new Icon-only `xs` step. The global `--ss-icon` token that unsized icons inherit grows to sm 16 / md 20 / lg 24 (was 14 / 16 / 20), so icons render one step larger.",
+          "refs": ["DS-0109", "#97"]
+        },
+        {
+          "type": "added",
+          "text": "New built-in glyph `chevron`, centred in its box, and a new exported `IconSize` type.",
+          "refs": ["DS-0109", "DS-0110", "#97"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Seven new built-in glyphs: `home`, `briefcase`, `folder`, `github`, `linkedin`, `language` and `color-swatch`.",
+          "refs": ["DS-0087", "#75"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Custom glyphs: `registerIcon(name, paths)` registers a glyph at runtime, and the `paths` prop renders one-off SVG markup. An unknown `name` now logs a console warning instead of silently rendering nothing.",
+          "refs": ["DS-0030", "#38"]
+        },
+        {
+          "type": "added",
+          "text": "New props `spin` (stops under `prefers-reduced-motion`, duration from `--ss-icon-spin-dur`), `rotate` (`0 | 90 | 180 | 270`), `flip` (`'horizontal' | 'vertical'`), `variant` (`'outline' | 'solid'`), `strokeWidth` and `absoluteStroke`, plus a built-in `spinner` glyph.",
+          "refs": ["DS-0030", "#38"]
+        },
+        {
+          "type": "changed",
+          "text": "The accessible name is a real `<title>` wired through `aria-labelledby` (was `aria-label`). New `desc` prop adds a `<desc>`, and `decorative` forces `aria-hidden` on or off.",
+          "refs": ["DS-0030", "#38"]
+        },
+        {
+          "type": "changed",
+          "text": "The root `<svg>` now always carries the `ss-icon` class, with `spin`, `flip-h`, `flip-v` and `data-rotate` reflecting the new props.",
+          "refs": ["DS-0030", "#38"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "`size` takes a size name (`sm | md | lg`) instead of a number, and an unsized icon follows the `--ss-icon` token of the active size. Use the new `px` prop for an explicit pixel size (was `size={16}`).",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "added",
+          "text": "New `title` prop gives the icon an accessible name and `role=\"img\"`. Without it the icon is decorative (`aria-hidden=\"true\"`), and the `<svg>` is always `focusable=\"false\"`.",
+          "refs": ["DS-0013", "#10"]
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: an inline SVG icon drawn from a built-in set of 16 stroked glyphs (`grid`, `activity`, `database`, `logs`, `terminal`, `settings`, `user`, `arrow`, `external`, `film`, `note`, `book`, `check`, `cup`, `wallet`, `target`), chosen with `name` and sized with a numeric `size` (default 16). It inherits `currentColor`."
+        }
+      ]
+    }
+  ]
+}

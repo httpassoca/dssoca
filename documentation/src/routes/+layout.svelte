@@ -16,7 +16,7 @@
     toast,
   } from 'dssoca'
   import { NAV } from '$lib/docs.config'
-  import { buildSearchItems, INSTALL_COMMAND, type DocsSearchItem } from '$lib/search'
+  import { buildSearchItems, GITHUB_URL, INSTALL_COMMAND, type DocsSearchItem } from '$lib/search'
   import { axes } from '$lib/axes.svelte'
   import { restoreShortcutOverrides, saveShortcutOverrides } from '$lib/shortcut-persistence'
   import ThemeControls from '$lib/components/ThemeControls.svelte'
@@ -147,14 +147,10 @@
 {#snippet tools()}
   <div class="tools">
     <ThemeControls />
-    <a
-      class="ext"
-      href="https://github.com/httpassoca/dssoca"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="GitHub repository"
-    >
-      <Icon name="external" px={16} title="GitHub repository" />
+    <a class="ext" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+      <Icon name="github" px={16} decorative />
+      <span class="ext-label">GitHub</span>
+      <span class="sr">(opens in a new tab)</span>
     </a>
   </div>
 {/snippet}
@@ -264,11 +260,25 @@
   }
   .ext {
     display: inline-flex;
+    align-items: center;
+    gap: var(--ss-s-2);
+    min-block-size: var(--ss-s-6);
+    font-family: var(--ss-font-mono);
+    font-size: var(--ss-ui-sm);
     color: var(--ss-fg-muted);
+    text-decoration: none;
 
     &:hover {
       color: var(--ss-primary);
     }
+  }
+  .sr {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .body {
     flex: 1;
@@ -294,6 +304,15 @@
     .nav {
       position: static;
       height: auto;
+    }
+    // Narrow screens keep the glyph; the link stays named by the hidden label.
+    .ext-label {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
   }
 </style>

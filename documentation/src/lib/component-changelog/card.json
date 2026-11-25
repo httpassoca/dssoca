@@ -1,0 +1,132 @@
+{
+  "component": "Card",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "With `onclick` (and no `href`), the card renders a stretched `<button type=\"button\" class=\"overlay\">` named by the title (or \"Open\"). The root is no longer `role=\"button\"` with `tabindex=\"0\"`, so the heading and `action` controls keep their own semantics and Enter/Space on a nested control no longer fires the card's `onclick`.",
+          "refs": ["DS-0183", "#139", "#140"]
+        },
+        {
+          "type": "changed",
+          "text": "A titled card is `role=\"region\"`, named by its title through `aria-labelledby`. An untitled card has no role and no label.",
+          "refs": ["DS-0183", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The overlay control shows a visible focus ring (`2px solid var(--ss-primary)`, inset) for both `href` and `onclick` cards.",
+          "refs": ["DS-0183", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.19.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`external` prop: with `href`, the overlay link opens in a new tab (`target=\"_blank\"`, `rel=\"noopener noreferrer\"`) and announces \"(opens in a new tab)\".",
+          "refs": ["DS-0158"]
+        }
+      ]
+    },
+    {
+      "version": "0.18.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Cards with `href` no longer show a stray 1px primary line along the bottom edge: the overlay link cancels the global animated `a::before` underline from `theme.css`.",
+          "refs": ["DS-0150"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Styles ship in `dssoca/vanilla.css`, so the rendered `.ss-card` markup can be used on plain-HTML pages without Svelte.",
+          "refs": ["DS-0148"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root class is `.ss-card` (was `.ss-panel`), and the header actions wrapper is a `.actions` element instead of an inline-styled `<div>`.",
+          "refs": ["DS-0034", "#31"]
+        },
+        {
+          "type": "added",
+          "text": "`footer` and `media` snippets: a `.foot` band mirroring the head, and a full-bleed `.media` area above it.",
+          "refs": ["DS-0034", "#31"]
+        },
+        {
+          "type": "added",
+          "text": "`href` and `onclick` make the whole card a link or a clickable surface through a stretched overlay, with `action` and `footer` controls kept clickable above it.",
+          "refs": ["DS-0034", "#31"]
+        },
+        {
+          "type": "added",
+          "text": "`variant` prop (`outlined` default, or `elevated`, which uses `--ss-shadow-1` and `--ss-shadow-2` on hover).",
+          "refs": ["DS-0034", "#31"]
+        },
+        {
+          "type": "added",
+          "text": "`description` prop for muted text under the heading, and `title` also accepts a Snippet for inline icons or badges. The head now renders when any of `title`, `meta`, `description` or `action` is set.",
+          "refs": ["DS-0034", "#31"]
+        },
+        {
+          "type": "added",
+          "text": "The card is labelled by its title: the root gets `aria-labelledby` pointing at the generated title id.",
+          "refs": ["DS-0034", "#31"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Styles are scoped inside the component instead of living in the global `theme.css`. The inner classes are now `.head` and `.body` (were `.ss-panel-head` and `.ss-panel-body`).",
+          "refs": ["DS-0009", "#6"]
+        },
+        {
+          "type": "added",
+          "text": "`size` prop (`sm`, `md`, `lg`), rendered as `data-size-variant` on the root; it inherits the global size when unset.",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "added",
+          "text": "The title has heading semantics (`role=\"heading\"`), with a new `titleLevel` prop for its `aria-level` (default `3`).",
+          "refs": ["DS-0013", "#10"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Class prefix renamed from `hub-` to `ss-`: the markup is `.ss-panel`, `.ss-panel-head` and `.ss-panel-body` (was `.hub-panel…`)."
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a bordered panel with an optional header (`title`, `meta` and an `action` snippet) around its content."
+        }
+      ]
+    }
+  ]
+}

@@ -15,7 +15,7 @@
   import { line as shapeLine } from 'd3-shape'
   import { max } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
-  import { chartNavStep } from '../chart-nav.js'
+  import { chartMarkKey, chartTabStop, chartWindowKey } from '../core/chart-nav.js'
 
   interface Props {
     /** One series per competitor; each carries a `label`, `ranks` and optional `color`. */
@@ -159,26 +159,23 @@
   $effect(() => {
     if (!active) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') hide()
+      if (chartWindowKey(true, e.key)) hide()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   })
 
-  // Roving tabindex: the whole chart is one tab stop (DS-0161 / chart-nav.ts).
+  // Roving tabindex: the whole chart is one tab stop (DS-0161 / core/chart-nav.ts).
   let focusIndex = $state(0)
-  const tabStop = $derived(Math.min(focusIndex, Math.max(0, nodeCount - 1)))
+  const tabStop = $derived(chartTabStop(focusIndex, nodeCount))
   let nodesEl = $state<SVGGElement | null>(null)
 
   function onNodeKeydown(e: KeyboardEvent, i: number) {
-    if (e.key === 'Escape') {
-      hide()
-      return
-    }
-    // SVG geometry does not mirror in RTL, so Left/Right stay physical.
-    const next = chartNavStep(e.key, i, nodeCount)
-    if (next === null) return
-    e.preventDefault()
+    const result = chartMarkKey({ index: i, count: nodeCount, escape: 'dismiss' }, e.key)
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    if (result.action.type === 'dismiss') return hide()
+    const next = result.action.index
     focusIndex = next
     nodesEl?.querySelector<SVGElement>(`[data-index="${next}"]`)?.focus()
   }

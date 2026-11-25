@@ -3,9 +3,9 @@
  * consumption path. Importing this module wires every behaviour once via document-level event
  * delegation (so markup added later just works) and runs `mount()` when the DOM is ready.
  *
- *   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.20/dist/theme.css">
- *   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.20/dist/vanilla.css">
- *   <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.20/dist/vanilla/index.js"></script>
+ *   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.21/dist/theme.css">
+ *   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dssoca@0.21/dist/vanilla.css">
+ *   <script type="module" src="https://cdn.jsdelivr.net/npm/dssoca@0.21/dist/vanilla/index.js"></script>
  *
  * Call `mount(root)` after injecting HTML that contains `[data-ss-icon]` placeholders or
  * autosizing textareas. Nothing here imports Svelte or a `.svelte` module.
@@ -17,7 +17,11 @@ import { installTooltip } from './tooltip.js'
 import { installSwitch } from './switch.js'
 import { installSegmented } from './segmented.js'
 import { installTierlist } from './tierlist.js'
+import { installTabs } from './tabs.js'
+import { installPopover } from './popover.js'
 import { installFields, mountFields } from './fields.js'
+import { installCheckbox, mountCheckboxes } from './checkbox.js'
+import { installRadio } from './radio.js'
 import { hydrateIcons } from './icons.js'
 
 export { toast, toasts } from './toast.js'
@@ -38,7 +42,11 @@ export { showTooltip, hideTooltip } from './tooltip.js'
 export { toggleSwitch } from './switch.js'
 export { selectSegment } from './segmented.js'
 export { toggleGrab, readPlacements } from './tierlist.js'
+export { selectTab } from './tabs.js'
+export { openPopover, closePopover } from './popover.js'
 export { clearInput, nudgeNumber, autosize } from './fields.js'
+export { setCheckbox } from './checkbox.js'
+export { selectRadio } from './radio.js'
 export {
   applyDesignConfig,
   designAttributes,
@@ -53,6 +61,7 @@ export {
 export function mount(root: ParentNode = document): void {
   hydrateIcons(root)
   mountFields(root)
+  mountCheckboxes(root)
 }
 
 const FLAG = '__dssocaVanilla'
@@ -70,7 +79,11 @@ export function install(): void {
   installSwitch()
   installSegmented()
   installTierlist()
+  installTabs()
+  installPopover()
   installFields()
+  installCheckbox()
+  installRadio()
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => mount(), { once: true })
   } else {

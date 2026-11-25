@@ -1,0 +1,143 @@
+{
+  "component": "Toaster",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Side positions anchor to the inline edge (`inset-inline-start` / `inset-inline-end`), so `top-right` renders top left under `dir=\"rtl\"`; the accent bar and the fly-in direction mirror too. Centred stacks stay physically centred.",
+          "refs": ["DS-0179", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Announcements go through two visually hidden live regions that are always rendered inside `.ss-toaster` (`.live[role=\"status\"]` polite, `.live[role=\"alert\"]` assertive for errors). Each `.ss-toast` is now a `role=\"group\"` named by its `.msg` and no longer carries `role=\"status\"` / `role=\"alert\"` or `aria-live`.",
+          "refs": ["DS-0179", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Dismissing the toast that holds focus moves focus to the next toast, else the previous one, else back to the element focus came from. The timer no longer resumes on pointer leave while the toast has focus, or on focus out while the pointer is still over it.",
+          "refs": ["DS-0179", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The × dismiss button has a 24×24 hit area (`min-inline-size` / `min-block-size: var(--ss-s-6)`).",
+          "refs": ["DS-0179", "#140"]
+        },
+        {
+          "type": "added",
+          "text": "The `toast` API in `dssoca/vanilla.js` gets the same live regions and focus handling: it reuses regions authored in the markup, otherwise adds them on DOM ready through the new `toasts.prepare()` or on first use.",
+          "refs": ["DS-0179", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.18.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The `.ss-toaster` host carries `role=\"region\"` (Svelte and the `dssoca/vanilla.js` `toast` API), so its `aria-label` is valid and the stack is a named landmark.",
+          "refs": ["#127"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML support: `dssoca/vanilla.js` exports a framework-free `toast` / `toasts` API with the same names and defaults as the Svelte one. It renders the same DOM into the first `.ss-toaster` on the page, or one it creates under `<body>`; swipe-to-dismiss is not ported.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The fly transition duration reads `--ss-dur-fast` (was a hardcoded 180ms, still the fallback), so motion overrides apply.",
+          "refs": ["DS-0068"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`position` prop: `top-right` (default), `top-left`, `bottom-right`, `bottom-left`, `top-center` or `bottom-center`, rendered as `data-position` on `.ss-toaster`.",
+          "refs": ["DS-0041", "DS-0028"]
+        },
+        {
+          "type": "added",
+          "text": "Toasts take an options object, `toast.success(message, { timeout, action })`; `action: { label, onClick }` renders a button that dismisses the toast unless `onClick` returns `false`. A bare number as the second argument still works as the timeout.",
+          "refs": ["DS-0041"]
+        },
+        {
+          "type": "added",
+          "text": "`loading` kind with a spinner, `toast.loading()`, `toast.promise(p, { loading, success, error })` and `toasts.update(id, patch)` to change a toast in place.",
+          "refs": ["DS-0041"]
+        },
+        {
+          "type": "added",
+          "text": "The auto-dismiss timer pauses on hover and focus (`toasts.pause(id)` / `toasts.resume(id)`); toasts are focusable, dismiss on `Escape` and can be swiped away.",
+          "refs": ["DS-0041"]
+        },
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "At most `toasts.max` (default `3`) toasts show at once; extra ones wait in a queue and appear as slots free up.",
+          "refs": ["DS-0041"]
+        },
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Default durations depend on the kind: `error` stays 7000ms (was 4000ms), and `loading` toasts and toasts with an `action` are sticky. A `timeout` of `0` or less, or `Infinity`, never auto-dismisses.",
+          "refs": ["DS-0041"]
+        },
+        {
+          "type": "changed",
+          "text": "The icon box size reads the `--ss-toast-ic` token (was a fixed 18px).",
+          "refs": ["DS-0041"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "Each toast is its own live region: a `<div>` with `role=\"alert\"` / `aria-live=\"assertive\"` for errors and `role=\"status\"` / `aria-live=\"polite\"` otherwise (was an `<output>` inside one polite host). The icon glyph is `aria-hidden`, and the fly transition is skipped under `prefers-reduced-motion`.",
+          "refs": ["DS-0013", "#10"]
+        },
+        {
+          "type": "added",
+          "text": "`size` prop (`sm` | `md` | `lg`), rendered as `data-size-variant` on `.ss-toaster`; it inherits the global size when unset.",
+          "refs": ["DS-0012", "#9"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Classes are renamed `hub-toaster` / `hub-toast` → `ss-toaster` / `ss-toast`, and the tokens it reads `--hs-*` → `--ss-*`."
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: the host for toast notifications, mounted once at the app root. `toast.success()`, `toast.error()` and `toast.info()` push a message that auto-dismisses after 4000ms (or a custom timeout), and `toasts.dismiss(id)` / `toasts.clear()` remove them.",
+          "refs": ["DS-0003"]
+        }
+      ]
+    }
+  ]
+}

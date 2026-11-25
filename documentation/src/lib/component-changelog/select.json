@@ -1,0 +1,45 @@
+{
+  "component": "Select",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The required asterisk (`.req`) and the chevron use logical properties (`margin-inline-start`, `border-inline`), so under `dir=\"rtl\"` the asterisk follows the label text and the chevron keeps its gap on the select's side.",
+          "refs": ["DS-0170", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML pages can style the same `.ss-select` markup with the generated `dssoca/vanilla.css`.",
+          "refs": ["DS-0148"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The focus ring of an invalid field is a `color-mix()` of the `--ss-danger` palette slot (was `rgba(var(--ss-red-rgb), 0.22)`), so it follows an imported palette.",
+          "refs": ["DS-0128"]
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a styled native `<select>` on the Input field chrome, taking flat `options` or `<optgroup>` groups, with `label`, `placeholder`, `hint`, `error`, `invalid`, `required`, `disabled` and `size` props and a bindable `value`.",
+          "refs": ["DS-0093", "#80"]
+        }
+      ]
+    }
+  ]
+}

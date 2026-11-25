@@ -1,0 +1,50 @@
+{
+  "component": "Link",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The `inline` variant shows a 1px underline at rest (it was hidden until hover or focus), so a link in running text is not told apart by colour alone. It still thickens to 2px with the glow on hover and `:focus-visible`.",
+          "refs": ["DS-0174", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "`rel=\"noopener noreferrer\"` and the \"(opens in a new tab)\" screen-reader hint follow the real `target`: an explicit `target=\"_blank\"` gets both, and an external link forced to `target=\"_self\"` drops the hint. The external icon still follows `external`.",
+          "refs": ["DS-0174", "#139", "#140"]
+        },
+        {
+          "type": "changed",
+          "text": "A custom `rel` is merged with `noopener noreferrer` on links that open a new tab, without duplicates. Before, a custom `rel` replaced them.",
+          "refs": ["DS-0174", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "`.ss-link` cancels the global `a::before` underline from `theme.css`, so only one underline shows and the link looks the same with or without `theme.css`. The underline is placed with `inset-inline`.",
+          "refs": ["DS-0174", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New `disabled` prop: the link drops its `href`, `target` and `rel`, leaves the tab order, keeps `role=\"link\"` with `aria-disabled=\"true\"`, and does not fire `onclick`. It gets the `disabled` class (dimmed, `not-allowed` cursor) and shows no external icon or underline.",
+          "refs": ["DS-0078"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: an anchor with an animated underline and `--ss-primary` glow (`variant=\"inline\"`) or a solid primary button look (`variant=\"button\"`). `external` (auto-detected for absolute `http(s)` and protocol-relative URLs) opens a new tab with `rel=\"noopener noreferrer\"`, an external icon and a screen-reader hint; it also takes `size` and a bindable `el`.",
+          "refs": ["DS-0046", "DS-0052", "#50"]
+        }
+      ]
+    }
+  ]
+}

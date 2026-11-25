@@ -1,0 +1,55 @@
+{
+  "component": "SearchPalette",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`closeLabel` (default `'Close'`) names a new close button that shows below 768px, where the palette is full-screen and has no backdrop to tap. The input now sits in a `.bar` row together with that `button.close`.",
+          "refs": ["DS-0180", "#139", "#140"]
+        },
+        {
+          "type": "added",
+          "text": "`resultsText` (default `n result` / `n results`) is announced through an always-rendered `role=\"status\"` node once a query is typed; with no matches it announces `emptyText`.",
+          "refs": ["DS-0180", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The page behind no longer scrolls while the palette is open. It uses the same reference-counted scroll lock as `Modal`, so a palette opened over a modal unwinds correctly.",
+          "refs": ["DS-0180", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Result rows use logical properties (`border-inline-start`, `padding-inline-start`, `text-align: start`), so the active rail and text alignment mirror under `dir=\"rtl\"`.",
+          "refs": ["DS-0180", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.18.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Rows that are links (`href` items) no longer show the global animated link underline from `theme.css`; the reset lives in the component's own CSS, so it ships in `vanilla.css` too.",
+          "refs": ["DS-0150", "#127"]
+        }
+      ]
+    },
+    {
+      "version": "0.13.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a Cmd/Ctrl+K search and command palette, a native `<dialog>` holding a combobox over a grouped listbox. It takes `items` (`id`, `label`, `hint`, `href`, `group`, `keywords`, `disabled`), filters them itself (`filter={false}` with bindable `query` hands filtering to you), navigates `href` items through real `<a>` links, and offers `onselect` / `onopen` / `onclose`, `item` / `empty` / `footer` snippets and `size`.",
+          "refs": ["DS-0133", "#106"]
+        },
+        {
+          "type": "added",
+          "text": "The `shortcut` prop (`'mod+k'` by default, `false` to disable) registers the toggle in the `shortcuts` registry as `ss:search-palette`, so it lists in `ShortcutsHelp` and obeys `setEnabled()` / `remap()`. `mod+k` means the platform modifier only: Cmd+K on macOS, Ctrl+K elsewhere.",
+          "refs": ["DS-0139", "DS-0135", "#108"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "component": "Kbd",
+  "releases": [
+    {
+      "version": "0.19.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Hides itself on keyboard-less devices: under `@media (hover: none) and (pointer: coarse)` (phones, tablets) the chip is now `display: none`. It is a capability query, not a width, so a narrow desktop window keeps its hints; plain-HTML `<kbd class=\"ss-kbd\">` markup gets the new default too.",
+          "refs": ["DS-0157", "#134"]
+        },
+        {
+          "type": "added",
+          "text": "`hideOnMobile` prop (default `true`). Pass `hideOnMobile={false}` where the chip is the content rather than a hint; it renders `data-hide-on-mobile=\"false\"` on the root, which is also the plain-HTML opt-out.",
+          "refs": ["DS-0157", "#134"]
+        }
+      ]
+    },
+    {
+      "version": "0.13.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a display-only key-cap chip for shortcut hints. `keys` takes a combo in the shortcut grammar (`'mod+k'`, `'?, mod+/'`) and renders nested `<kbd>` key caps per platform (`format=\"glyph\"` by default, `format=\"label\"` for always-words), with `platform` and `size` props, a full-word `aria-label` on glyph roots, and raw content (`<Kbd>F12</Kbd>`) for keys the grammar cannot express.",
+          "refs": ["DS-0137", "DS-0135", "#108"]
+        }
+      ]
+    }
+  ]
+}

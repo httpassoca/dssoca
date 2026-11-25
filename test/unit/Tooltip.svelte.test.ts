@@ -105,6 +105,16 @@ describe('Tooltip', () => {
     expect(trigger(container)).not.toHaveAttribute('aria-describedby')
   })
 
+  // DS-0197: a focus move that stays inside the tooltip is not leaving (core/tooltip.ts).
+  it('stays open on a focusout whose focus stays inside the tooltip', async () => {
+    const { container } = render(TooltipHarness)
+    await fireEvent.focusIn(trigger(container))
+    await fireEvent.focusOut(trigger(container), { relatedTarget: trigger(container) })
+    expect(tip(container)).toHaveClass('open')
+    await fireEvent.focusOut(trigger(container), { relatedTarget: document.body })
+    expect(tip(container)).not.toHaveClass('open')
+  })
+
   it('shows on mouseenter and hides on mouseleave', async () => {
     const { container } = render(TooltipHarness)
     await fireEvent.mouseEnter(root(container))

@@ -49,6 +49,14 @@ const FIXUPS: Record<string, (html: string, ex: HtmlExample) => string> = {
       return v == null ? m : `<button${attrs} data-value="${v}">`
     })
   },
+  tabs: (html, ex) => {
+    const tabs = (ex.props?.tabs ?? []) as Array<{ id: string }>
+    let i = 0
+    return html.replace(/<button([^>]*class="tab[^>]*)>/g, (m, attrs) => {
+      const v = tabs[i++]?.id
+      return v == null ? m : `<button${attrs} data-value="${v}">`
+    })
+  },
   icon: (html) =>
     `<!-- with vanilla.js: --><span data-ss-icon="check" data-size="sm"></span>\n<!-- rendered: -->\n${html}`,
 }

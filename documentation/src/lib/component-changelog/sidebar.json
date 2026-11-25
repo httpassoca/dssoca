@@ -1,0 +1,158 @@
+{
+  "component": "Sidebar",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The rail toggle has the static name \"Sidebar\" and reports its state with `aria-expanded` (was \"Expand sidebar\" / \"Collapse sidebar\" with `aria-pressed`).",
+          "refs": ["DS-0181", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Degraded and down status is no longer colour-only: every item with `status: 'deg'` or `'down'` carries a visually hidden `, degraded` / `, down` word next to the dot.",
+          "refs": ["DS-0181", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Section label and sub-list ids are unique per instance (were `ss-side-sec-*` / `ss-side-sub-*`), so two sidebars on one page no longer share ids.",
+          "refs": ["DS-0181", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The layout mirrors under `dir=\"rtl\"`: borders, margins, padding and text alignment use logical properties, and the open disclosure caret still points down.",
+          "refs": ["DS-0181", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.18.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "`SideItem.external` (with `href`) renders the item as a new-tab link: `target=\"_blank\"`, `rel=\"noopener noreferrer\"`, a trailing external glyph (`.ext`) and an \"(opens in a new tab)\" announcement, also folded into the collapsed-rail name.",
+          "refs": ["DS-0154", "#127"]
+        },
+        {
+          "type": "fixed",
+          "text": "Link items no longer show the global animated `a::before` underline from `theme.css`; the reset also ships in `vanilla.css`.",
+          "refs": ["DS-0150", "#127"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The active item's tint is mixed from `--ss-accent` with `color-mix()` instead of reading `--ss-primary-rgb`.",
+          "refs": ["DS-0128"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The gap between an item's icon and label reads the spacing token `--ss-s-2` instead of a hardcoded `8px` (visually unchanged).",
+          "refs": ["DS-0068"]
+        }
+      ]
+    },
+    {
+      "version": "0.8.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The rail fills its host container's height (`min-height: 100%`), so its border and background span the full column instead of stopping at the last item.",
+          "refs": ["DS-0058", "#58"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The root is a `<nav aria-label=\"Sidebar\">` (was `<aside>`) and each group renders as a `<ul class=\"list\">` of `<li class=\"row\">` labelled by its section heading, so assistive tech hears item counts and hierarchy.",
+          "refs": ["DS-0039", "#41"]
+        },
+        {
+          "type": "added",
+          "text": "`SideItem.href` renders the item as a real `<a href>` with `aria-current=\"page\"` when active; `onSelect` still fires and stays the fallback for items without `href`.",
+          "refs": ["DS-0039", "#41"]
+        },
+        {
+          "type": "added",
+          "text": "Collapsible icon-only rail: `collapsed` hides labels and section text (`data-collapsed` on the root) and `onToggleCollapsed` renders a built-in toggle button. Collapsed items get an `aria-label` and `title` with the label, status and badge.",
+          "refs": ["DS-0039", "#41"]
+        },
+        {
+          "type": "added",
+          "text": "`SideItem.children` renders one level of nested items as a disclosure (`aria-expanded` / `aria-controls`), opened automatically when a child is active.",
+          "refs": ["DS-0039", "#41"]
+        },
+        {
+          "type": "added",
+          "text": "`SideItem.badge` (`string | number`) renders a square count next to the status dot and is included in the accessible name.",
+          "refs": ["DS-0039", "#41"]
+        },
+        {
+          "type": "added",
+          "text": "New size-aware tokens `--ss-side-w`, `--ss-side-w-rail`, `--ss-side-badge-py` and `--ss-side-badge-px` set the expanded and rail widths and the badge padding. The `SideItem`, `SideGroup` and `SideStatus` types are exported from the package.",
+          "refs": ["DS-0039", "#41"]
+        },
+        {
+          "type": "changed",
+          "text": "`SideItem.icon` is optional; omit it for a text-only item."
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "Styles are scoped to the component and ship with it instead of living in the global `theme.css`.",
+          "refs": ["DS-0009", "#6"]
+        },
+        {
+          "type": "added",
+          "text": "`size` prop (`sm` | `md` | `lg`), rendered as `data-size-variant` on the root; it inherits the global size when unset.",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "fixed",
+          "text": "Accessibility pass: the root has `aria-label=\"Sidebar\"`, the active item has `aria-current=\"page\"`, items activate with Space as well as Enter, and the status dot is `aria-hidden`.",
+          "refs": ["DS-0013", "#10"]
+        },
+        {
+          "type": "fixed",
+          "text": "The item hover background reads `--ss-hover` instead of a hardcoded white tint, so it is visible on the light theme.",
+          "refs": ["DS-0013", "#11"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root class is `ss-side` (was `hub-side`), part of the global `hub-` → `ss-` class and `--hs-*` → `--ss-*` token rename."
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a vertical navigation rail of sectioned items (`groups`), each with an icon, a label and an optional status dot (`up` | `deg` | `down`), with `active` marking the current item and `onSelect` firing on click or Enter."
+        }
+      ]
+    }
+  ]
+}

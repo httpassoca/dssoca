@@ -26,6 +26,14 @@
     formatShortcut,
     type ShortcutInfo,
   } from '../shortcuts.svelte.js'
+  import {
+    SHORTCUTS_FALLBACK_GROUP as FALLBACK_GROUP,
+    shortcutsHelpGroups,
+    shortcutsHelpRecordKey,
+    shortcutsHelpRecordPress,
+    type ShortcutComboVerdict,
+    type ShortcutsHelpGroup,
+  } from '../core/shortcuts-help.js'
 
   interface Props {
     /** Whether the overlay is shown. Bindable — control it, or let the hotkey manage it. */
@@ -67,8 +75,6 @@
     children,
   }: Props = $props()
 
-  const FALLBACK_GROUP = 'General'
-
   // Self-registration. `add()` returns the disposer, which doubles as the
   // effect's cleanup: unmount unregisters, a `hotkey` change re-registers.
   // Effects never run on the server, so SSR stays registration-free.
@@ -85,33 +91,15 @@
     })
   })
 
-  interface Group {
-    name: string
-    items: ShortcutInfo[]
-  }
+  // Behaviour lives in `core/shortcuts-help.ts`: the sectioning below and what a key does
+  // while recording are decided there; the registry stays the source of the shortcuts.
 
   // Live grouping of the registry: buckets in first-appearance order with
   // "General" forced last; an explicit `groupOrder` lists its named groups
   // first and the rest keep the default order.
-  const groups: Group[] = $derived.by(() => {
-    const buckets: Group[] = []
-    for (const item of shortcuts.items) {
-      const name = item.group ?? FALLBACK_GROUP
-      const bucket = buckets.find((g) => g.name === name)
-      if (bucket) bucket.items.push(item)
-      else buckets.push({ name, items: [item] })
-    }
-    let ordered = buckets.filter((g) => g.name !== FALLBACK_GROUP)
-    const general = buckets.find((g) => g.name === FALLBACK_GROUP)
-    if (general) ordered.push(general)
-    if (groupOrder?.length) {
-      const explicit = groupOrder
-        .map((n) => ordered.find((g) => g.name === n))
-        .filter((g): g is Group => g !== undefined)
-      ordered = [...explicit, ...ordered.filter((g) => !explicit.includes(g))]
-    }
-    return ordered
-  })
+  const groups: ShortcutsHelpGroup<ShortcutInfo>[] = $derived(
+    shortcutsHelpGroups(shortcuts.items, groupOrder),
+  )
 
   // ── Editable mode (DS-0141) — remap recorder + live announcements ────────
   // One shortcut records at a time; `status` feeds the visible role="status"
@@ -130,6 +118,20 @@
   function cancelRecording() {
     recordingId = null
     status = 'Shortcut change cancelled.'
+  }
+
+  function toggleRecording(item: ShortcutInfo) {
+    if (shortcutsHelpRecordPress(recordingId, item.id).type === 'start') startRecording(item)
+    else cancelRecording()
+  }
+
+  // The registry's own judgement of a combo (its parser throws on what it cannot bind).
+  function verdict(combo: string): ShortcutComboVerdict {
+    try {
+      return isReservedCombo(combo) ? 'reserved' : 'ok'
+    } catch {
+      return 'invalid'
+    }
   }
 
   function resetRow(item: ShortcutInfo) {
@@ -157,27 +159,27 @@
     const onKeydown = (event: KeyboardEvent) => {
       event.preventDefault()
       event.stopPropagation()
-      const combo = comboFromEvent(event)
-      if (combo === null) return
-      if (combo === 'escape') {
-        cancelRecording()
-        return
+      const action = shortcutsHelpRecordKey(comboFromEvent(event), verdict)
+      switch (action.type) {
+        case 'wait':
+          break
+        case 'cancel':
+          cancelRecording()
+          break
+        case 'reject':
+          status =
+            action.why === 'invalid'
+              ? 'That key cannot be used — try another combination.'
+              : `${spoken(action.combo)} is reserved by the browser — try another combination.`
+          break
+        case 'remap': {
+          const label = shortcuts.items.find((i) => i.id === id)?.label ?? id
+          shortcuts.remap(id, action.combo)
+          recordingId = null
+          status = `"${label}" is now ${spoken(action.combo)}.`
+          break
+        }
       }
-      const label = shortcuts.items.find((i) => i.id === id)?.label ?? id
-      let reserved: boolean
-      try {
-        reserved = isReservedCombo(combo)
-      } catch {
-        status = 'That key cannot be used — try another combination.'
-        return
-      }
-      if (reserved) {
-        status = `${spoken(combo)} is reserved by the browser — try another combination.`
-        return
-      }
-      shortcuts.remap(id, combo)
-      recordingId = null
-      status = `"${label}" is now ${spoken(combo)}.`
     }
     window.addEventListener('keydown', onKeydown, true)
     return () => window.removeEventListener('keydown', onKeydown, true)
@@ -239,8 +241,7 @@
                       aria-label={recordingId === item.id
                         ? `Recording a new shortcut for "${item.label}" — press keys, Escape cancels`
                         : `Change the shortcut for "${item.label}"`}
-                      onclick={() =>
-                        recordingId === item.id ? cancelRecording() : startRecording(item)}
+                      onclick={() => toggleRecording(item)}
                     >
                       {recordingId === item.id ? 'Cancel' : 'Change'}
                     </Button>

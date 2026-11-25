@@ -1,0 +1,45 @@
+{
+  "component": "Textarea",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The required marker (`.req`) is spaced with `margin-inline-start` instead of `margin-left`, so the gap follows the writing direction under `dir=\"rtl\"`.",
+          "refs": ["DS-0167", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Plain-HTML support: `dssoca/vanilla.css` styles the `.ss-textarea` markup, and `dssoca/vanilla.js` adds the autosize fallback for `.ss-textarea .field.autosize` in browsers without `field-sizing: content`.",
+          "refs": ["DS-0148", "#124"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The invalid focus ring is mixed from the `--ss-danger` slot with `color-mix()` instead of the removed `--ss-red-rgb` token, so it follows an imported palette.",
+          "refs": ["DS-0128", "#104"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: the multiline twin of `Input`, with the same `label` / `hint` / `error` anatomy and `--ss-input-*` field tokens, a bindable `value`, and an `autosize` option that grows with content between `rows` (default 3) and `maxRows` (default 10).",
+          "refs": ["DS-0084", "#75"]
+        }
+      ]
+    }
+  ]
+}

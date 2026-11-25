@@ -1,0 +1,46 @@
+{
+  "component": "Heatmap",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "Cells are `role=\"gridcell\"` inside `role=\"grid\"` > `role=\"row\"` groups instead of `role=\"button\"`, and the whole grid is one tab stop: arrows, Home and End move between cells (roving `tabindex`). Arrow keys stay physical under `dir=\"rtl\"`.",
+          "refs": ["DS-0164", "DS-0161", "#139", "#140"]
+        },
+        {
+          "type": "changed",
+          "text": "`null` cells are no longer `aria-hidden`: they are focusable gridcells named \"<row> vs <column>: no value\", so keyboard navigation keeps the 2-D shape of the matrix.",
+          "refs": ["DS-0164", "#140"]
+        },
+        {
+          "type": "added",
+          "text": "A min→max legend (the formatted `domain` ends plus a 5-step `--ss-primary` opacity ramp) renders under the grid when `showValues` is `false`, so intensity is not the only cue. No new prop.",
+          "refs": ["DS-0164", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "Value text stays legible on every cell strength: the `--ss-fg` glyphs get a `--ss-bg` halo (was about 1.1:1 on the strongest cells).",
+          "refs": ["DS-0164", "#139", "#140"]
+        },
+        {
+          "type": "fixed",
+          "text": "The tooltip is `aria-hidden` instead of `role=\"status\"` and closes on Escape, including one opened by hover. The in-cell value text is `aria-hidden` too, so a value is no longer announced twice, and cells no longer show a pointer cursor.",
+          "refs": ["DS-0164", "#139", "#140"]
+        }
+      ]
+    },
+    {
+      "version": "0.11.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a value-intensity matrix with row and column headers (`rows`, `columns`, `values`), where cell opacity over `--ss-primary` encodes the value and `null` cells stay blank. Ships with `domain`, `valueFormat`, `showValues`, `xLabel` / `yLabel`, `cellSize`, `tooltip`, `summary` and `size`.",
+          "refs": ["DS-0106", "DS-0102"]
+        }
+      ]
+    }
+  ]
+}

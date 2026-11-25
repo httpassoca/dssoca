@@ -1,0 +1,208 @@
+{
+  "component": "Topbar",
+  "releases": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The tab strip stays reachable by Tab when `active` matches no tab: the first button tab becomes the tab stop (before, every button tab got `tabindex=\"-1\"`).",
+          "refs": ["DS-0182", "#139"]
+        },
+        {
+          "type": "fixed",
+          "text": "Segment borders, tab-number and stat margins and the skip link position use logical properties (`border-inline-*`, `margin-inline-end`, `inset-inline-start`), so the bar mirrors under `dir=\"rtl\"`.",
+          "refs": ["DS-0182"]
+        }
+      ]
+    },
+    {
+      "version": "0.19.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "On keyboard-less devices (`@media (hover: none) and (pointer: coarse)`) the command button shows a decorative `search` icon in place of the ⌘K chip, which `Kbd` now hides there, so the tap target is never empty.",
+          "refs": ["DS-0157"]
+        }
+      ]
+    },
+    {
+      "version": "0.18.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "Link tabs and the skip link no longer show the global animated `a::before` underline from `theme.css`.",
+          "refs": ["DS-0150"]
+        }
+      ]
+    },
+    {
+      "version": "0.13.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The command shortcut is registered in the `shortcuts` registry as `ss:topbar-command` with keys `mod+k`, so it lists in `ShortcutsHelp` and obeys `setEnabled()` / `remap()`. It now fires on the platform modifier only: Ctrl+K no longer triggers `onCommand` on macOS (restore it with `shortcuts.remap('ss:topbar-command', 'mod+k, ctrl+k')`).",
+          "refs": ["DS-0139"]
+        },
+        {
+          "type": "changed",
+          "text": "The command button's `aria-keyshortcuts` matches the platform (`Meta+K` on Apple, `Control+K` elsewhere; was `Meta+K Control+K`), and the ⌘K chip renders through `Kbd`.",
+          "refs": ["DS-0139"]
+        }
+      ]
+    },
+    {
+      "version": "0.12.0",
+      "changes": [
+        {
+          "type": "fixed",
+          "text": "The active-tab wash derives from `--ss-accent` (`color-mix(in srgb, var(--ss-accent) 6%, transparent)`) and follows the theme; it was hardcoded to the dark-mode green `rgba(102, 239, 115, .06)`.",
+          "refs": ["DS-0128"]
+        },
+        {
+          "type": "changed",
+          "text": "The skip link's vertical padding reads the new `--ss-chip-py` token instead of the removed `--ss-badge-py` (same values, rendering unchanged).",
+          "refs": ["DS-0121"]
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "Link tabs: `tabs` accepts `{ id, label?, href? }` objects (exported as `TopbarTab`) next to plain strings. A tab with `href` renders as a real `<a>` with `aria-current`, and `label` can differ from the `id` passed to `onTab`.",
+          "refs": ["DS-0080"]
+        },
+        {
+          "type": "added",
+          "text": "Optional chrome: `services` (`true`, `false` or `{ up, total }`) and `clock` (`false` removes the segment and its interval) props, and `stats={[]}` removes the stat segments.",
+          "refs": ["DS-0081"]
+        },
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The ⌘K button and the Cmd/Ctrl+K shortcut exist only when `onCommand` is provided; without it the button is not rendered and the browser default is left alone.",
+          "refs": ["DS-0081"]
+        },
+        {
+          "type": "changed",
+          "text": "The tab strip shrinks and scrolls horizontally instead of pushing the right-side segments off screen when the tabs outgrow the bar. The collapse breakpoints (stats below 720px, tabs below 520px) are documented.",
+          "refs": ["DS-0082"]
+        },
+        {
+          "type": "added",
+          "text": "`ariaLabel` prop names the tab-strip `<nav>` landmark (default `Primary`).",
+          "refs": ["DS-0078"]
+        },
+        {
+          "type": "fixed",
+          "text": "The global `keydown` listener is guarded for environments without `window` (SSR safety).",
+          "refs": ["DS-0067"]
+        },
+        {
+          "type": "changed",
+          "text": "Segment gaps and stat-key margins read the spacing tokens `--ss-s-2` and `--ss-s-1` instead of hardcoded pixels (visually unchanged).",
+          "refs": ["DS-0068"]
+        }
+      ]
+    },
+    {
+      "version": "0.8.0",
+      "changes": [
+        {
+          "type": "changed",
+          "text": "The default `user` is `admin@hub.home` (was `rafael@hub.home`).",
+          "refs": ["DS-0057"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root element is a `<header>` (was a `<div>`) and the tab strip is a `<nav aria-label=\"Primary\">`. The ⌘K chip and the user chip are real `<button>` elements instead of `<div>`s.",
+          "refs": ["DS-0038", "#42"]
+        },
+        {
+          "type": "added",
+          "text": "A \"Skip to content\" link is the first focusable element; `skipTarget` sets its anchor (default `#main`).",
+          "refs": ["DS-0038", "#42"]
+        },
+        {
+          "type": "added",
+          "text": "The tabs use a roving tabindex: the active tab is the single tab stop, arrow keys move focus (wrapping) and Home/End jump to the ends.",
+          "refs": ["DS-0038", "#42"]
+        },
+        {
+          "type": "added",
+          "text": "`onCommand` fires from the ⌘K button and from Cmd/Ctrl+K; `onUser` fires from the user button, and a `userMenu` snippet replaces that button.",
+          "refs": ["DS-0038", "#42"]
+        },
+        {
+          "type": "added",
+          "text": "`brand` snippet replaces the built-in logo and name, and `stats` (`{ key, value, title? }[]`) replaces the built-in cpu/mem/net segments.",
+          "refs": ["DS-0038", "#42"]
+        },
+        {
+          "type": "added",
+          "text": "`sticky` prop (default `true`); set it to `false` for a bar that scrolls with the page.",
+          "refs": ["DS-0038", "#42"]
+        },
+        {
+          "type": "changed",
+          "text": "Responsive collapse: the stat segments hide below 720px and the tab strip below 520px. Tabs and buttons keep a minimum height of `--ss-s-6` for a 24px hit target.",
+          "refs": ["DS-0038", "#42"]
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The styles ship scoped inside the component instead of in the global `theme.css`.",
+          "refs": ["DS-0009", "#6"]
+        },
+        {
+          "type": "added",
+          "text": "`size` prop (`sm`, `md`, `lg`); when unset it inherits the global size. The root renders the resolved value as `data-size-variant`.",
+          "refs": ["DS-0012", "#9"]
+        },
+        {
+          "type": "fixed",
+          "text": "The active tab sets `aria-current=\"page\"`, and the tab numbers, the status dot and the ⌘K chip are hidden from assistive technology.",
+          "refs": ["DS-0013", "#10"]
+        },
+        {
+          "type": "fixed",
+          "text": "Tab and segment hover backgrounds use `--ss-hover` instead of a hardcoded white wash, so they are visible in the light theme.",
+          "refs": ["DS-0013", "#11"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "changed",
+          "breaking": true,
+          "text": "The root class is `ss-topbar` (was `hub-topbar`) and the tokens it reads are `--ss-*` (were `--hs-*`)."
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "added",
+          "text": "New component: a top bar with a brand mark, a numbered tab strip (`tabs`, `active`, `onTab`), status and stat segments, a `user` chip and a live clock."
+        }
+      ]
+    }
+  ]
+}

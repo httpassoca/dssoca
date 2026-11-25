@@ -51,11 +51,11 @@ export const pagination: ComponentDoc = {
     },
     {
       name: 'onchange',
-      type: '(page: number) => void',
-      desc: 'Fired when the page changes (after `page` updates).',
+      type: '(page: number, details: { reason: PaginationReason }) => void',
+      desc: "Fired when the page changes (after `page` updates), with the new page and what changed it: `details.reason` is `'page'` (a page number), `'prev'` or `'next'` (a stepper).",
     },
     SIZE_PROP,
   ],
   notes:
-    'Renders a `<nav aria-label="Pagination">` of buttons. Prev is disabled on page 1, Next on the last page; the current page button carries `aria-current="page"` and never re-fires. Ellipses are decorative (`aria-hidden`). RTL-ready: cell dividers use `border-inline-start`, the row order follows `dir`, and the ‹ › glyphs are Unicode bidi-mirrored characters, so the browser flips them automatically under `dir="rtl"`.',
+    'Renders a `<nav aria-label="Pagination">` of buttons. Prev is disabled on page 1, Next on the last page; the current page button carries `aria-current="page"` and never re-fires. When a stepper lands on its bound and becomes disabled, focus moves to the current page button instead of being lost. Ellipses are decorative (`aria-hidden`). RTL-ready: cell dividers use `border-inline-start`, the row order follows `dir`, and the ‹ › glyphs are Unicode bidi-mirrored characters, so the browser flips them automatically under `dir="rtl"`.',
 }

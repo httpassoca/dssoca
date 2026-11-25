@@ -215,6 +215,23 @@ export const NAV: NavGroup[] = [
         icon: 'database',
         keywords: ['gallery', 'overview', 'catalog', 'list'],
       },
+      {
+        // DS-0196: rendered from the repo-root CHANGELOG.md at build time.
+        label: 'Changelog',
+        href: '/changelog',
+        icon: 'logs',
+        keywords: [
+          'releases',
+          'release notes',
+          'versions',
+          'history',
+          'breaking changes',
+          'upgrade',
+          'migration',
+          "what's new",
+          'github',
+        ],
+      },
     ],
   },
   {

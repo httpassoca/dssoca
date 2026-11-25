@@ -40,6 +40,20 @@
 <script lang="ts">
   import Icon from './Icon.svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    menuItemAttrs,
+    menuItemPress,
+    menuOutsidePress,
+    menuPanelAttrs,
+    menuPanelKey,
+    menuTriggerAttrs,
+    menuTriggerKey,
+    menuTriggerPress,
+    type MenuAction,
+    type MenuKeyResult,
+    type MenuOpenChangeDetails,
+    type MenuState,
+  } from '../core/menu.js'
 
   /** Where the panel attaches relative to the trigger. */
   type Align = 'start' | 'end'
@@ -55,6 +69,11 @@
     open?: boolean
     /** Fired when an item is activated, with its `id` (after `item.onSelect`). */
     onSelect?: (id: string) => void
+    /**
+     * Fired when the menu opens or closes itself, with the new state and why
+     * (`details.reason`: trigger · key · escape · tab · outside · item).
+     */
+    onOpenChange?: (open: boolean, details: MenuOpenChangeDetails) => void
     /** Horizontal edge the panel aligns to. */
     align?: Align
     /** Vertical side the panel opens toward. */
@@ -74,6 +93,7 @@
     items = [],
     open = $bindable(false),
     onSelect,
+    onOpenChange,
     align = 'start',
     side = 'bottom',
     label,
@@ -92,12 +112,16 @@
 
   let triggerEl = $state<HTMLButtonElement>()
   let panelEl = $state<HTMLElement>()
-  // The roving focus index into the *enabled* items; -1 when none focused yet.
+  // The roving focus index into the items; -1 when none focused yet.
   let activeIndex = $state(-1)
 
-  const enabledIndexes = $derived(
-    items.map((it, i) => (it.disabled ? -1 : i)).filter((i) => i >= 0),
-  )
+  // Behaviour lives in `core/menu.ts` (shared with vanilla/menu.ts): events go in, a
+  // MenuAction comes out, and `run` applies it to this component's state.
+  const menu = $derived<MenuState>({
+    open,
+    active: activeIndex,
+    enabled: items.map((it, i) => (it.disabled ? -1 : i)).filter((i) => i >= 0),
+  })
 
   function focusItem(domIndex: number) {
     activeIndex = domIndex
@@ -105,99 +129,50 @@
     el?.focus()
   }
 
-  function firstEnabled(): number {
-    return enabledIndexes[0] ?? -1
-  }
-  function lastEnabled(): number {
-    return enabledIndexes[enabledIndexes.length - 1] ?? -1
-  }
-  function nextEnabled(from: number): number {
-    const after = enabledIndexes.find((i) => i > from)
-    return after ?? firstEnabled()
-  }
-  function prevEnabled(from: number): number {
-    const before = [...enabledIndexes].reverse().find((i) => i < from)
-    return before ?? lastEnabled()
-  }
-
-  function openMenu(focus: 'first' | 'last' = 'first') {
-    if (open) return
-    open = true
-    // Defer focus until the panel renders.
-    queueMicrotask(() => focusItem(focus === 'first' ? firstEnabled() : lastEnabled()))
-  }
-
-  function closeMenu(returnFocus = true) {
-    if (!open) return
-    open = false
-    activeIndex = -1
-    if (returnFocus) triggerEl?.focus()
+  function run(action: MenuAction | null) {
+    if (!action) return
+    switch (action.type) {
+      case 'open':
+        open = true
+        onOpenChange?.(true, { reason: action.reason })
+        // Defer focus until the panel renders.
+        queueMicrotask(() => focusItem(action.focus))
+        break
+      case 'close':
+        open = false
+        activeIndex = -1
+        onOpenChange?.(false, { reason: action.reason })
+        if (action.returnFocus) triggerEl?.focus()
+        break
+      case 'focus':
+        focusItem(action.index)
+        break
+    }
   }
 
-  function toggle() {
-    if (open) closeMenu()
-    else openMenu('first')
+  function onKey(result: MenuKeyResult | null, e: KeyboardEvent) {
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    run(result.action)
   }
 
-  function activate(item: MenuItem) {
-    if (item.disabled) return
+  function activate(item: MenuItem, index: number) {
+    const result = menuItemPress(menu, index)
+    if (!result) return
     item.onSelect?.(item.id)
     onSelect?.(item.id)
-    closeMenu()
-  }
-
-  function onTriggerKeydown(e: KeyboardEvent) {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      openMenu('first')
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      openMenu('last')
-    } else if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      openMenu('first')
-    }
-  }
-
-  function onPanelKeydown(e: KeyboardEvent) {
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault()
-        focusItem(activeIndex < 0 ? firstEnabled() : nextEnabled(activeIndex))
-        break
-      case 'ArrowUp':
-        e.preventDefault()
-        focusItem(activeIndex < 0 ? lastEnabled() : prevEnabled(activeIndex))
-        break
-      case 'Home':
-        e.preventDefault()
-        focusItem(firstEnabled())
-        break
-      case 'End':
-        e.preventDefault()
-        focusItem(lastEnabled())
-        break
-      case 'Escape':
-        e.preventDefault()
-        closeMenu()
-        break
-      case 'Tab':
-        // Tabbing out dismisses the menu (focus moves naturally; don't trap).
-        closeMenu(false)
-        break
-    }
+    run(result.action)
   }
 
   // Pointer-down outside the root closes the menu (click would fire after the
   // outside target already handled the event; pointerdown matches the website).
   function onDocPointerDown(e: PointerEvent) {
-    if (!open) return
     const t = e.target as Node
     // DS-0067 / DS-0078: triggerEl/panelEl may be unbound (pre-mount, SSR-ish
     // eager evaluation) — null-check before .contains().
     if (triggerEl && triggerEl.contains(t)) return
     if (panelEl && panelEl.contains(t)) return
-    closeMenu(false)
+    run(menuOutsidePress(menu))
   }
 
   // SSR safety (DS-0067): same guard pattern as toast.svelte.ts — effects
@@ -220,11 +195,10 @@
     id={triggerId}
     type="button"
     class="trigger"
-    aria-haspopup="menu"
-    aria-expanded={open}
+    {...menuTriggerAttrs(open)}
     aria-controls={panelId}
-    onclick={toggle}
-    onkeydown={onTriggerKeydown}
+    onclick={() => run(menuTriggerPress(menu))}
+    onkeydown={(e) => onKey(menuTriggerKey(menu, e.key), e)}
   >
     {@render children?.()}
   </button>
@@ -234,12 +208,10 @@
     id={panelId}
     class="panel"
     class:open
-    role="menu"
     aria-label={label || undefined}
     aria-labelledby={label ? undefined : triggerId}
-    aria-hidden={!open}
-    tabindex="-1"
-    onkeydown={onPanelKeydown}
+    {...menuPanelAttrs(open)}
+    onkeydown={(e) => onKey(menuPanelKey(menu, e.key), e)}
   >
     {#each items as item, i (item.id)}
       <button
@@ -247,12 +219,15 @@
         class="item"
         class:selected={item.selected}
         data-mi={i}
-        role={selectable ? 'menuitemradio' : 'menuitem'}
-        aria-checked={selectable ? Boolean(item.selected) : undefined}
-        aria-disabled={item.disabled ? 'true' : undefined}
+        {...menuItemAttrs({
+          index: i,
+          active: activeIndex,
+          selectable,
+          selected: item.selected,
+          disabled: item.disabled,
+        })}
         disabled={item.disabled}
-        tabindex={i === activeIndex ? 0 : -1}
-        onclick={() => activate(item)}
+        onclick={() => activate(item, i)}
       >
         {#if item.leading}
           <span class="lead" aria-hidden="true">{@render item.leading()}</span>
