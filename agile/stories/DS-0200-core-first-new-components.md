@@ -2,14 +2,14 @@
 id: DS-0200
 type: story
 title: "Tabs, Popover, Checkbox and RadioGroup — built core-first"
-status: in-progress
+status: done
 priority: high
 tags: [ui, components, a11y, vanilla]
 depends_on: [DS-0199]
 parent: null
 epic: DS-0197
 created: 2026-11-24
-updated: 2026-11-24
+updated: 2026-11-25
 ---
 
 ## Description
@@ -32,7 +32,7 @@ twin: `core/tabs.ts`, `core/popover.ts` (+ `core/behaviors/focusable.ts`), `core
 - [x] `pnpm test`, `pnpm docs:test`, `pnpm check`, `pnpm pack`, `pnpm build-storybook` green.
 - [x] Browser pass in headless Chromium, both themes and `dir="rtl"` (Storybook).
 - [x] Documentation updated (component pages, docs/tokens.md, CHANGELOG).
-- [ ] Owner looked at the four components and their API.
+- [x] Owner merged the four components (PR #145).
 
 ## Notes
 

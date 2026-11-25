@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Until `1.0.0`, minor versions
 may include breaking changes (flagged **BREAKING**).
 
-## [Unreleased]
+## [0.21.0] — Behaviour core — 2026-11-25
+
+Behaviour now lives in one framework-free core that both the Svelte components and `vanilla.js`
+call (`DS-0197`), four components are new, and components say why they changed. Nothing is
+removed and the rendered markup is unchanged; the behaviour differences are listed under
+**Changed** and **Fixed**.
 
 ### Added
 
@@ -66,7 +71,7 @@ Sharing one core also aligned a few plain-HTML (`vanilla.js`) edge cases with th
 
 ### Fixed
 
-Three defects found in a browser pass (`DS-0201`).
+Defects found in a browser pass (`DS-0201`, `DS-0205`). All four predate this release.
 
 - **`Sidebar`**: a closed disclosure group no longer shows its children or leaves them in the tab
   order. The `.sublist { display: flex }` rule outranked the `hidden` attribute, so the closed
@@ -869,7 +874,8 @@ Docs-site only (the published library is unchanged from `0.8.0`).
   component set (`DS-0002`), toast notifications (`DS-0003`), and empty/error-state affordances
   (`DS-0004`).
 
-[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.20.0...HEAD
+[Unreleased]: https://github.com/httpassoca/dssoca/compare/v0.21.0...HEAD
+[0.21.0]: https://github.com/httpassoca/dssoca/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/httpassoca/dssoca/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/httpassoca/dssoca/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/httpassoca/dssoca/compare/v0.17.0...v0.18.0

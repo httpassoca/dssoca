@@ -2,14 +2,14 @@
 id: DS-0199
 type: story
 title: "Behaviour core — every existing interactive component on it"
-status: in-progress
+status: done
 priority: high
 tags: [ui, architecture, vanilla, a11y]
 depends_on: [DS-0198]
 parent: null
 epic: DS-0197
 created: 2026-11-24
-updated: 2026-11-24
+updated: 2026-11-25
 ---
 
 ## Description
@@ -33,7 +33,7 @@ SegmentedControl `onChange`, Pagination `onchange`, FileDrop `onfiles`, TierList
 - [x] Rendered DOM, classes and existing `ss:*` events unchanged.
 - [x] One `core-<component>.test.ts` per new core.
 - [x] Documentation updated (component pages for every new `details.reason`, CHANGELOG).
-- [ ] Browser pass (both themes, `dir="rtl"`): Escape reasons on Modal and SearchPalette rely
+- [x] Browser pass (both themes, `dir="rtl"`): Escape reasons on Modal and SearchPalette rely
       on the native dialog `cancel` event and were only exercised in jsdom.
 
 ## Notes
