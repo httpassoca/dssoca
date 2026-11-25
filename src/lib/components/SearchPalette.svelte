@@ -198,10 +198,23 @@
     onclose?.()
   }
 
-  // A pointerdown landing on the <dialog> itself (not the inner panel) is a
-  // backdrop hit (Modal's detection).
+  // A press that starts on the <dialog> itself (not the inner panel) is a
+  // backdrop hit (Modal's detection). Remembering where the press began avoids
+  // closing on a drag that started inside the panel and was released on the
+  // backdrop.
+  //
+  // The dialog closes on the `click`, not on the pointerdown: closing hands
+  // focus back to the opener, and if that happened on pointerdown the same
+  // gesture's mousedown would then land on the page and blur it, leaving focus
+  // on <body>.
+  let pressedBackdrop = false
   function onPointerDown(e: PointerEvent) {
-    if (e.target === dialog) open = false
+    pressedBackdrop = e.target === dialog
+  }
+  function onClick(e: MouseEvent) {
+    const hit = pressedBackdrop && e.target === dialog
+    pressedBackdrop = false
+    if (hit) open = false
   }
 
   // DS-0139: the toggle chord goes through the shortcut registry (id
@@ -306,6 +319,7 @@
   aria-label={ariaLabel}
   onclose={onDialogClose}
   onpointerdown={onPointerDown}
+  onclick={onClick}
 >
   <div class="panel">
     <div class="bar">

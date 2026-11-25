@@ -346,13 +346,45 @@ describe('SearchPalette — shortcut (registry-backed, DS-0139)', () => {
 })
 
 describe('SearchPalette — closing', () => {
-  it('backdrop pointerdown closes and fires onclose', async () => {
+  it('a backdrop press closes and fires onclose', async () => {
     const onclose = vi.fn()
     const { container } = render(SearchPalette, { ...baseProps(), onclose })
     const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-search-palette')!
+    // A press whose target IS the dialog (not the inner panel) = backdrop.
     await fireEvent.pointerDown(dialog)
+    await fireEvent.click(dialog)
     expect(dialog.open).toBe(false)
     expect(onclose).toHaveBeenCalledTimes(1)
+  })
+
+  // Closing on the pointerdown hands focus back to the opener and then lets the same
+  // gesture's mousedown blur it (focus on <body>). The close must wait for the click.
+  it('stays open on the backdrop pointerdown and closes on the click that follows', async () => {
+    const { container } = render(SearchPalette, baseProps())
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-search-palette')!
+    await fireEvent.pointerDown(dialog)
+    expect(dialog.open).toBe(true)
+    await fireEvent.click(dialog)
+    expect(dialog.open).toBe(false)
+  })
+
+  it('does not close on a press that lands on the inner panel', async () => {
+    const { container } = render(SearchPalette, baseProps())
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-search-palette')!
+    const panel = container.querySelector('.ss-search-palette .panel')!
+    await fireEvent.pointerDown(panel)
+    await fireEvent.click(panel)
+    expect(dialog.open).toBe(true)
+  })
+
+  it('does not close on a drag that starts in the panel and ends on the backdrop', async () => {
+    const { container } = render(SearchPalette, baseProps())
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-search-palette')!
+    const panel = container.querySelector('.ss-search-palette .panel')!
+    await fireEvent.pointerDown(panel)
+    // The browser targets the click at the common ancestor: the dialog.
+    await fireEvent.click(dialog)
+    expect(dialog.open).toBe(true)
   })
 
   it('a native close event syncs state (Esc path) and resets the query', async () => {

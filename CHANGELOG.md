@@ -8,6 +8,14 @@ may include breaking changes (flagged **BREAKING**).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`SearchPalette`**: a backdrop click no longer leaves focus on `<body>` (`DS-0205`). The
+  palette closed on the pointerdown, focus went back to the opener, and the same click's
+  mousedown then blurred it. It now closes on the click (a press that starts and ends on the
+  backdrop), so focus stays on the opener. A drag from inside the panel to the backdrop still
+  does not close.
+
 ### Docs
 
 - **Changelog on the docs site** (`DS-0196`). `/changelog` renders this file release by release,
