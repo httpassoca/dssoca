@@ -149,7 +149,12 @@ export function searchShortcut(isOpen: boolean): SearchPaletteAction {
   return { type: isOpen ? 'close' : 'open', reason: 'shortcut' }
 }
 
-/** A pointer went down on the dialog; `onBackdrop` = it hit the dialog itself, not the panel. */
+/**
+ * The backdrop was clicked; `onBackdrop` = the press both started and ended on the dialog
+ * itself, not the panel. Called on `click`, not `pointerdown`, for the same reason as
+ * `modalBackdropPress`: closing on the pointerdown lets the gesture's mousedown drop the
+ * returned focus on `<body>` (DS-0205).
+ */
 export function searchBackdropPress(
   state: SearchPaletteState,
   onBackdrop: boolean,

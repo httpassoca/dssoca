@@ -80,6 +80,11 @@ Three defects found in a browser pass (`DS-0201`).
 - **`Topbar`**: ArrowLeft / ArrowRight in the tab strip follow the reading direction. Under
   `dir="rtl"` ArrowRight used to move to the tab on the left; the two keys now swap, as they do
   in `SegmentedControl` and `TierList`. ArrowUp / ArrowDown, Home and End are unchanged.
+- **`SearchPalette`**: a backdrop click no longer leaves focus on `<body>` (`DS-0205`). The
+  palette closed on the pointerdown, focus went back to the opener, and the same click's
+  mousedown then blurred it. It now closes on the click (a press that starts and ends on the
+  backdrop), so focus stays on the opener. A drag from inside the panel to the backdrop still
+  does not close.
 
 ### Docs
 
