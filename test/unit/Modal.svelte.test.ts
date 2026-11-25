@@ -118,17 +118,40 @@ describe('Modal — closing', () => {
     const onclose = vi.fn()
     const { container } = render(Modal, { ...baseProps(), onclose })
     const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
-    // A pointerdown whose target IS the dialog (not the inner panel) = backdrop.
+    // A press whose target IS the dialog (not the inner panel) = backdrop.
     await fireEvent.pointerDown(dialog)
+    await fireEvent.click(dialog)
     expect(dialog.open).toBe(false)
     expect(onclose).toHaveBeenCalledTimes(1)
   })
 
-  it('does not close on a pointerdown that lands on the inner panel', async () => {
+  // Closing on the pointerdown hands focus back to the opener and then lets the same
+  // gesture's mousedown blur it (focus on <body>). The close must wait for the click.
+  it('stays open on the backdrop pointerdown and closes on the click that follows', async () => {
+    const { container } = render(Modal, baseProps())
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
+    await fireEvent.pointerDown(dialog)
+    expect(dialog.open).toBe(true)
+    await fireEvent.click(dialog)
+    expect(dialog.open).toBe(false)
+  })
+
+  it('does not close on a press that lands on the inner panel', async () => {
     const { container } = render(Modal, baseProps())
     const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
     const panel = container.querySelector('.ss-modal .panel')!
     await fireEvent.pointerDown(panel)
+    await fireEvent.click(panel)
+    expect(dialog.open).toBe(true)
+  })
+
+  it('does not close on a drag that starts in the panel and ends on the backdrop', async () => {
+    const { container } = render(Modal, baseProps())
+    const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
+    const panel = container.querySelector('.ss-modal .panel')!
+    await fireEvent.pointerDown(panel)
+    // The browser targets the click at the common ancestor: the dialog.
+    await fireEvent.click(dialog)
     expect(dialog.open).toBe(true)
   })
 
@@ -136,6 +159,7 @@ describe('Modal — closing', () => {
     const { container } = render(Modal, { ...baseProps(), closeOnBackdrop: false })
     const dialog = container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
     await fireEvent.pointerDown(dialog)
+    await fireEvent.click(dialog)
     expect(dialog.open).toBe(true)
   })
 
@@ -154,6 +178,60 @@ describe('Modal — closing', () => {
     dialog.close()
     expect(dialog.open).toBe(false)
     expect(onclose).toHaveBeenCalledTimes(1)
+  })
+})
+
+// DS-0197: `onclose` reports why the dialog closed (decided in core/modal.ts).
+describe('Modal — close reason', () => {
+  const setup = (props: Record<string, unknown> = {}) => {
+    const onclose = vi.fn()
+    const utils = render(Modal, { ...baseProps(), onclose, ...props })
+    const dialog = utils.container.querySelector<HTMLDialogElement>('dialog.ss-modal')!
+    return { ...utils, dialog, onclose }
+  }
+
+  it('reports "button" for the Close button', async () => {
+    const { getByLabelText, onclose } = setup()
+    await fireEvent.click(getByLabelText('Close'))
+    expect(onclose).toHaveBeenCalledWith({ reason: 'button' })
+  })
+
+  it('reports "backdrop" for a backdrop press', async () => {
+    const { dialog, onclose } = setup()
+    await fireEvent.pointerDown(dialog)
+    await fireEvent.click(dialog)
+    expect(onclose).toHaveBeenCalledWith({ reason: 'backdrop' })
+  })
+
+  it('reports "escape" when the native cancel precedes the close', () => {
+    const { dialog, onclose } = setup()
+    // What the browser does on Esc: fire `cancel`, then (unless prevented) close.
+    const cancel = new Event('cancel', { cancelable: true })
+    dialog.dispatchEvent(cancel)
+    expect(cancel.defaultPrevented).toBe(false)
+    dialog.close()
+    expect(onclose).toHaveBeenCalledWith({ reason: 'escape' })
+  })
+
+  it('reports "programmatic" for a direct close()', () => {
+    const { dialog, onclose } = setup()
+    dialog.close()
+    expect(onclose).toHaveBeenCalledWith({ reason: 'programmatic' })
+  })
+
+  it('reports "programmatic" when the open prop flips to false', async () => {
+    const { rerender, dialog, onclose } = setup()
+    await rerender({ open: false })
+    expect(dialog.open).toBe(false)
+    expect(onclose).toHaveBeenCalledWith({ reason: 'programmatic' })
+  })
+
+  it('a swallowed Escape (closeOnEsc=false) does not label the next close', () => {
+    const { dialog, onclose } = setup({ closeOnEsc: false })
+    dialog.dispatchEvent(new Event('cancel', { cancelable: true }))
+    expect(onclose).not.toHaveBeenCalled()
+    dialog.close()
+    expect(onclose).toHaveBeenCalledWith({ reason: 'programmatic' })
   })
 })
 

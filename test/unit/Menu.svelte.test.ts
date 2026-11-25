@@ -385,4 +385,43 @@ describe('Menu', () => {
       expect(await axe(container, axeOpts)).toHaveNoViolations()
     })
   })
+
+  describe('onOpenChange (DS-0198)', () => {
+    it('reports every open / close the menu makes itself, with the reason', async () => {
+      const onOpenChange = vi.fn()
+      const { container } = render(MenuHarness, { items: ITEMS, onOpenChange })
+      const reasons = () => onOpenChange.mock.calls.map(([open, d]) => [open, d.reason])
+
+      await fireEvent.click(trigger(container))
+      await fireEvent.click(trigger(container))
+      await fireEvent.keyDown(trigger(container), { key: 'ArrowDown' })
+      await fireEvent.keyDown(panel(container), { key: 'Escape' })
+      await fireEvent.click(trigger(container))
+      await fireEvent.keyDown(panel(container), { key: 'Tab' })
+      await fireEvent.click(trigger(container))
+      await fireEvent.pointerDown(document.body)
+      await fireEvent.click(trigger(container))
+      await fireEvent.click(itemEls(container)[0])
+
+      expect(reasons()).toEqual([
+        [true, 'trigger'],
+        [false, 'trigger'],
+        [true, 'key'],
+        [false, 'escape'],
+        [true, 'trigger'],
+        [false, 'tab'],
+        [true, 'trigger'],
+        [false, 'outside'],
+        [true, 'trigger'],
+        [false, 'item'],
+      ])
+    })
+
+    it('stays silent when nothing changes (outside press on a closed menu)', async () => {
+      const onOpenChange = vi.fn()
+      render(MenuHarness, { items: ITEMS, onOpenChange })
+      await fireEvent.pointerDown(document.body)
+      expect(onOpenChange).not.toHaveBeenCalled()
+    })
+  })
 })

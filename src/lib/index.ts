@@ -53,12 +53,14 @@ export { default as EmptyState } from './components/EmptyState.svelte'
 // single, complete public surface for that component, so the per-component
 // implementation PRs (DS-0050…0055) need not edit this barrel.
 export { default as Menu, type MenuItem } from './components/Menu.svelte'
+export type { MenuReason, MenuOpenChangeDetails } from './core/menu.js'
 export { default as Accordion, type AccordionItem } from './components/Accordion.svelte'
 export { default as Link } from './components/Link.svelte'
 export {
   default as SegmentedControl,
   type SegmentOption,
 } from './components/SegmentedControl.svelte'
+export type { SegmentedReason, SegmentedChangeDetails } from './core/segmented.js'
 export { default as BottomNav, type BottomNavItem } from './components/BottomNav.svelte'
 export { default as Image, type ImageSource } from './components/Image.svelte'
 
@@ -80,14 +82,19 @@ export { default as Table, type TableColumn, type TableSort } from './components
 export { default as Select } from './components/Select.svelte'
 export type { SelectOption, SelectOptGroup } from './components/Select.svelte'
 export { default as Modal } from './components/Modal.svelte'
+export type { ModalReason, ModalCloseDetails } from './core/modal.js'
 export { default as DateField } from './components/DateField.svelte'
 export { default as FileDrop } from './components/FileDrop.svelte'
+export type { FileDropReason, FileDropChangeDetails } from './core/file-drop.js'
 export { default as NumberField } from './components/NumberField.svelte'
 export { default as Tooltip } from './components/Tooltip.svelte'
 export { default as Avatar } from './components/Avatar.svelte'
 export { default as Pagination } from './components/Pagination.svelte'
+export type { PaginationReason, PaginationChangeDetails } from './core/pagination.js'
 export { default as Switch } from './components/Switch.svelte'
+export type { SwitchReason, SwitchChangeDetails } from './core/switch.js'
 export { default as SearchPalette, type SearchPaletteItem } from './components/SearchPalette.svelte'
+export type { SearchPaletteReason, SearchPaletteOpenDetails } from './core/search-palette.js'
 
 // geossoca stats-dashboard charts (DS-0102).
 export { default as ScatterPlot, type ScatterPoint } from './components/ScatterPlot.svelte'
@@ -102,7 +109,23 @@ export {
   type TierListTier,
   type TierListItem,
   type TierListPlacements,
-} from './tierlist-core.js'
+  type TierListChangeDetails,
+  type TierListChangeReason,
+} from './core/tierlist.js'
+
+// Checkbox (DS-0197): native checkbox with a mixed state.
+export { default as Checkbox } from './components/Checkbox.svelte'
+
+// RadioGroup (DS-0197): native radios in a named radiogroup.
+export { default as RadioGroup, type RadioOption } from './components/RadioGroup.svelte'
+
+// Tabs (DS-0197): WAI-ARIA tablist + panels.
+export { default as Tabs, type TabItem } from './components/Tabs.svelte'
+export type { TabsReason, TabsActivation, TabsChangeDetails } from './core/tabs.js'
+
+// Popover (DS-0197): non-modal floating panel anchored to a trigger.
+export { default as Popover } from './components/Popover.svelte'
+export type { PopoverReason, PopoverOpenChangeDetails } from './core/popover.js'
 
 // Keyboard-shortcuts feature (DS-0135): registry core + display chip.
 export { default as Kbd } from './components/Kbd.svelte'

@@ -56,8 +56,8 @@ export const fileDrop: ComponentDoc = {
     },
     {
       name: 'onfiles',
-      type: '(files: File[]) => void',
-      desc: 'Fired with the resolved file list whenever the selection changes.',
+      type: "(files: File[], details: { reason: 'select' | 'drop' | 'remove' | 'clear' }) => void",
+      desc: 'Fired with the resolved file list whenever the selection changes. `details.reason` says why: `select` (native picker), `drop`, `remove` (one file removed) or `clear`.',
     },
     {
       name: 'onreject',

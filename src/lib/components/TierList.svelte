@@ -6,7 +6,7 @@
     TierListTier as CoreTier,
     TierListItem as CoreItem,
     TierListPlacements as CorePlacements,
-  } from '../tierlist-core.js'
+  } from '../core/tierlist.js'
   export type TierListTier = CoreTier
   export type TierListItem = CoreItem
   export type TierListPlacements = CorePlacements
@@ -43,15 +43,20 @@
     announceText,
     buildZones,
     insertionIndex,
-    keyMoveFor,
     keyboardTarget,
     locate,
     moveItem,
     placementsOf,
     tierColor,
+    tierListClickSelects,
+    tierListDragStarts,
+    tierListPressArmsDrag,
+    tierListTileKey,
     zonesEqual,
+    type TierListChangeDetails,
+    type TierListChangeReason,
     type TierListZones,
-  } from '../tierlist-core.js'
+  } from '../core/tierlist.js'
 
   interface Props {
     /** The rows, top to bottom. Defaults to S / A / B / C / D. */
@@ -63,8 +68,11 @@
      * order itself; the tray is never part of it.
      */
     placements?: TierListPlacements
-    /** Fired after every drop / keyboard drop with the new placements. */
-    onchange?: (placements: TierListPlacements) => void
+    /**
+     * Fired after every drop / keyboard drop with the new placements. `details.reason` says
+     * what committed it: `'pointer'` (a drag) or `'keyboard'` (Space / Enter drop).
+     */
+    onchange?: (placements: TierListPlacements, details: TierListChangeDetails) => void
     /**
      * Activation (Enter, or a click that isn't a drag) — e.g. open a details view.
      * When omitted, Enter picks the tile up like Space.
@@ -120,11 +128,11 @@
       return it ? [it] : []
     })
 
-  function commit(next: TierListZones) {
+  function commit(next: TierListZones, reason: TierListChangeReason) {
     zones = next
     const p = placementsOf(next, tiers)
     if (placements !== undefined) placements = p
-    onchange?.(p)
+    onchange?.(p, { reason })
   }
 
   function describe(id: string) {
@@ -151,7 +159,7 @@
       const origin = grabbed.origin
       grabbed = null
       announce(announceText('drop', describe(id)))
-      if (!zonesEqual(origin, zones)) commit(zones)
+      if (!zonesEqual(origin, zones)) commit(zones, 'keyboard')
       return
     }
     grabbed = { id, origin: zones }
@@ -181,27 +189,22 @@
   }
 
   function onTileKeydown(e: KeyboardEvent, item: TierListItem) {
-    if (readonly) return
-    if (e.key === ' ' || (e.key === 'Enter' && !onselect)) {
-      e.preventDefault()
-      toggleGrab(item.id)
-      return
-    }
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      onselect?.(item)
-      return
-    }
-    if (grabbed?.id !== item.id) return
-    if (e.key === 'Escape') {
-      e.preventDefault()
-      cancelGrab(true)
-      return
-    }
-    const move = keyMoveFor(e.key, isRtl(e.currentTarget as Element))
-    if (!move) return
-    e.preventDefault()
-    const target = keyboardTarget(zones, zoneOrder, item.id, move)
+    const result = tierListTileKey(
+      {
+        readonly,
+        grabbed: grabbed?.id === item.id,
+        select: onselect ? 'callback' : 'none',
+        rtl: isRtl(e.currentTarget as Element),
+      },
+      e.key,
+    )
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    const { action } = result
+    if (action.type === 'toggle') return toggleGrab(item.id)
+    if (action.type === 'select') return onselect?.(item)
+    if (action.type === 'cancel') return cancelGrab(true)
+    const target = keyboardTarget(zones, zoneOrder, item.id, action.move)
     if (!target) return
     zones = moveItem(zones, item.id, target.zone, target.index)
     announce(announceText('move', describe(item.id)))
@@ -240,7 +243,6 @@
   }
   let drag = $state<Drag | null>(null)
   let root: HTMLElement | undefined = $state()
-  const DRAG_THRESHOLD = 4
   let suppressClick = false
 
   // The drag listens on `window`, not the tile: the live preview moves the
@@ -259,7 +261,7 @@
   $effect(() => unlisten)
 
   function onPointerDown(e: PointerEvent, item: TierListItem) {
-    if (readonly || e.button !== 0 || grabbed) return
+    if (!tierListPressArmsDrag({ readonly, button: e.button, grabbing: grabbed !== null })) return
     const tileEl = e.currentTarget as HTMLElement
     const rect = tileEl.getBoundingClientRect()
     listen()
@@ -293,7 +295,7 @@
   function onPointerMove(e: PointerEvent) {
     if (!drag) return
     if (!drag.active) {
-      if (Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) < DRAG_THRESHOLD) return
+      if (!tierListDragStarts(e.clientX - drag.startX, e.clientY - drag.startY)) return
       drag.active = true
     }
     e.preventDefault()
@@ -323,7 +325,7 @@
     suppressClick = true
     if (zonesEqual(d.origin, zones)) return
     announce(announceText('drop', describe(d.id)))
-    commit(zones)
+    commit(zones, 'pointer')
   }
 
   function onPointerCancel() {
@@ -335,11 +337,9 @@
   }
 
   function onTileClick(item: TierListItem) {
-    if (suppressClick) {
-      suppressClick = false
-      return
-    }
-    if (!readonly) onselect?.(item)
+    const afterDrag = suppressClick
+    suppressClick = false
+    if (tierListClickSelects({ readonly, afterDrag })) onselect?.(item)
   }
 
   const draggedItem = $derived(drag?.active ? byId.get(drag.id) : undefined)

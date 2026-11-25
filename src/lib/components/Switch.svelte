@@ -8,6 +8,12 @@
   // `label` (clicking it toggles too), size-token density.
   // ─────────────────────────────────────────────────────────────────────────
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    switchToggle,
+    switchTrackAttrs,
+    type SwitchChangeDetails,
+    type SwitchReason,
+  } from '../core/switch.js'
 
   interface Props {
     /** On/off state (bindable). */
@@ -29,8 +35,11 @@
     size?: Size
     /** Id of an element that further describes the switch (→ aria-describedby). */
     describedby?: string
-    /** Fired after `checked` flips, with the new value. */
-    onchange?: (checked: boolean) => void
+    /**
+     * Fired after `checked` flips, with the new value and what flipped it
+     * (`details.reason`: track · label).
+     */
+    onchange?: (checked: boolean, details: SwitchChangeDetails) => void
   }
 
   let {
@@ -52,10 +61,12 @@
   const buttonId = $derived(id ?? uid)
   const labelId = $derived(`${buttonId}-label`)
 
-  function toggle() {
-    if (disabled) return
-    checked = !checked
-    onchange?.(checked)
+  // The decision lives in `core/switch.ts` (shared with vanilla/switch.ts).
+  function toggle(reason: SwitchReason) {
+    const next = switchToggle({ checked, disabled })
+    if (next === null) return
+    checked = next
+    onchange?.(next, { reason })
   }
 
   const sizeAttr = $derived(resolveComponentSize('Switch', size))
@@ -69,15 +80,14 @@
   <button
     id={buttonId}
     type="button"
-    role="switch"
+    {...switchTrackAttrs(checked)}
     class="track"
     class:on={checked}
-    aria-checked={checked}
     aria-labelledby={label != null ? labelId : undefined}
     aria-describedby={describedby}
     data-name={name}
     {disabled}
-    onclick={toggle}
+    onclick={() => toggle('track')}
   >
     <span class="thumb" aria-hidden="true"></span>
   </button>
@@ -87,7 +97,7 @@
       id={labelId}
       class="label"
       class:sr-only={labelHidden}
-      onclick={toggle}
+      onclick={() => toggle('label')}
       role="presentation">{label}</span
     >
   {/if}

@@ -12,13 +12,19 @@
     svc?: string
     msg: string
   }
-
-  const LEVELS: LogLevel[] = ['info', 'warn', 'err', 'ok']
 </script>
 
 <script lang="ts">
   import { tick, untrack, type Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    LOG_LEVELS,
+    filterLogLines,
+    logCopyText,
+    logEmptyMessage,
+    logFollowsTail,
+    toggleLogLevel,
+  } from '../core/log-stream.js'
 
   interface Props {
     /** Controlled lines. When provided, the component renders exactly these (capped to `maxLines`). */
@@ -102,36 +108,21 @@
   const allLines = $derived((controlled ? (lines as LogLine[]) : demoLines).slice(-maxLines))
 
   // --- toolbar state ---
-  let activeLevels = $state<Set<LogLevel>>(new Set(LEVELS))
+  let activeLevels = $state<Set<LogLevel>>(new Set(LOG_LEVELS))
   let query = $state('')
   let wrapOn = $state(untrack(() => wrap))
   $effect(() => {
     wrapOn = wrap
   })
 
-  const visibleLines = $derived(
-    allLines.filter((l) => {
-      if (!activeLevels.has(l.lvl)) return false
-      if (query.trim()) {
-        const q = query.toLowerCase()
-        const hay = `${l.t ?? ''} ${l.lvl} ${l.svc ?? ''} ${l.msg}`.toLowerCase()
-        if (!hay.includes(q)) return false
-      }
-      return true
-    }),
-  )
+  const visibleLines = $derived(filterLogLines(allLines, { levels: activeLevels, query }))
 
   function toggleLevel(lvl: LogLevel) {
-    const next = new Set(activeLevels)
-    if (next.has(lvl)) next.delete(lvl)
-    else next.add(lvl)
-    activeLevels = next
+    activeLevels = toggleLogLevel(activeLevels, lvl)
   }
 
   async function copyVisible() {
-    const text = visibleLines
-      .map((l) => `${l.t ?? ''} ${l.lvl.toUpperCase()} ${l.svc ?? ''} ${l.msg}`.trim())
-      .join('\n')
+    const text = logCopyText(visibleLines)
     try {
       await navigator.clipboard?.writeText(text)
     } catch {
@@ -147,11 +138,10 @@
   // --- follow-tail ---
   let el: HTMLDivElement | undefined
   let following = $state(true)
-  const NEAR = 24 // px from bottom considered "at bottom"
 
   function atBottom() {
     if (!el) return true
-    return el.scrollHeight - el.scrollTop - el.clientHeight <= NEAR
+    return logFollowsTail(el)
   }
 
   function onScroll() {
@@ -196,7 +186,7 @@
     {:else}
       <div class="bar">
         <div class="filters" role="group" aria-label="Filter by level">
-          {#each LEVELS as lvl (lvl)}
+          {#each LOG_LEVELS as lvl (lvl)}
             <button
               type="button"
               class="chip {lvl}"
@@ -252,7 +242,7 @@
           <div class="empty">
             <p class="empty-title">No log lines</p>
             <p class="empty-msg">
-              {allLines.length ? 'No lines match the current filters.' : 'Waiting for output…'}
+              {logEmptyMessage(allLines.length)}
             </p>
           </div>
         {/if}

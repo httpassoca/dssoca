@@ -27,8 +27,12 @@ import {
   isSticky,
   resolveTimeout,
   normalizeOptions,
+  toastActionDismisses,
+  toastFocusAfterDismiss,
+  toastKey,
+  toastShouldResume,
   ToastTimer,
-} from '../toast-core.js'
+} from '../core/toast.js'
 
 export type {
   Toast,
@@ -37,7 +41,7 @@ export type {
   ToastPatch,
   ToastAction,
   PromiseMessages,
-} from '../toast-core.js'
+} from '../core/toast.js'
 
 const GLYPH: Record<ToastKind, string> = { success: '✓', error: '✕', info: 'i', loading: '' }
 const LEAVE_FALLBACK_MS = 400
@@ -164,28 +168,30 @@ class VanillaToastStore {
       live.hovered = true
       this.pause(t.id)
     })
+    const resumeIfFree = (focused: boolean) => {
+      if (toastShouldResume({ hovered: live.hovered, focused })) this.resume(t.id)
+    }
     el.addEventListener('pointerleave', () => {
       live.hovered = false
-      if (!el.contains(document.activeElement)) this.resume(t.id)
+      resumeIfFree(holdsFocus(live))
     })
     el.addEventListener('focusin', () => this.pause(t.id))
-    el.addEventListener('focusout', (e) => {
-      if (el.contains(e.relatedTarget as Node | null) || live.hovered) return
-      this.resume(t.id)
-    })
+    // Focus is only leaving when it lands outside the toast.
+    el.addEventListener('focusout', (e) =>
+      resumeIfFree(el.contains(e.relatedTarget as Node | null)),
+    )
     el.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation()
-        this.dismiss(t.id)
-      }
+      const result = toastKey(e.key)
+      if (!result) return
+      if (result.stopPropagation) e.stopPropagation()
+      this.dismiss(t.id)
     })
     el.addEventListener('click', (e) => {
       const btn = (e.target as Element).closest('button')
       if (!btn) return
       if (btn.classList.contains('x')) this.dismiss(t.id)
       else if (btn.classList.contains('action')) {
-        const keep = this.#find(t.id)?.toast.action?.onClick() === false
-        if (!keep) this.dismiss(t.id)
+        if (toastActionDismisses(this.#find(t.id)?.toast.action?.onClick())) this.dismiss(t.id)
       }
     })
     this.container.appendChild(el)
@@ -268,7 +274,8 @@ class VanillaToastStore {
 
   /** Move focus off the toast at `i` (about to be removed): next toast, previous, or origin. */
   #moveFocusFrom(i: number): void {
-    const next = this.#live[i + 1] ?? this.#live[i - 1]
+    const order = this.#live.map((l) => l.toast.id)
+    const next = this.#find(toastFocusAfterDismiss(order, order[i]) ?? -1)
     if (next) next.el.focus()
     else if (this.#returnFocus?.isConnected) {
       this.#returnFocus.focus()

@@ -40,6 +40,7 @@ describe('html examples', () => {
     expect(by('spinner')).toContain('data-variant="pipe"')
     expect(by('spinner')).toMatch(/<span class="frame" aria-hidden="true"><\/span>/)
     expect(by('segmented-control')).toContain('data-value="week"')
+    expect(by('tabs')).toContain('data-value="logs"')
     expect(by('icon')).toContain('data-ss-icon="check"')
   })
 

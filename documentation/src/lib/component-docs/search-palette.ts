@@ -112,13 +112,13 @@ export const searchPalette: ComponentDoc = {
     },
     {
       name: 'onopen',
-      type: '() => void',
-      desc: 'Called after the palette opens.',
+      type: '(details: { reason }) => void',
+      desc: "Called after the palette opens. `details.reason` says why: `'shortcut'` (the toggle chord) or `'prop'` (you set `open`).",
     },
     {
       name: 'onclose',
-      type: '() => void',
-      desc: 'Called after the palette closes (Esc, backdrop, or selection).',
+      type: '(details: { reason }) => void',
+      desc: "Called after the palette closes. `details.reason` says why: `'escape'`, `'backdrop'`, `'close-button'`, `'select'` (an item was chosen), `'shortcut'` (the toggle chord) or `'prop'` (you set `open`). The types are exported as `SearchPaletteReason` / `SearchPaletteOpenDetails`.",
     },
     {
       name: 'item',

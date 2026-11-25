@@ -13,7 +13,7 @@ export const menu: ComponentDoc = {
     },
     children: 'Actions',
     behaviour: 'js',
-    note: 'vanilla.js opens/closes the panel, roves focus (arrows, Home/End, Escape, outside click) and emits ss:select with the item index / data-value.',
+    note: 'vanilla.js opens/closes the panel, roves focus (arrows, Home/End, Escape, outside click) and emits ss:select with the item index / data-value, plus ss:openchange with { open, reason }.',
   },
   tagline: 'Dropdown menu — trigger + floating list of actions.',
   description:
@@ -64,6 +64,11 @@ export const menu: ComponentDoc = {
       name: 'onSelect',
       type: '(id: string) => void',
       desc: "Fired when a row is activated, with its `id` (after the item's own `onSelect`).",
+    },
+    {
+      name: 'onOpenChange',
+      type: '(open: boolean, details: { reason: MenuReason }) => void',
+      desc: "Fired when the menu opens or closes itself, with the new state and why. `details.reason` is one of `'trigger'` (trigger press), `'key'` (arrow / Enter / Space on the trigger), `'escape'`, `'tab'` (focus tabbed out), `'outside'` (pointer down outside) or `'item'` (a row was activated). Not fired when the parent changes a bound `open`.",
     },
     {
       name: 'align',

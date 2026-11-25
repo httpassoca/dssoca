@@ -89,17 +89,20 @@ describe('vanilla — Modal', () => {
     expect(dialog.open).toBe(false)
   })
 
-  it('closes on backdrop pointerdown unless data-ss-static', () => {
+  it('closes on a backdrop click unless data-ss-static', () => {
     mountHtml(html())
     const dialog = q<HTMLDialogElement>('dialog.ss-modal')
     dialog.showModal()
     pointerdown(q('.panel')) // inside the panel: stays
+    click(q('.panel'))
     expect(dialog.open).toBe(true)
     pointerdown(dialog) // the backdrop hit-test: target is the dialog itself
+    click(dialog)
     expect(dialog.open).toBe(false)
     dialog.setAttribute('data-ss-static', '')
     dialog.showModal()
     pointerdown(dialog)
+    click(dialog)
     expect(dialog.open).toBe(true)
   })
 
@@ -287,7 +290,11 @@ describe('vanilla — Switch', () => {
     const root = mountHtml(svelteHtml(Switch, { label: 'Wifi', id: 'w' }))
       .firstElementChild as HTMLElement
     const seen: boolean[] = []
-    root.addEventListener('ss:change', (e) => seen.push((e as CustomEvent).detail.checked))
+    const reasons: string[] = []
+    root.addEventListener('ss:change', (e) => {
+      seen.push((e as CustomEvent).detail.checked)
+      reasons.push((e as CustomEvent).detail.reason)
+    })
     const track = q<HTMLButtonElement>('.track')
     click(track)
     expect(track.getAttribute('aria-checked')).toBe('true')
@@ -298,6 +305,7 @@ describe('vanilla — Switch', () => {
     click(q('.label'))
     expect(track.getAttribute('aria-checked')).toBe('false')
     expect(seen).toEqual([true, false])
+    expect(reasons).toEqual(['track', 'label'])
   })
 
   it('has no axe violations', async () => {
@@ -395,7 +403,9 @@ describe('vanilla — TierList (DS-0159)', () => {
     expect(a.getAttribute('aria-pressed')).toBe('false')
     expect(root.classList.contains('sorting')).toBe(false)
     expect(live()).toBe('Dropped Alpha in B, position 1 of 1.')
-    expect(seen).toEqual([{ placements: { S: ['b'], A: [], B: ['a'], C: [], D: [] } }])
+    expect(seen).toEqual([
+      { placements: { S: ['b'], A: [], B: ['a'], C: [], D: [] }, reason: 'keyboard' },
+    ])
   })
 
   it('Escape puts the tile back where it was; a blur while grabbed cancels too', async () => {
@@ -474,7 +484,9 @@ describe('vanilla — TierList (DS-0159)', () => {
     pointer('pointerup', 150, 50)
     expect(root.classList.contains('dragging')).toBe(false)
     expect(q('.ss-tierlist .ghost')).toBeNull()
-    expect(seen).toEqual([{ placements: { S: ['a', 'c', 'b'], A: [], B: [], C: [], D: [] } }])
+    expect(seen).toEqual([
+      { placements: { S: ['a', 'c', 'b'], A: [], B: [], C: [], D: [] }, reason: 'pointer' },
+    ])
     expect(live()).toBe('Dropped Gamma in S, position 2 of 3.')
   })
 

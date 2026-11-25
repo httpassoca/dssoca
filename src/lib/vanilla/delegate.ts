@@ -47,3 +47,11 @@ export function byId(id: string | null): HTMLElement | null {
   if (!id) return null
   return document.getElementById(id.startsWith('#') ? id.slice(1) : id)
 }
+
+/** Write a core's attribute bag onto an element; `undefined` removes the attribute. */
+export function setAttrs(el: Element, attrs: Record<string, string | number | undefined>): void {
+  for (const [name, value] of Object.entries(attrs)) {
+    if (value === undefined) el.removeAttribute(name)
+    else el.setAttribute(name, String(value))
+  }
+}

@@ -495,3 +495,73 @@ describe('SearchPalette — Front-End Checklist fixes (DS-0180)', () => {
     expect(document.documentElement.style.overflow).toBe('')
   })
 })
+
+describe('SearchPalette — open / close reasons (DS-0197)', () => {
+  const getDialog = (container: HTMLElement) =>
+    container.querySelector<HTMLDialogElement>('dialog.ss-search-palette')!
+  const items = [{ id: 'cmd', label: 'Run' }]
+
+  it('reports why it closed: backdrop, close button, selection', async () => {
+    for (const [reason, act] of [
+      [
+        'backdrop',
+        async (c: HTMLElement) => {
+          await fireEvent.pointerDown(getDialog(c))
+          await fireEvent.click(getDialog(c))
+        },
+      ],
+      ['close-button', (c: HTMLElement) => fireEvent.click(c.querySelector('button.close')!)],
+      ['select', (c: HTMLElement) => fireEvent.keyDown(getInput(c), { key: 'Enter' })],
+      ['select', (c: HTMLElement) => fireEvent.click(getOptions(c)[0])],
+    ] as const) {
+      const onclose = vi.fn()
+      const { container, unmount } = render(SearchPalette, { open: true, items, onclose })
+      await act(container)
+      await tick()
+      expect(onclose).toHaveBeenCalledExactlyOnceWith({ reason })
+      unmount()
+    }
+  })
+
+  it('Esc (native cancel then close) reports "escape"', async () => {
+    const onclose = vi.fn()
+    const { container } = render(SearchPalette, { open: true, items, onclose })
+    const dialog = getDialog(container)
+    dialog.dispatchEvent(new Event('cancel', { cancelable: true }))
+    dialog.close()
+    await tick()
+    expect(onclose).toHaveBeenCalledExactlyOnceWith({ reason: 'escape' })
+  })
+
+  it('the shortcut reports "shortcut" in both directions', async () => {
+    const onopen = vi.fn()
+    const onclose = vi.fn()
+    const { container } = render(SearchPalette, { open: false, items, onopen, onclose })
+    shortcuts.remap('ss:search-palette', 'ctrl+shift+p')
+    await fireEvent.keyDown(window, { key: 'p', ctrlKey: true, shiftKey: true })
+    await tick()
+    expect(onopen).toHaveBeenCalledExactlyOnceWith({ reason: 'shortcut' })
+    await fireEvent.keyDown(getInput(container), { key: 'p', ctrlKey: true, shiftKey: true })
+    await tick()
+    expect(onclose).toHaveBeenCalledExactlyOnceWith({ reason: 'shortcut' })
+    shortcuts.remap('ss:search-palette', null)
+  })
+
+  it('a change made by the consumer reports "prop", and a reason never leaks', async () => {
+    const onopen = vi.fn()
+    const onclose = vi.fn()
+    const { container, rerender } = render(SearchPalette, { open: true, items, onopen, onclose })
+    await tick()
+    expect(onopen).toHaveBeenCalledExactlyOnceWith({ reason: 'prop' })
+    await fireEvent.pointerDown(getDialog(container))
+    await fireEvent.click(getDialog(container))
+    await tick()
+    expect(onclose).toHaveBeenLastCalledWith({ reason: 'backdrop' })
+    await rerender({ open: true })
+    await tick()
+    expect(onopen).toHaveBeenLastCalledWith({ reason: 'prop' })
+    await rerender({ open: false })
+    await tick()
+    expect(onclose).toHaveBeenLastCalledWith({ reason: 'prop' })
+  })
+})

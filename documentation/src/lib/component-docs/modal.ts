@@ -11,7 +11,7 @@ export const modal: ComponentDoc = {
         '<button class="ss-btn secondary" type="button" data-ss-dismiss>cancel</button><button class="ss-btn danger" type="button" data-ss-dismiss>delete</button>',
     },
     behaviour: 'js',
-    note: 'A native <dialog>. vanilla.js opens it from any [data-ss-modal="#id"] element and closes it from [data-ss-dismiss] or a backdrop click, locking page scroll while it is open (add data-ss-static to keep it open; data-ss-no-esc blocks Escape).',
+    note: 'A native <dialog>. vanilla.js opens it from any [data-ss-modal="#id"] element and closes it from [data-ss-dismiss] or a backdrop click, locking page scroll while it is open (add data-ss-static to keep it open; data-ss-no-esc blocks Escape). Every close emits ss:close on the dialog with { reason } (escape, backdrop, button or programmatic).',
   },
   tagline: 'Accessible overlay dialog built on native <dialog>.',
   description:
@@ -86,8 +86,8 @@ export const modal: ComponentDoc = {
     },
     {
       name: 'onclose',
-      type: '() => void',
-      desc: 'Called after the dialog closes (Esc, backdrop, or button).',
+      type: '(details: { reason }) => void',
+      desc: "Called after the dialog closes, with why: `details.reason` is `'escape'`, `'backdrop'`, `'button'` (the close button) or `'programmatic'` (the `open` prop, a direct `.close()` or a `<form method=\"dialog\">`).",
     },
     {
       name: 'header',
@@ -107,5 +107,5 @@ export const modal: ComponentDoc = {
     SIZE_PROP,
   ],
   notes:
-    'Uses the native `<dialog>` element: the browser provides the focus trap, Esc handling and an inert `::backdrop`. `aria-labelledby` points at the title when set; otherwise pass `aria-label`. The close button carries `aria-label="Close"`. Size controls the dialog max-width only. While open, the page behind is scroll-locked (`overflow: hidden` on `<html>`, ref-counted so stacked dialogs release it only when the last one closes) and the body uses `overscroll-behavior: contain`; vanilla.js applies the same lock on every open and close path. Zero border-radius. With `fullscreen` the dialog fills the viewport (`100dvh`, `vh` fallback) and the size axis has no effect on width; because the panel is full-bleed there is no backdrop area left to hit, so `closeOnBackdrop` is unreachable in that mode — the close button and Esc are the exits. Responsiveness stays with the caller: pass `fullscreen={width < 640}` to mirror MUI\'s full-screen-on-mobile pattern.',
+    'Uses the native `<dialog>` element: the browser provides the focus trap, Esc handling and an inert `::backdrop`. `aria-labelledby` points at the title when set; otherwise pass `aria-label`. The close button carries `aria-label="Close"`. A backdrop click closes on the click itself (a press that starts on the backdrop and ends there), not on the pointerdown, so focus returns to the opener and stays there; a drag that starts inside the panel and ends on the backdrop does not close. vanilla.js behaves the same. Size controls the dialog max-width only. While open, the page behind is scroll-locked (`overflow: hidden` on `<html>`, ref-counted so stacked dialogs release it only when the last one closes) and the body uses `overscroll-behavior: contain`; vanilla.js applies the same lock on every open and close path. Zero border-radius. With `fullscreen` the dialog fills the viewport (`100dvh`, `vh` fallback) and the size axis has no effect on width; because the panel is full-bleed there is no backdrop area left to hit, so `closeOnBackdrop` is unreachable in that mode — the close button and Esc are the exits. Responsiveness stays with the caller: pass `fullscreen={width < 640}` to mirror MUI\'s full-screen-on-mobile pattern.',
 }

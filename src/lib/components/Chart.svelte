@@ -23,7 +23,7 @@
   import { line as shapeLine, area as shapeArea } from 'd3-shape'
   import { extent, max } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
-  import { chartNavStep } from '../chart-nav.js'
+  import { chartMarkKey, chartTabStop, chartWindowKey } from '../core/chart-nav.js'
 
   type XType = 'linear' | 'time' | 'band'
 
@@ -284,27 +284,24 @@
   // Bars flattened in render order (category, then series) for the roving tabindex.
   const flatBars = $derived(barGroups.flatMap((g) => g.bars))
 
-  // Roving tabindex: the chart is ONE tab stop; arrow keys move between marks (chart-nav.ts).
+  // Roving tabindex: the chart is ONE tab stop; arrow keys move between marks (core/chart-nav.ts).
   const markCount = $derived(variant === 'bar' ? flatBars.length : pointMarkers.length)
   let focusIndex = $state(0)
-  const tabStop = $derived(Math.min(focusIndex, Math.max(0, markCount - 1)))
+  const tabStop = $derived(chartTabStop(focusIndex, markCount))
   let marksEl = $state<SVGGElement | null>(null)
 
   function onMarkKeydown(e: KeyboardEvent, i: number) {
-    if (e.key === 'Escape') {
-      hide()
-      return
-    }
-    // SVG geometry does not mirror in RTL, so Left/Right stay physical.
-    const next = chartNavStep(e.key, i, markCount)
-    if (next === null) return
-    e.preventDefault()
+    const result = chartMarkKey({ index: i, count: markCount, escape: 'dismiss' }, e.key)
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    if (result.action.type === 'dismiss') return hide()
+    const next = result.action.index
     focusIndex = next
     marksEl?.querySelector<SVGElement>(`[data-index="${next}"]`)?.focus()
   }
   // Escape also dismisses a hover-opened tooltip (WCAG 1.4.13).
   function onWindowKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape' && active) hide()
+    if (chartWindowKey(active !== null, e.key)) hide()
   }
 
   // Auto SR summary.

@@ -16,7 +16,7 @@
   import { scaleLinear, scaleSqrt } from 'd3-scale'
   import { extent, max } from 'd3-array'
   import { resolveComponentSize, type Size } from '../config.js'
-  import { chartNavStep } from '../chart-nav.js'
+  import { chartMarkKey, chartTabStop, chartWindowKey } from '../core/chart-nav.js'
 
   interface Props {
     /** One dot per datum. Two encoded axes (x, y), optional `size` and `color`. */
@@ -170,27 +170,25 @@
   // Roving tabindex (DS-0161): the chart is ONE tab stop; arrow keys / Home / End move focus
   // between points. The last-focused point keeps tabindex 0 (the first by default).
   let focusIndex = $state(0)
-  const tabIndex = $derived(Math.min(focusIndex, Math.max(0, marks.length - 1)))
+  const tabIndex = $derived(chartTabStop(focusIndex, marks.length))
   let pointEls: (SVGCircleElement | null)[] = $state([])
 
   function onPointKeydown(e: KeyboardEvent, i: number) {
-    if (e.key === 'Escape') {
-      if (active) {
-        hide()
-        e.preventDefault()
-      }
-      return
-    }
-    const next = chartNavStep(e.key, i, marks.length)
-    if (next === null) return
-    e.preventDefault()
+    const result = chartMarkKey(
+      { index: i, count: marks.length, escape: 'consume', tooltipOpen: active !== null },
+      e.key,
+    )
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    if (result.action.type === 'dismiss') return hide()
+    const next = result.action.index
     focusIndex = next
     pointEls[next]?.focus()
   }
 
   // WCAG 1.4.13: Escape dismisses a hover-opened tooltip too, wherever focus is.
   function onWindowKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape' && active) hide()
+    if (chartWindowKey(active !== null, e.key)) hide()
   }
   function datumLabel(label: string, x: number, y: number): string {
     return `${label}: ${fmtX(x)}, ${fmtY(y)}`

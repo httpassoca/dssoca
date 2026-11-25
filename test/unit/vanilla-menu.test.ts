@@ -74,3 +74,64 @@ describe('vanilla — Menu accessible name (DS-0177)', () => {
     expect(panel).toHaveAccessibleName('Row actions')
   })
 })
+
+describe('vanilla — Menu on the shared core (DS-0198)', () => {
+  const key = (el: Element, k: string) =>
+    el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }))
+
+  it('emits ss:openchange with the same reasons as the Svelte component', async () => {
+    mountHtml(svelteHtml(Menu, { items: ITEMS, children: raw('Actions') }))
+    const seen: [boolean, string][] = []
+    q('.ss-menu').addEventListener('ss:openchange', (e) => {
+      const { open, reason } = (e as CustomEvent).detail
+      seen.push([open, reason])
+    })
+    const trigger = q('.trigger')
+    const panel = q('.panel')
+
+    click(trigger)
+    click(trigger)
+    key(trigger, 'ArrowUp')
+    await tick()
+    expect(document.activeElement).toBe(panel.querySelectorAll('.item')[1])
+    key(panel, 'Escape')
+    expect(document.activeElement).toBe(trigger)
+    click(trigger)
+    key(panel, 'Tab')
+    click(trigger)
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    click(trigger)
+    click(panel.querySelector('.item')!)
+
+    expect(seen).toEqual([
+      [true, 'trigger'],
+      [false, 'trigger'],
+      [true, 'key'],
+      [false, 'escape'],
+      [true, 'trigger'],
+      [false, 'tab'],
+      [true, 'trigger'],
+      [false, 'outside'],
+      [true, 'trigger'],
+      [false, 'item'],
+    ])
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
+    expect(panel.getAttribute('aria-hidden')).toBe('true')
+    expect(panel.classList.contains('open')).toBe(false)
+  })
+
+  it('an item disabled only through aria-disabled is not activated', async () => {
+    mountHtml(svelteHtml(Menu, { items: ITEMS, children: raw('Actions') }))
+    const selected: number[] = []
+    q('.ss-menu').addEventListener('ss:select', (e) =>
+      selected.push((e as CustomEvent).detail.index),
+    )
+    click(q('.trigger'))
+    await tick()
+    const first = q('.item')
+    first.setAttribute('aria-disabled', 'true')
+    click(first)
+    expect(selected).toEqual([])
+    expect(q('.trigger').getAttribute('aria-expanded')).toBe('true')
+  })
+})
