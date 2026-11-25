@@ -23,6 +23,16 @@
   import type { Snippet } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
   import { lockScroll, unlockScroll } from '../vanilla/modal.js'
+  import {
+    modalBackdropPress,
+    modalCancel,
+    modalClosed,
+    modalDismissPress,
+    type ModalAction,
+    type ModalCloseDetails,
+    type ModalReason,
+    type ModalState,
+  } from '../core/modal.js'
 
   interface Props {
     /** Whether the modal is shown. Bindable — sync it from caller state. */
@@ -51,8 +61,12 @@
     danger?: boolean
     /** Accessible name when no `title` is set (maps to aria-label on the dialog). */
     'aria-label'?: string
-    /** Called after the dialog has closed (any reason: Esc, backdrop, button). */
-    onclose?: () => void
+    /**
+     * Called after the dialog has closed, with why (`details.reason`: escape · backdrop ·
+     * button · programmatic — the last one covers the `open` prop, a direct `.close()` and a
+     * `<form method="dialog">`).
+     */
+    onclose?: (details: ModalCloseDetails) => void
     /**
      * Header content; replaces the default title row when provided. Receives the id the
      * dialog's `aria-labelledby` points at — put it on your heading (`id={titleId}`) so the
@@ -120,23 +134,42 @@
     else if (!open && el.open) el.close()
   })
 
+  // The decisions (what closes the modal, and why) come from core/modal.ts; this file applies
+  // them. `pending` remembers the reason between the action and the native `close` it causes.
+  const modal = $derived<ModalState>({ open, closeOnEsc, closeOnBackdrop })
+  let pending: ModalReason | null = null
+
+  function run(action: ModalAction | null) {
+    if (action?.type !== 'close') return
+    pending = action.reason
+    open = false
+  }
+
+  // A reason left over from a close that never happened must not label the next one.
+  $effect(() => {
+    if (open) pending = null
+  })
+
   // Native `close` (Esc, form method=dialog, .close()) → sync state + notify.
   function onDialogClose() {
+    const details = modalClosed(pending)
+    pending = null
     if (open) open = false
-    onclose?.()
+    onclose?.(details)
   }
 
   // Esc dispatches `cancel` before `close`; swallow it when Esc is disabled.
   function onCancel(e: Event) {
-    if (!closeOnEsc) e.preventDefault()
+    const result = modalCancel(modal, e.cancelable)
+    if (result.preventDefault) e.preventDefault()
+    pending = result.reason
   }
 
   // A pointerdown landing on the <dialog> itself (not the inner .panel) is a
   // backdrop hit. Using pointerdown avoids closing on a drag that began inside
   // the panel and released on the backdrop.
   function onPointerDown(e: PointerEvent) {
-    if (!closeOnBackdrop) return
-    if (e.target === dialog) open = false
+    run(modalBackdropPress(modal, e.target === dialog))
   }
 </script>
 
@@ -159,8 +192,11 @@
       {:else if title}
         <h2 class="title" id={titleId}>{title}</h2>
       {/if}
-      <button type="button" class="close" aria-label="Close" onclick={() => (open = false)}
-        >×</button
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        onclick={() => run(modalDismissPress(modal))}>×</button
       >
     </header>
 

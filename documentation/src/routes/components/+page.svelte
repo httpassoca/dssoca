@@ -33,12 +33,16 @@
     Avatar,
     Pagination,
     Switch,
+    Checkbox,
+    RadioGroup,
     ScatterPlot,
     BoxPlot,
     BumpChart,
     Heatmap,
     Kbd,
     TierList,
+    Tabs,
+    Popover,
   } from 'dssoca'
   import { componentsByCategory } from '$lib/categories'
   import { COMPONENTS } from '$lib/docs.config'
@@ -364,6 +368,17 @@
     <Pagination page={2} total={50} pageSize={10} />
   {:else if slug === 'switch'}
     <Switch checked label="Dark theme" />
+  {:else if slug === 'checkbox'}
+    <Checkbox checked label="Email me updates" />
+  {:else if slug === 'radio-group'}
+    <RadioGroup
+      label="Plan"
+      value="pro"
+      options={[
+        { value: 'free', label: 'Free' },
+        { value: 'pro', label: 'Pro' },
+      ]}
+    />
   {:else if slug === 'tooltip'}
     <Tooltip text="Lower position sum wins">
       <Button variant="secondary">What's this?</Button>
@@ -389,6 +404,25 @@
       <div class="pm-row">Theming</div>
       <div class="pm-foot">↑↓ navigate · ↵ open · esc close</div>
     </div>
+  {:else if slug === 'tabs'}
+    <div class="w-full">
+      <Tabs
+        label="Service"
+        value="overview"
+        tabs={[
+          { id: 'overview', label: 'Overview' },
+          { id: 'logs', label: 'Logs' },
+          { id: 'shell', label: 'Shell' },
+        ]}
+      >
+        {#snippet panel(tab)}<p class="card-body">Content for {tab.label}.</p>{/snippet}
+      </Tabs>
+    </div>
+  {:else if slug === 'popover'}
+    <Popover label="Filters" open={false}>
+      {#snippet trigger()}Filters{/snippet}
+      <p class="card-body">Status, region and owner.</p>
+    </Popover>
   {:else if slug === 'shortcuts-help'}
     <!-- A live overlay is a top-layer <dialog> and would escape the inert
          card, so show a static stand-in of the shortcut list (like

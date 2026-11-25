@@ -2,25 +2,27 @@
  * TierList (DS-0159) — plain-HTML behaviour for the markup `TierList.svelte` renders: pointer
  * drag between/within rows (Pointer Events, so touch works) and the keyboard path (Space picks
  * a tile up, arrows move it, Space drops, Escape cancels) with a polite live region. The move
- * math and the wording come from `../tierlist-core.js`, shared with the Svelte component.
- * Emits `ss:change` on the root with `{ placements }` (tier id → item ids; the tray is
- * implicit). `data-ss-readonly` on the root makes the list inert.
+ * math and the wording come from `../core/tierlist.js`, shared with the Svelte component.
+ * Emits `ss:change` on the root with `{ placements, reason }` (tier id → item ids; the tray is
+ * implicit; `reason` is `'pointer'` or `'keyboard'`). `data-ss-readonly` on the root makes the list inert.
  */
 import { on, emit, all } from './delegate.js'
 import {
   TRAY,
   announceText,
   insertionIndex,
-  keyMoveFor,
   keyboardTarget,
+  tierListDragStarts,
+  tierListPressArmsDrag,
+  tierListTileKey,
+  type TierListChangeReason,
   type TierListKeyMove,
   type TierListPlacements,
   type TierListZones,
-} from '../tierlist-core.js'
+} from '../core/tierlist.js'
 
 const ROOT = '.ss-tierlist'
 const TILE = `${ROOT} .tile[data-item]`
-const DRAG_THRESHOLD = 4
 
 function rootOf(el: Element): HTMLElement | null {
   return el.closest<HTMLElement>(ROOT)
@@ -107,8 +109,8 @@ function describe(root: HTMLElement, tile: HTMLElement) {
   }
 }
 
-function change(root: HTMLElement): void {
-  emit(root, 'ss:change', { placements: readPlacements(root) })
+function change(root: HTMLElement, reason: TierListChangeReason): void {
+  emit(root, 'ss:change', { placements: readPlacements(root), reason })
 }
 
 // ---- keyboard ------------------------------------------------------------------------------
@@ -147,7 +149,7 @@ export function toggleGrab(tile: HTMLElement): void {
     grabs.delete(root)
     setGrabbed(root, null)
     announce(root, announceText('drop', describe(root, tile)))
-    change(root)
+    change(root, 'keyboard')
     return
   }
   const d = describe(root, tile)
@@ -256,30 +258,30 @@ function endDrag(d: Drag, cancelled: boolean): void {
   const now = describe(d.root, d.tile)
   if (zoneKey(d.cell.parentElement as HTMLElement) !== d.zone || now.index !== d.index) {
     announce(d.root, announceText('drop', now))
-    change(d.root)
+    change(d.root, 'pointer')
   }
 }
 
 export function installTierlist(): void {
   on('keydown', TILE, (tile, e) => {
     const root = rootOf(tile)
-    if (!root || isReadonly(root)) return
-    const grab = grabs.get(root)
-    if (e.key === ' ' || (e.key === 'Enter' && !tile.hasAttribute('data-ss-activate'))) {
-      e.preventDefault()
-      toggleGrab(tile)
-      return
-    }
-    if (e.key === 'Escape' && grab?.tile === tile) {
-      e.preventDefault()
-      cancelGrab(root, true)
-      return
-    }
-    const move = keyMoveFor(e.key, isRtl(tile))
-    if (move && grab?.tile === tile) {
-      e.preventDefault()
-      keyMove(root, tile, move)
-    }
+    if (!root) return
+    const result = tierListTileKey(
+      {
+        readonly: isReadonly(root),
+        grabbed: grabs.get(root)?.tile === tile,
+        // An activatable tile keeps Enter for the host: its native click does the activating.
+        select: tile.hasAttribute('data-ss-activate') ? 'native' : 'none',
+        rtl: isRtl(tile),
+      },
+      e.key,
+    )
+    if (!result) return
+    if (result.preventDefault) e.preventDefault()
+    const { action } = result
+    if (action.type === 'toggle') toggleGrab(tile)
+    else if (action.type === 'cancel') cancelGrab(root, true)
+    else if (action.type === 'move') keyMove(root, tile, action.move)
   })
 
   // Cancel when focus has really left a grabbed tile — checked a beat later, because moving
@@ -295,7 +297,9 @@ export function installTierlist(): void {
 
   on('pointerdown', TILE, (tile, e) => {
     const root = rootOf(tile)
-    if (!root || isReadonly(root) || e.button !== 0 || grabs.has(root)) return
+    if (!root) return
+    const press = { readonly: isReadonly(root), button: e.button, grabbing: grabs.has(root) }
+    if (!tierListPressArmsDrag(press)) return
     const cell = tile.closest<HTMLElement>('.cell')!
     const zone = cell.parentElement as HTMLElement
     drag = {
@@ -318,7 +322,7 @@ export function installTierlist(): void {
   document.addEventListener('pointermove', (e) => {
     if (!drag) return
     if (!drag.dragging) {
-      if (Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) < DRAG_THRESHOLD) return
+      if (!tierListDragStarts(e.clientX - drag.startX, e.clientY - drag.startY)) return
       startDrag(drag)
     }
     e.preventDefault()

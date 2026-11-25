@@ -4,75 +4,88 @@
  * - Input `clearable`: `.ss-field .clear` empties `.ss-input`, refocuses it and hides itself;
  *   typing shows it again (Input.svelte removes the button entirely — vanilla toggles `hidden`).
  * - NumberField steppers: `.ss-numberfield .step.dec/.inc` nudge by `step`, clamped to
- *   `min`/`max` (same `nudge`/`clamp` as the component). At a bound a stepper becomes an
+ *   `min`/`max` (decided in `core/number-field.ts`, like the component). At a bound a stepper becomes an
  *   `aria-disabled` no-op (still focusable, so focus never drops to <body>); it is natively
  *   `disabled` only when the input is disabled/readonly. Each nudge writes the new value to
  *   the field's polite `.live` region.
  * - Textarea autosize: `.ss-textarea .field.autosize` grows with content. Browsers with
  *   `field-sizing: content` do it in CSS; the JS `scrollHeight` sync is the fallback.
  */
-import { on, all } from './delegate.js'
+import { on, all, setAttrs } from './delegate.js'
+import { inputClear, inputShowClear, type InputClearState } from '../core/input.js'
+import {
+  numberFieldAnnouncement,
+  numberFieldOption,
+  numberFieldParse,
+  numberFieldStep,
+  numberFieldStepperAttrs,
+  type NumberFieldState,
+} from '../core/number-field.js'
 
 const fire = (el: Element, type: string) => el.dispatchEvent(new Event(type, { bubbles: true }))
 
 // ── Input clearable ─────────────────────────────────────────────────────────
 
+// The decisions come from `../core/input.js`, shared with Input.svelte; state is read from the DOM.
+const clearState = (input: HTMLInputElement): InputClearState => ({
+  value: input.value,
+  readonly: input.readOnly,
+  disabled: input.disabled,
+})
+
 function syncClear(input: HTMLInputElement): void {
   const btn = input.closest('.control')?.querySelector<HTMLElement>('.clear')
-  if (btn) btn.hidden = !input.value || input.readOnly || input.disabled
+  if (btn) btn.hidden = !inputShowClear(clearState(input))
 }
 
 export function clearInput(btn: HTMLElement): void {
   const input = btn.closest('.control')?.querySelector<HTMLInputElement>('.ss-input')
   if (!input) return
-  input.value = ''
+  const result = inputClear(clearState(input))
+  if (!result) return
+  input.value = result.value
   fire(input, 'input')
   syncClear(input)
-  input.focus()
+  if (result.focusInput) input.focus()
 }
 
 // ── NumberField steppers ───────────────────────────────────────────────────
 
-const num = (s: string | null) => (s == null || s === '' ? null : Number(s))
+// Parsing, clamping, stepping and the stepper state come from `../core/number-field.js`,
+// shared with NumberField.svelte; this side only reads the input and writes the result back.
+const numberState = (input: HTMLInputElement): NumberFieldState => ({
+  value: numberFieldParse(input.value, input.valueAsNumber),
+  min: numberFieldOption(input.getAttribute('min')),
+  max: numberFieldOption(input.getAttribute('max')),
+  step: numberFieldOption(input.getAttribute('step')),
+  locked: input.disabled || input.readOnly,
+})
 
 function syncSteppers(input: HTMLInputElement): void {
   const control = input.closest('.control')
   if (!control) return
-  const v = input.value === '' ? null : input.valueAsNumber
-  const min = num(input.getAttribute('min'))
-  const max = num(input.getAttribute('max'))
-  const locked = input.disabled || input.readOnly
-  const dec = control.querySelector<HTMLButtonElement>('.step.dec')
-  const inc = control.querySelector<HTMLButtonElement>('.step.inc')
-  const bound = (btn: HTMLButtonElement | null, atBound: boolean) => {
+  const state = numberState(input)
+  const apply = (btn: HTMLButtonElement | null, dir: 1 | -1) => {
     if (!btn) return
-    btn.disabled = locked
-    if (!locked && atBound) btn.setAttribute('aria-disabled', 'true')
-    else btn.removeAttribute('aria-disabled')
+    const { disabled, ...aria } = numberFieldStepperAttrs(state, dir)
+    btn.disabled = disabled
+    setAttrs(btn, aria)
   }
-  bound(dec, v != null && min != null && v <= min)
-  bound(inc, v != null && max != null && v >= max)
+  apply(control.querySelector<HTMLButtonElement>('.step.dec'), -1)
+  apply(control.querySelector<HTMLButtonElement>('.step.inc'), 1)
 }
 
 export function nudgeNumber(btn: HTMLButtonElement): void {
   const input = btn.closest('.control')?.querySelector<HTMLInputElement>('.ss-input')
   if (!input || btn.disabled || btn.getAttribute('aria-disabled') === 'true') return
-  const dir = btn.classList.contains('inc') ? 1 : -1
-  const min = num(input.getAttribute('min'))
-  const max = num(input.getAttribute('max'))
-  const step = num(input.getAttribute('step')) ?? 1
-  const current =
-    input.value === '' || Number.isNaN(input.valueAsNumber) ? null : input.valueAsNumber
-  const base = current ?? (dir > 0 ? (min ?? 0) : (max ?? 0))
-  let next = base + dir * step
-  if (min != null && next < min) next = min
-  if (max != null && next > max) next = max
+  const next = numberFieldStep(numberState(input), btn.classList.contains('inc') ? 1 : -1)
+  if (next === null) return
   input.value = String(next)
   fire(input, 'input')
   fire(input, 'change')
   syncSteppers(input)
   const live = input.closest('.ss-numberfield')?.querySelector('.live')
-  if (live) live.textContent = input.value
+  if (live) live.textContent = numberFieldAnnouncement(next)
 }
 
 // ── Textarea autosize ──────────────────────────────────────────────────────

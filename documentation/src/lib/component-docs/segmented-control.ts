@@ -14,7 +14,7 @@ export const segmentedControl: ComponentDoc = {
       label: 'Range',
     },
     behaviour: 'js',
-    note: "vanilla.js moves the selection (click, arrows mirrored under RTL, Home/End) and emits ss:change with the segment's data-value.",
+    note: "vanilla.js moves the selection (click, arrows mirrored under RTL, Home/End) and emits ss:change with { value, index, reason } (value = the segment's data-value).",
   },
   tagline: 'Compact row of mutually-exclusive options.',
   description:
@@ -49,8 +49,8 @@ export const segmentedControl: ComponentDoc = {
     },
     {
       name: 'onChange',
-      type: '(value: string) => void',
-      desc: 'Fired when the selection changes, after `value` updates.',
+      type: '(value: string, details: { reason: SegmentedReason }) => void',
+      desc: "Fired when the selection changes, after `value` updates, with the new value and what moved it: `details.reason` is `'press'` (a segment was clicked) or `'key'` (arrow / Home / End).",
     },
     {
       name: 'fullWidth',

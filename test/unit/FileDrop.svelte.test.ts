@@ -194,7 +194,7 @@ describe('FileDrop — selection', () => {
     const { container, getByText } = render(FileDrop, { onfiles })
     const file = jsonFile()
     await fireEvent.drop(zone(container), { dataTransfer: { files: [file] } })
-    expect(onfiles).toHaveBeenCalledWith([file])
+    expect(onfiles).toHaveBeenCalledWith([file], { reason: 'drop' })
     expect(getByText('data.json')).toBeInTheDocument()
   })
 
@@ -204,7 +204,7 @@ describe('FileDrop — selection', () => {
     const a = new File(['a'], 'a.txt', { type: 'text/plain' })
     const b = new File(['b'], 'b.txt', { type: 'text/plain' })
     await fireEvent.drop(zone(container), { dataTransfer: { files: [a, b] } })
-    expect(onfiles).toHaveBeenCalledWith([a])
+    expect(onfiles).toHaveBeenCalledWith([a], { reason: 'drop' })
   })
 
   it('filters dropped files by the accept filter', async () => {
@@ -213,7 +213,7 @@ describe('FileDrop — selection', () => {
     const json = jsonFile()
     const txt = new File(['x'], 'x.txt', { type: 'text/plain' })
     await fireEvent.drop(zone(container), { dataTransfer: { files: [json, txt] } })
-    expect(onfiles).toHaveBeenCalledWith([json])
+    expect(onfiles).toHaveBeenCalledWith([json], { reason: 'drop' })
   })
 })
 
@@ -236,7 +236,7 @@ describe('FileDrop — clear / remove', () => {
     expect(getByText('data.json')).toBeInTheDocument()
     await fireEvent.click(getByText('Clear'))
     expect(queryByText('data.json')).toBeNull()
-    expect(onfiles).toHaveBeenLastCalledWith([])
+    expect(onfiles).toHaveBeenLastCalledWith([], { reason: 'clear' })
   })
 })
 
@@ -257,6 +257,20 @@ describe('FileDrop — disabled', () => {
     const { container } = render(FileDrop, { disabled: true, onfiles })
     await fireEvent.drop(zone(container), { dataTransfer: { files: [jsonFile()] } })
     expect(onfiles).not.toHaveBeenCalled()
+  })
+})
+
+describe('FileDrop — onfiles reports why the selection changed (DS-0197)', () => {
+  it('says select for the picker and remove for a per-file remove', async () => {
+    const onfiles = vi.fn()
+    const { container, getByLabelText } = render(FileDrop, { onfiles })
+    const file = jsonFile()
+    const el = input(container)
+    Object.defineProperty(el, 'files', { value: [file], configurable: true })
+    await fireEvent.change(el)
+    expect(onfiles).toHaveBeenLastCalledWith([file], { reason: 'select' })
+    await fireEvent.click(getByLabelText('Remove data.json'))
+    expect(onfiles).toHaveBeenLastCalledWith([], { reason: 'remove' })
   })
 })
 

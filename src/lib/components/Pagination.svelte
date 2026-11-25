@@ -7,7 +7,21 @@
   // density. The current page is `aria-current="page"`, visually active and
   // inert (re-clicking it never re-fires). WCAG 2.2 AA.
   // ─────────────────────────────────────────────────────────────────────────
+  import { tick } from 'svelte'
   import { resolveComponentSize, type Size } from '../config.js'
+  import {
+    paginationClamp,
+    paginationIsGap,
+    paginationPageAttrs,
+    paginationPageCount,
+    paginationPagePress,
+    paginationSlots,
+    paginationStep,
+    paginationStepperDisabled,
+    type PaginationChange,
+    type PaginationChangeDetails,
+    type PaginationState,
+  } from '../core/pagination.js'
 
   interface Props {
     /** Current page, 1-based (bindable). */
@@ -24,8 +38,11 @@
     disabled?: boolean
     /** Token size (sm|md|lg); inherits the global size when unset. */
     size?: Size
-    /** Fired when the page changes (after `page` updates). */
-    onchange?: (page: number) => void
+    /**
+     * Fired when the page changes (after `page` updates), with the new page and what changed
+     * it (`details.reason`: page · prev · next).
+     */
+    onchange?: (page: number, details: PaginationChangeDetails) => void
   }
 
   let {
@@ -39,46 +56,40 @@
     onchange,
   }: Props = $props()
 
+  // Behaviour lives in `core/pagination.ts`: the page window, the bounds and what a press
+  // does are decided there; this file holds the state and applies the result.
+
   // Total number of pages — explicit `pageCount` wins, else derived from the
   // item count. Always at least 1 so the control never renders empty.
-  const pages = $derived(pageCount ?? Math.max(1, Math.ceil((total ?? 0) / pageSize)))
+  const pages = $derived(paginationPageCount({ pageCount, total, pageSize }))
 
   // Clamp the active page into [1, pages] for all rendering/decisions.
-  const current = $derived(Math.min(Math.max(1, page), pages))
-
-  type Slot = number | 'gap-start' | 'gap-end'
+  const current = $derived(paginationClamp(page, pages))
 
   // Windowed list of slots: first page, last page, the sibling window around
   // the current page, and an ellipsis marker wherever a run of pages is hidden.
-  const slots = $derived.by<Slot[]>(() => {
-    const start = Math.max(2, current - siblingCount)
-    const end = Math.min(pages - 1, current + siblingCount)
-    const out: Slot[] = [1]
-    // A single hidden page is cheaper to show than an ellipsis — only collapse
-    // a run into `…` when it hides more than one page.
-    if (start > 3) out.push('gap-start')
-    else if (start === 3) out.push(2)
-    for (let p = start; p <= end; p++) out.push(p)
-    if (end < pages - 2) out.push('gap-end')
-    else if (end === pages - 2) out.push(pages - 1)
-    if (pages > 1) out.push(pages)
-    return out
-  })
+  const slots = $derived(paginationSlots(current, pages, siblingCount))
 
-  const atFirst = $derived(current <= 1)
-  const atLast = $derived(current >= pages)
+  const pagination = $derived<PaginationState>({ current, pages, disabled })
 
-  function go(target: number) {
-    const next = Math.min(Math.max(1, target), pages)
-    if (disabled || next === current) return
-    page = next
-    onchange?.(next)
+  let navEl = $state<HTMLElement>()
+
+  async function apply(change: PaginationChange | null) {
+    if (!change) return
+    page = change.page
+    onchange?.(change.page, { reason: change.reason })
+    if (change.focus === 'current') {
+      // The stepper just became disabled under the focus: hand it to the current page.
+      await tick()
+      navEl?.querySelector<HTMLElement>('[aria-current="page"]')?.focus()
+    }
   }
 
   const sizeAttr = $derived(resolveComponentSize('Pagination', size))
 </script>
 
 <nav
+  bind:this={navEl}
   class="ss-pagination"
   aria-label="Pagination"
   data-size-variant={sizeAttr}
@@ -88,8 +99,8 @@
     type="button"
     class="page nav-btn"
     aria-label="Previous page"
-    disabled={disabled || atFirst}
-    onclick={() => go(current - 1)}
+    disabled={paginationStepperDisabled(pagination, 'prev')}
+    onclick={() => apply(paginationStep(pagination, 'prev'))}
   >
     <!-- ‹ › are Bidi_Mirrored (UAX #9, rule L4): in an RTL context the browser
          already draws them flipped, so no transform is needed (one would
@@ -98,18 +109,17 @@
   </button>
 
   {#each slots as slot (slot)}
-    {#if slot === 'gap-start' || slot === 'gap-end'}
+    {#if paginationIsGap(slot)}
       <span class="ellipsis" aria-hidden="true">…</span>
     {:else}
-      {@const isCurrent = slot === current}
+      {@const attrs = paginationPageAttrs(slot, current)}
       <button
         type="button"
         class="page"
-        class:active={isCurrent}
-        aria-current={isCurrent ? 'page' : undefined}
-        aria-label={`Page ${slot}`}
+        class:active={attrs['aria-current'] === 'page'}
+        {...attrs}
         {disabled}
-        onclick={() => go(slot)}
+        onclick={() => apply(paginationPagePress(pagination, slot))}
       >
         {slot}
       </button>
@@ -120,8 +130,8 @@
     type="button"
     class="page nav-btn"
     aria-label="Next page"
-    disabled={disabled || atLast}
-    onclick={() => go(current + 1)}
+    disabled={paginationStepperDisabled(pagination, 'next')}
+    onclick={() => apply(paginationStep(pagination, 'next'))}
   >
     <span aria-hidden="true">›</span>
   </button>

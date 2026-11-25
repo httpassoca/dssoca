@@ -93,7 +93,7 @@ describe('SegmentedControl', () => {
     })
     const segs = container.querySelectorAll<HTMLElement>('.segment')
     await fireEvent.click(segs[2])
-    expect(onChange).toHaveBeenCalledWith('map')
+    expect(onChange).toHaveBeenCalledWith('map', { reason: 'press' })
     expect(segs[2]).toHaveAttribute('aria-checked', 'true')
   })
 
@@ -139,7 +139,7 @@ describe('SegmentedControl', () => {
     })
     const segs = container.querySelectorAll<HTMLElement>('.segment')
     await fireEvent.keyDown(segs[0], { key: 'ArrowRight' })
-    expect(onChange).toHaveBeenCalledWith('grid')
+    expect(onChange).toHaveBeenCalledWith('grid', { reason: 'key' })
     expect(segs[1]).toHaveAttribute('aria-checked', 'true')
     expect(document.activeElement).toBe(segs[1])
   })
@@ -154,7 +154,7 @@ describe('SegmentedControl', () => {
     })
     const segs = container.querySelectorAll<HTMLElement>('.segment')
     await fireEvent.keyDown(segs[0], { key: 'ArrowLeft' })
-    expect(onChange).toHaveBeenCalledWith('map')
+    expect(onChange).toHaveBeenCalledWith('map', { reason: 'key' })
     expect(document.activeElement).toBe(segs[2])
   })
 
