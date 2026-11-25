@@ -338,6 +338,11 @@
     .sublist {
       padding-inline-start: var(--ss-s-3);
     }
+    // `display: flex` above outranks the UA's `[hidden] { display: none }`, so a closed
+    // disclosure would still render its children and keep them tabbable. Restate it.
+    .sublist[hidden] {
+      display: none;
+    }
     .row {
       display: block;
     }
