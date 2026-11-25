@@ -178,13 +178,24 @@
     tabEls[idx]?.focus()
   }
   function onTabKeydown(e: KeyboardEvent, i: number) {
+    // RTL: the strip is laid out right-to-left, so ArrowLeft points at the NEXT
+    // tab. Read the computed direction at keydown time (it inherits from any
+    // ancestor `dir`); Up/Down stay logical.
+    const rtl = getComputedStyle(e.currentTarget as Element).direction === 'rtl'
+    const right: 1 | -1 = rtl ? -1 : 1
     switch (e.key) {
       case 'ArrowRight':
+        e.preventDefault()
+        focusTab(i + right)
+        break
+      case 'ArrowLeft':
+        e.preventDefault()
+        focusTab(i - right)
+        break
       case 'ArrowDown':
         e.preventDefault()
         focusTab(i + 1)
         break
-      case 'ArrowLeft':
       case 'ArrowUp':
         e.preventDefault()
         focusTab(i - 1)
